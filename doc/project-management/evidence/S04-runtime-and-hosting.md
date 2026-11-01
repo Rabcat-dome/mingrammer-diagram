@@ -2,9 +2,9 @@
 
 Date: 2026-11-01 (Asia/Bangkok) | Tasks: M0-02, M0-05 | Status: local feasibility/install checks; actual Work proof and independent review pending.
 
-The owner first selected central execution (D-012), then replaced it with **runtime installation on every machine using the plugin** (D-013). D-013 is current. Requirements revision 0.8 reflects this choice and the native default; O-006 hosting inputs are retired. No cloud server, public endpoint or account plugin was created. A free public rendering MCP is not a project dependency; this record does not claim an exhaustive survey of public services.
+The owner first selected central execution (D-012), then replaced it with **runtime installation on every machine using the plugin** (D-013). D-013 is current. Requirements revision 0.9 reflects this choice and the native default; O-006 hosting inputs are retired. No cloud server, public endpoint or account plugin was created. A free public rendering MCP is not a project dependency; this record does not claim an exhaustive survey of public services.
 
-Current default: [native alpha.2 follow-up](S04-native-runtime.md). The container/HTTP results below are historical alpha.1 evidence; Docker is not required by the new direct-script path.
+Current default: [native alpha.3 follow-up](S04-native-runtime.md). The container/HTTP results below are historical alpha.1 evidence; Docker is not required by the new direct-script path.
 
 ## Alpha.1 route
 

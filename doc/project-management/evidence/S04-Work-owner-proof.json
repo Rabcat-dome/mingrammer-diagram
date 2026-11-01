@@ -1,0 +1,15 @@
+{
+  "recorded_date": "2026-11-02",
+  "timezone": "Asia/Bangkok",
+  "source": "direct owner reply in the coordinating chat",
+  "host": "separate ChatGPT Work page/mode",
+  "plugin_visible_and_selectable": true,
+  "plugin_version": "0.1.0-alpha.3",
+  "system": "Darwin",
+  "png_visible": true,
+  "five_files_available": true,
+  "files": ["diagram.png", "diagram.svg", "source.json", "source.dot", "manifest.json"],
+  "method": "owner ran the supplied plugin-tool prompt with Client, Application, Database labels",
+  "not_supplied": ["Work tool transcript", "bundle ID", "Work artifact hashes"],
+  "scope": "S04 local Work feasibility; not full product or second-machine acceptance"
+}

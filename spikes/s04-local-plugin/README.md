@@ -1,6 +1,6 @@
 # S04 Native Local Plugin Pilot
 
-Current version: `0.1.0-alpha.2`. The default is native Python + Graphviz. Docker is not required; the earlier container is historical research. No central server or model API key is required.
+Current version: `0.1.0-alpha.3`. The default is native Python + Graphviz. Docker is not required; the earlier container is historical research. No central server or model API key is required.
 
 ## What runs locally
 
@@ -31,12 +31,12 @@ printf '%s' '{"labels":["Client","Application","Database"]}' |
 
 After installation, the same `scripts/render.py` is inside the installed plugin root. JSON on stdin is data; arbitrary Python, paths and Graphviz options are not accepted. The command prints verified paths/checksums for PNG, SVG, source JSON, DOT and manifest under `~/Documents/CloudArchitectureDiagrams`.
 
-For host tools, call `get_runtime_info`, `render_fixture` with `{"request":{"labels":["Client","Application","Database"]}}`, then `read_fixture_artifact`. Existing chats can retain the alpha.1 Docker process after a CLI upgrade; check the reported version and use a fresh/reloaded local chat for alpha.2. Do not claim an old live connection is native because the new package is installed.
+For host tools, call `get_runtime_info`, `render_fixture` with `{"request":{"labels":["Client","Application","Database"]}}`, then `read_fixture_artifact`. Existing chats can retain the alpha.1 Docker process after a CLI upgrade; check the reported version and use a fresh/reloaded local chat for alpha.3. Do not claim an old live connection is native because the new package is installed.
 
 ## Verification and boundaries
 
-Run the private runtime Python against `spikes/s04-local-plugin/verify.py`. It tests the direct command with a failing Docker shim and irrelevant remote Docker environment, installed MCP, relocated ZIP, complete artifact reads/hashes, invalid input, seven filesystem cases and timeout/RSS/scratch watchdog cases. [Native evidence](../../doc/project-management/evidence/S04-native-runtime.md) records results. A same-Mac relocation is not second-machine acceptance.
+Run the private runtime Python against `spikes/s04-local-plugin/verify.py`. It tests the direct command with a failing Docker shim and irrelevant remote Docker environment, installed MCP, relocated ZIP, complete artifact reads/hashes, invalid input, seven filesystem cases timeout/RSS/scratch watchdog cases, six signal/EOF shutdown cases, a deleted intermediate and the 1 MiB MCP frame bound. The pinned MCP 2.3 stdio adapter uses cancelable nonblocking POSIX pipes so disconnect/shutdown drains renderer processes and scratch cleanup. Its private SDK dispatch bridge requires revalidation on SDK upgrades. [Native evidence](../../doc/project-management/evidence/S04-native-runtime.md) records results. A same-Mac relocation is not second-machine acceptance.
 
 Output roots must be real, private directories. Descriptor-relative access rejects symlink components/files and detects root replacement. Bundles publish after integrity checks. macOS sandbox-exec denies renderer/descendant networking. CPU/file limits and a wall timeout apply; RSS and scratch size use a sampled watchdog, not kernel memory/disk quotas, CPU-core limits or a container sandbox. These limits still require production acceptance under NFR-009. Outputs remain until user removal. The renderer executes only project-controlled code.
 
-Actual ChatGPT Work mode/UI export, cross-machine SVG font appearance, another physical machine and fresh independent review of alpha.2 remain open. [The earlier live desktop test](../../doc/project-management/evidence/S04-work-host-check.md) established alpha.1 in Codex Desktop, not a different Work mode. [Handoff](../../doc/project-management/HANDOFF.md) contains the next steps. No account plugin, public release or cloud host was created.
+The owner reports actual Work alpha.3/Darwin, a visible PNG and all five files; see the [Work result](../../doc/project-management/evidence/S04-Work-validation.md). Cross-machine SVG font appearance, another physical machine and final alpha.3 re-review remain open. [The earlier live desktop test](../../doc/project-management/evidence/S04-work-host-check.md) established alpha.1 in Codex Desktop, not a different Work mode. [Handoff](../../doc/project-management/HANDOFF.md) contains the next steps. No account plugin, public release or cloud host was created.

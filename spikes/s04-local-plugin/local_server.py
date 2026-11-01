@@ -5,16 +5,18 @@ import os
 from pathlib import Path
 import secrets
 import sys
-import tempfile
 import threading
 from typing import Literal
+import anyio
 from mcp.server import MCPServer
 from mcp_types import BlobResourceContents, CallToolResult, EmbeddedResource, ImageContent, TextContent, ToolAnnotations
 from pydantic import BaseModel, ConfigDict
 from artifact_store import ArtifactStore, FILES
-from execution import POLICY, execute
+from execution import POLICY, execute, request_directory, install_shutdown_handlers, check_running, set_cancel_callback
 from render_fixture import runtime_info, validate
+from transport import run_stdio
 
+install_shutdown_handlers()
 STORE = ArtifactStore(os.environ['CLOUD_DIAGRAM_HOST_OUTPUT_ROOT'])
 RUNTIME = Path(os.environ['CLOUD_DIAGRAM_RUNTIME_DIR'])
 VERSION = os.environ['CLOUD_DIAGRAM_PLUGIN_VERSION']
@@ -53,7 +55,7 @@ def render_fixture(request: FixtureRequest) -> CallToolResult:
     if not GATE.acquire(blocking=False):
         return failure('S04_BUSY')
     try:
-        with tempfile.TemporaryDirectory(prefix='request-', dir=RUNTIME / 'tmp') as scratch:
+        with request_directory(RUNTIME / 'tmp') as scratch:
             destination = Path(scratch) / 'result'
             environment = os.environ.copy()
             environment['CLOUD_DIAGRAM_SCRATCH_ROOT'] = scratch
@@ -65,14 +67,17 @@ def render_fixture(request: FixtureRequest) -> CallToolResult:
             identifier = secrets.token_hex(16)
             report.update({'runtime': INFO, 'bundle_id': identifier,
                            'host_paths': {name: str(STORE.root / identifier / name) for name in sorted(FILES)}})
+            check_running()
             STORE.publish(identifier, destination, report)
         png = STORE.read(identifier, 'diagram.png')
         return CallToolResult(structured_content=report, content=[TextContent(type='text', text=json.dumps(report)),
             ImageContent(type='image', data=base64.b64encode(png).decode(), mime_type='image/png')])
     except ValueError as error:
+        check_running()
         code = str(error)
         return failure(code if code.startswith('S04_') and code.isidentifier() else 'S04_RENDER_FAILURE')
     except (OSError, KeyError):
+        check_running()
         return failure('S04_RENDER_OR_ARTIFACT_FAILURE')
     finally:
         GATE.release()
@@ -90,5 +95,19 @@ def read_fixture_artifact(bundle_id: str, filename: Literal['diagram.png', 'diag
         uri='artifact://' + bundle_id + '/' + filename, mime_type=mime, blob=base64.b64encode(data).decode()))])
 
 
+def serve():
+    async def run():
+        with anyio.CancelScope() as scope:
+            set_cancel_callback(scope.cancel)
+            try:
+                await run_stdio(mcp)
+            finally:
+                set_cancel_callback(None)
+    try:
+        anyio.run(run)
+    finally:
+        check_running()
+
+
 if __name__ == '__main__':
-    mcp.run(transport='stdio')
+    serve()

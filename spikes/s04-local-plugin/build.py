@@ -8,7 +8,7 @@ import zipfile
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 NAME = 'cloud-architecture-diagrams'
-VERSION = '0.1.0-alpha.2'
+VERSION = '0.1.0-alpha.3'
 OUTPUT = HERE / 'output'
 PACKAGE = OUTPUT / NAME
 OUTPUT.mkdir(exist_ok=True)
@@ -37,7 +37,7 @@ save('.codex-plugin/plugin.json', {'name': NAME, 'version': VERSION, 'descriptio
     'requires_local_executor': True, 'interface': interface})
 for name in ['common.py', 'setup.py', 'launch.py', 'render.py']:
     shutil.copyfile(HERE / name, PACKAGE / 'scripts' / name)
-for name in ['local_server.py', 'artifact_store.py', 'execution.py', 'native_worker.py', 'cli.py']:
+for name in ['local_server.py', 'artifact_store.py', 'execution.py', 'native_worker.py', 'cli.py', 'transport.py']:
     shutil.copyfile(HERE / name, PACKAGE / 'runtime' / name)
 for name in ['render_fixture.py', 'requirements.lock']:
     shutil.copyfile(REPO / 'spikes/s04-runtime' / name, PACKAGE / 'runtime' / name)
@@ -51,7 +51,7 @@ for font in fonts:
     assert (PACKAGE / 'assets/fonts' / font['license']).is_file()
 (PACKAGE / 'README.md').write_text('''# Cloud Architecture Diagrams: native S04 pilot
 
-Version: 0.1.0-alpha.2. Fixed three-node feasibility fixture; the full cloud/Kubernetes renderer is later work.
+Version: 0.1.0-alpha.3. Fixed three-node feasibility fixture; the full cloud/Kubernetes renderer is later work.
 
 No Docker or central server is required. The plugin runs controlled local Python scripts and native Graphviz. MCP stdio is an optional host interface to the same code; it starts a local helper process without opening an HTTP/listening port. A direct script command is also provided.
 

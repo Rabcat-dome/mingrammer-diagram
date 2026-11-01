@@ -1,6 +1,6 @@
 # Cloud Architecture Diagram Plugin Requirements
 
-Document: CADP-REQ-001 | Revision: 0.8 | Updated: 2026-11-02
+Document: CADP-REQ-001 | Revision: 0.9 | Updated: 2026-11-02
 
 Status: Draft baseline with confirmed granularity/style and per-machine local-runtime direction; product implementation and release acceptance remain pending.
 
@@ -15,7 +15,7 @@ The user's current request takes precedence over the supplied v1.1 draft. In par
 - A personal ChatGPT Work plugin that turns architecture requests into reviewable structured models and SVG/PNG diagrams.
 - AWS, Azure, GCP, Huawei Cloud, and on-premises support, including hybrid and multi-cloud views.
 - A portable Python core using `mingrammer/diagrams` and Graphviz, versioned catalogs, approved icon assets, and a CLI for development/CI.
-- An installable personal plugin usable across machines, containing a Work adapter, bundled workflow skill and local renderer setup. D-013 supersedes the central-server choice: install the runtime on each machine using the plugin, with no required public rendering MCP or hosted renderer. Native Python/script execution is the default; Docker is optional for development/CI and is not an end-user prerequisite. Verify Work Desktop local execution first; supported modes and per-machine prerequisites must be proven.
+- An installable personal plugin usable across machines, containing a Work adapter, bundled workflow skill and local renderer setup. D-013 supersedes the central-server choice: install the runtime on each machine using the plugin, with no required public rendering MCP or hosted renderer. Native Python/script execution is the default; Docker is optional for development/CI and is not an end-user prerequisite. The owner confirmed the separate ChatGPT Work mode/page as the first-release target; Codex evidence alone is insufficient. Verify Work Desktop local execution first; supported modes and per-machine prerequisites must be proven.
 - Iterative edits that retain stable resource IDs and return the updated source with the images.
 
 ### Confirmed architecture depth and visual direction (S01)

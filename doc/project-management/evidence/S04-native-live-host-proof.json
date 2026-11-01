@@ -1,0 +1,439 @@
+{
+  "session": "S04-native-live-host",
+  "recorded_at": "2026-11-02T00:32:39.901822+07:00",
+  "scope": "Native alpha.2 live installed-plugin preflight in existing Codex Desktop chat. Stop on stale alpha.1 identity.",
+  "result": "stale_live_connection_native_test_not_run",
+  "release_target": "The OTHER ChatGPT Work mode/page, explicitly distinct from Codex in this app. Codex runtime evidence does not satisfy release target acceptance.",
+  "repository": {
+    "root": "/Users/visarut.pha/Documents/source/easybuy/mingrammer-diagram",
+    "branch": "codex/s04-runtime-proof",
+    "expected_head": "1fd2d72a22183b65d76ea0bea255702a769ae62f",
+    "observed_head": "1fd2d72a22183b65d76ea0bea255702a769ae62f",
+    "initial_status_short": "",
+    "tracked_files_equal_frozen_head_before_evidence": true,
+    "existing_evidence_sha256": {
+      "doc/project-management/HANDOFF.md": "1d685a1dc0ce4eab53bea76d6ddb4b81d2d21c930be45d1fa2e5391100f6ddf1",
+      "doc/project-management/evidence/S01-release-scope.md": "0968a5f5b4db6c35815644626093f18d48fed29f226d9685b123e02c1327b908",
+      "doc/project-management/evidence/S02-additional-icon-sources.md": "7f15a9815091c5fbec7296667b131704b04761373157a5bd3710ccbac9bfd345",
+      "doc/project-management/evidence/S02-icon-inventory.json": "6523b7fe7cd3a6532a50e1487e5d6a0e2951b7be178f8ad644e222bdf87bfb56",
+      "doc/project-management/evidence/S02-icon-sources-and-rights.md": "27ceb8215a2dc593a5f3b32cf785e1e319773c61dce610e1418a1fe2bfb3b1da",
+      "doc/project-management/evidence/S02-supplemental-icons.json": "e5647484fc2edc4373dedfb876c567ebc17973a09cd7552007a9eeac88612701",
+      "doc/project-management/evidence/S03-repository-runner-preflight.md": "e4f25da1563aeb0d2426be748a0ff68afdcd1e461ad2d86643ef13f474f063e0",
+      "doc/project-management/evidence/S03-runner-job.json": "8a63d182410c5dc16134a4d0b8b7cbe677e6dbaa1e1094bf7f3a24334de763fd",
+      "doc/project-management/evidence/S04-astra-review.md": "94dc1ed245786f423489a2a36d476df6fd14cef80fecaf99e67aaa9f4ba31bbd",
+      "doc/project-management/evidence/S04-local-plugin-fixture.png": "b3cf20a1b13ba51c2f16c18df04cefb0115883a03bcae67d2c3add564c51439a",
+      "doc/project-management/evidence/S04-local-plugin-fixture.svg": "98d1b6e15dae5e73d1f7fb9d0feee86af9a1e91af3891ff4e89926948f287a16",
+      "doc/project-management/evidence/S04-local-plugin-proof.json": "7f76b005a4fd218d90768fff4a6edbda53209b05927206e0f6c933b61ad1f9d4",
+      "doc/project-management/evidence/S04-native-host-discovery.json": "407f6b50ca1fdebb102c4c0b90bae355052a7656107ad2bb7f52c3c8b809c496",
+      "doc/project-management/evidence/S04-native-runner-preflight.json": "69e2ec0ef165d0a5583607e6c3a35dd82a79b790b857ae5ce9663c45e91c1f41",
+      "doc/project-management/evidence/S04-native-runtime-fixture.png": "55218c6e3cf4ffc0793dd4a55c2cf5ab3d06076f7b738c9bb84322189b427dd0",
+      "doc/project-management/evidence/S04-native-runtime-fixture.svg": "73903a2274f3bcc7af13ade399b29e56b6774e08798234d1c462ca119e5a28b0",
+      "doc/project-management/evidence/S04-native-runtime-host-discovery.json": "6c074d8d21eef5fa394956ea0e4233fb52bbc295d4333226c2486d243b0ae2bb",
+      "doc/project-management/evidence/S04-native-runtime-proof.json": "cc9a3a172ba5e763fbbd5d0383dd38611b2a463ad722395cc6110ca59537bb4e",
+      "doc/project-management/evidence/S04-native-runtime.md": "24107818f7cb826c2a8192e02e6ddefe7fe1f28caa779eea8f90941da0f523e6",
+      "doc/project-management/evidence/S04-runtime-and-hosting.md": "0d49a048c0050f9f51f26f6a2a1c1ed12a986e9a04d3189711b4bc1ca7946286",
+      "doc/project-management/evidence/S04-runtime-fixture.png": "3cbd22a640f1b0788698175cc0fc75bbf13471e132cb2154740c6b4a9e99a301",
+      "doc/project-management/evidence/S04-runtime-fixture.svg": "07b037bae720868ad9701fb317989c485177f1bdf0d78e8f8304c51f7bd868b2",
+      "doc/project-management/evidence/S04-runtime-proof.json": "c913635d046c1940adf24643b1458cdb47c02a4828048529be95edf0924baa98",
+      "doc/project-management/evidence/S04-work-host-check.md": "07c89b6f38d9842daae01345a71f0214454cc70bf809aa658ab35e773a741ddf",
+      "doc/project-management/evidence/S04-work-host-fixture-dd12797b1c044f7e33239cc9cf8b3752.png": "3cbd22a640f1b0788698175cc0fc75bbf13471e132cb2154740c6b4a9e99a301",
+      "doc/project-management/evidence/S04-work-host-fixture-dd12797b1c044f7e33239cc9cf8b3752.svg": "07b037bae720868ad9701fb317989c485177f1bdf0d78e8f8304c51f7bd868b2",
+      "doc/project-management/evidence/S04-work-host-proof.json": "42663ad85cb291a883da2d4c158a47df3dc51ed73d06c84a3931d96209c9af83"
+    }
+  },
+  "host": {
+    "established_mode": "Local Codex Desktop executor; target ChatGPT Work UI mode not established.",
+    "environment": {
+      "CODEX_INTERNAL_ORIGINATOR_OVERRIDE": "Codex Desktop",
+      "CODEX_THREAD_ID": "01a1964a-784d-7751-bfe5-57e0bbb4cf39",
+      "CODEX_CI": "1"
+    },
+    "os": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "app_info_path": "/Applications/ChatGPT.app/Contents/Info.plist",
+    "app": {
+      "CFBundleIdentifier": "com.openai.codex",
+      "CFBundleDisplayName": "ChatGPT",
+      "CFBundleShortVersionString": "26.1027.30824",
+      "CFBundleVersion": "22943"
+    },
+    "cli_version": "codex-cli 0.166.0-alpha.5.1",
+    "process_ancestry_observation": {
+      "codex_pid": 31288,
+      "parent_app_pid": 31190,
+      "codex_executable": "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
+      "parent_executable": "/Applications/ChatGPT.app/Contents/MacOS/ChatGPT",
+      "method": "Read-only ps pid/ppid/comm only."
+    },
+    "ui": {
+      "inspected_this_followup": false,
+      "target_work_mode": "unverified",
+      "preview_download": "not_tested",
+      "reason": "User prohibited bypass of the prior Computer Use refusal for the host app; no app inspection/restart attempted."
+    }
+  },
+  "plugin": {
+    "id": "cloud-architecture-diagrams@mingrammer-local",
+    "registry": [
+      {
+        "name": "mcp__architecture_runtime__get_runtime_info",
+        "description": "Verify this machine's local renderer versions/fonts, non-root UID and isolation configuration. This tool is part of plugin `Cloud Architecture Diagrams (S04)`."
+      },
+      {
+        "name": "mcp__architecture_runtime__read_fixture_artifact",
+        "description": "Read a file from this pilot's local output root; never read an arbitrary path. This tool is part of plugin `Cloud Architecture Diagrams (S04)`."
+      },
+      {
+        "name": "mcp__architecture_runtime__render_fixture",
+        "description": "Render exactly three literal labels locally for S04; return preview and a complete local artifact bundle. This tool is part of plugin `Cloud Architecture Diagrams (S04)`."
+      }
+    ],
+    "installed_cache_path": "/Users/visarut.pha/.codex/plugins/cache/mingrammer-local/cloud-architecture-diagrams/0.1.0-alpha.2",
+    "installed_manifest": {
+      "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+      "name": "cloud-architecture-diagrams",
+      "version": "0.1.0-alpha.2",
+      "description": "Experimental native local architecture diagram runtime for S04.",
+      "author": {
+        "name": "Visarut"
+      },
+      "extensions": {
+        "com.openai": {
+          "requires_local_executor": true,
+          "interface": {
+            "displayName": "Cloud Architecture Diagrams (S04)",
+            "shortDescription": "Native local runtime pilot",
+            "longDescription": "Experimental local Python/Graphviz runtime with setup, preflight, stdio tools and direct script execution. No Docker or central server required. Three-node S04 fixture only.",
+            "developerName": "Visarut",
+            "category": "Productivity",
+            "capabilities": [
+              "Read",
+              "Write"
+            ],
+            "defaultPrompt": "Check the native local runtime and render the S04 three-node fixture."
+          }
+        }
+      }
+    },
+    "installed_mcp_config": {
+      "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+      "mcpServers": {
+        "architecture-runtime": {
+          "type": "stdio",
+          "command": "python3",
+          "args": [
+            "-B",
+            "${PLUGIN_ROOT}/scripts/launch.py"
+          ],
+          "cwd": "${PLUGIN_ROOT}"
+        }
+      }
+    },
+    "cache_file_sha256": {
+      ".codex-plugin/plugin.json": "970e66a101a378a5b1ffc52889a309e123c63e54204b32134c08216c6fce2c60",
+      ".mcp.json": "7b689e37e72f740be26ee3cfaa2d3dd6fb5b7555c06b852e25341b6996fd2b48",
+      "README.md": "5eb6cc32e0308e226ea631cd33d42f989a10fdd8e40bded743f988f927e1bea2",
+      "assets/fonts/NotoSans-OFL.txt": "cee9892f9f0cc8fe882c9e9537ee6a89621d86ee7ceaf70b02e2b2b1c25c061a",
+      "assets/fonts/NotoSans-Regular.ttf": "478c558ea716033cd60c03438f628dfa75694dcf6b5f6d505a2f05fd2b4f3823",
+      "assets/fonts/NotoSansThai-OFL.txt": "2e98fd23a52d253db8612cd5942c8f2ff4111b21d2367050fdca91d8ccc374a0",
+      "assets/fonts/NotoSansThai-Regular.ttf": "61cf814eec46b294d6ea4401ac295d0cecd5207bd2331dcc5a15e7301d30ee44",
+      "assets/fonts/sources.json": "cf58b681f9677cf39d0c4d2a295e1ddec31489073f787d264e78a24d707e6ba8",
+      "mcp.json": "3196c984b364d1c8adce68004100f5738f324998f8f2c66d41cbb9aa3dd665e6",
+      "plugin.json": "cd2ec39d58a7a6051b3c885644b9a49193bad792a4c94dcad3716e4af89e4e4f",
+      "runtime/artifact_store.py": "93cbb51733319fd15dded97817e2cf770893848095ac6777a52a3891c2abba5e",
+      "runtime/cli.py": "88c97c43f2753c63728a2ab4dfc872ba53404565b3f6699b83ffe8050678d5fa",
+      "runtime/execution.py": "6521d3d66f88320127927364719c0ddd0ef55768b952f7b5b742779cb6a5db28",
+      "runtime/local_server.py": "66347854b36f0084c2aae02aaccd92f6b9235e51b7ddc9fe39e19b1744d139c8",
+      "runtime/native_worker.py": "8eb16883b0db8ff5de54c074c440604f664757c88c82d6f2083f1cb888ebacd4",
+      "runtime/network.sb": "5c358b8d847211333e7ba22df82d84f796b5f30a41a2682209a949d783adbd08",
+      "runtime/render_fixture.py": "69bb1aedbb493dfeafaaff24759cf1a086131d4676a58a5ff95e756ec2795438",
+      "runtime/requirements.lock": "54354fcdee04b7a3191411f90b6e18d63d074d40c8b775d4dfde09767e2619f8",
+      "scripts/common.py": "a45a475a8e98d534785d054499bd81d223f08a2231eef9aedd45c04ded28d21f",
+      "scripts/launch.py": "63eebe9cbd3f0d027536b86a7206f26c821e51a1a3c4f6407f060c519a1d2b5d",
+      "scripts/render.py": "9818eec53cc33933384e2bc5a2dac490f080b0d03b90f704821e5636fa2630cd",
+      "scripts/setup.py": "d7c386d1f295ec62dd318d9172bf1d469fb0e7c50b0c9e688f4b345614ffb362",
+      "skills/cloud-architecture-runtime/SKILL.md": "fd78f9d6da3fa570b17699ada4b4673f8f3c7c11f3dfb00adab4a90f902031a9"
+    },
+    "disk_install_is_live_connection": false
+  },
+  "installed_native_state": {
+    "path": "/Users/visarut.pha/.local/share/cloud-architecture-diagrams/0.1.0-alpha.2.json",
+    "sha256": "ed808c24b6ee3f911235b6dc97c2931f62640a93a230e71ada8947bd2fb3a1ab",
+    "recorded_state": {
+      "kind": "native",
+      "version": "0.1.0-alpha.2",
+      "source_sha256": "74ed856c6ad3abb63d3e06571a2e8181599ffe7efdce8f23e7440698c14a2b77",
+      "python": "/Users/visarut.pha/.local/share/cloud-architecture-diagrams/runtime/0.1.0-alpha.2/venv/bin/python",
+      "binaries": {
+        "dot": {
+          "path": "/opt/homebrew/Cellar/graphviz/16.1.0/bin/dot",
+          "sha256": "f7a23a8a447c9a80f94c2b898e58920e32e3c6a629d5d549d49a52a73bbb76e6"
+        },
+        "fc-match": {
+          "path": "/opt/homebrew/Cellar/fontconfig/2.18.3/bin/fc-match",
+          "sha256": "dae9801c7a4b82d3e4f455bf2356469ab8c92d6d71493a611cc36b5b034f6e60"
+        },
+        "sandbox-exec": {
+          "path": "/usr/bin/sandbox-exec",
+          "sha256": "58839ef01b4eef8aac0d2aa8f9d1c074ae45aafe3533965b030672450064acc8"
+        }
+      },
+      "output_root": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams",
+      "fontconfig_sha256": "50244593c133da4b10399916f78ad05e99dc78205591633b905286920baaa0f2",
+      "graphviz_version": "dot - graphviz version 16.1.0 (20260904.0139)",
+      "renderer_network_probe_errno": 1
+    },
+    "binaries_read_only_hash_checks": [
+      {
+        "name": "dot",
+        "path": "/opt/homebrew/Cellar/graphviz/16.1.0/bin/dot",
+        "sha256": "f7a23a8a447c9a80f94c2b898e58920e32e3c6a629d5d549d49a52a73bbb76e6",
+        "disk_hash_matches_recorded_state": true
+      },
+      {
+        "name": "fc-match",
+        "path": "/opt/homebrew/Cellar/fontconfig/2.18.3/bin/fc-match",
+        "sha256": "dae9801c7a4b82d3e4f455bf2356469ab8c92d6d71493a611cc36b5b034f6e60",
+        "disk_hash_matches_recorded_state": true
+      },
+      {
+        "name": "sandbox-exec",
+        "path": "/usr/bin/sandbox-exec",
+        "sha256": "58839ef01b4eef8aac0d2aa8f9d1c074ae45aafe3533965b030672450064acc8",
+        "disk_hash_matches_recorded_state": true
+      }
+    ],
+    "private_python_exists": true,
+    "execution_performed": false,
+    "limitation": "Disk manifest/state/binary checks only; no native runtime execution performed."
+  },
+  "actual_tool_calls": [
+    {
+      "tool": "mcp__architecture_runtime__get_runtime_info",
+      "arguments": {},
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"python\": \"3.13.13\", \"system\": \"Linux\", \"machine\": \"aarch64\", \"uid\": 501, \"graphviz\": \"dot - graphviz version 12.2.1 (20241206.2353)\", \"packages\": {\"diagrams\": \"0.25.1\", \"graphviz\": \"0.20.3\", \"mcp\": \"2.3.0\"}, \"fonts\": [{\"requested_family\": \"Noto Sans\", \"file\": \"/usr/share/fonts/noto/NotoSans-Regular.ttf\", \"sha256\": \"478c558ea716033cd60c03438f628dfa75694dcf6b5f6d505a2f05fd2b4f3823\", \"name_records\": {\"0\": \"Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic)\", \"1\": \"Noto Sans\", \"5\": \"Version 2.015; ttfautohint (v1.8.4.7-5d5b)\", \"13\": \"This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL\", \"14\": \"https://scripts.sil.org/OFL\"}}, {\"requested_family\": \"Noto Sans Thai\", \"file\": \"/usr/share/fonts/noto/NotoSansThai-Regular.ttf\", \"sha256\": \"61cf814eec46b294d6ea4401ac295d0cecd5207bd2331dcc5a15e7301d30ee44\", \"name_records\": {\"0\": \"Copyright 2022 The Noto Project Authors (https://github.com/notofonts/thai)\", \"1\": \"Noto Sans Thai\", \"5\": \"Version 2.002; ttfautohint (v1.8.4.7-5d5b)\", \"13\": \"This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL\", \"14\": \"https://scripts.sil.org/OFL\"}}], \"cgroups\": {\"memory.max\": \"1073741824\", \"memory.swap.max\": \"0\", \"pids.max\": \"64\", \"cpu.max\": \"100000 100000\"}, \"plugin_version\": \"0.1.0-alpha.1\", \"execution\": \"local stdio; network-none container\"}"
+          }
+        ],
+        "structuredContent": {
+          "python": "3.13.13",
+          "system": "Linux",
+          "machine": "aarch64",
+          "uid": 501,
+          "graphviz": "dot - graphviz version 12.2.1 (20241206.2353)",
+          "packages": {
+            "diagrams": "0.25.1",
+            "graphviz": "0.20.3",
+            "mcp": "2.3.0"
+          },
+          "fonts": [
+            {
+              "requested_family": "Noto Sans",
+              "file": "/usr/share/fonts/noto/NotoSans-Regular.ttf",
+              "sha256": "478c558ea716033cd60c03438f628dfa75694dcf6b5f6d505a2f05fd2b4f3823",
+              "name_records": {
+                "0": "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic)",
+                "1": "Noto Sans",
+                "5": "Version 2.015; ttfautohint (v1.8.4.7-5d5b)",
+                "13": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL",
+                "14": "https://scripts.sil.org/OFL"
+              }
+            },
+            {
+              "requested_family": "Noto Sans Thai",
+              "file": "/usr/share/fonts/noto/NotoSansThai-Regular.ttf",
+              "sha256": "61cf814eec46b294d6ea4401ac295d0cecd5207bd2331dcc5a15e7301d30ee44",
+              "name_records": {
+                "0": "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/thai)",
+                "1": "Noto Sans Thai",
+                "5": "Version 2.002; ttfautohint (v1.8.4.7-5d5b)",
+                "13": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL",
+                "14": "https://scripts.sil.org/OFL"
+              }
+            }
+          ],
+          "cgroups": {
+            "memory.max": "1073741824",
+            "memory.swap.max": "0",
+            "pids.max": "64",
+            "cpu.max": "100000 100000"
+          },
+          "plugin_version": "0.1.0-alpha.1",
+          "execution": "local stdio; network-none container"
+        },
+        "isError": false
+      },
+      "protocol_error": false,
+      "native_identity_checks": {
+        "plugin_version": {
+          "expected": "0.1.0-alpha.2",
+          "actual": "0.1.0-alpha.1",
+          "passed": false
+        },
+        "system": {
+          "expected": "Darwin",
+          "actual": "Linux",
+          "passed": false
+        },
+        "execution": {
+          "expected": "native Python; no Docker",
+          "actual": "local stdio; network-none container",
+          "passed": false
+        }
+      }
+    }
+  ],
+  "actual_runtime": {
+    "python": "3.13.13",
+    "system": "Linux",
+    "machine": "aarch64",
+    "uid": 501,
+    "graphviz": "dot - graphviz version 12.2.1 (20241206.2353)",
+    "packages": {
+      "diagrams": "0.25.1",
+      "graphviz": "0.20.3",
+      "mcp": "2.3.0"
+    },
+    "fonts": [
+      {
+        "requested_family": "Noto Sans",
+        "file": "/usr/share/fonts/noto/NotoSans-Regular.ttf",
+        "sha256": "478c558ea716033cd60c03438f628dfa75694dcf6b5f6d505a2f05fd2b4f3823",
+        "name_records": {
+          "0": "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic)",
+          "1": "Noto Sans",
+          "5": "Version 2.015; ttfautohint (v1.8.4.7-5d5b)",
+          "13": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL",
+          "14": "https://scripts.sil.org/OFL"
+        }
+      },
+      {
+        "requested_family": "Noto Sans Thai",
+        "file": "/usr/share/fonts/noto/NotoSansThai-Regular.ttf",
+        "sha256": "61cf814eec46b294d6ea4401ac295d0cecd5207bd2331dcc5a15e7301d30ee44",
+        "name_records": {
+          "0": "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/thai)",
+          "1": "Noto Sans Thai",
+          "5": "Version 2.002; ttfautohint (v1.8.4.7-5d5b)",
+          "13": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL",
+          "14": "https://scripts.sil.org/OFL"
+        }
+      }
+    ],
+    "cgroups": {
+      "memory.max": "1073741824",
+      "memory.swap.max": "0",
+      "pids.max": "64",
+      "cpu.max": "100000 100000"
+    },
+    "plugin_version": "0.1.0-alpha.1",
+    "execution": "local stdio; network-none container"
+  },
+  "runtime_identity_disposition": {
+    "live_native_alpha2": false,
+    "live_image_identity": "Not returned by preflight; no fresh Docker inspection performed.",
+    "observed_runtime": "Historical alpha.1 Linux aarch64 container, Python 3.13.13 / Graphviz 12.2.1; not Darwin/native.",
+    "installed_native_identity": "Alpha.2 state records private Python and Graphviz 16.1.0; disk binary hashes matched. This is not the live connection.",
+    "native_container_image": "Not applicable to installed native design."
+  },
+  "native_steps": {
+    "render_fixture": "not_run_identity_guard_failed",
+    "read_fixture_artifact": "not_run_no_native_bundle",
+    "five_file_bytes_and_checksums": "not_tested",
+    "invalid_request": "not_tested_stale_connection",
+    "png_inspection": "not_tested_no_native_png",
+    "inline_preview": "not_tested_no_native_png",
+    "file_exports": "none_created"
+  },
+  "refresh_investigation": {
+    "mode": "read_only",
+    "available_registry_refresh_tool": "No scoped app/plugin tool explicitly supporting MCP connection reload exposed. Unrelated check_app_update and set_thread_read_state do not reload MCP connections.",
+    "cli_help": {
+      "mcp_commands": [
+        "list",
+        "get",
+        "add",
+        "remove",
+        "login",
+        "logout",
+        "help"
+      ],
+      "plugin_commands": [
+        "add",
+        "list",
+        "marketplace",
+        "remove",
+        "help"
+      ],
+      "reload_subcommand_exposed": false
+    },
+    "official_docs": [
+      {
+        "url": "https://learn.chatgpt.com/docs/extend/mcp",
+        "observed": "Desktop MCP configuration docs describe Settings > MCP servers and a Restart action, plus /mcp to view connected servers.",
+        "limit": "Plugin-managed entry/action behavior was not observed in this installed app."
+      },
+      {
+        "url": "https://learn.chatgpt.com/docs/app-server",
+        "observed": "config/mcpServer/reload reloads MCP configuration and queues refresh for loaded threads.",
+        "limit": "No matching exposed tool; no RPC transport opened or mutation sent. It could affect loaded threads."
+      }
+    ],
+    "refresh_executed": false,
+    "whole_app_restart": false,
+    "new_chat_created": false,
+    "reason": "Only read-only refresh investigation was authorized; preserve concurrent sessions/runtime/config/cache."
+  },
+  "planned_labels": [
+    "Client",
+    "Application \u0e41\u0e2d\u0e1b\u0e1e\u0e25\u0e34\u0e40\u0e04\u0e0a\u0e31\u0e19",
+    "Database \u0e10\u0e32\u0e19\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25"
+  ],
+  "work_only_remaining_proof": [
+    "Owner-visible confirmation of the OTHER ChatGPT Work page/mode and its exact selected local execution/host mode and app version.",
+    "Enable/select this same local-marketplace plugin in that Work mode and invoke real tools there; first get_runtime_info must report alpha.2/Darwin/native.",
+    "Render the three literal English/Thai labels using actual Work plugin calls, safely reject invalid input, read all five artifacts, and verify returned bytes/checksums against exported files.",
+    "Observe PNG preview and readable English/Thai labels inside that Work UI and actual retrieval/download of PNG, SVG, JSON, DOT and manifest from that same run.",
+    "Record host/UI screenshots or owner-observed evidence and source bundle paths/hashes without credentials. No Codex/SDK/direct-script result substitutes for these Work observations."
+  ],
+  "limitations": [
+    "Native live render/export cannot proceed until this connection reports alpha.2/Darwin/native.",
+    "No SDK/direct-script/CLI fallback was used or presented as a live plugin pass.",
+    "No native PNG/SVG copies or bundle exist for this follow-up.",
+    "S04/M0 remains open."
+  ],
+  "mutation_scope": {
+    "new_files": [
+      "/Users/visarut.pha/Documents/source/easybuy/mingrammer-diagram/doc/project-management/evidence/S04-native-live-host-check.md",
+      "/Users/visarut.pha/Documents/source/easybuy/mingrammer-diagram/doc/project-management/evidence/S04-native-live-host-proof.json"
+    ],
+    "tracked_files_changed": false,
+    "historical_alpha1_evidence_changed": false,
+    "runtime_state_changed": false,
+    "plugin_cache_changed_by_agent": false,
+    "setup_run": false,
+    "config_or_versions_changed": false,
+    "branch_worktree_commit_push_merge_deploy_upload": false,
+    "other_chats_messaged": false
+  },
+  "next_verification_gate": "After an owner-managed supported refresh or fresh/reloaded local session, require live alpha.2/Darwin/native before dependent tests. Target Work acceptance is separately required in the OTHER Work mode/page.",
+  "agent_error": {
+    "error": "First evidence-write orchestration had JavaScript SyntaxError: Unexpected token '{'.",
+    "effect": "The JavaScript cell failed to parse before execution; it wrote no files or mutations.",
+    "resolution": "Reissued a corrected evidence writer."
+  },
+  "final_validation": {
+    "checked_at": "2026-11-02T00:33:03.890967+07:00",
+    "frozen_head_and_branch_match": true,
+    "all_65_tracked_files_unchanged": true,
+    "historical_evidence_unchanged": true,
+    "native_state_unchanged": true,
+    "cache_files_unchanged_since_readonly_snapshot": true,
+    "markdown_ascii_with_unicode_escaped_labels": true,
+    "only_two_evidence_files_authored": true,
+    "native_artifacts_created": 0
+  }
+}

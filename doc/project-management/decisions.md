@@ -19,6 +19,7 @@ Updated: 2026-11-02 | Status: Joint-planning record; D-013 selects per-machine l
 | D-011 | Add a separate runner for this repository on the existing Mac, commit/push the documentation and workflow to the private repository, and execute the real preflight job | Explicit owner selection on 2026-11-01; authorizes the P-014 setup and initial publication/test, without changing other projects' registrations |
 | D-012 | Historical central-server direction, superseded by D-013 | Initial S04 owner selection on 2026-11-01; no hosting was provisioned |
 | D-013 | Install the renderer/runtime on each machine using the plugin; supersede D-012 central hosting and use the desktop/local execution route for the first proof | Explicit owner correction on 2026-11-01 replacing the assumption of a free public renderer with per-machine installation; no hosted renderer is required |
+| D-014 | The first-release target is the separate ChatGPT Work mode/page, not Codex in the app. Codex runtime tests do not replace actual Work invocation/preview/export evidence. | Explicit owner clarification on 2026-11-02; owner also confirmed the plugin is visible/selectable in Work |
 
 ## Recommendations and disposition
 
@@ -26,7 +27,7 @@ Updated: 2026-11-02 | Status: Joint-planning record; D-013 selects per-machine l
 |---|---|---|
 | P-001 | Canonical JSON + taxonomy + provider catalogs + controlled renderer; wrap upstream first | Retains semantics and portability; freeze contract in M1 |
 | P-002 | Installable plugin with a bundled workflow skill and renderer tools | Product structure retained; D-013 replaces the original remote-service recommendation with local runtime installation. |
-| P-003 | Local stdio MCP on each supported desktop, with per-machine installer/preflight | Selected route under D-013; Alpha.2 uses native Python/Graphviz with a direct script and stdio; the earlier Docker runtime is historical. Actual Work behavior remains pending. |
+| P-003 | Local stdio MCP on each supported desktop, with per-machine installer/preflight | Selected route under D-013; Alpha.3 uses native Python/Graphviz with a direct script and stdio; the earlier Docker runtime is historical. The owner reports Work alpha.3/Darwin, a visible PNG and five files. |
 | P-004 | Sol implementation, Astra separate code review; deterministic CI, no mandatory model API in renderer | Balance repeatable development with deeper review; detailed policy in model strategy |
 | P-005 | Quality gate pipeline starts in M1 and expands through M5 | Catch schema, semantics, asset-rights, render and adapter failures at their introduction |
 | P-006 | Strict final output; lenient mode only for disclosed draft fallback | Never downgrade structural/security errors or known invalid placement |
@@ -40,7 +41,7 @@ Updated: 2026-11-02 | Status: Joint-planning record; D-013 selects per-machine l
 | P-014 | Add a separate repository-scoped macOS ARM64 runner on the existing Mac, with custom label `mingrammer-macos-arm64` | Accepted as D-011 and implemented: runner ID 2, v2.338.2, separate LaunchAgent, labels verified; initial tree published and two real jobs passed. S03 records the transient broker/offline observation and final online/idle snapshot. |
 | P-015 | Historical Linux-container runtime candidate | Alpha.1 SDK/live Codex Desktop evidence is retained. Docker was an implementation choice, not a user requirement; P-017 is the new native default. |
 | P-016 | Historical proposal to evaluate GCP Cloud Run | Retired by D-013. No cloud-hosting inputs, deployment, remote OAuth or public renderer are required for the selected route. |
-| P-017 | Native private Python environment + system Graphviz, with direct script and stdio interfaces | Implemented in alpha.2 after the owner questioned Docker and requested continuation. No required Docker/server. Native checks pass; exact Work mode, fresh native review and final production limits remain pending. |
+| P-017 | Native private Python environment + system Graphviz, with direct script and stdio interfaces | Introduced in alpha.2 and hardened in alpha.3 after the owner questioned Docker and requested continuation. No required Docker/server. Native checks and owner-reported Work feasibility pass; final re-review and production limits remain pending. |
 
 P-015 is historical. P-017 is the current native implementation default, not proof of every OS or final product limits. P-002's plugin structure remains; P-003's local route is selected by D-013. P-009/P-010 are resolved by D-007/D-008 with D-009's detailed-Kubernetes correction.
 
@@ -50,13 +51,13 @@ P-011/P-013 are source recommendations, not user decisions or packaging clearanc
 
 | ID | Question | Working assumption / next action | Needed by |
 |---|---|---|---|
-| O-001 | Which Work execution modes satisfy the cross-machine plugin requirement? | D-013 selects local per-machine installation; prove Work Desktop/local tool invocation, preview and export. SDK/cache checks do not prove actual Work behavior. | M0-02 |
+| O-001 | Which Work execution modes satisfy the cross-machine plugin requirement? | D-013 selects local per-machine installation; D-014 confirms the separate Work page. Owner reports alpha.3/Darwin, PNG preview and five files. S04 supports the tested macOS local Work route; cloud-only/other-OS modes are unverified. | M0-02 |
 | O-002 | Which Huawei icon source/version and redistribution terms are acceptable? | LATAM v3.2 / commit 52c33aa12fb816a5de403da85067e1c0f039b5be covers 17 named items technically. The user supplied JuanDiaz00's 155-PNG alternative, whose README names VeryIcon; that site claims free personal/commercial use, but source-asset plugin redistribution remains unestablished in audited evidence. No source is adopted/cleared and no permission request was sent. | M2-03/package release |
 | O-003 | Which exact product variants/type IDs implement the minimum catalog? | Retain the five environments and named inventory, plus detailed Kubernetes kinds under D-009/FR-018/FR-029. M2 freezes cloud/platform variants, API versions and IDs against current documentation. | M2-01/M2-06 |
 | O-004 | Which exact rendered examples establish visual acceptance? | Direction resolved as D-008: white/provider-icon visuals close to each provider's published conventions. Six briefs and official source entry points are prepared; actual image comparison/acceptance remains M4/M6 work (FR-048/T-016). | M4-03/M6 |
 | O-005 | Which runner is eligible for this repository, with which trust/visibility policy? | Resolved by D-011 and S03: private repository; owner-only manual workflow on `main`; separate runner ID 2, v2.338.2, project label and actual service environment verified by two successful jobs. The current plan lacks server-enforced required checks; retain manual merge/release discipline and recheck availability before future jobs. | Resolved in S03 / M0-04 |
 | O-006 | Which hosting destination/project/region/budget is needed? | Retired: D-013 supersedes central hosting. No owner hosting answer or cloud deployment is needed. Per-machine prerequisites are implementation evidence under O-001. | Closed by scope change |
-| O-007 | Which versions/fonts/isolation and numeric limits are practical? | Native alpha.2 tests Python 3.13.7, diagrams 0.25.1, Graphviz 16.1.0, SDK 2.3.0 and bundled Noto fonts on macOS ARM64. CPU/file/wall limits and sampled RSS/scratch controls pass targeted checks; full production/Work bounds remain open. Historical container quotas do not apply to native execution. | M0-05/M1 |
+| O-007 | Which versions/fonts/isolation and numeric limits are practical? | Native alpha.3 tests Python 3.13.7, diagrams 0.25.1, Graphviz 16.1.0, SDK 2.3.0 and bundled Noto fonts on macOS ARM64. CPU/file/wall limits and sampled RSS/scratch controls pass targeted checks; full production bounds remain open; Work feasibility is owner-confirmed. Historical container quotas do not apply to native execution. | M0-05/M1 |
 | O-008 | What architecture granularity is required in release 1? | Resolved by D-007/D-009: solution architecture overall with detailed Kubernetes views. Existing required items such as Azure NIC remain in scope. | Resolved in S01 |
 
 Proposed numeric limits are not benchmarks or implemented guarantees. The reference host and actual Work transport/request limits may require lower limits or a later asynchronous job design.
@@ -69,7 +70,7 @@ S02 follow-up: [additional Huawei source and draw.io mappings](evidence/S02-addi
 
 ## Source reconciliation
 
-Input: `cloud-architecture-diagram-plugin-requirements.md`, document CADP-REQ-001 v1.1, supplied from the owner's Downloads folder. This repository's revision 0.8 is a planning baseline, not evidence of a v1.1 implementation release. Revision 0.2 added cross-machine delivery, revision 0.3 initial S01 depth/style, revision 0.4 detailed Kubernetes, revision 0.5 draw.io-type on-premises mappings under D-010/FR-014, revision 0.6 the historical central-server target under D-012, and revision 0.7 the superseding local-install route under D-013, and revision 0.8 the native default/direct-script clarification. These do not approve source-asset rights.
+Input: `cloud-architecture-diagram-plugin-requirements.md`, document CADP-REQ-001 v1.1, supplied from the owner's Downloads folder. This repository's revision 0.9 is a planning baseline, not evidence of a v1.1 implementation release. Revision 0.2 added cross-machine delivery, revision 0.3 initial S01 depth/style, revision 0.4 detailed Kubernetes, revision 0.5 draw.io-type on-premises mappings under D-010/FR-014, revision 0.6 the historical central-server target under D-012, and revision 0.7 the superseding local-install route under D-013, revision 0.8 the native default/direct-script clarification, and revision 0.9 the explicit separate Work-mode target (D-014). These do not approve source-asset rights.
 
 Source fingerprint: SHA-256 `af3fd7fe7ff0d6b0b6da937839833bb4fc17b68bcc74f41581865ed1358ad3ee` (575 lines, read on 2026-10-31). The attached file remains unchanged. The baseline is self-contained; another machine does not need the Downloads path. No duplicate normative copy is maintained.
 
@@ -78,7 +79,7 @@ Source fingerprint: SHA-256 `af3fd7fe7ff0d6b0b6da937839833bb4fc17b68bcc74f415818
 | Sections 1–4, 11–12: goals, functional/non-functional scope, acceptance | Consolidated in requirements sections 1–4 and 7–8; retain original FR/NFR/T IDs where applicable |
 | Sections 2, 5–8: taxonomy, provider mappings, separate placement dimensions | Retained as proposed core design in requirements sections 3, 5–6; “accepted” labels are not carried forward as approvals |
 | Section 8 illustrative JSON | Not declared executable schema; M1 chooses consistent reference fields and validates fixtures |
-| Sections 9–10: local default, platform wrappers, repository structure | D-013 selects per-machine local installation and supersedes D-012; actual local Work capability proof remains pending; use requested `doc` paths |
+| Sections 9–10: local default, platform wrappers, repository structure | D-013 selects per-machine local installation and supersedes D-012; actual local Work feasibility is owner-confirmed; use requested `doc` paths |
 | Section 13: broad phases and late platform integration | Replaced with M0–M6 and early runtime proof; complete Work integration is part of release 1 |
 | Sections 14–15: risks/open decisions and recommendation | Converted into open decisions, milestone exit evidence and pipeline checks |
 | FR-008/028/045/046/047/055, NFR-009/010/011 | Promoted applicable source/view/label/control/limit/version/discovery/CI behavior to P0; optional automation/expansion remains P1 |
@@ -91,7 +92,7 @@ Source fingerprint: SHA-256 `af3fd7fe7ff0d6b0b6da937839833bb4fc17b68bcc74f415818
 | S02 user follow-up: Huawei alternative and draw.io-type on-premises symbols | Assess the alternative without assuming rights/complete coverage; resolve the eight generic symbol concepts under D-010 while retaining source/attribution checks |
 | S04 owner correction: per-machine local installation | D-013 supersedes D-012. Update FR-060/064/066 and T-010/011 for local installation/preflight; retire hosting inputs and retain actual Work proof. |
 
-S04 result: [runtime investigation](evidence/S04-runtime-and-hosting.md). Historical loopback HTTP checks are retained as research; the current deliverable is a native local plugin pilot with direct script execution, optional stdio MCP and per-machine setup. Requirements are revision 0.8. Actual Work proof, second-machine release acceptance and separate Astra review remain pending; M0-02/M0-05 are not closed.
+S04 result: [runtime investigation](evidence/S04-runtime-and-hosting.md). Historical loopback HTTP checks are retained as research; the current deliverable is a native local plugin pilot with direct script execution, optional stdio MCP and per-machine setup. Requirements are revision 0.9. Actual Work feasibility is owner-confirmed; second-machine release acceptance and final alpha.3 re-review remain pending; M0-02/M0-05 are not closed.
 
 ## Current verification and sources
 
@@ -103,7 +104,7 @@ Historical planning checks on 2026-10-31 (repository/runner facts superseded by 
 - The inspected upstream `diagrams/` directory has AWS/Azure/GCP/onprem/custom entries and no Huawei entry. Snapshot reference: [upstream commit 8c1446f](https://github.com/mingrammer/diagrams/commit/8c1446fbfa4a8d88e5c7bca7101ddc5af7933379). This is research evidence, not the selected dependency pin. Recheck the selected release in M0/M2.
 - [Upstream license](https://github.com/mingrammer/diagrams/blob/8c1446fbfa4a8d88e5c7bca7101ddc5af7933379/LICENSE) is MIT. This does not establish third-party icon redistribution rights.
 
-S03 checks on 2026-11-01: [runner/service evidence](evidence/S03-repository-runner-preflight.md) and [actual jobs](evidence/S03-runner-job.json). Under D-011, runner ID 2 was installed, initial tree pushed to main and two jobs passed. Existing seven services stayed loaded; transient broker/offline recovery and the plan limitation were recorded. Those service jobs found no host Graphviz. S04 subsequently installed Graphviz/fonts inside isolated local images; product gate/Work/model-review evidence remains pending.
+S03 checks on 2026-11-01: [runner/service evidence](evidence/S03-repository-runner-preflight.md) and [actual jobs](evidence/S03-runner-job.json). Under D-011, runner ID 2 was installed, initial tree pushed to main and two jobs passed. Existing seven services stayed loaded; transient broker/offline recovery and the plan limitation were recorded. Those service jobs found no host Graphviz. S04 first tested isolated images, then installed native Graphviz 16.1.0 and bundled fonts. The later runner preflight passed with dot on its PATH; Work feasibility is owner-confirmed. Product gates and final alpha.3 re-review remain pending.
 
 Platform sources read for planning:
 

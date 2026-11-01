@@ -10,13 +10,18 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import signal
+import shutil
+import selectors
+import time
+from unittest.mock import patch
 import zipfile
 from mcp import Client, StdioServerParameters
 from artifact_store import ArtifactStore, FILES, MAX_FILE
-from execution import execute, POLICY
+from execution import execute, POLICY, directory_bytes
 
 HERE = Path(__file__).resolve().parent
-VERSION = '0.1.0-alpha.2'
+VERSION = '0.1.0-alpha.3'
 NAME = 'cloud-architecture-diagrams'
 INSTALLED = Path.home() / '.codex/plugins/cache/mingrammer-local' / NAME / VERSION
 ARCHIVE = HERE / 'output' / (NAME + '-' + VERSION + '.zip')
@@ -146,8 +151,102 @@ def resource_regressions():
     return passed
 
 
+def shutdown_regressions():
+    state = json.loads((Path.home() / '.local/share/cloud-architecture-diagrams' / (VERSION + '.json')).read_text())
+    sys.path.insert(0, str(INSTALLED / 'scripts'))
+    from common import environment
+    passed = []
+    helper = r"""
+import json,os,pathlib,signal,subprocess,sys,threading,time
+import execution,local_server
+marker=pathlib.Path(sys.argv[1]);mode=sys.argv[2]
+real_popen=subprocess.Popen
+if mode=='spawn':
+    def during_spawn(*args,**kwargs):
+        process=real_popen(*args,**kwargs)
+        marker.write_text(json.dumps({'pid':process.pid,'scratch':kwargs['env']['TEST_SCRATCH']}))
+        os.kill(os.getpid(),signal.SIGTERM)
+        return process
+    execution.subprocess.Popen=during_spawn
+
+def slow(command,payload,env,scratch):
+    env={**env,'TEST_SCRATCH':scratch}
+    program='import json,os,pathlib,sys,time;pathlib.Path(sys.argv[1]).write_text(json.dumps({"pid":os.getpid(),"scratch":sys.argv[2]}));time.sleep(30)'
+    return execution.execute([sys.executable,'-c',program,str(marker),scratch],payload,env,scratch)
+local_server.execute=slow
+
+def work():
+    local_server.render_fixture(local_server.FixtureRequest(labels=['a','b','c']))
+if mode in ('mcp','eof'):
+    local_server.serve()
+elif mode=='thread':
+    threading.Thread(target=work,daemon=True).start()
+    while True:time.sleep(.1)
+else:work()
+"""
+    with tempfile.TemporaryDirectory(prefix='s04-shutdown-') as raw:
+        base = Path(raw).resolve()
+        for mode, signum in [('main', signal.SIGTERM), ('thread', signal.SIGTERM), ('thread', signal.SIGINT), ('spawn', signal.SIGTERM), ('mcp', signal.SIGTERM), ('eof', None)]:
+            marker = base / (mode + '-' + str(signum) + '.json')
+            env = environment(state); env['PYTHONPATH'] = str(INSTALLED / 'runtime')
+            process = subprocess.Popen([state['python'], '-B', '-c', helper, str(marker), mode], env=env,
+                                       stdin=subprocess.PIPE if mode in ('mcp','eof') else subprocess.DEVNULL,
+                                       stdout=subprocess.PIPE if mode in ('mcp','eof') else subprocess.DEVNULL,
+                                       stderr=subprocess.DEVNULL, start_new_session=True)
+            record = None
+            try:
+                if mode in ('mcp','eof'):
+                    from mcp.client.session import LATEST_HANDSHAKE_VERSION
+                    def send(message):
+                        process.stdin.write((json.dumps(message)+'\n').encode());process.stdin.flush()
+                    send({'jsonrpc':'2.0','id':1,'method':'initialize','params':{'protocolVersion':LATEST_HANDSHAKE_VERSION,'capabilities':{},'clientInfo':{'name':'s04-shutdown-check','version':'1'}}})
+                    with selectors.DefaultSelector() as selector:
+                        selector.register(process.stdout,selectors.EVENT_READ)
+                        assert selector.select(timeout=10), 'MCP initialize timed out'
+                        response=json.loads(process.stdout.readline());assert response.get('id')==1 and 'result' in response,response
+                    send({'jsonrpc':'2.0','method':'notifications/initialized'})
+                    send({'jsonrpc':'2.0','id':2,'method':'tools/call','params':{'name':'render_fixture','arguments':{'request':{'labels':['a','b','c']}}}})
+                deadline = time.monotonic() + 10
+                while time.monotonic() < deadline:
+                    try:record = json.loads(marker.read_text());break
+                    except (OSError,ValueError):
+                        if process.poll() is not None:break
+                        time.sleep(.02)
+                assert record is not None, ('helper did not start controlled worker', mode, process.poll())
+                if mode=='eof':process.stdin.close()
+                elif mode != 'spawn':process.send_signal(signum)
+                assert process.wait(timeout=8) == (0 if mode=='eof' else 128 + signum), ('wrong shutdown status', mode, process.returncode)
+                status = subprocess.run(['/bin/ps','-o','stat=','-p',str(record['pid'])],capture_output=True,text=True)
+                assert not status.stdout.strip() or status.stdout.strip().startswith('Z'), ('renderer survived', mode)
+                assert not Path(record['scratch']).exists(), ('scratch survived', mode)
+                passed.append(mode + ':' + ('EOF' if signum is None else signal.Signals(signum).name))
+            finally:
+                if record:
+                    try:os.killpg(record['pid'],signal.SIGKILL)
+                    except ProcessLookupError:pass
+                    scratch = Path(record['scratch'])
+                    expected = Path(state['python']).parents[2] / 'tmp'
+                    if scratch.parent == expected and scratch.name.startswith('request-'):
+                        shutil.rmtree(scratch,ignore_errors=True)
+                if process.poll() is None:
+                    process.kill();process.wait(timeout=5)
+    return passed
+
+
+def deleted_file_regression():
+    with tempfile.TemporaryDirectory(prefix='s04-snapshot-') as raw:
+        root=Path(raw).resolve();transient=root/'removed';transient.write_bytes(b'x')
+        survivor=root/'retained';survivor.write_bytes(b'abc')
+        transient.unlink()
+        # The file existed when enumerated and disappeared before lstat.
+        with patch.object(Path,'rglob',return_value=iter([transient,survivor])):
+            assert directory_bytes(root)==3
+    return 'deleted intermediate ignored; retained file still counted'
+
+
 async def main():
     paths = path_regressions(); resources = resource_regressions()
+    shutdown = shutdown_regressions(); deleted = deleted_file_regression()
     with tempfile.TemporaryDirectory(prefix='s04-no-docker-') as raw:
         folder = Path(raw); marker = folder / 'called'
         fake = folder / 'docker'; fake.write_text('#!/bin/sh\ntouch "' + str(marker) + '"\nexit 99\n'); fake.chmod(0o700)
@@ -157,6 +256,8 @@ async def main():
         direct = bundle(json.loads(result.stdout)); assert not marker.exists()
         too_large = subprocess.run([sys.executable, '-B', str(INSTALLED / 'scripts/render.py')], input=b'x' * (1024 ** 2 + 1), env=environment, capture_output=True)
         assert too_large.returncode == 2 and b'S04_INPUT_LIMIT' in too_large.stderr
+    oversize = subprocess.run([sys.executable,'-B',str(INSTALLED/'scripts/launch.py')], input=b'x'*(1024**2+1), capture_output=True,timeout=10)
+    assert oversize.returncode==1, 'MCP frame limit not enforced'
     installed = await mcp_check(INSTALLED)
     with tempfile.TemporaryDirectory(prefix='S04 native relocated ') as raw:
         with zipfile.ZipFile(ARCHIVE) as z:z.extractall(raw)
@@ -164,7 +265,7 @@ async def main():
     proof = {'recorded_at': datetime.now(ZoneInfo('Asia/Bangkok')).isoformat(), 'plugin_version': VERSION, 'scope': 'native macOS S04 pilot',
              'direct_script': direct, 'docker_invocation': 'not_used; failing Docker shim and remote DOCKER_HOST did not affect render',
              'installed_mcp': installed, 'relocated_zip_mcp': relocated, 'path_regressions': paths,
-             'resource_regressions': resources, 'cli_input_limit': 'passed',
+             'resource_regressions': resources, 'shutdown_regressions': shutdown, 'deleted_file_regression': deleted, 'cli_input_limit': 'passed', 'mcp_frame_limit': 'passed',
              'archive': {'path': str(ARCHIVE), 'sha256': checksum(ARCHIVE.read_bytes())},
              'actual_chatgpt_work_mode': 'not_tested', 'independent_native_source_review': 'pending', 'second_physical_machine': 'not_tested'}
     target = HERE / 'output/native-proof.json'; target.write_text(json.dumps(proof, indent=2) + '\n')
