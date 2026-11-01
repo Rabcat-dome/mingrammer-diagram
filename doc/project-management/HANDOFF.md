@@ -8,7 +8,7 @@ Build a personal Work-first architecture plugin for AWS/Azure/GCP/Huawei/on-prem
 
 D-013 selects installation on every machine and supersedes central hosting. After the owner questioned Docker, the implementation default became **native Python + Graphviz**, with a direct script command and optional stdio MCP helper. Docker is not required. MCP stdio is a local process interface, not a central/listening server. Do not reopen provider/project/region/budget questions or require a renderer/model API key.
 
-Branch: `codex/s04-runtime-proof`. The alpha.1 review covered base `afbaccad87019d35bff12d335ec534166752f0bf` through `720831733bdb99061f62f7d509d95a65aa7f748b`; native source is newer. Verify HEAD before review.
+Branch: `codex/s04-runtime-proof`. The alpha.1 review covered base `afbaccad87019d35bff12d335ec534166752f0bf` through `720831733bdb99061f62f7d509d95a65aa7f748b`; native source is newer. Native source checkpoint: `b5524a916d36256335ccfe6c1f1ecc3f2ed4e31d`. Verify final HEAD before review.
 
 ## Read order
 
