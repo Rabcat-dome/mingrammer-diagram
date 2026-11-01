@@ -1,12 +1,12 @@
 # Quality Gate and Self-Hosted Runner Plan
 
-Updated: 2026-11-01 | Status: Product quality gate remains proposed. The D-011 separate runner is installed/online; manual workflow publication and its real job are in progress.
+Updated: 2026-11-01 | Status: Product quality gate remains proposed. S03 runner/service setup and two actual manual preflight jobs passed; M0-04 complete.
 
 ## Recommendation
 
 **Yes: implement a GitHub Actions quality gate, starting in M1 and expanding with each component.** This project combines AI-authored input, provider-specific semantics, external icon assets and Graphviz output. Automated validation catches repeatable failures; diagram inspection and recorded code review cover meaning and usability.
 
-The [S03 investigation](evidence/S03-repository-runner-preflight.md) verified private repository/admin access and enabled Actions, but zero eligible runners. Seven loaded runner services on this Mac belong to other repositories. D-011 authorized a separate repository-scoped Mac ARM64 registration with project label `mingrammer-macos-arm64`. Runner ID 2, `macbook-pro-m2-max-mingrammer`, version 2.338.2, is installed as a LaunchAgent and online. `dot` is absent from current shell and all seven cached runner PATH lookups. A real job must verify the new service environment.
+The [S03 evidence](evidence/S03-repository-runner-preflight.md) verifies private/admin access, Actions enabled and the D-011 separate runner `macbook-pro-m2-max-mingrammer` (ID 2, v2.338.2) installed as a LaunchAgent. Its `mingrammer-macos-arm64` label and actual service environment were confirmed by two successful jobs. `dot` is absent on the real job PATH; Graphviz/font/render proof remains S04. One transient offline/broker-timeout observation recovered without a restart, followed by a successful second dispatch. Recheck current availability before future jobs.
 
 The current private repository's rulesets/protection endpoints return 403 requiring an account-plan change. CI can run and report failures, but server-enforced required checks are unavailable at this snapshot. Until capability changes, use a manual policy: review the exact commit, require applicable CI results and record review before merge/release. Do not describe this as bypass-resistant enforcement. No plan purchase or visibility change is proposed as a prerequisite to continuing development.
 
@@ -40,15 +40,15 @@ Activate catalog/renderer checks as mandatory before merging their implementatio
 
 GitHub's [runner requirements](https://docs.github.com/en/actions/reference/runners/self-hosted-runners) require Linux plus Docker for Docker container actions/service containers. Prefer native jobs for a verified macOS runner. The [GitHub secure-use guide](https://docs.github.com/en/actions/reference/security/secure-use) explains persistent self-hosted runner risks and least-privilege workflow controls. These recommendations are directly relevant to code execution on the owner's machine.
 
-## Required preflight (M0-04)
+## Completed preflight (M0-04)
 
-1. Repository/API investigation completed in S03: private, CLI admin access, Actions enabled, no eligible runners. The connector's 404 is an access limitation.
-2. D-011 registration completed: repository-scoped runner ID 2, version 2.338.2, online/idle and labels verified. Recheck these before dispatch. Do not reuse another repository's custom labels.
-3. On the actual runner service account, verify Python, installer, Graphviz, fonts, filesystem permissions, free space and PATH. S03 inspected existing services/cached paths only; the new job environment is unproved.
-4. Publish and run the prepared [runner-preflight workflow](../../.github/workflows/runner-preflight.yml) using the S03 activation sequence. It deliberately reports rendering/product checks as unexecuted; successful scheduling is not a product-gate pass. Add a tiny render when S04 tooling exists.
-5. Reconcile the workflow and [actionlint custom-label configuration](../../.github/actionlint.yaml) with the actual registration. The configured labels `self-hosted`, `macOS`, `ARM64`, `mingrammer-macos-arm64` are verified by API; real-job evidence remains pending.
+1. Private/admin access and enabled Actions verified via CLI; connector access remains unavailable.
+2. D-011 separate registration verified: runner ID 2, v2.338.2, native Mac ARM64, exact project labels, LaunchAgent installed/started. All seven previous services remain loaded.
+3. Two actual service jobs verified user/PATH, Python 3.13.7, uv 0.13.0, Git/actionlint and temporary write/read/cleanup. Graphviz is missing; system font candidates are not a reproducible/rendered font selection.
+4. [Published preflight workflow](../../.github/workflows/runner-preflight.yml) passed twice at `5c3859b4a865c3e65fc6ed80a389ec8f8a32182e`; [job metadata/reports](evidence/S03-runner-job.json) include tested SHA, workflow digest and actual runner identity. The reports explicitly state rendering/product checks were not executed.
+5. [Actionlint labels](../../.github/actionlint.yaml) match API and job evidence: `self-hosted`, `macOS`, `ARM64`, `mingrammer-macos-arm64`. S03 documents the transient availability observation and current-plan enforcement limitation.
 
-The owner authorized the new project registration/service and initial commit/push/test as D-011. Existing registrations and repository settings were preserved; renderer dependencies were not installed. M0-04 remains incomplete until actual job evidence exists. The manual preflight uses no checkout or third-party actions and needs no repository token permissions; it is separate from the proposed M1 product gate.
+M0-04 is complete. Existing registrations/settings were preserved; renderer dependencies were not installed. The manual preflight uses no checkout or third-party actions and zero repository token permissions. M1 still must implement and execute the product quality gate; a preflight success is not evidence of schema, provider, asset, renderer or plugin correctness.
 
 ## Workflow controls
 

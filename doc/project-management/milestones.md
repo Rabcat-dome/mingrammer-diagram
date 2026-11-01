@@ -1,6 +1,6 @@
 # Milestones and Work Breakdown
 
-Updated: 2026-11-01 | Status: S01/M0-01 and S02/M0-03 research complete; S03 runner installed/online, publication/job and runtime proof pending. Huawei packaging rights remain unresolved.
+Updated: 2026-11-01 | Status: S01/M0-01, S02/M0-03 research and S03/M0-04 complete; S04 runtime proof next. Huawei packaging rights remain unresolved.
 
 Source of scope: [requirements](../requirements/requirements.md). Model abbreviations and review rules: [model strategy](model-strategy.md). Quality check definitions: [quality gate](quality-gate.md).
 
@@ -22,14 +22,14 @@ M0 investigates the Work execution route before core development. M5 delivers th
 
 ## M0 — Scope and feasibility
 
-Status: In progress; S01/S02 complete. S03 verified repository access and zero eligible runners, prepared a local workflow and recorded the plan-enforcement limitation. D-011 authorized setup/publication/testing and the separate runner is online; job and runtime proof remain pending; Huawei permission evidence remains open for packaging. Implementation: Sol/High for the technical spike; review: Astra/High for architecture/runtime decisions.
+Status: In progress; S01-S03 complete. S03 installed the separate runner and passed two actual service jobs at the initial published SHA; Graphviz absence and the GitHub plan-enforcement limitation are recorded. Runtime/Work proof and version/font/isolation/limit selection remain S04. Huawei permission evidence remains open for packaging. Implementation: Sol/High for the technical spike; review: Astra/High for architecture/runtime decisions.
 
 | Task | Work | Dependency / output |
 |---|---|---|
 | M0-01 | Jointly refine scope, catalog breadth, and six representative diagrams | S01 scope planning complete: D-007/D-008/D-009 confirmed, detailed Kubernetes included, [six working briefs](evidence/S01-release-scope.md) prepared; rendered acceptance remains M4/M6 |
 | M0-02 | Compare execution routes against cross-machine plugin delivery; prove a supported Work mode can invoke a minimal controlled renderer and retrieve an SVG/PNG | Confirmed portability goal -> route recommendation with runtime/setup trade-offs and actual install/discovery/call/download evidence |
 | M0-03 | Investigate Huawei icon sources and terms; inventory upstream on-premises gaps | S02 research complete: [rights matrix/gaps](evidence/S02-icon-sources-and-rights.md) and source inventory; Huawei redistribution evidence still open, no extracted assets bundled |
-| M0-04 | Verify repository access/visibility, runner assignment, OS/arch/labels, service PATH and tooling | [S03 investigation](evidence/S03-repository-runner-preflight.md) complete: private/admin access, zero eligible runners, workflow checked locally; D-011 runner registration/labels verified online, publication and actual service job pending |
+| M0-04 | Verify repository access/visibility, runner assignment, OS/arch/labels, service PATH and tooling | Complete: [S03 runner/service evidence](evidence/S03-repository-runner-preflight.md), two successful actual jobs at `5c3859b4a865c3e65fc6ed80a389ec8f8a32182e`; missing Graphviz and availability/enforcement limitations recorded |
 | M0-05 | Select Python/diagrams/Graphviz/font versions, isolation strategy and numeric limits | Runtime spike -> version/limit decision; reference benchmark host |
 
 Exit: selected deployment route has real Work evidence; feasibility blockers and proposed fallback are recorded; runner evidence is current; scope is ready for implementation. Documentation alone does not satisfy M0-02 through M0-05.
@@ -43,7 +43,7 @@ Status: Not started. Implementation: Sol/High; review: Astra/High.
 | M1-01 | Bootstrap Python package, lockfile, CLI shell, development setup | M0-05 -> clean install and tool/version report |
 | M1-02 | Implement architecture schema, model, strict/lenient error policy and diagnostics, including Kubernetes cluster/namespace/ownership/placement references | M0-01 -> versioned schema, valid/invalid fixtures; FR-001..006/018/029 |
 | M1-03 | Implement ID/reference/cycle checks and view selection validation, including Kubernetes scope/placement separation | M1-02 -> T-008/T-017; ownership/attachment dimensions stay independent |
-| M1-04 | Add documentation/static/schema/secret checks and aggregate CI result | M0-04 + working local commands -> first actual runner job and captured SHA |
+| M1-04 | Add documentation/static/schema/secret checks and aggregate CI result | M0-04 + working local commands -> first actual product quality-gate job and captured SHA |
 
 Exit: valid JSON passes, malformed/dangling/cyclic input fails, diagnostic contract is stable, local and runner checks agree. No placeholder green jobs for unimplemented render/package checks.
 

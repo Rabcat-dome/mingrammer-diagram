@@ -1,105 +1,89 @@
 # S03 Repository and Runner Preflight
 
-Date: 2026-11-01 (Asia/Bangkok) | Task: M0-04 | Status: D-011 runner registration/service verified online; initial publication and real-job evidence in progress.
+Date: 2026-11-01 (Asia/Bangkok) | Task: M0-04 | Status: Complete; separate service runner installed and two real preflight jobs passed.
 
-This record supplements the [quality gate plan](../quality-gate.md). Product scope remains [requirements revision 0.5](../../requirements/requirements.md). The initial investigation was read-only. The owner subsequently authorized the additional runner, initial commit/push and actual test under D-011. Setup results below supersede the initial zero-runner snapshot; renderer dependencies and repository settings were not changed.
+The owner explicitly authorized the additional Mac runner, commit/push and real GitHub testing as D-011. This record supplements the [quality gate plan](../quality-gate.md); product scope remains [requirements revision 0.5](../../requirements/requirements.md). Actual job metadata and parsed reports are in [S03-runner-job.json](S03-runner-job.json). Renderer/runtime proof remains S04; a successful preflight does not establish a working product quality gate or Work plugin.
 
-## Repository evidence before authorized setup
+## Repository and trust evidence
 
-| Check | Observed result |
+| Check | Verified result |
 |---|---|
-| Local repository | No commits; README and documentation untracked before S03. No remote branch returned by `git ls-remote --heads origin`. |
-| Remote | `Rabcat-dome/mingrammer-diagram`, owned by a personal user account, private, not archived/disabled; default branch name `main`, but no branch exists yet |
-| Connector access | GitHub connector metadata lookup still returns 404; this is a connector-access limitation, not a missing repository |
-| CLI identity/access | GitHub CLI API identity `Rabcat-dome`; repository permissions include admin/push/pull |
-| Collaborators | API returned only `Rabcat-dome`, role admin, at this snapshot |
-| Actions | Enabled; allowed actions `all`; SHA pinning not required by server settings |
-| Default workflow token | Read permission; PR review approval disabled |
-| Eligible repository runners | Repository runners API returned HTTP 200 with `total_count: 0` and an empty list |
-| Existing workflows | API returned `total_count: 0` |
-| Rulesets / branch protection | Both read endpoints returned HTTP 403 with “Upgrade to GitHub Pro or make this repository public to enable this feature.” No server-enforced required-check rule is established. |
+| Repository / identity | `Rabcat-dome/mingrammer-diagram`, personal-user-owned, private, not archived/disabled; GitHub CLI API identity `Rabcat-dome`, admin/push/pull access |
+| Connector | Metadata lookup returned 404; CLI access independently verified the repository. CLI is the fallback for this private repository. |
+| Initial Git state | No local commits or remote branches; initial runner/workflow lists both empty |
+| Published state | Initial tree pushed to `main` at `5c3859b4a865c3e65fc6ed80a389ec8f8a32182e`; workflow dispatched from that commit |
+| Actions | Enabled; allowed actions `all`; server setting does not require SHA pinning; default workflow token read-only and PR review approval disabled |
+| Collaborators | API returned only owner `Rabcat-dome` at inspection |
+| Test workflow trust | Owner/main-only manual dispatch, `permissions: {}`, no checkout, third-party actions, installs or network calls in the probe script; five-minute job timeout and project concurrency group |
+| Rulesets / protection | Both API reads returned 403 requiring a plan change for this private repository. Server-enforced required checks are not established. |
 
-Commands used include `gh api user`, repository metadata/collaborators/branches, `actions/permissions`, `actions/permissions/workflow`, `actions/runners`, `actions/workflows`, `rulesets` and `branches/main/protection`. Only selected non-secret fields were recorded. Authentication credentials were not read into project files.
+CI can execute and report results with the current plan. Until repository capabilities change, review the exact commit, require applicable results and record review before manual merge/release. This policy does not technically prevent bypass. No repository visibility, account plan, Actions settings or other repository settings were changed. Future PR execution must retain the trusted/untrusted lanes in the quality-gate plan.
 
-The ruleset/protection response is a current feature-availability limitation. CI can still execute and report failures. Until account/repository capabilities change, merging must follow a documented manual check policy; a passing Actions status alone does not technically prevent bypass. Keep the repository private. Do not change visibility or buy a plan as an incidental CI fix.
+## Installed runner and service
 
-## Existing machine and runner scope
-
-Seven loaded LaunchAgent services were found, each configured for a different repository: `Assess-Management`, `Zensical-from-MKDocs`, `azimutt-mod`, `java-migration`, `openmetadata-for-migration`, `rule-engine`, and `structurizr`. Their selected `.runner` metadata and cached `.path` files were inspected; credential files were not opened. UTF-8 BOM handling was needed for the metadata reader and corrected without changing the runner files.
-
-As a representative live API check, `Rabcat-dome/Assess-Management` has runner `macbook-pro-m2-max` (ID 21), online and idle at observation, version 2.338.0, labels `self-hosted`, `macOS`, `ARM64`, `ams-macos-arm64`. Its local listener also reports version 2.338.0. This registration belongs to that repository; its online state and label do not make it eligible for this project. Other repositories' online/busy/version states were not exhaustively queried.
-
-| Host or tooling check | Local observation; not a job result |
+| Item | Verified value |
 |---|---|
-| OS / architecture | macOS 27.0.1, build 26A434; Darwin ARM64 |
-| Existing service account | All seven inspected LaunchAgents use `visarut.pha`, the interactive user; this is not a separate low-privilege CI account |
-| Existing runner paths | Separate directories; no spaces in the seven inspected runner roots |
-| Representative cached service PATH | `/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin` |
-| Python | `/usr/local/bin/python3`, version 3.13.7 in the current shell |
-| Dependency installer | `/opt/homebrew/bin/uv`, version 0.13.0 |
-| Workflow lint | `/opt/homebrew/bin/actionlint`, version 1.7.12 |
-| Git | `/usr/bin/git`, version 2.54.0 (Apple Git-157) |
-| Graphviz | `dot` absent from current shell and all seven cached runner PATH lookups; Homebrew lists no installed `graphviz` formula. Other filesystem locations were not exhaustively searched. |
-| Free disk | Approximately 267 GiB available during inspection; shared capacity, not a reserved render budget |
-| Font candidates | System Thonburi, Sukhumvit Set, Tahoma and Arial Unicode files exist. No font was selected, redistributed or visually tested; a reproducible licensed font selection remains S04. |
+| Runner / ID | `macbook-pro-m2-max-mingrammer` / `2` |
+| Scope / group | This repository / `Default` |
+| Version / platform | Runner `2.338.2`; macOS `27.0.1` build `26A434`; native ARM64 |
+| Labels | `self-hosted`, `macOS`, `ARM64`, `mingrammer-macos-arm64` |
+| Root / permissions | `/Users/visarut.pha/Library/GitHubActions/mingrammer-macos-arm64`, mode `0700` |
+| Work folder | `_work` under the runner root; no spaces in the path |
+| Service label | `actions.runner.Rabcat-dome-mingrammer-diagram.macbook-pro-m2-max-mingrammer` |
+| LaunchAgent plist | `~/Library/LaunchAgents/actions.runner.Rabcat-dome-mingrammer-diagram.macbook-pro-m2-max-mingrammer.plist` |
+| Service entry point | Runner root's `runsvc.sh`; installed/started using its `svc.sh` |
+| Account | `visarut.pha`; same user as the existing services, not a separate low-privilege CI account |
+| Actual job PATH | `/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin`; matches the new cached service PATH |
+| Post-test API | Online and idle at evidence capture; continuous availability is not established |
 
-Cached PATH resolution and loaded service metadata are supporting evidence. The future project's real job must establish its actual environment, version resolution, temporary-file access and scheduling. Existing services were not stopped, moved, reconfigured or relabeled. Multiple runner registrations on this host share CPU, memory, disk and the user's credentials; separate registrations are routing boundaries, not process isolation.
+The package came from a cached original `actions-runner-osx-arm64-2.338.2.tar.gz`, verified before extraction against the [official release](https://github.com/actions/runner/releases/tag/v2.338.2): SHA-256 `25a065af409ffa317ab4d5a3b614dd15fc9c40f2172bc1b35a1b1258e919a388`. A redundant new download was cancelled after finding the matching complete archive; the temporary partial file was cleaned up. The cached archive and its existing installation were unchanged.
 
-## Concrete runner recommendation
+The short-lived registration token stayed in process memory and was supplied through the runner's secret input environment mechanism, verified in the [pinned runner source](https://github.com/actions/runner/blob/v2.338.2/src/Runner.Listener/CommandSettings.cs). No token, credential file, service logs or runner binary was added to the project. The root remains outside the repository.
 
-Add a separate repository-scoped registration on this Mac, keeping the existing projects' registrations intact:
+All seven previous runner services remained loaded after setup, eight total. They belong to `Assess-Management`, `Zensical-from-MKDocs`, `azimutt-mod`, `java-migration`, `openmetadata-for-migration`, `rule-engine`, and `structurizr`; none was moved, reconfigured or relabeled. Separate registrations provide routing, while sharing host resources and account privileges. This LaunchAgent operates in the user's login session; runner availability depends on the Mac, session and network being available.
 
-| Item | Proposed value; not registered |
-|---|---|
-| Repository | `https://github.com/Rabcat-dome/mingrammer-diagram` |
-| Runner name | `macbook-pro-m2-max-mingrammer` |
-| Runner root | `~/Library/GitHubActions/mingrammer-macos-arm64` |
-| Work folder | `_work` within that root |
-| Default labels | `self-hosted`, `macOS`, `ARM64`; verify actual labels after registration |
-| Custom label | `mingrammer-macos-arm64` |
-| Initial job type | Native shell/Python; no container actions or service containers |
-| Initial trust | Owner-only manual preflight on `main`, no checkout, no third-party actions, no repository token permissions |
+## Real GitHub execution
 
-An additional process/service registration is a setup choice, rather than proof that one already exists. The owner selected this recommendation under D-011; registration/service results follow below. Real-job evidence remains pending at this checkpoint. Use a separate low-privilege account when practical; reusing the current account carries the limitations above. Enforce job timeouts and per-project concurrency; this does not cap other repositories' simultaneous work on the same host.
+Tested commit: `5c3859b4a865c3e65fc6ed80a389ec8f8a32182e`.
+Workflow: [runner-preflight.yml](../../../.github/workflows/runner-preflight.yml).
+Workflow Git blob: `db8af1e674f40b48a6b4eb980591bbc4766ba7de`.
+Workflow SHA-256: `08337c1a87c09d601c277c7db01592662e4c39619505f875f0cf8d6641798734`.
 
-## Authorized setup results
+| Dispatch | GitHub evidence | Job times (UTC) | Result |
+|---|---|---|---|
+| 1 | [Run 41283576002](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41283576002) / [job](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41283576002/job/124780247773) | `2026-11-01T07:08:31Z` to `2026-11-01T07:08:43Z` | Success; runner ID 2 |
+| 2 | [Run 41283801076](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41283801076) / [job](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41283801076/job/124780902569) | `2026-11-01T07:11:46Z` to `2026-11-01T07:11:57Z` | Success; runner ID 2 |
 
-- D-011 explicitly authorizes a separate runner, commit/push and real testing on this private repository.
-- Installed official runner v2.338.2 from a cached original macOS ARM64 release archive. SHA-256 `25a065af409ffa317ab4d5a3b614dd15fc9c40f2172bc1b35a1b1258e919a388` matched the official release digest before extraction. A redundant new download was cancelled after the verified complete archive was found; its temporary partial file was cleaned up.
-- Registration: ID 2, name `macbook-pro-m2-max-mingrammer`, repository scope, group `Default`, version 2.338.2. API verified online/idle with `self-hosted`, `macOS`, `ARM64`, `mingrammer-macos-arm64`.
-- Root: `/Users/visarut.pha/Library/GitHubActions/mingrammer-macos-arm64`, mode 0700, work folder `_work`. Cached PATH is `/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin`.
-- Installed/started LaunchAgent `actions.runner.Rabcat-dome-mingrammer-diagram.macbook-pro-m2-max-mingrammer` under `visarut.pha`. Its plist invokes the new root's `runsvc.sh`. All seven previous runner services remain loaded, eight total. This is a user login-session service and shares host resources/account privileges.
-- The short-lived registration token was captured in process memory and supplied through the runner's secret input environment mechanism. No token or runner credential file was added to this repository.
-- Initial commit/push and actual manual dispatch are the next authorized steps. Graphviz/font/render proof remains S04.
+Both jobs ran on runner ID 2 with the four expected labels. All setup/probe/completion steps succeeded. Parsed logs confirm `github_actions: true`, the tested commit, service user/PATH, Darwin ARM64, Python 3.13.7 at `/usr/local/bin/python3`, uv 0.13.0, Git 2.54.0 and actionlint 1.7.12. Temporary write/read/cleanup passed; available disk was about 265-266 GiB, shared rather than reserved.
 
-## Prepared workflow and activation sequence
+`dot` was absent on the actual service job PATH. Both reports explicitly state `graphviz_found: false`, `render_check: not_executed` and `quality_gate: not_executed`. No Graphviz/font/diagrams dependency was installed. Existing system Thai-font candidates were inspected only; selection, licensing and visual rendering remain S04.
 
-Local candidate: [runner-preflight.yml](../../../.github/workflows/runner-preflight.yml). This is a scheduling/environment probe, separate from the future M1 product quality gate. It has a five-minute timeout, owner/main-only manual dispatch, zero token permissions, no checkout/actions/installs/network calls, and a temporary-file write/read/cleanup check. It reports selected tool paths/versions and explicitly records that rendering and the product quality gate did not execute. A missing `dot` is reported, not misrepresented as a successful render.
+After the first successful job, one API observation reported offline while the LaunchAgent/listener stayed running. Diagnostics showed broker HTTP request timeouts. A later no-cache API read returned online without restarting/reconfiguring the service; the second dispatch then passed on the same runner. This is observed recovery, not a proven root cause or continuous-availability guarantee. If scheduling stalls, compare current API status, service status and diagnostics before changes. No firewall setting was changed.
 
-To obtain real evidence after the runner route is selected:
+## Local verification and operational handoff
 
-1. Register the additional runner and start its service, then read the repository runners API to verify name, labels, version and online state. Recheck local/remote Git state first.
-2. Review and publish the intended initial repository tree, including the preflight workflow, to `main`. The repository currently has no remote branch; manual dispatch requires the workflow on the default branch. No initial commit or push was made in S03.
-3. Dispatch the workflow as the owner. Record its tested commit, run/job URL and actual runner identity. If no eligible runner exists, do not leave a job queued as a substitute for evidence.
-4. Inspect logs and summary, resolve failures, and record which tools are present. A local execution of the embedded probe does not count as a runner job.
-5. S04 selects/proves Python, Graphviz, fonts and isolation/limits; M1 introduces the actual quality checks. Do not mark M0-04 complete until the real job exists.
+Actionlint 1.7.12 passed with the [custom-label configuration](../../../.github/actionlint.yaml). The embedded probe compiled and passed locally before publication, explicitly reporting `github_actions: false`. Documentation, ID/link, JSON, whitespace and targeted credential-pattern checks were performed; final counts are in the activity log. These are local checks, separate from the two actual jobs. No separate model code review or Work invocation occurred.
 
-If runner setup is deferred, continue independent S04 route investigation while retaining M0-04 as incomplete. GitHub-hosted execution is an alternative requiring an explicit route/quota choice; none was enabled. Migrating this personal repository to an organization solely to share runners is unnecessary for the recommended route.
+The job-logs REST output was initially blocked by GitHub CLI's terminal-escape protection. Logs were successfully read through `gh run view --log`, captured without printing raw control sequences, and parsed into the metadata-only JSON evidence. The evidence capture initially required an online snapshot and stopped when it observed offline; this prompted the diagnostic check and second actual dispatch rather than an assumed health result.
 
-## Validation and remaining work
+To inspect this runner later:
 
-Passed: actionlint 1.7.12 with the declared custom-label configuration; embedded Python compilation and a local probe execution using an isolated temporary directory. The probe reported native ARM64 Python 3.13.7, writable/readable temporary storage with cleanup, and Graphviz absent. It explicitly reported `github_actions: false`, `render_check: not_executed` and `quality_gate: not_executed`. Its locally simulated job-summary file was verified and removed with the temporary directory. This is not GitHub scheduling or service-job evidence.
+```sh
+cd /Users/visarut.pha/Library/GitHubActions/mingrammer-macos-arm64
+./svc.sh status
+gh api repos/Rabcat-dome/mingrammer-diagram/actions/runners
+gh run list --repo Rabcat-dome/mingrammer-diagram --workflow runner-preflight.yml
+```
 
-Documentation/inventory checks passed: 13 English Markdown files, two JSON inventories, two YAML files, 66 local links/anchors, 64 requirement IDs, 17 scenarios, 32 tasks and 32 decision/proposal/question IDs. Checked local targets/headings, ID uniqueness/references, JSON parsing, fences, final newlines and whitespace, including untracked files. These checks do not establish runner registration, product behavior, source-asset rights or owner acceptance.
+New service logs are under `~/Library/Logs/actions.runner.Rabcat-dome-mingrammer-diagram.macbook-pro-m2-max-mingrammer/`; detailed diagnostics are in the runner root's `_diag/`. Inspect selected fields and avoid copying credentials or complete environment dumps into evidence. If this setup is later retired, stop/uninstall this service and remove only runner ID 2 after verifying its current identity.
 
-Open: O-005 initial publication and real-job evidence (setup choice resolved by D-011 and runner online); S04 runtime/Graphviz/font/isolation proof; M1 product checks; optional account-plan choice for server-enforced required checks. Huawei source rights remain independently unresolved in O-002. No separate model review or Work invocation was performed.
+O-005 is resolved for S03: the owner selected the runner route and real execution is verified. M0 remains open for S04 Work invocation/artifact delivery and versions/fonts/isolation/limits. Huawei rights remain O-002, and M1 implements the product quality gate. Follow-up evidence/status documentation does not change the tested workflow; compare its recorded Git blob when resuming.
 
-## Primary references
+## Primary platform references
 
-- [GitHub runner scope and registration](https://docs.github.com/en/actions/how-tos/manage-runners/self-hosted-runners/add-runners): repository versus organization scope and registration process.
-- [Runner requirements](https://docs.github.com/en/actions/reference/runners/self-hosted-runners): Linux/Docker requirement for container actions/service containers and label-based routing.
-- [Using runner labels](https://docs.github.com/en/actions/how-tos/manage-runners/self-hosted-runners/use-in-a-workflow): matching labels apply together to select eligible runners.
-- [Manual workflow dispatch](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow): workflow file must be present on the default branch.
-- [Secure use](https://docs.github.com/en/actions/reference/security/secure-use): least privilege and persistent-host trust considerations.
+- [Runner scope and registration](https://docs.github.com/en/actions/how-tos/manage-runners/self-hosted-runners/add-runners).
+- [Mac service setup](https://docs.github.com/en/actions/how-tos/manage-runners/self-hosted-runners/configure-the-application).
+- [Runner requirements](https://docs.github.com/en/actions/reference/runners/self-hosted-runners) and [label routing](https://docs.github.com/en/actions/how-tos/manage-runners/self-hosted-runners/use-in-a-workflow).
+- [Manual dispatch](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow) and [secure use](https://docs.github.com/en/actions/reference/security/secure-use).
 
-External references describe platform behavior. The repository/machine observations above come from this session's live CLI/API and local inspection; they are not inferred from those guides.
+Platform guides support the setup/behavior descriptions. Repository, machine and job results come from this session's live inspection and the linked GitHub runs.

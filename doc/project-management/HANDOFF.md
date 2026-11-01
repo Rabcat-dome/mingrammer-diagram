@@ -1,6 +1,6 @@
 # Cross-Machine Handoff
 
-Updated: 2026-11-01 | Current stage: M0 / S01/S02 complete; S03 runner installed/online, publication/job in progress; S04 not started.
+Updated: 2026-11-01 | Current stage: M0 / S01-S03 complete; S04 runtime proof next.
 
 ## Goal
 
@@ -14,7 +14,7 @@ The user confirmed cross-machine use as the reason for choosing a plugin. The sk
 2. Relevant IDs from the single [requirements baseline](../requirements/requirements.md).
 3. [Decisions](decisions.md), [model strategy](model-strategy.md), or [quality gate](quality-gate.md) only as needed.
 
-To split work into new chats, use the [session plan](session-plan.md). S03 has recorded findings and installed a separate runner under D-011; initial publication and a real job are in progress. S04 proves the runtime before M1 implementation and can proceed independently. No new chats have been created or dispatched.
+To split work into new chats, use the [session plan](session-plan.md). S03 installed and verified the separate runner, published the initial tree and passed two actual jobs under D-011. S04 proves the runtime before M1 implementation. No new chats have been created or dispatched.
 
 ## Current state
 
@@ -24,11 +24,11 @@ To split work into new chats, use the [session plan](session-plan.md). S03 has r
 - [S02 research](evidence/S02-icon-sources-and-rights.md) found 17/17 Huawei minimum mapping candidates in LATAM color libraries at v3.2 / commit 52c33aa12fb816a5de403da85067e1c0f039b5be. Plugin redistribution evidence is still missing. The inventory contains metadata only; no icon package is cleared or bundled.
 - [S02 follow-up](evidence/S02-additional-icon-sources.md) maps the eight on-premises concepts to draw.io generic symbols/compositions (D-010). M2-04 handles selected-source terms/attribution, export and visual checks; the renderer remains diagrams/Graphviz.
 - The user-supplied JuanDiaz00 Huawei alternative contains 155 PNG entries and cites VeryIcon. A free-personal/commercial-use claim was found there, but full minimum mapping/source-asset redistribution evidence remains unresolved. Keep it as an alternative; no Huawei asset source is adopted or cleared. S02 also records 18 Kubernetes asset candidates.
-- [S03 findings](evidence/S03-repository-runner-preflight.md): CLI identity `Rabcat-dome` has admin access to the private repository; Actions is enabled. The GitHub connector still returns 404. Initial inspection found zero eligible runners and no remote branches/workflows. D-011 subsequently authorized setup/publication/testing; the new runner is online.
-- Seven existing local runner services belong to other repositories. The separate `macbook-pro-m2-max-mingrammer` runner (ID 2, version 2.338.2) is online with custom label `mingrammer-macos-arm64`; all eight services are loaded. The prepared [manual preflight](../../.github/workflows/runner-preflight.yml) passes actionlint and its embedded probe runs locally; no GitHub job has run.
-- macOS ARM64; Python 3.13.7, uv 0.13.0, actionlint 1.7.12. `dot` is absent from the shell and seven cached runner PATH lookups. The actual new service environment, Graphviz/fonts and render isolation remain unproved.
+- [S03 evidence](evidence/S03-repository-runner-preflight.md): private repository/admin access verified through CLI; Actions enabled. Initial tree pushed to `main` at `5c3859b4a865c3e65fc6ed80a389ec8f8a32182e`; two real jobs passed at that SHA. The connector still returns 404, so CLI is the current private-repository fallback.
+- Runner `macbook-pro-m2-max-mingrammer` (ID 2, v2.338.2) is installed as a separate LaunchAgent in `~/Library/GitHubActions/mingrammer-macos-arm64`, label `mingrammer-macos-arm64`. All eight local services remain loaded. [Actual job reports](evidence/S03-runner-job.json) verify service user/PATH and native ARM64 execution. One transient offline/broker-timeout observation recovered without restart; the second job passed and final evidence captured online/idle. Monitor actual status before future jobs.
+- Actual service jobs: macOS 27.0.1 ARM64, Python 3.13.7, uv 0.13.0, actionlint 1.7.12, temporary write/read/cleanup passed. `dot` is absent from the job PATH; Graphviz/fonts and render isolation remain S04 work.
 - Rulesets and branch-protection APIs return 403 requiring a plan change for this private repository. CI can report results, but server-enforced required checks are unavailable at this snapshot. Keep a manual review/merge policy unless capability changes; no plan/visibility setting was changed.
-- No Python core, schema, catalogs, assets, renderer, plugin, deployment or product quality gate is implemented. No separate model review, render/Work test or real runner job was performed. The local repository still has no commits; no commit/push was performed.
+- No Python core, schema, catalogs, assets, renderer, plugin, deployment or product quality gate is implemented. No separate model review or render/Work test was performed. The two successful jobs are runner environment checks. Follow-up documentation preserves the tested workflow blob recorded in S03.
 
 ## Proposed approach
 
@@ -41,7 +41,7 @@ Recommend an installable plugin containing a workflow skill and authenticated re
 1. Carry forward D-006/FR-066: deliver a versioned plugin usable across machines, with its skill bundled inside.
 2. Carry forward S01 decisions D-007/D-008/D-009: solution architecture overall, detailed Kubernetes, provider-reference visuals. Include M2-06/M4-05 and T-017; O-008 is resolved and O-004's sample acceptance remains M4/M6.
 3. Carry forward D-010: use the eight draw.io-type generic mappings and source-version/conditions evidence from the S02 follow-up. Mapped concepts are not yet exported/approved asset files.
-4. S03/M0-04/O-005: D-011 authorizes setup and publication; registration/labels are verified. Publish the initial tree/workflow and run the harmless manual job. The exact sequence is in the S03 record. M0-04 is incomplete until actual job evidence exists. Do not copy another project's runner labels.
+4. S03/M0-04/O-005 is complete/resolved under D-011: runner/service/labels and two actual jobs verified, initial tree pushed. Before future CI work, recheck live registration/status and preserve the manual owner-only trust boundary until M1 implements the product gate. No runtime-hosting choice is implied by this CI setup.
 5. S04/M0-02/O-001: compare runtime routes and prove actual Work tool invocation/artifact download; document modes/setup and select pinned runtime/fonts/limits (M0-05). Do not treat portability as approval of remote hosting.
 6. Carry S02/O-002 into M2-03: obtain Huawei extraction/conversion/bundling/output-use permission evidence before packaging. A prepared request exists in the research record, but no message was sent. Proceed with independent runner/runtime work while this is unresolved.
 7. Start M1 schema/package and first real quality gate checks after applicable M0 exit evidence exists. Use approved fixture assets for runtime proof; S02 research metadata is not an asset allowlist.

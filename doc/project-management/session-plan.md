@@ -1,18 +1,18 @@
 # Session Plan and Starter Prompts
 
-Updated: 2026-11-01 | Status: S01/S02 complete; S03 runner installed/online, publication/job in progress; no new chats created or dispatched.
+Updated: 2026-11-01 | Status: S01-S03 complete; S04 next; no new chats created or dispatched.
 
 This is an execution index for the existing [milestones](milestones.md), not a second requirement baseline. Use the [requirements](../requirements/requirements.md) for product scope and the [decision log](decisions.md) for confirmed choices. The deliverable remains an installable cross-machine plugin with a bundled skill.
 
 ## Start here
 
-S01 has established release granularity and visual direction. S02 has completed source/rights research and recorded unresolved Huawei permission evidence. S03 has investigated readiness and installed a separate runner under D-011; publication and real-job evidence are in progress. S04 proves the runtime and can proceed independently. Complete the applicable M0 exit evidence before starting S05.
+S01 has established release granularity and visual direction. S02 has completed source/rights research and recorded unresolved Huawei permission evidence. S03 installed the separate runner, published the initial tree and passed two actual jobs under D-011. S04 proves the runtime next. Complete the applicable M0 exit evidence before starting S05.
 
 S01 result: [scope and six reference briefs](evidence/S01-release-scope.md). The owner selected solution architecture overall, then corrected Kubernetes to detailed architecture (D-009), with visuals close to each provider's published examples. Actual rendered sample acceptance remains S08/S10.
 
 S02 result: [source/rights assessment and gaps](evidence/S02-icon-sources-and-rights.md). All 17 named Huawei items have technical source candidates; release redistribution evidence remains unresolved. On-premises neutral gaps and detailed Kubernetes candidates are recorded.
 
-S03 result: [repository/runner investigation](evidence/S03-repository-runner-preflight.md) verifies private/admin access, Actions enabled and zero eligible runners. Seven local registrations belong to other repositories. A manual workflow is prepared and checked locally. D-011 authorized setup/publication/testing; runner ID 2 is now online with the project label. Publish/run the workflow to close M0-04. Required-check enforcement is currently unavailable on this private repository's plan. S04 and later sessions have not started.
+S03 result: [repository/runner evidence](evidence/S03-repository-runner-preflight.md) and [actual job reports](evidence/S03-runner-job.json). Private/admin access, runner ID 2/service/labels and two successful dispatches are verified at initial commit `5c3859b4a865c3e65fc6ed80a389ec8f8a32182e`; M0-04 is complete. Graphviz is absent, and a transient broker/offline observation is documented. Required-check enforcement is unavailable on the current private-repository plan. S04 and later sessions have not started.
 
 The [S02 user follow-up](evidence/S02-additional-icon-sources.md) assesses a 155-PNG Huawei alternative and maps all eight on-premises concepts to draw.io-type generic symbols/compositions under D-010. S06 implements the exact approved subset/export/attribution; symbol selection does not replace source-rights or rendered acceptance checks.
 
@@ -90,7 +90,7 @@ S01 should end with scope/example decisions, not implementation of later milesto
 
 Use Astra with High effort for schema/provider semantics/security and milestone reviews; Medium is sufficient for a bounded ordinary PR as defined in the model strategy. Select the model in the new session; naming it in a prompt does not switch the model automatically.
 
-After implementation, fill in the exact milestone and base/head commit values. The repository currently has no commits, so no review range is available yet. For the initial commit, explicitly review the entire committed tree rather than an assumed parent diff.
+After implementation, fill in the exact milestone and base/head commit values. The initial published commit is `5c3859b4a865c3e65fc6ed80a389ec8f8a32182e`; verify the latest head before arranging review. For the initial tree, explicitly review all committed files rather than an assumed parent diff. The S03 preflight jobs are not a separate model review.
 
 ```text
 Review Milestone M1 for this repository in a separate review pass.
