@@ -33,7 +33,7 @@ The [upstream installation guide](https://diagrams.mingrammer.com/docs/getting-s
 
 ## Review and host status
 
-Astra/High's alpha.1 review found one P2 output-root symlink issue, fixed in alpha.2. The [alpha.2 native review](S04-native-alpha2-review.md), base 7208317 to head 1fd2d72, confirmed that fix and found two P2 issues: helper signal shutdown could leave an unsupervised renderer, and deleted DOT intermediates could abort directory sampling. Alpha.3 addresses both; its targeted tests and full native integration checks pass. Independent re-review of the new head remains pending.
+Astra/High's alpha.1 review found one P2 output-root symlink issue, fixed in alpha.2. The [alpha.2 native review](S04-native-alpha2-review.md), base 7208317 to head 1fd2d72, confirmed that fix and found two P2 issues: helper signal shutdown could leave an unsupervised renderer, and deleted DOT intermediates could abort directory sampling. Alpha.3 addresses both; its targeted tests and full native integration checks pass. The [final alpha.3 Astra/High review](S04-native-alpha3-review.md) at 2fc8047 confirmed both fixes with no new confirmed actionable runtime finding.
 
 The [historical live chat](S04-work-host-check.md) proved alpha.1 calls/artifacts in Codex Desktop. The later [native host check](S04-native-live-host-check.md) correctly stopped because that connection still reported alpha.1 despite alpha.2 files on disk. Existing chats can retain an old process; SDK/install success does not establish a refreshed host connection.
 
@@ -41,4 +41,4 @@ The owner explicitly identified the separate ChatGPT Work page as the target, co
 
 ## Remaining work
 
-RSS/disk watchdogs are sampled and can overshoot; they are not kernel hard quotas or Docker CPU/PID/read-only-root controls. Production NFR-009 acceptance, Windows/Linux setup, future macOS sandbox availability, provider/detailed-Kubernetes semantics, asset rights, polished install/upgrade/removal and two-machine acceptance remain later milestone work. The M1 product gate has not started. Complete alpha.3 independent re-review before closing S04/M0; do not reopen cloud-hosting questions.
+RSS/disk watchdogs are sampled and can overshoot; they are not kernel hard quotas or Docker CPU/PID/read-only-root controls. Production NFR-009 acceptance, Windows/Linux setup, future macOS sandbox availability, provider/detailed-Kubernetes semantics, asset rights, polished install/upgrade/removal and two-machine acceptance remain later milestone work. The M1 product gate has not started. S04/M0 feasibility is closed in the [closeout](S04-closeout.md); continue S05/M1 without reopening cloud-hosting questions.

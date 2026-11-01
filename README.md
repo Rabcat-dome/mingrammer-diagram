@@ -4,7 +4,7 @@ Planning repository for a personal plugin built on `mingrammer/diagrams` and Gra
 
 The deliverable is an installable plugin usable across machines. Its bundled skill provides workflow instructions; it is one component inside the plugin. D-013 selects runtime installation on every machine using the plugin; the S04 native default uses a private Python environment and system Graphviz, without requiring Docker.
 
-**Status:** S01-S03 complete; S04 is in progress. D-013 selects an installable local plugin with runtime setup on each machine and supersedes the central server. Requirements are revision 0.9. Native alpha.3 direct-script/MCP tests and historical live Codex Desktop checks are recorded separately from owner-confirmed actual Work alpha.3/Darwin, PNG preview and all five exports; final alpha.3 re-review is pending. Product quality gates start in M1; Huawei packaging rights remain open.
+**Status:** S01-S04 / M0 feasibility complete; S05 / M1 is next. Requirements are revision 0.9. Native alpha.3 local checks pass; the owner confirms actual Work alpha.3/Darwin, visible PNG and five files. Astra/High confirmed both prior fixes and found no new confirmed actionable runtime issue. See the [S04 closeout](doc/project-management/evidence/S04-closeout.md). Product quality gates start in M1; Huawei packaging rights remain open.
 
 ## Read next
 

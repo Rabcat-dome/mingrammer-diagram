@@ -1,6 +1,6 @@
 # Quality Gate and Self-Hosted Runner Plan
 
-Updated: 2026-11-01 | Status: Product quality gate remains proposed. S03 runner/service setup and two actual manual preflight jobs passed; M0-04 complete.
+Updated: 2026-11-02 | Status: S04/M0 feasibility complete; product quality gate is next in S05/M1. S03 runner/service setup and two actual manual preflight jobs passed; M0-04 complete.
 
 ## Recommendation
 
@@ -44,15 +44,15 @@ GitHub's [runner requirements](https://docs.github.com/en/actions/reference/runn
 
 1. Private/admin access and enabled Actions verified via CLI; connector access remains unavailable.
 2. D-011 separate registration verified: runner ID 2, v2.338.2, native Mac ARM64, exact project labels, LaunchAgent installed/started. All seven previous services remain loaded.
-3. Two actual service jobs verified user/PATH, Python 3.13.7, uv 0.13.0, Git/actionlint and temporary write/read/cleanup. Graphviz is missing; system font candidates are not a reproducible/rendered font selection.
+3. Two actual service jobs verified user/PATH, Python 3.13.7, uv 0.13.0, Git/actionlint and temporary write/read/cleanup. Graphviz was missing in S03; S04 later verified native dot on the service PATH and tested bundled fonts locally.
 4. [Published preflight workflow](../../.github/workflows/runner-preflight.yml) passed twice at `5c3859b4a865c3e65fc6ed80a389ec8f8a32182e`; [job metadata/reports](evidence/S03-runner-job.json) include tested SHA, workflow digest and actual runner identity. The reports explicitly state rendering/product checks were not executed.
 5. [Actionlint labels](../../.github/actionlint.yaml) match API and job evidence: `self-hosted`, `macOS`, `ARM64`, `mingrammer-macos-arm64`. S03 documents the transient availability observation and current-plan enforcement limitation.
 
-M0-04 is complete. Existing registrations/settings were preserved; renderer dependencies were not installed. The manual preflight uses no checkout or third-party actions and zero repository token permissions. M1 still must implement and execute the product quality gate; a preflight success is not evidence of schema, provider, asset, renderer or plugin correctness.
+M0-04 is complete. Existing registrations/settings were preserved; S03 did not install renderer dependencies. S04 later added native Graphviz and a private renderer environment. The manual preflight uses no checkout or third-party actions and zero repository token permissions. M1 still must implement and execute the product quality gate; a preflight success is not evidence of schema, provider, asset, renderer or plugin correctness.
 
-## S04 runtime evidence before M1
+## S04 completion before M1
 
-The [S04 evidence](evidence/S04-runtime-and-hosting.md) records synthetic render, English/Thai labels, installed local stdio plugin SDK checks, historical loopback HTTP/download research, negative cases and Docker resource configuration. It is not an Actions job, actual Work test or product quality-gate pass. Graphviz 16.1.0 is now installed natively; historical Linux-image evidence remains separate. [Native checks](evidence/S04-native-runtime.md) cover direct command, installed/relocated MCP, filesystem regression and sampled resource-watchdog behavior.
+The [S04 evidence](evidence/S04-runtime-and-hosting.md) records synthetic render, English/Thai labels, installed local stdio plugin SDK checks, historical loopback HTTP/download research, negative cases and Docker resource configuration. That historical proof is not an Actions job or actual Work test. The [closeout](evidence/S04-closeout.md) adds owner-reported Work alpha.3/Darwin/preview/five files and completed Astra/High review; no product quality gate has run. Graphviz 16.1.0 is now installed natively; historical Linux-image evidence remains separate. [Native checks](evidence/S04-native-runtime.md) cover direct command, installed/relocated MCP, filesystem regression and sampled resource-watchdog behavior.
 
 The new alpha.3 default uses native Python/Graphviz with no required Docker; use native shell steps and verify the runner service PATH/runtime. Historical Docker research can remain an optional CI route. This does not make GitHub `container:` or `services:` jobs supported on macOS. D-013 retires the central-host plan. An earlier amd64 smoke used emulation and does not prove another physical machine or OS. Preserve existing owner-only trust until the real product gate exists.
 

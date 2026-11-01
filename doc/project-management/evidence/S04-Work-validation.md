@@ -13,28 +13,21 @@ The owner explicitly confirmed this target and reported that **Cloud Architectur
 
 The [official packaging guide](https://developers.openai.com/plugins/build/plugins#build-your-own-curated-plugin-list) describes local marketplace sources in Work and Codex. The [desktop-only guide](https://developers.openai.com/plugins/deploy/desktop-only) requires local execution for native helpers. [MCP host guidance](https://learn.chatgpt.com/docs/extend/mcp) does not promise local transports from a cloud-only chat. These documents support the test path; they are not evidence that this account's Work call passed.
 
-## Work prompt
+## Prompt supplied for the reported Work test
 
-Use a Work task with access to this Mac and select the installed plugin. No cloud renderer, tunnel, public MCP connection or new account plugin is part of this check. Paste:
+The coordinating chat supplied this English-label prompt, and the owner replied to that test question:
 
 ```text
-Use Cloud Architecture Diagrams (S04) in this ChatGPT Work task.
-First call the plugin's runtime-info tool and require version 0.1.0-alpha.3,
-system Darwin and native execution. If an older/container runtime appears,
-stop and report it; do not count that as a native test.
-Render exactly these three labels, interpreting JSON Unicode escapes normally:
-{"request":{"labels":["Client","Application \u0e23\u0e30\u0e1a\u0e1a","Database \u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25"]}}
-Retrieve SVG, PNG, source JSON, DOT and manifest through the plugin. Verify the
-bundle/file checksums, show the PNG inline and provide actual downloadable
-outputs. If this Work host does not expose the MCP tools but can execute local
-files, use the plugin's fixed scripts/render.py with the same labels on stdin;
-record that direct-script route and the returned native version/system instead.
-Do not generate architecture Python, rerun setup, change configuration, use
-Docker, or invent download links. Report any missing local execution, tool,
-preview or export capability exactly.
+Use Cloud Architecture Diagrams (S04). First call get_runtime_info and report
+plugin_version and system. Continue only if version is 0.1.0-alpha.3 and system
+is Darwin. Render the three-node fixture with labels Client, Application,
+Database. Show the PNG preview and provide all five artifacts: PNG, SVG, source
+JSON, DOT and manifest. Report any error.
 ```
 
-The direct-script fallback is an existing packaged capability, not permission to run arbitrary supplied code. On this Mac its installed path is `/Users/visarut.pha/.codex/plugins/cache/mingrammer-local/cloud-architecture-diagrams/0.1.0-alpha.3/scripts/render.py`. The script's input is `{"labels":[...]}`; the MCP tool's input has the outer `request` object.
+This prompt requested plugin tool calls, but the owner supplied no tool transcript; the actual MCP versus direct-script route is not independently confirmed. Thai labels and Work-side hashes were not part of this reported result. Local English/Thai render and byte/hash checks remain separate evidence.
+
+The package also supports a direct-script fallback when local file execution is available. On this Mac its installed path is `/Users/visarut.pha/.codex/plugins/cache/mingrammer-local/cloud-architecture-diagrams/0.1.0-alpha.3/scripts/render.py`. Input is `{"labels":[...]}` on stdin; the MCP tool uses an outer `request` object. This documents an existing capability, not an observed route in the owner's Work test.
 
 ## Record actual result
 
@@ -45,7 +38,7 @@ The direct-script fallback is an existing packaged capability, not permission to
 | Actual Work invocation uses alpha.3 / Darwin | Passed, owner report |
 | PNG visible in Work | Passed, owner report; the supplied prompt used English labels |
 | SVG/PNG/JSON/DOT/manifest retrieved from Work | Passed, owner report |
-| Method and runtime identity | Owner used the supplied plugin-tool prompt in the separate Work page; alpha.3 / Darwin |
+| Runtime identity / method | Owner reports alpha.3 / Darwin after the supplied prompt; underlying MCP/direct-script route not independently confirmed |
 
 Owner response on 2026-11-02: `plugin_version: 0.1.0-alpha.3 and system: Darwin`; PNG visible; all five files available. No Work bundle ID, file hashes or tool transcript was supplied. Work UI/download is established by this owner report, while byte/hash checks and English/Thai rendering are established separately by local SDK/CLI evidence. This is S04 feasibility, not full product or two-machine release acceptance.
 

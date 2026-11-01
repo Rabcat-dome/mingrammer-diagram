@@ -360,7 +360,14 @@
     "sha256": "49518755ebcf134065adebe35b95b1714842fb5e139d3cd34d2dc4d346fb6627"
   },
   "actual_chatgpt_work_mode": "owner_confirmed_alpha3_Darwin_visible_PNG_five_files; no Work transcript/bundle hashes supplied",
-  "independent_native_source_review": "pending",
+  "independent_native_source_review": {
+    "model": "gpt-6-astra",
+    "effort": "high",
+    "base": "1fd2d72a22183b65d76ea0bea255702a769ae62f",
+    "head": "2fc8047242dbbf337a8c44ba09979b2f181adb32",
+    "result": "no new confirmed actionable finding in the S04 pilot runtime path; both alpha.2 P2 findings fixed",
+    "evidence": "doc/project-management/evidence/S04-native-alpha3-review.md"
+  },
   "second_physical_machine": "not_tested",
   "font_sources": {
     "license": "SIL Open Font License 1.1",
@@ -614,5 +621,6 @@
     "graphviz_version": "dot - graphviz version 16.1.0 (20260904.0139)",
     "renderer_network_probe_errno": 1
   },
-  "work_owner_evidence": "doc/project-management/evidence/S04-Work-owner-proof.json"
+  "work_owner_evidence": "doc/project-management/evidence/S04-Work-owner-proof.json",
+  "source_ref": "2fc8047242dbbf337a8c44ba09979b2f181adb32"
 }

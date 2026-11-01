@@ -186,3 +186,14 @@ Native source/package checkpoint: `b5524a916d36256335ccfe6c1f1ecc3f2ed4e31d`, pu
 - Installed alpha.3 through the existing supported local-marketplace workflow; no cache source was hand-edited. Native execution remains Python/Graphviz without Docker, central server or model API keys.
 - The owner ran the supplied prompt in actual Work and reported alpha.3 / Darwin, a visible PNG and all five files. Saved owner-reported evidence and its limits: no Work transcript, bundle ID or file hashes were supplied. SDK bytes/hashes remain separate evidence. This is feasibility, not full product/two-machine acceptance.
 - Actual native Codex host follow-up stopped at stale alpha.1 identity and did not render; it is not substituted for the owner's Work result. Final frozen alpha.3 Astra/High re-review remains pending before S04/M0 closure.
+
+
+## 2026-11-02 — S04/M0 feasibility complete; S05 ready
+
+- After an initial model-usage failure, the resumed GPT-6 Astra/High review completed base 1fd2d72a22183b65d76ea0bea255702a769ae62f to head 2fc8047242dbbf337a8c44ba09979b2f181adb32. Both alpha.2 P2 findings are fixed; no new confirmed actionable finding in the pilot runtime path. The reviewer independently checked isolated adapter/stdio shutdown, EOF/frame bounds, deleted-file behavior, source/archive/runtime/bundle integrity and syntax/whitespace. No source/shared runtime edits or live calls were made.
+- Corrected the Work record to the actual English-label prompt. Owner report covers alpha.3/Darwin, visible PNG and five files; it does not supply Thai-in-Work, Work hashes/transcript or independently confirmed MCP/direct-script route. Local SDK/CLI evidence remains separate.
+- Final read-only GitHub API check found runner ID 2 online/idle with its unchanged project labels. No extra workflow was dispatched; the native renderer/product CI remains S05/M1 work.
+- Closed S04 and M0 feasibility with exact evidence and carried asset rights, final production controls, other OSs, SVG portability and two-machine acceptance to their existing milestones. Updated handoff/session plan/decisions/model/quality-gate records and prepared a compact S05 starter. No new chat, merge, cloud service or product release was created.
+- Subsequent closure changes are documentation/evidence only; executable/package source remains identical to the reviewed head 2fc8047. The branch is published privately; main remains afbaccad87019d35bff12d335ec534166752f0bf.
+
+Final closure validation: 24 English Markdown files, 15 JSON files and 138 local links/anchors passed; 64 requirement, 17 acceptance-scenario, 32 task and 39 decision/proposal/question IDs remain unique. Current/historical source hashes, Python syntax, credential-pattern and Git whitespace checks passed. No executable/package-source change exists after the reviewed head 2fc8047; closure changes are documentation/evidence only.

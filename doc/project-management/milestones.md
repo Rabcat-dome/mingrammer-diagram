@@ -1,6 +1,6 @@
 # Milestones and Work Breakdown
 
-Updated: 2026-11-02 | Status: S01-S03 complete; S04 local runtime/plugin proof in progress; actual Work feasibility owner-confirmed; final re-review pending. Huawei packaging rights remain unresolved.
+Updated: 2026-11-02 | Status: S01-S04 / M0 feasibility complete; S05 / M1 next. Huawei packaging rights remain unresolved.
 
 Source of scope: [requirements](../requirements/requirements.md). Model abbreviations and review rules: [model strategy](model-strategy.md). Quality check definitions: [quality gate](quality-gate.md).
 
@@ -22,21 +22,21 @@ M0 investigates the Work execution route before core development. M5 delivers th
 
 ## M0 — Scope and feasibility
 
-Status: In progress; S01-S03 complete. D-013 selects local installation on each machine and supersedes D-012. S04 has native direct-script/stdio runtime evidence and a versioned plugin pilot. Docker is optional. The owner confirms actual Work alpha.3/Darwin, a visible PNG and five exports; final re-review and feasibility summary remain open. Huawei rights remain open for packaging. Implementation: Sol/High. Astra/High confirmed the alpha.1 fix in alpha.2 and found two new P2 issues; alpha.3 fixes/test evidence await re-review. The owner confirms the separate Work page and plugin visibility/selectability; alpha.3 invocation/preview/export passed by owner report.
+Status: Complete for feasibility on 2026-11-02; see [M0/S04 closeout](evidence/S04-closeout.md). D-013/D-014 select per-machine native execution in the separate Work page. Owner reports alpha.3/Darwin, PNG and five files; Astra/High confirmed both earlier P2 fixes with no new confirmed actionable runtime finding. Production/other-OS/two-machine acceptance remains later work; Huawei rights remain unresolved for packaging.
 
 | Task | Work | Dependency / output |
 |---|---|---|
 | M0-01 | Jointly refine scope, catalog breadth, and six representative diagrams | S01 scope planning complete: D-007/D-008/D-009 confirmed, detailed Kubernetes included, [six working briefs](evidence/S01-release-scope.md) prepared; rendered acceptance remains M4/M6 |
-| M0-02 | Compare execution routes against cross-machine plugin delivery; prove Work can invoke a controlled renderer and retrieve SVG/PNG | Partial: D-013 selects local installation. [S04 evidence](evidence/S04-runtime-and-hosting.md) separates installed-plugin SDK checks from the owner-reported actual Work result |
+| M0-02 | Compare execution routes against cross-machine plugin delivery; prove Work can invoke a controlled renderer and retrieve SVG/PNG | Complete for the tested local route: [native proof](evidence/S04-native-runtime.md) and [owner Work result](evidence/S04-Work-validation.md); supported-mode and transcript limitations recorded |
 | M0-03 | Investigate Huawei icon sources and terms; inventory upstream on-premises gaps | S02 research complete: [rights matrix/gaps](evidence/S02-icon-sources-and-rights.md) and source inventory; Huawei redistribution evidence still open, no extracted assets bundled |
-| M0-04 | Verify repository access/visibility, runner assignment, OS/arch/labels, service PATH and tooling | Complete: [S03 runner/service evidence](evidence/S03-repository-runner-preflight.md), two successful actual jobs at `5c3859b4a865c3e65fc6ed80a389ec8f8a32182e`; missing Graphviz and availability/enforcement limitations recorded |
-| M0-05 | Select Python/diagrams/Graphviz/font versions, isolation strategy and numeric limits | Partial: alpha.3 native Python/Graphviz/fonts, direct command, MCP and path/resource regressions pass on macOS ARM64. Native RSS/disk limits are sampled; production bounds/other OSs remain later work; the tested local Work route is owner-confirmed |
+| M0-04 | Verify repository access/visibility, runner assignment, OS/arch/labels, service PATH and tooling | Complete: [S03 runner/service evidence](evidence/S03-repository-runner-preflight.md), two successful actual jobs at `5c3859b4a865c3e65fc6ed80a389ec8f8a32182e`; S04 later verified native Graphviz on service PATH; availability/enforcement limitations recorded |
+| M0-05 | Select Python/diagrams/Graphviz/font versions, isolation strategy and numeric limits | Complete for prototype selection: alpha.3 native versions/fonts/direct/MCP, path/resource/shutdown checks and final Astra review pass on macOS ARM64. Sampled limits and production/other-OS gaps are carried to later milestones |
 
 Exit: selected deployment route has real Work evidence; feasibility blockers and proposed fallback are recorded; runner evidence is current; scope is ready for implementation. Documentation alone does not satisfy M0-02 through M0-05.
 
 ## M1 — Core contract and CI foundation
 
-Status: Not started. Implementation: Sol/High; review: Astra/High.
+Status: Ready to start as S05; not implemented. Implementation: Sol/High; review: Astra/High.
 
 | Task | Work | Dependency / output |
 |---|---|---|

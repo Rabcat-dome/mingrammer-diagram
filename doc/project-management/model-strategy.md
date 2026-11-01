@@ -40,7 +40,7 @@ For each finding give severity, file/line, a concrete failure scenario, evidence
 and a fix direction. State checks not run and review limitations. Do not edit code.
 ```
 
-Astra/High reviewed alpha.1 (afbacca to 7208317) and found one P2 output-root symlink issue. The alpha.2 review (7208317 to 1fd2d72) confirmed that fix and found two P2 issues: helper shutdown cleanup and a deleted-file race. Alpha.3 fixes both with regression evidence and awaits re-review. See [initial review](evidence/S04-astra-review.md) and [native review](evidence/S04-native-alpha2-review.md). Local tests and an earlier review do not approve later code.
+Astra/High reviewed alpha.1 (afbacca to 7208317) and found one P2 output-root symlink issue. The alpha.2 review (7208317 to 1fd2d72) confirmed that fix and found two P2 issues: helper shutdown cleanup and a deleted-file race. The [alpha.3 Astra/High review](evidence/S04-native-alpha3-review.md), base 1fd2d72 to 2fc8047, confirms both fixes with no new confirmed actionable runtime finding. See [initial review](evidence/S04-astra-review.md) and [native review](evidence/S04-native-alpha2-review.md). Local tests and an earlier review do not approve later code.
 
 ## Pipeline policy
 

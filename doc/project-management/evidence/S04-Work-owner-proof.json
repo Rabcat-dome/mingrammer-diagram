@@ -8,8 +8,20 @@
   "system": "Darwin",
   "png_visible": true,
   "five_files_available": true,
-  "files": ["diagram.png", "diagram.svg", "source.json", "source.dot", "manifest.json"],
-  "method": "owner ran the supplied plugin-tool prompt with Client, Application, Database labels",
-  "not_supplied": ["Work tool transcript", "bundle ID", "Work artifact hashes"],
+  "files": [
+    "diagram.png",
+    "diagram.svg",
+    "source.json",
+    "source.dot",
+    "manifest.json"
+  ],
+  "method": "owner replied to the English-label plugin-tool test prompt; underlying MCP versus direct-script route not independently confirmed",
+  "not_supplied": [
+    "Work tool transcript",
+    "bundle ID",
+    "Work artifact hashes",
+    "underlying transport route",
+    "Thai-label Work test"
+  ],
   "scope": "S04 local Work feasibility; not full product or second-machine acceptance"
 }
