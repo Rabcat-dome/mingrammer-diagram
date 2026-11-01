@@ -1,0 +1,184 @@
+{
+  "date": "2026-11-01",
+  "scope": "isolated native Codex app-server discovery; no conversation/model turn",
+  "cli_version": "codex-cli 0.166.0-alpha.5.1",
+  "reviewed_head": "720831733bdb99061f62f7d509d95a65aa7f748b",
+  "plugin_summary": {
+    "id": "cloud-architecture-diagrams@mingrammer-local",
+    "remotePluginId": null,
+    "version": null,
+    "localVersion": "0.1.0-alpha.1",
+    "name": "cloud-architecture-diagrams",
+    "shareContext": null,
+    "source": {
+      "type": "local",
+      "path": "/Users/visarut.pha/Documents/source/easybuy/mingrammer-diagram/spikes/s04-local-plugin/output/cloud-architecture-diagrams"
+    },
+    "installed": true,
+    "installedAt": null,
+    "enabled": true,
+    "installPolicy": "AVAILABLE",
+    "installPolicySource": null,
+    "mustShowInstallationInterstitial": null,
+    "authPolicy": "ON_INSTALL",
+    "availability": "AVAILABLE",
+    "disabledReason": null,
+    "eligiblePlanTypes": null,
+    "interface": {
+      "displayName": "Cloud Architecture Diagrams (S04)",
+      "shortDescription": "Local runtime pilot",
+      "longDescription": "Experimental local runtime with a versioned installer, preflight and three-node SVG/PNG fixture. Provider catalogs and production architecture rendering are later milestones.",
+      "developerName": "Visarut",
+      "category": "Productivity",
+      "capabilities": [
+        "Read",
+        "Write"
+      ],
+      "websiteUrl": null,
+      "privacyPolicyUrl": null,
+      "termsOfServiceUrl": null,
+      "defaultPrompt": [
+        "Check the local runtime and render the S04 three-node fixture."
+      ],
+      "brandColor": null,
+      "composerIcon": null,
+      "composerIconUrl": null,
+      "logo": null,
+      "logoDark": null,
+      "logoUrl": null,
+      "logoUrlDark": null,
+      "screenshots": [],
+      "screenshotUrls": []
+    },
+    "keywords": []
+  },
+  "mcp_server_names": [
+    "architecture-runtime"
+  ],
+  "target_mcp_status": [
+    {
+      "name": "architecture-runtime",
+      "runtimeStatus": null,
+      "pluginId": "cloud-architecture-diagrams@mingrammer-local",
+      "httpOrigin": null,
+      "serverInfo": {
+        "name": "Cloud Architecture Diagrams S04",
+        "title": null,
+        "version": "0.1.0-alpha.1",
+        "description": null,
+        "icons": null,
+        "websiteUrl": null
+      },
+      "serverCapabilities": {
+        "prompts": {
+          "listChanged": false
+        },
+        "resources": {
+          "subscribe": false,
+          "listChanged": false
+        },
+        "tools": {
+          "listChanged": false
+        }
+      },
+      "toolListMeta": null,
+      "tools": {
+        "read_fixture_artifact": {
+          "name": "read_fixture_artifact",
+          "description": "Read a file from this pilot's local output root; never read an arbitrary path. This tool is part of plugin `Cloud Architecture Diagrams (S04)`.",
+          "inputSchema": {
+            "properties": {
+              "bundle_id": {
+                "title": "Bundle Id",
+                "type": "string"
+              },
+              "filename": {
+                "enum": [
+                  "diagram.png",
+                  "diagram.svg",
+                  "source.dot",
+                  "source.json",
+                  "manifest.json"
+                ],
+                "title": "Filename",
+                "type": "string"
+              }
+            },
+            "required": [
+              "bundle_id",
+              "filename"
+            ],
+            "type": "object",
+            "title": "read_fixture_artifactArguments"
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "openWorldHint": false
+          }
+        },
+        "render_fixture": {
+          "name": "render_fixture",
+          "description": "Render exactly three literal labels locally for S04; return preview and a complete local artifact bundle. This tool is part of plugin `Cloud Architecture Diagrams (S04)`.",
+          "inputSchema": {
+            "properties": {
+              "request": {
+                "$ref": "#/$defs/FixtureRequest"
+              }
+            },
+            "required": [
+              "request"
+            ],
+            "type": "object",
+            "$defs": {
+              "FixtureRequest": {
+                "additionalProperties": false,
+                "properties": {
+                  "labels": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "title": "Labels",
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "labels"
+                ],
+                "title": "FixtureRequest",
+                "type": "object"
+              }
+            },
+            "title": "render_fixtureArguments"
+          },
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": false,
+            "openWorldHint": false
+          }
+        },
+        "get_runtime_info": {
+          "name": "get_runtime_info",
+          "description": "Verify this machine's local renderer versions/fonts, non-root UID and isolation configuration. This tool is part of plugin `Cloud Architecture Diagrams (S04)`.",
+          "inputSchema": {
+            "properties": {},
+            "type": "object",
+            "title": "get_runtime_infoArguments"
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "openWorldHint": false
+          }
+        }
+      },
+      "toolsError": null,
+      "resources": [],
+      "resourceTemplates": [],
+      "authStatus": "unsupported"
+    }
+  ],
+  "actual_work_preview_export": "not_established_by_this_probe",
+  "new_conversation_created_by_probe": false,
+  "computer_use_ui": "direct access to com.openai.codex rejected by Computer Use policy"
+}

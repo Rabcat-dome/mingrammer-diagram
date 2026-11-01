@@ -1,56 +1,49 @@
 # Cross-Machine Handoff
 
-Updated: 2026-11-01 | Stage: M0. S01-S03 complete; S04 local plugin/runtime SDK proof passed; actual Work proof and independent review pending.
+Updated: 2026-11-02 | M0/S04 in progress. Native alpha.2 direct-script/MCP checks pass; exact Work-mode/UI and fresh native review remain pending.
 
 ## Goal and current direction
 
-Build a personal ChatGPT Work plugin using mingrammer/diagrams + Graphviz for AWS, Azure, GCP, Huawei and on-premises, with detailed Kubernetes and provider-reference visuals. Claude Code is later. Documentation is English and the single normative baseline is [requirements revision 0.7](../requirements/requirements.md).
+Build a personal Work-first architecture plugin for AWS/Azure/GCP/Huawei/on-premises with detailed Kubernetes and provider-reference visuals. Claude Code is later. Keep docs English and use the single [requirements v0.8](../requirements/requirements.md).
 
-**D-013 supersedes D-012:** install the renderer/runtime on each machine using the plugin. The product remains an installable plugin with a bundled skill and local tools. Work Desktop/local execution is the first host to verify. No central server, hosting project/region/budget answer, public renderer or mandatory model API key is needed. Do not reopen the cloud-hosting question or assume cloud-only/mobile support.
+D-013 selects installation on every machine and supersedes central hosting. After the owner questioned Docker, the implementation default became **native Python + Graphviz**, with a direct script command and optional stdio MCP helper. Docker is not required. MCP stdio is a local process interface, not a central/listening server. Do not reopen provider/project/region/budget questions or require a renderer/model API key.
+
+Branch: `codex/s04-runtime-proof`. The alpha.1 review covered base `afbaccad87019d35bff12d335ec534166752f0bf` through `720831733bdb99061f62f7d509d95a65aa7f748b`; native source is newer. Verify HEAD before review.
 
 ## Read order
 
-1. This file and the active [milestone](milestones.md).
-2. Relevant IDs in the [requirements](../requirements/requirements.md).
-3. [S04 evidence](evidence/S04-runtime-and-hosting.md), [local plugin instructions](../../spikes/s04-local-plugin/README.md), [decisions](decisions.md), [model policy](model-strategy.md) or [quality gate](quality-gate.md) as needed.
-
-Use the [session plan](session-plan.md) to split work. No new chats were created/dispatched. Do not start S05 as though M0 were closed.
-
-Working branch: `codex/s04-runtime-proof`; base: `afbaccad87019d35bff12d335ec534166752f0bf`. Verify current HEAD before review. Runtime/source checkpoint `07e507f958e11350b45a73c0dbcf04dca679e212` is published on the private feature branch; later documentation-only commits may advance HEAD.
+1. This file and [milestones](milestones.md).
+2. Relevant requirement IDs, [native S04 evidence](evidence/S04-native-runtime.md) and [setup/direct script](../../spikes/s04-local-plugin/README.md).
+3. [Review record](evidence/S04-astra-review.md), [decisions](decisions.md), [model strategy](model-strategy.md) and [quality gate](quality-gate.md) as needed.
 
 ## Verified state
 
-- S01/M0-01 scope planning is complete: solution architecture overall, detailed Kubernetes (D-009), white/provider-aware visuals (D-008). [Six scenario families](evidence/S01-release-scope.md) need later real rendering/owner acceptance.
-- S02/M0-03 research found technical Huawei mapping candidates for all 17 minimum items, but redistribution/extraction/output-use clearance remains open (O-002). The user-supplied JuanDiaz00 alternative and eight draw.io-type on-premises mappings are assessed in [S02 follow-up](evidence/S02-additional-icon-sources.md). No Huawei asset package is adopted/bundled. Detailed Kubernetes catalog/rules remain M2/M4 work.
-- S03/M0-04 is complete under D-011. Private repository access is available through CLI; the GitHub connector returns 404. Initial `main` commit `5c3859b4a865c3e65fc6ed80a389ec8f8a32182e` passed two real preflight jobs; [S03 evidence](evidence/S03-repository-runner-preflight.md) records the transient offline/broker recovery and actual job environment.
-- Runner ID 2, `macbook-pro-m2-max-mingrammer`, v2.338.2, label `mingrammer-macos-arm64`, runs as a separate LaunchAgent under `~/Library/GitHubActions/mingrammer-macos-arm64`. Existing seven services were preserved. Required-check enforcement is unavailable on the private repository's current plan; recheck live status before jobs and preserve owner-only trust. No product pipeline has run.
-- The host has Python 3.13.7 and Docker; native host Graphviz remains absent. S04 Linux images contain Python 3.13.13, diagrams 0.25.1, Graphviz 12.2.1, SDK 2.3.0 and Noto Sans/Thai. No host Graphviz/font installation was made.
-- Current S04 prototype: `cloud-architecture-diagrams@mingrammer-local`, version `0.1.0-alpha.1`, installed through the bundled Codex CLI 0.166.0-alpha.5.1. [Proof JSON](evidence/S04-local-plugin-proof.json) records the actual cache, immutable image ID, source/archive hashes and checks. Source is under `spikes/s04-local-plugin/`; build artifacts are ignored.
-- Installed-cache and relocated-ZIP SDK tests passed: three tools discovered, English/Thai fixture rendered, five local artifacts read with matching checksums, invalid requests rejected, inline PNG matched, network-none/read-only/non-root/resource controls inspected and no pilot containers left after disconnect. Relocation is on the same Mac, not second-machine acceptance. PNG was visually inspected; SVG font portability remains open.
-- Setup downloads/builds the runtime separately on each machine; MCP startup checks the image/source fingerprint and performs no install. Rendering mounts only `~/Documents/CloudArchitectureDiagrams`; files persist until user removal. Docker must be running. This is a fixed three-node feasibility pilot, not the full provider/Kubernetes renderer or release installation experience.
-- Earlier authenticated loopback HTTP/amd64-emulation work is retained as historical research under `spikes/s04-runtime/` and [historical metadata](evidence/S04-runtime-proof.json). D-013 retires that hosting proposal. No cloud resource, public endpoint or account plugin was created.
+- S01 scope planning and S02 source/rights research are complete. Solution architecture with detailed Kubernetes remains required. Huawei redistribution/extraction/output-use rights remain O-002; no Huawei package is cleared/bundled. Eight draw.io-type generic on-premises mappings are selected, with exact assets/terms/export later in M2.
+- S03/M0-04 installed separate runner ID 2, `macbook-pro-m2-max-mingrammer`, label `mingrammer-macos-arm64`. Two initial jobs passed; historical transient broker/offline recovery and private-plan enforcement limits are in [S03 evidence](evidence/S03-repository-runner-preflight.md). Recheck availability before jobs. No M1 product gate exists yet.
+- Alpha.2 installed identity: `cloud-architecture-diagrams@mingrammer-local`. Source is `spikes/s04-local-plugin/`; generated package/ZIP are ignored. The supported CLI installer preserves identity/marketplace and updates the cache; never edit cache source directly.
+- Native runtime: macOS 27.0.1 ARM64, private Python 3.13.7 environment, diagrams 0.25.1, Graphviz 16.1.0, SDK 2.3.0 and bundled Noto Sans/Thai with OFL notices. Setup uses uv and records native binary/font/source hashes. Homebrew installed Graphviz/dependencies and three required dependency upgrades; no global pip/user-font installation was made. See the native proof for exact changes.
+- Direct script, installed MCP and relocated-ZIP SDK tests pass. All five files and inline PNG match hashes. Seven filesystem regressions and resource cases cover timeout, RSS, scratch bytes and an exited parent with a live descendant. Renderer networking is denied by the tested macOS profile. RSS/disk limits are sampled, not kernel quotas or Docker isolation; production NFR-009 acceptance remains open.
+- Output paths are private real directories, opened without following symlink components; descriptor-relative artifact access and root identity checks fix the confirmed P2 alpha.1 finding. Native PNG English/Thai text is readable. Cross-machine SVG font appearance and another physical machine remain untested.
+- The owner authorized two local chats: host test `01a1964a-784d-7751-bfe5-57e0bbb4cf39` and Astra/High review `01a1964a-7a2a-70e3-a577-84316bb691b0`. Both completed alpha.1 work. [Live host evidence](evidence/S04-work-host-check.md) establishes Codex Desktop tool calls/artifact reads, not a different ChatGPT Work mode. Computer Use refused direct ChatGPT UI access; no bypass was attempted.
+- Astra/High completed the frozen alpha.1 review with one P2 output-root symlink finding; locally fixed/tested in alpha.2. The old review does not cover the new native diff.
+- A parent-chat call still reported alpha.1 after installing alpha.2. Existing MCP connections can retain the old Docker process; a fresh/reloaded local chat must report alpha.2/Darwin/native before its results count as native. Fresh native host discovery and SDK checks are separate evidence, not proof of a specific Work UI.
+- Historical Docker/HTTP/emulated-amd64 results remain under `spikes/s04-runtime/`. No cloud host, public endpoint, account upload or product release was created. Existing Docker software/images were not uninstalled and are not needed by the native path.
 
-## Next activities
+## Next steps
 
-1. Continue S04/M0-02 in a locally executing Work Desktop chat. The local plugin is installed, but the current chat may need a fresh session to discover it. Follow the concrete prompt in the [local plugin README](../../spikes/s04-local-plugin/README.md). Record actual tool discovery/invocation, visible PNG preview and retrieved SVG/PNG/JSON/DOT/manifest; SDK evidence does not satisfy this check.
-2. Review the final commit in a separate Astra/High pass. No independent model review has been executed. Use [model strategy](model-strategy.md); record model/effort, base/head SHAs, findings/disposition and checks. Do not label a self-check as Astra review.
-3. Finish M0-05 supported local host modes, runtime/fonts and provisional limits from actual Work evidence. Timeout/OOM/cancellation stress, complete transport limits and SVG font appearance remain open. M0-02/M0-05 are partial; S04/M0 is not complete.
-4. After applicable M0 exit evidence, continue S05/M1 canonical model/schema, package and deterministic quality gate. For Docker on the Mac runner, first verify actual service-account daemon/context access; do not use Linux-only GitHub container/service jobs on macOS.
-5. Carry O-002 into M2-03 before bundling Huawei icons; no permission request was sent. Carry D-010's generic on-premises mappings into M2-04 with exact source/terms/attribution/export checks.
-6. M5 replaces the pilot with the full local adapter and polished setup/preflight/upgrade/removal. M6 must run the same plugin version and complete Work workflow on two independently prepared machines. No automatic dependency or credential sync is established.
+1. Use the native follow-up's exact prompts to review the new diff with Astra/High and test alpha.2 in a fresh/reloaded local host. Record exact versions/base/head and findings. Do not relabel the alpha.1 review as approval of native code.
+2. Obtain actual ChatGPT Work mode/UI preview/export evidence, with owner help where the app cannot inspect itself. Do not equate SDK/native Codex success with another Work mode.
+3. Finalize supported modes, native resource/transport limits and M0-02/M0-05 exit evidence. Keep sampled-limit/OS/SVG/second-machine gaps explicit. S04/M0 is not closed; do not start S05 as if it were.
+4. Then continue S05/M1 schema/core package and deterministic CI on native runner shell steps. Keep Docker optional. Preserve owner-only self-hosted trust and manual merge discipline until the real product gate exists.
+5. Carry O-002 and exact generic/Kubernetes asset/rule tasks into M2/M4. M5 must deliver polished install/preflight/upgrade/removal; M6 must complete the same version on two independently prepared supported machines.
 
 ## Resume prompt
 
 ```text
-Continue this Cloud Architecture Diagram Plugin project from doc/project-management/HANDOFF.md.
-D-013 selects an installable local plugin with runtime installation on each machine;
-it supersedes D-012 central hosting. Read the active milestone and relevant requirement
-IDs, verify Git state, then continue S04 actual local Work preview/export and M0 review.
-Target Work first; Claude Code is later. Keep docs English and distinguish local SDK,
-Actions checks, real Work behavior, independent review and owner acceptance.
-Update HANDOFF.md and ACTIVITY-LOG.md with verified outcomes.
+Continue from doc/project-management/HANDOFF.md on codex/s04-runtime-proof.
+D-013 is per-machine local installation. Native alpha.2 uses Python/Graphviz
+and direct scripts; Docker and a central server are not required. Read native
+S04 evidence and actual review/host state, verify Git HEAD, then complete the
+native review and exact Work-mode proof. Keep docs English and distinguish
+local SDK, live Codex host, actual Work UI, CI and owner acceptance.
 ```
-
-## Update discipline
-
-Record completed task IDs, actual checks/results, final commit when available, unresolved decisions and next steps. Keep this file compact; detailed evidence belongs with the relevant milestone. Recheck dynamic dependency/model/runner facts before relying on older snapshots.

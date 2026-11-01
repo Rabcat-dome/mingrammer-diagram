@@ -1,6 +1,6 @@
 # Cloud Architecture Diagram Plugin Requirements
 
-Document: CADP-REQ-001 | Revision: 0.7 | Updated: 2026-11-01
+Document: CADP-REQ-001 | Revision: 0.8 | Updated: 2026-11-02
 
 Status: Draft baseline with confirmed granularity/style and per-machine local-runtime direction; product implementation and release acceptance remain pending.
 
@@ -15,7 +15,7 @@ The user's current request takes precedence over the supplied v1.1 draft. In par
 - A personal ChatGPT Work plugin that turns architecture requests into reviewable structured models and SVG/PNG diagrams.
 - AWS, Azure, GCP, Huawei Cloud, and on-premises support, including hybrid and multi-cloud views.
 - A portable Python core using `mingrammer/diagrams` and Graphviz, versioned catalogs, approved icon assets, and a CLI for development/CI.
-- An installable personal plugin usable across machines, containing a Work adapter, bundled workflow skill and local renderer setup. D-013 supersedes the central-server choice: install the runtime on each machine using the plugin, with no required public rendering MCP or hosted renderer. Verify Work Desktop local execution first; supported modes and per-machine prerequisites must be proven.
+- An installable personal plugin usable across machines, containing a Work adapter, bundled workflow skill and local renderer setup. D-013 supersedes the central-server choice: install the runtime on each machine using the plugin, with no required public rendering MCP or hosted renderer. Native Python/script execution is the default; Docker is optional for development/CI and is not an end-user prerequisite. Verify Work Desktop local execution first; supported modes and per-machine prerequisites must be proven.
 - Iterative edits that retain stable resource IDs and return the updated source with the images.
 
 ### Confirmed architecture depth and visual direction (S01)
@@ -60,7 +60,7 @@ ChatGPT Work: skill + host model
 
 Keep core and platform adapters separate. Start by wrapping the upstream dependency; an upstream fork is unnecessary unless a verified limitation requires it. A plugin manifest alone is not a runtime installer. Graphviz is a separate dependency in the [upstream installation guide](https://diagrams.mingrammer.com/docs/getting-started/installation).
 
-The plugin is the installable product; its skill supplies instructions/references, and its execution tools invoke the renderer. This follows the [OpenAI plugin/skill distinction](https://learn.chatgpt.com/docs/skills-and-plugins). Cross-machine use is confirmed user intent. D-013 selects per-machine local execution and supersedes D-012's central-server route. The plugin must include a reproducible installer/preflight for its local runtime. This does not guarantee automatic installation/dependency sync or support for cloud-only chats. M0 must prove the selected local Work mode and artifact retrieval. See the [S04 runtime investigation](../project-management/evidence/S04-runtime-and-hosting.md).
+The plugin is the installable product; its skill supplies instructions/references, and its execution tools invoke the renderer. This follows the [OpenAI plugin/skill distinction](https://learn.chatgpt.com/docs/skills-and-plugins). Cross-machine use is confirmed user intent. D-013 selects per-machine local execution and supersedes D-012's central-server route. The plugin must include a reproducible installer/preflight for its native local runtime and support direct controlled script execution. Local stdio MCP is a helper-process interface, not a central/listening server. This does not guarantee automatic installation/dependency sync or support for cloud-only chats. M0 must prove the selected local Work mode and artifact retrieval. See the [S04 runtime investigation](../project-management/evidence/S04-runtime-and-hosting.md).
 
 ## 4. Functional requirements
 
@@ -134,7 +134,7 @@ The plugin is the installable product; its skill supplies instructions/reference
 | FR-061 | P0 | The skill guides catalog lookup, assumption handling, validation, rendering, and edits that preserve IDs. |
 | FR-062 | P0 | Return preview where supported and retrievable SVG/PNG/source/diagnostics. Verify actual local Work file access and attachment/export; returning an inaccessible renderer path is insufficient. |
 | FR-063 | P0 | Tool results distinguish success, validation failure, runtime failure, timeout, and unavailable artifact, with stable codes and actionable messages. |
-| FR-064 | P0 | Install/preflight the local Python/Graphviz/assets/fonts runtime on each supported machine; verify execution permissions and local Work transport. Document OS/runtime prerequisites, first-install downloads, offline rendering behavior and supported host modes. |
+| FR-064 | P0 | Install/preflight the native local Python/Graphviz/assets/fonts runtime on each supported machine without requiring Docker; verify execution permissions and local Work transport. Document OS/runtime prerequisites, first-install downloads, offline rendering behavior and supported host modes. |
 | FR-065 | P0 | Keep the core independent of Work-specific APIs so a later Claude Code adapter reuses its model, catalogs, tests, and renderer. |
 | FR-066 | P0 | Distribute an identifiable, versioned plugin through a supported installation/enablement route. Demonstrate its complete local Work diagram workflow from two supported machines with independently installed runtimes; document any per-machine setup/authentication. A standalone skill folder or manual source checkout is not the final user deliverable. |
 

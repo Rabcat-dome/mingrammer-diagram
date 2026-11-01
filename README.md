@@ -2,9 +2,9 @@
 
 Planning repository for a personal plugin built on `mingrammer/diagrams` and Graphviz. Target coverage: AWS, Azure, GCP, Huawei Cloud, and on-premises architecture.
 
-The deliverable is an installable plugin usable across machines. Its bundled skill provides workflow instructions; it is one component inside the plugin. D-013 selects runtime installation on every machine using the plugin; the S04 candidate contains dependencies in a local Docker image.
+The deliverable is an installable plugin usable across machines. Its bundled skill provides workflow instructions; it is one component inside the plugin. D-013 selects runtime installation on every machine using the plugin; the S04 native default uses a private Python environment and system Graphviz, without requiring Docker.
 
-**Status:** S01-S03 complete; S04 is in progress. D-013 selects an installable local plugin with runtime setup on each machine and supersedes the central server. Requirements are revision 0.7. Local container and installed-plugin SDK checks are recorded separately from pending actual Work verification. Product quality gates start in M1; Huawei packaging rights remain open.
+**Status:** S01-S03 complete; S04 is in progress. D-013 selects an installable local plugin with runtime setup on each machine and supersedes the central server. Requirements are revision 0.8. Native direct-script/MCP tests and historical live Codex Desktop checks are recorded separately from pending exact Work verification. Product quality gates start in M1; Huawei packaging rights remain open.
 
 ## Read next
 

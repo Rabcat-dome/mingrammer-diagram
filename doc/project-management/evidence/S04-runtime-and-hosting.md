@@ -1,10 +1,12 @@
-# S04 Local Runtime and Plugin Proof
+# S04 Historical Docker Runtime and Plugin Proof
 
 Date: 2026-11-01 (Asia/Bangkok) | Tasks: M0-02, M0-05 | Status: local feasibility/install checks; actual Work proof and independent review pending.
 
-The owner first selected central execution (D-012), then replaced it with **runtime installation on every machine using the plugin** (D-013). D-013 is current. Requirements revision 0.7 reflects this choice; O-006 hosting inputs are retired. No cloud server, public endpoint or account plugin was created. A free public rendering MCP is not a project dependency; this record does not claim an exhaustive survey of public services.
+The owner first selected central execution (D-012), then replaced it with **runtime installation on every machine using the plugin** (D-013). D-013 is current. Requirements revision 0.8 reflects this choice and the native default; O-006 hosting inputs are retired. No cloud server, public endpoint or account plugin was created. A free public rendering MCP is not a project dependency; this record does not claim an exhaustive survey of public services.
 
-## Selected route
+Current default: [native alpha.2 follow-up](S04-native-runtime.md). The container/HTTP results below are historical alpha.1 evidence; Docker is not required by the new direct-script path.
+
+## Alpha.1 route
 
 Installable local plugin -> bundled workflow skill and stdio MCP -> locally installed Docker renderer -> local artifact bundle. Each machine performs runtime setup. This retains the plugin deliverable; a standalone skill is insufficient. Work Desktop/local execution is the first host to prove. Cloud-only execution and mobile support are not assumed.
 
@@ -30,7 +32,7 @@ The SDK integration harness exercises the installed cache and a relocated ZIP on
 | Font provenance | Actual name-table metadata/file hashes identify Noto authors and SIL OFL 1.1; release notices still require packaging verification |
 | Local controls | Network none; non-root desktop UID/GID; read-only root; one scoped output bind; one CPU; 1 GiB/no swap; 64 PIDs; 256 MiB tmpfs; dropped capabilities/no-new-privileges |
 
-The host still has no native `dot`; runtime dependencies are in local images. Setup downloads dependencies; rendering has no outbound network. No provider/Huawei artwork is used. Transitive Alpine packages are inventoried, not all frozen to immutable repositories. Images are local, not pushed to a registry. See [diagrams installation](https://diagrams.mingrammer.com/docs/getting-started/installation), [Docker controls](https://docs.docker.com/engine/containers/resource_constraints/) and [Noto Thai OFL](https://github.com/notofonts/thai/blob/main/OFL.txt) for primary references.
+At the alpha.1 snapshot the host had no native dot; those runtime dependencies were in local images. Native Graphviz was installed later for alpha.2. Setup downloads dependencies; rendering has no outbound network. No provider/Huawei artwork is used. Transitive Alpine packages are inventoried, not all frozen to immutable repositories. Images are local, not pushed to a registry. See [diagrams installation](https://diagrams.mingrammer.com/docs/getting-started/installation), [Docker controls](https://docs.docker.com/engine/containers/resource_constraints/) and [Noto Thai OFL](https://github.com/notofonts/thai/blob/main/OFL.txt) for primary references.
 
 ## Historical HTTP experiment
 

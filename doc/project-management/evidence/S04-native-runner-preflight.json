@@ -1,0 +1,92 @@
+{
+  "scope": "actual existing main-branch runner preflight; not native plugin source/product gate",
+  "run": {
+    "conclusion": "success",
+    "createdAt": "2026-11-01T16:50:49Z",
+    "databaseId": 41328404188,
+    "headBranch": "main",
+    "headSha": "afbaccad87019d35bff12d335ec534166752f0bf",
+    "jobs": [
+      {
+        "completedAt": "2026-11-01T16:51:05Z",
+        "conclusion": "success",
+        "databaseId": 124913107050,
+        "name": "runner-preflight",
+        "startedAt": "2026-11-01T16:50:53Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-01T16:50:55Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-01T16:50:55Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-01T16:50:55Z",
+            "conclusion": "success",
+            "name": "Inspect runner job environment",
+            "number": 2,
+            "startedAt": "2026-11-01T16:50:55Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-01T16:50:56Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 3,
+            "startedAt": "2026-11-01T16:50:55Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41328404188/job/124913107050"
+      }
+    ],
+    "status": "completed",
+    "updatedAt": "2026-11-01T16:51:05Z",
+    "url": "https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41328404188"
+  },
+  "probe": {
+    "scope": "runner-shell-preflight",
+    "github_actions": true,
+    "commit": "afbaccad87019d35bff12d335ec534166752f0bf",
+    "runner_name": "macbook-pro-m2-max-mingrammer",
+    "runner_os": "macOS",
+    "runner_arch": "ARM64",
+    "system": "Darwin",
+    "machine": "arm64",
+    "macos_version": "27.0.1",
+    "service_user": "visarut.pha",
+    "path": "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+    "python": "3.13.7",
+    "python_path": "/usr/local/bin/python3",
+    "tools": {
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "uv 0.13.0 (Homebrew 2026-10-09 aarch64-apple-darwin)",
+        "exit_code": 0
+      },
+      "dot": {
+        "path": "/opt/homebrew/bin/dot",
+        "version": "dot - graphviz version 16.1.0 (20260904.0139)",
+        "exit_code": 0
+      },
+      "git": {
+        "path": "/usr/bin/git",
+        "version": "git version 2.54.0 (Apple Git-157)",
+        "exit_code": 0
+      },
+      "actionlint": {
+        "path": "/opt/homebrew/bin/actionlint",
+        "version": "1.7.12\ninstalled from Homebrew\nbuilt with go1.27.1 compiler for darwin/arm64",
+        "exit_code": 0
+      }
+    },
+    "temp_write_read_cleanup": "passed",
+    "free_space_gib": 231.7,
+    "graphviz_found": true,
+    "render_check": "not_executed",
+    "quality_gate": "not_executed"
+  }
+}

@@ -1,6 +1,6 @@
 # Model Strategy and Code Review
 
-Model guidance verified: 2026-10-31 | Review state updated: 2026-11-01 | Status: Recommended policy, not an account configuration change.
+Model guidance verified: 2026-10-31 | Review state updated: 2026-11-02 | Status: Recommended policy, not an account configuration change.
 
 ## Selection
 
@@ -40,7 +40,7 @@ For each finding give severity, file/line, a concrete failure scenario, evidence
 and a fix direction. State checks not run and review limitations. Do not edit code.
 ```
 
-No separate model code review has been executed. S04 includes a local stdio plugin/runtime pilot and historical loopback HTTP research; its final source and the M0 local-install/isolation decision still require an Astra/High review before M0 closure. Local verification is not that independent review.
+A separate Astra/High review completed for base afbacca to 7208317 and found one P2 output-root symlink issue. The native alpha.2 source fixes it with local regression evidence; this new native diff still requires independent review. See [review record](evidence/S04-astra-review.md). Do not extend the old review to later code or call local tests independent approval.
 
 ## Pipeline policy
 

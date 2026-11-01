@@ -1,5 +1,7 @@
-"""SDK integration checks of the installed cache and a relocated portable ZIP."""
+"""Native script/MCP integration and output-root/resource regression checks."""
 import asyncio
+from datetime import datetime
+from zoneinfo import ZoneInfo
 import base64
 import hashlib
 import json
@@ -8,102 +10,166 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
-import time
 import zipfile
 from mcp import Client, StdioServerParameters
+from artifact_store import ArtifactStore, FILES, MAX_FILE
+from execution import execute, POLICY
 
 HERE = Path(__file__).resolve().parent
-NAME = "cloud-architecture-diagrams"
-VERSION = "0.1.0-alpha.1"
-INSTALLED = Path.home() / ".codex/plugins/cache/mingrammer-local" / NAME / VERSION
-ARCHIVE = HERE / "output" / (NAME + "-" + VERSION + ".zip")
-LABELS = ["Client", "Application \u0e23\u0e30\u0e1a\u0e1a", "Database \u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25"]
+VERSION = '0.1.0-alpha.2'
+NAME = 'cloud-architecture-diagrams'
+INSTALLED = Path.home() / '.codex/plugins/cache/mingrammer-local' / NAME / VERSION
+ARCHIVE = HERE / 'output' / (NAME + '-' + VERSION + '.zip')
+LABELS = ['Client', 'Application \u0e23\u0e30\u0e1a\u0e1a', 'Database \u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25']
 
 
-def containers():
-    ids = subprocess.check_output(["docker", "ps", "-aq", "--filter", "name=cloud-diagrams-mcp-"], text=True).split()
-    return set(ids)
+def checksum(data):
+    return hashlib.sha256(data).hexdigest()
 
 
-async def check(root):
-    started = time.monotonic()
-    async with Client(StdioServerParameters(command=sys.executable, args=[str(root / "scripts/launch.py")], cwd=root)) as client:
+def bundle(report):
+    assert report['node_count'] == 3 and report['edge_count'] == 2
+    assert len(report['host_paths']) == 5
+    for name, path in report['host_paths'].items():
+        data = Path(path).read_bytes()
+        if name != 'manifest.json':
+            assert len(data) == report['files'][name]['bytes']
+            assert checksum(data) == report['files'][name]['sha256']
+    manifest = json.loads(Path(report['host_paths']['manifest.json']).read_text())
+    assert manifest == report
+    assert report['runtime']['system'] == 'Darwin'
+    assert report['runtime']['plugin_version'] == VERSION
+    assert report['runtime']['packages']['diagrams'] == '0.25.1'
+    return report
+
+
+async def mcp_check(root):
+    async with Client(StdioServerParameters(command=sys.executable, args=['-B', str(root / 'scripts/launch.py')], cwd=root)) as client:
         tools = (await client.list_tools()).tools
-        assert {t.name for t in tools} == {"get_runtime_info", "render_fixture", "read_fixture_artifact"}
-        info_result = await client.call_tool("get_runtime_info", {})
-        assert not info_result.is_error
-        info = info_result.structured_content
-        # SDK wraps dict returns under result on some servers.
-        if "result" in info:
-            info = info["result"]
-        assert info["uid"] != 0 and info["packages"]["diagrams"] == "0.25.1"
-        assert info["cgroups"] == {"memory.max": "1073741824", "memory.swap.max": "0", "pids.max": "64", "cpu.max": "100000 100000"}
-        result = await client.call_tool("render_fixture", {"request": {"labels": LABELS}})
+        assert {t.name for t in tools} == {'get_runtime_info', 'render_fixture', 'read_fixture_artifact'}
+        info = await client.call_tool('get_runtime_info', {})
+        assert not info.is_error and info.structured_content['plugin_version'] == VERSION
+        result = await client.call_tool('render_fixture', {'request': {'labels': LABELS}})
         assert not result.is_error, result
-        report = result.structured_content
-        assert report["node_count"] == 3 and report["edge_count"] == 2
-        files = report["host_paths"]
-        assert len(files) == 5 and set(report["files"]) == set(files) - {"manifest.json"}
-        for name, filename in files.items():
-            path = Path(filename)
-            assert path.is_file() and path.parent.name == report["bundle_id"]
-            read = await client.call_tool("read_fixture_artifact", {"bundle_id": report["bundle_id"], "filename": name})
+        report = bundle(result.structured_content)
+        image = next(c for c in result.content if c.type == 'image')
+        assert base64.b64decode(image.data) == Path(report['host_paths']['diagram.png']).read_bytes()
+        for name, path in report['host_paths'].items():
+            read = await client.call_tool('read_fixture_artifact', {'bundle_id': report['bundle_id'], 'filename': name})
             assert not read.is_error
-            contents = base64.b64decode(read.content[0].resource.blob)
-            assert contents == path.read_bytes()
-            if name in report["files"]:
-                assert hashlib.sha256(contents).hexdigest() == report["files"][name]["sha256"]
-        image = next(c for c in result.content if c.type == "image")
-        assert base64.b64decode(image.data) == Path(files["diagram.png"]).read_bytes()
-        for args in [{"labels": ["only one"]}, {"labels": ["x" * 257, "a", "b"]},
-                     {"labels": ["a\nb", "c", "d"]}, {"labels": LABELS, "code": "print('forbidden')"}]:
-            bad = await client.call_tool("render_fixture", {"request": args})
+            assert base64.b64decode(read.content[0].resource.blob) == Path(path).read_bytes()
+        negatives = [{'labels': ['one']}, {'labels': ['x' * 257, 'b', 'c']}, {'labels': ['a\nb', 'b', 'c']}, {'labels': LABELS, 'code': 'forbidden'}]
+        for request in negatives:
+            bad = await client.call_tool('render_fixture', {'request': request})
             assert bad.is_error
-        traversal = await client.call_tool("read_fixture_artifact", {"bundle_id": "../etc", "filename": "source.json"})
-        assert traversal.is_error
-        live = containers()
-        assert len(live) >= 1
-        configs = json.loads(subprocess.check_output(["docker", "inspect", *live], text=True))
-        matching = [c for c in configs if c["State"]["Running"] and c["Config"]["Env"] and "CLOUD_DIAGRAM_HOST_OUTPUT_ROOT=" + str(Path(files["source.json"]).parents[1]) in c["Config"]["Env"]]
-        assert len(matching) == 1
-        config = matching[0]
-        hc = config["HostConfig"]
-        assert hc["NetworkMode"] == "none" and hc["ReadonlyRootfs"] and hc["Privileged"] is False
-        assert hc["CapDrop"] == ["ALL"] and hc["SecurityOpt"] == ["no-new-privileges"]
-        assert len(hc["Mounts"]) == 1 and hc["Mounts"][0]["Target"] == "/output"
-        assert hc["PortBindings"] == {}
-        assert not any("TOKEN=" in e or "API_KEY=" in e for e in config["Config"]["Env"])
-        probe = json.loads(subprocess.check_output(["docker", "exec", config["Id"], "python", "-c",
-             'import json,os;print(json.dumps({"routes":open("/proc/net/route").read(),"tmp":os.statvfs("/tmp").f_frsize*os.statvfs("/tmp").f_blocks}))'], text=True))
-        assert len(probe["routes"].splitlines()) == 1 and probe["tmp"] == 268435456
-        return {"root": str(root), "runtime": info, "bundle": report, "tools": sorted(t.name for t in tools),
-                "negative_cases": ["label_count", "label_length", "control_character", "code_field", "artifact_traversal"],
-                "container_host_config": hc, "elapsed_including_startup_seconds": round(time.monotonic() - started, 3)}
+        bad = await client.call_tool('read_fixture_artifact', {'bundle_id': '../etc', 'filename': 'source.json'})
+        assert bad.is_error
+        return {'root': str(root), 'tools': sorted(t.name for t in tools), 'bundle': report,
+                'artifact_reads_and_hashes': 'passed', 'negative_cases': ['label_count', 'label_length', 'control_label', 'code_field', 'artifact_traversal']}
+
+
+def path_regressions():
+    passed = []
+    with tempfile.TemporaryDirectory(prefix='s04-native-path-') as raw:
+        base = Path(raw).resolve()
+        outside = base / 'outside'; outside.mkdir(mode=0o700)
+        alias = base / 'alias'; alias.symlink_to(outside, target_is_directory=True)
+        for path, name in [(alias, 'existing_root_symlink'), (alias / 'child', 'ancestor_symlink')]:
+            try:
+                ArtifactStore(path)
+            except (OSError, ValueError):
+                passed.append(name)
+            else:
+                raise AssertionError(name + ' accepted')
+        assert not (outside / 'child').exists()
+        root = base / 'approved'; store = ArtifactStore(root)
+        try:
+            identifier = 'a' * 32; folder = root / identifier; folder.mkdir(mode=0o700)
+            secret = outside / 'private.txt'; secret.write_text('outside sentinel')
+            target = folder / 'source.json'; target.symlink_to(secret)
+            try:
+                store.read(identifier, 'source.json')
+            except (OSError, ValueError):passed.append('artifact_symlink')
+            else:raise AssertionError('symlink file read')
+            target.unlink(); os.mkfifo(target)
+            try:
+                store.read(identifier, 'source.json')
+            except (OSError, ValueError):passed.append('non_regular_artifact')
+            else:raise AssertionError('FIFO accepted')
+            target.unlink()
+            with target.open('wb') as stream:stream.truncate(MAX_FILE + 1)
+            try:
+                store.read(identifier, 'source.json')
+            except ValueError:passed.append('artifact_size')
+            else:raise AssertionError('oversize accepted')
+            root.rename(base / 'original'); root.mkdir(mode=0o700)
+            try:
+                store.check_root()
+            except ValueError:passed.append('root_replacement')
+            else:raise AssertionError('replaced root accepted')
+        finally:store.close()
+        store = ArtifactStore(base / 'atomic')
+        try:
+            source = base / 'source'; source.mkdir(mode=0o700)
+            report = {'files': {}}
+            for name in FILES - {'manifest.json'}:
+                data = name.encode(); (source / name).write_bytes(data)
+                report['files'][name] = {'bytes': len(data), 'sha256': checksum(data)}
+            report['files']['source.json']['sha256'] = 'wrong'
+            try:store.publish('b' * 32, source, report)
+            except ValueError:passed.append('failed_bundle_atomic_cleanup')
+            else:raise AssertionError('corrupt bundle published')
+            assert list(store.root.iterdir()) == []
+        finally:store.close()
+    return passed
+
+
+def resource_regressions():
+    passed = []
+    with tempfile.TemporaryDirectory(prefix='s04-native-limits-') as raw:
+        scratch = Path(raw).resolve()
+        cases = [('S04_RENDER_TIMEOUT', 'import time;time.sleep(5)', {'wall_seconds': .2}),
+                 ('S04_MEMORY_LIMIT', 'import time;x=bytearray(32*1024*1024);time.sleep(5)', {'memory_bytes': 8 * 1024 ** 2}),
+                 ('S04_TEMPORARY_LIMIT', 'import pathlib,time,sys;pathlib.Path(sys.argv[1]).write_bytes(b"x"*(2*1024*1024));time.sleep(5)', {'temporary_bytes': 1024 ** 2}),
+                 ('S04_RENDER_TIMEOUT', 'import subprocess,sys,pathlib;p=subprocess.Popen([sys.executable,"-c","import time;time.sleep(5)"]);pathlib.Path(sys.argv[1]).write_text(str(p.pid))', {'wall_seconds': .2})]
+        for expected, code, overrides in cases:
+            command = [sys.executable, '-c', code, str(scratch / 'file.bin')]
+            try:execute(command, b'{}', os.environ.copy(), scratch, {**POLICY, **overrides})
+            except ValueError as error:
+                assert str(error) == expected, str(error)
+                passed.append(expected)
+            else:raise AssertionError(expected + ' not enforced')
+        child = (scratch / 'file.bin').read_text()
+        status = subprocess.run(['/bin/ps', '-o', 'stat=', '-p', child], capture_output=True, text=True)
+        assert not status.stdout.strip() or status.stdout.strip().startswith('Z'), 'descendant survived timeout'
+        passed[-1] = 'S04_RENDER_TIMEOUT_with_exited_parent_and_live_descendant'
+    return passed
 
 
 async def main():
-    before = containers()
-    environment = os.environ.copy()
-    environment.pop("DOCKER_CONTEXT", None)
-    environment["DOCKER_HOST"] = "tcp://renderer.invalid:2375"
-    rejected = subprocess.run([sys.executable, str(INSTALLED / "scripts/launch.py")], env=environment, capture_output=True, text=True)
-    assert rejected.returncode == 1 and "local Docker socket" in rejected.stderr
-    installed = await check(INSTALLED)
-    with tempfile.TemporaryDirectory(prefix="S04 relocated plugin ") as directory:
-        with zipfile.ZipFile(ARCHIVE) as z:
-            z.extractall(directory)
-        relocated = await check(Path(directory) / NAME)
-    after = containers()
-    assert before == after, (before, after)
-    proof = {"date": "2026-11-01", "route": "D-013 per-machine local stdio plugin", "scope": "synthetic runtime pilot",
-             "archive": {"path": str(ARCHIVE), "sha256": hashlib.sha256(ARCHIVE.read_bytes()).hexdigest()},
-             "installed_sdk": installed, "relocated_zip_sdk": relocated, "temporary_containers_remaining": len(after - before),
-             "remote_docker_endpoint_rejected": True,
-             "actual_work_chat": "not_tested", "second_physical_machine": "not_tested", "independent_astra_review": "not_performed"}
-    path = HERE / "output/local-proof.json"
-    path.write_text(json.dumps(proof, indent=2) + "\n")
-    print(json.dumps({"passed": True, "proof": str(path), "preview": installed["bundle"]["host_paths"]["diagram.png"]}))
+    paths = path_regressions(); resources = resource_regressions()
+    with tempfile.TemporaryDirectory(prefix='s04-no-docker-') as raw:
+        folder = Path(raw); marker = folder / 'called'
+        fake = folder / 'docker'; fake.write_text('#!/bin/sh\ntouch "' + str(marker) + '"\nexit 99\n'); fake.chmod(0o700)
+        environment = os.environ.copy(); environment['PATH'] = str(folder) + os.pathsep + environment['PATH']
+        environment['DOCKER_HOST'] = 'tcp://unused.invalid:2375'
+        result = subprocess.run([sys.executable, '-B', str(INSTALLED / 'scripts/render.py')], input=json.dumps({'labels': LABELS}).encode(), env=environment, capture_output=True, check=True)
+        direct = bundle(json.loads(result.stdout)); assert not marker.exists()
+        too_large = subprocess.run([sys.executable, '-B', str(INSTALLED / 'scripts/render.py')], input=b'x' * (1024 ** 2 + 1), env=environment, capture_output=True)
+        assert too_large.returncode == 2 and b'S04_INPUT_LIMIT' in too_large.stderr
+    installed = await mcp_check(INSTALLED)
+    with tempfile.TemporaryDirectory(prefix='S04 native relocated ') as raw:
+        with zipfile.ZipFile(ARCHIVE) as z:z.extractall(raw)
+        relocated = await mcp_check(Path(raw) / NAME)
+    proof = {'recorded_at': datetime.now(ZoneInfo('Asia/Bangkok')).isoformat(), 'plugin_version': VERSION, 'scope': 'native macOS S04 pilot',
+             'direct_script': direct, 'docker_invocation': 'not_used; failing Docker shim and remote DOCKER_HOST did not affect render',
+             'installed_mcp': installed, 'relocated_zip_mcp': relocated, 'path_regressions': paths,
+             'resource_regressions': resources, 'cli_input_limit': 'passed',
+             'archive': {'path': str(ARCHIVE), 'sha256': checksum(ARCHIVE.read_bytes())},
+             'actual_chatgpt_work_mode': 'not_tested', 'independent_native_source_review': 'pending', 'second_physical_machine': 'not_tested'}
+    target = HERE / 'output/native-proof.json'; target.write_text(json.dumps(proof, indent=2) + '\n')
+    print(json.dumps({'passed': True, 'proof': str(target), 'png': direct['host_paths']['diagram.png'], 'path_regressions': len(paths), 'resource_regressions': len(resources)}))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     asyncio.run(main())

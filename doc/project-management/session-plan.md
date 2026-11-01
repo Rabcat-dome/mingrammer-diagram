@@ -1,6 +1,6 @@
 # Session Plan and Starter Prompts
 
-Updated: 2026-11-01 | Status: S01-S03 complete; S04 local plugin/runtime proof in progress; actual Work proof pending; no new chats dispatched.
+Updated: 2026-11-02 | Status: S01-S03 complete; S04 local plugin/runtime proof in progress; actual Work proof pending; no new chats dispatched.
 
 This is an execution index for the existing [milestones](milestones.md), not a second requirement baseline. Use the [requirements](../requirements/requirements.md) for product scope and the [decision log](decisions.md) for confirmed choices. The deliverable remains an installable cross-machine plugin with a bundled skill.
 
@@ -14,7 +14,7 @@ S02 result: [source/rights assessment and gaps](evidence/S02-icon-sources-and-ri
 
 S03 result: [repository/runner evidence](evidence/S03-repository-runner-preflight.md) and [actual job reports](evidence/S03-runner-job.json). Private/admin access, runner ID 2/service/labels and two successful dispatches are verified at initial commit `5c3859b4a865c3e65fc6ed80a389ec8f8a32182e`; M0-04 is complete. Graphviz is absent, and a transient broker/offline observation is documented. Required-check enforcement is unavailable on the current private-repository plan. S04 is in progress; S05 and later sessions have not started.
 
-S04 result so far: [local runtime/hosting evidence](evidence/S04-runtime-and-hosting.md) and [proof metadata](evidence/S04-runtime-proof.json). D-013 selects per-machine installation and supersedes the central route. Local runtime and installed-plugin SDK checks are separate from actual Work preview/export; no hosting inputs are needed. M0-02/M0-05 remain open; do not start S05 as if they were complete.
+S04 result so far: [local runtime/hosting evidence](evidence/S04-runtime-and-hosting.md) and [proof metadata](evidence/S04-runtime-proof.json). D-013 selects per-machine installation and supersedes the central route. Alpha.2 defaults to native script execution without required Docker; see [native follow-up](evidence/S04-native-runtime.md). Local runtime and installed-plugin SDK checks are separate from actual Work preview/export; no hosting inputs are needed. M0-02/M0-05 remain open; do not start S05 as if they were complete.
 
 The [S02 user follow-up](evidence/S02-additional-icon-sources.md) assesses a 155-PNG Huawei alternative and maps all eight on-premises concepts to draw.io-type generic symbols/compositions under D-010. S06 implements the exact approved subset/export/attribution; symbol selection does not replace source-rights or rendered acceptance checks.
 

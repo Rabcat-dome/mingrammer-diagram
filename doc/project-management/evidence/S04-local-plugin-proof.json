@@ -577,5 +577,7 @@
     "image_id": "sha256:0e79c3b7f66f0400d89cf7d4d97c1515e52cc954f9b1b562a1784d4de5f16f30",
     "output_root": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams",
     "docker_endpoint": "unix:///Users/visarut.pha/.docker/run/docker.sock"
-  }
+  },
+  "source_ref": "720831733bdb99061f62f7d509d95a65aa7f748b",
+  "historical_context": "Docker pilot alpha.1; native alpha.2 is the current default. Source digests refer to source_ref, not current files."
 }

@@ -1,0 +1,641 @@
+{
+  "session": "S04",
+  "recorded_at": "2026-11-01T15:50:12.634270+07:00",
+  "scope": "Live installed local-plugin invocation in this desktop chat; fixed three-node fixture only.",
+  "result": {
+    "live_desktop_tool_invocation": "passed",
+    "five_artifact_tool_read_and_local_export": "passed",
+    "png_tool_preview_and_visual_inspection": "passed",
+    "exact_chatgpt_work_ui_mode": "unverified",
+    "work_ui_download_click": "unverified",
+    "m0_closed": false
+  },
+  "repository": {
+    "root": "/Users/visarut.pha/Documents/source/easybuy/mingrammer-diagram",
+    "branch": "codex/s04-runtime-proof",
+    "expected_head": "720831733bdb99061f62f7d509d95a65aa7f748b",
+    "observed_head": "720831733bdb99061f62f7d509d95a65aa7f748b",
+    "base": "afbaccad87019d35bff12d335ec534166752f0bf",
+    "base_is_ancestor": true,
+    "initial_git_status_short": "",
+    "tracked_files_match_head_before_evidence_write": true,
+    "baseline_evidence_sha256": {
+      "doc/project-management/HANDOFF.md": "eb2a2e52d1b8d66d918cdeaacbaf533c7f7226e0b1e54bcef9670832137842c3",
+      "doc/project-management/evidence/S04-runtime-and-hosting.md": "83914436a0d3f29d49b3f25f989055fece2199f910870c3006f97f46c82b733d",
+      "doc/project-management/evidence/S04-runtime-proof.json": "c913635d046c1940adf24643b1458cdb47c02a4828048529be95edf0924baa98",
+      "doc/project-management/evidence/S04-local-plugin-proof.json": "9303842faf71d2f8357b297d2dd5b6fd6e4b03572c6157b8d1769ac93a9b68de"
+    }
+  },
+  "host": {
+    "mode_established": "Local Codex Desktop executor in the installed app whose display name is ChatGPT. No visible ChatGPT Work mode attestation.",
+    "environment": {
+      "CODEX_INTERNAL_ORIGINATOR_OVERRIDE": "Codex Desktop",
+      "CODEX_THREAD_ID": "01a1964a-784d-7751-bfe5-57e0bbb4cf39",
+      "CODEX_CI": "1"
+    },
+    "os": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "macos_version": "27.0.1",
+    "macos_build": "26A434",
+    "app_info_path": "/Applications/ChatGPT.app/Contents/Info.plist",
+    "app": {
+      "CFBundleIdentifier": "com.openai.codex",
+      "CFBundleDisplayName": "ChatGPT",
+      "CFBundleName": "ChatGPT",
+      "CFBundleShortVersionString": "26.1027.30824",
+      "CFBundleVersion": "22943"
+    },
+    "process_ancestry_observation": {
+      "codex_pid": 31288,
+      "codex_parent_pid": 31190,
+      "codex_executable": "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
+      "parent_executable": "/Applications/ChatGPT.app/Contents/MacOS/ChatGPT",
+      "method": "ps with pid/ppid/comm only; no full arguments or environment dump"
+    },
+    "cli_version": "codex-cli 0.166.0-alpha.5.1",
+    "ui_observations": [
+      {
+        "tool": "mcp__cua_repl.js",
+        "call": "await cua.getState()",
+        "observed": "Running app displayName ChatGPT, id com.openai.codex. No unrelated inventory saved."
+      },
+      {
+        "tool": "mcp__cua_repl.js",
+        "call": "await cua.getApp('com.openai.codex')",
+        "error": "Computer Use is not allowed to use the app 'com.openai.codex' for safety reasons."
+      }
+    ],
+    "limitations": [
+      "The app display name alone does not establish ChatGPT Work mode.",
+      "Computer Use blocked inspection of the host app, so visible host UI mode and clicking final local download links were not observed.",
+      "No cloud-only, mobile, second-machine, or other execution mode was tested.",
+      "The renderer's fixed work_host=not_tested field is retained; it is not a host-mode attestation."
+    ]
+  },
+  "plugin": {
+    "id": "cloud-architecture-diagrams@mingrammer-local",
+    "version": "0.1.0-alpha.1",
+    "installed_root": "/Users/visarut.pha/.codex/plugins/cache/mingrammer-local/cloud-architecture-diagrams/0.1.0-alpha.1",
+    "requires_local_executor": true,
+    "mcp_config": {
+      "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+      "mcpServers": {
+        "architecture-runtime": {
+          "type": "stdio",
+          "command": "python3",
+          "args": [
+            "${PLUGIN_ROOT}/scripts/launch.py"
+          ],
+          "cwd": "${PLUGIN_ROOT}"
+        }
+      }
+    },
+    "registry": [
+      {
+        "name": "mcp__architecture_runtime__get_runtime_info",
+        "description": "Verify this machine's local renderer versions/fonts, non-root UID and isolation configuration. This tool is part of plugin `Cloud Architecture Diagrams (S04)`."
+      },
+      {
+        "name": "mcp__architecture_runtime__read_fixture_artifact",
+        "description": "Read a file from this pilot's local output root; never read an arbitrary path. This tool is part of plugin `Cloud Architecture Diagrams (S04)`."
+      },
+      {
+        "name": "mcp__architecture_runtime__render_fixture",
+        "description": "Render exactly three literal labels locally for S04; return preview and a complete local artifact bundle. This tool is part of plugin `Cloud Architecture Diagrams (S04)`."
+      }
+    ],
+    "cache_file_sha256": {
+      ".codex-plugin/plugin.json": "c942e8bdbd7be2d2eff5bf85097ef883d81272a24a2bda64cff4d38ea81b2105",
+      ".mcp.json": "459fc8f91ebeab705b16221acccf78ee1c61c3b152ffe12feed83ad211375500",
+      "README.md": "d86487324445ce766626d2b992eb803f02072b9476af413c4fa21f5965bd9e48",
+      "mcp.json": "1c45021c938ac142954c8f71b9dfd352665d8e1c1bf6cd4e291197d66ed16e90",
+      "plugin.json": "98ea34fb61e5266d1cafacc7e0b6d7beb7bfff95ef66a8ec450dd6457e9fc2cb",
+      "runtime/Dockerfile": "206346ac9f66e3de3154668ca261c838700ee579138e1e2ba33a539ebb2d1699",
+      "runtime/local_server.py": "552012fcfac5c54c1f881c83383bd719dd93f283320c54b18e2bbe47a48fedf1",
+      "runtime/render_fixture.py": "69bb1aedbb493dfeafaaff24759cf1a086131d4676a58a5ff95e756ec2795438",
+      "runtime/requirements.lock": "54354fcdee04b7a3191411f90b6e18d63d074d40c8b775d4dfde09767e2619f8",
+      "scripts/common.py": "7d53792b98b3e751c88749cd4f7ff714622f89373ba4deaa60bbda8de847ab67",
+      "scripts/launch.py": "26fb66f0f52be30fdbf0e1542c9651a3fb1120d5b531c9b7038c37335e745d1f",
+      "scripts/setup.py": "685a9f3e4fe0eec253c24cb86b32cffa3d6fe15b3a9a9cb6519fe9cb7d146b65",
+      "skills/cloud-architecture-runtime/SKILL.md": "641d1c01df4d06705a54a6b628bcf839ac03a5168c0dccec1117e492fa052038"
+    }
+  },
+  "runtime_install": {
+    "state_path": "/Users/visarut.pha/.local/share/cloud-architecture-diagrams/0.1.0-alpha.1.json",
+    "state_sha256": "fd1b1452f4679c99c82e20a0d9fb9a8deac19b67af79a206848d303ee25c656a",
+    "state": {
+      "version": "0.1.0-alpha.1",
+      "source_sha256": "8a92c48a321509f145b0d111a6cfd7d5b51960966884c70f3c3b60275eb1bc20",
+      "image_id": "sha256:0e79c3b7f66f0400d89cf7d4d97c1515e52cc954f9b1b562a1784d4de5f16f30",
+      "output_root": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams",
+      "docker_endpoint": "unix:///Users/visarut.pha/.docker/run/docker.sock"
+    },
+    "cache_runtime_fingerprint": "8a92c48a321509f145b0d111a6cfd7d5b51960966884c70f3c3b60275eb1bc20",
+    "image_source_label": "8a92c48a321509f145b0d111a6cfd7d5b51960966884c70f3c3b60275eb1bc20",
+    "image": {
+      "Id": "sha256:0e79c3b7f66f0400d89cf7d4d97c1515e52cc954f9b1b562a1784d4de5f16f30",
+      "RepoTags": [
+        "cloud-architecture-diagrams-runtime:0.1.0-alpha.1"
+      ],
+      "RepoDigests": [
+        "cloud-architecture-diagrams-runtime@sha256:0e79c3b7f66f0400d89cf7d4d97c1515e52cc954f9b1b562a1784d4de5f16f30"
+      ],
+      "Architecture": "arm64",
+      "Os": "linux",
+      "Created": "2026-11-01T08:27:30.910722757Z"
+    },
+    "docker_engine_version": "29.9.2",
+    "docker_desktop_platform": "Docker Desktop 4.97.0 (244584)",
+    "containers_observed": [
+      {
+        "id": "95d65c192d89e998ed0d35fff568cb772c9027da0796232574fe4d650d760bda",
+        "name": "/cloud-diagrams-mcp-16c0f9b8e4ab82bb",
+        "image_id": "sha256:0e79c3b7f66f0400d89cf7d4d97c1515e52cc954f9b1b562a1784d4de5f16f30",
+        "user": "501:20",
+        "state": "running",
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams",
+            "Destination": "/output",
+            "RW": true
+          }
+        ],
+        "controls": {
+          "NetworkMode": "none",
+          "ReadonlyRootfs": true,
+          "Memory": 1073741824,
+          "MemorySwap": 1073741824,
+          "NanoCpus": 1000000000,
+          "PidsLimit": 64,
+          "CapDrop": [
+            "ALL"
+          ],
+          "SecurityOpt": [
+            "no-new-privileges"
+          ],
+          "Tmpfs": {
+            "/tmp": "rw,noexec,nosuid,size=256m,mode=1777"
+          },
+          "AutoRemove": true,
+          "Init": true
+        }
+      },
+      {
+        "id": "7e956fb196972a4cecc8eaf81f211f1fea4ef9098adccba31efa0d69aaba211e",
+        "name": "/cloud-diagrams-mcp-7a6005c0e7c85d2b",
+        "image_id": "sha256:0e79c3b7f66f0400d89cf7d4d97c1515e52cc954f9b1b562a1784d4de5f16f30",
+        "user": "501:20",
+        "state": "running",
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams",
+            "Destination": "/output",
+            "RW": true
+          }
+        ],
+        "controls": {
+          "NetworkMode": "none",
+          "ReadonlyRootfs": true,
+          "Memory": 1073741824,
+          "MemorySwap": 1073741824,
+          "NanoCpus": 1000000000,
+          "PidsLimit": 64,
+          "CapDrop": [
+            "ALL"
+          ],
+          "SecurityOpt": [
+            "no-new-privileges"
+          ],
+          "Tmpfs": {
+            "/tmp": "rw,noexec,nosuid,size=256m,mode=1777"
+          },
+          "AutoRemove": true,
+          "Init": true
+        }
+      }
+    ],
+    "container_attribution_limit": "Three pilot containers shared this image; two docker processes had parent CLI PID 31288. This does not uniquely map the invoked MCP session to one container. No container was stopped or altered.",
+    "setup_rerun": false,
+    "versions_or_configuration_changed": false
+  },
+  "runtime_info": {
+    "python": "3.13.13",
+    "system": "Linux",
+    "machine": "aarch64",
+    "uid": 501,
+    "graphviz": "dot - graphviz version 12.2.1 (20241206.2353)",
+    "packages": {
+      "diagrams": "0.25.1",
+      "graphviz": "0.20.3",
+      "mcp": "2.3.0"
+    },
+    "fonts": [
+      {
+        "requested_family": "Noto Sans",
+        "file": "/usr/share/fonts/noto/NotoSans-Regular.ttf",
+        "sha256": "478c558ea716033cd60c03438f628dfa75694dcf6b5f6d505a2f05fd2b4f3823",
+        "name_records": {
+          "0": "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic)",
+          "1": "Noto Sans",
+          "5": "Version 2.015; ttfautohint (v1.8.4.7-5d5b)",
+          "13": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL",
+          "14": "https://scripts.sil.org/OFL"
+        }
+      },
+      {
+        "requested_family": "Noto Sans Thai",
+        "file": "/usr/share/fonts/noto/NotoSansThai-Regular.ttf",
+        "sha256": "61cf814eec46b294d6ea4401ac295d0cecd5207bd2331dcc5a15e7301d30ee44",
+        "name_records": {
+          "0": "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/thai)",
+          "1": "Noto Sans Thai",
+          "5": "Version 2.002; ttfautohint (v1.8.4.7-5d5b)",
+          "13": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL",
+          "14": "https://scripts.sil.org/OFL"
+        }
+      }
+    ],
+    "cgroups": {
+      "memory.max": "1073741824",
+      "memory.swap.max": "0",
+      "pids.max": "64",
+      "cpu.max": "100000 100000"
+    },
+    "plugin_version": "0.1.0-alpha.1",
+    "execution": "local stdio; network-none container"
+  },
+  "tool_calls": [
+    {
+      "tool": "mcp__architecture_runtime__get_runtime_info",
+      "arguments": {},
+      "isError": false
+    },
+    {
+      "tool": "mcp__architecture_runtime__render_fixture",
+      "arguments": {
+        "request": {
+          "labels": [
+            "Client",
+            "Application แอปพลิเคชัน",
+            "Database ฐานข้อมูล"
+          ]
+        }
+      },
+      "isError": false
+    },
+    {
+      "tool": "mcp__architecture_runtime__read_fixture_artifact",
+      "arguments": {
+        "bundle_id": "dd12797b1c044f7e33239cc9cf8b3752",
+        "filename": "diagram.svg"
+      },
+      "isError": false
+    },
+    {
+      "tool": "mcp__architecture_runtime__read_fixture_artifact",
+      "arguments": {
+        "bundle_id": "dd12797b1c044f7e33239cc9cf8b3752",
+        "filename": "diagram.png"
+      },
+      "isError": false
+    },
+    {
+      "tool": "mcp__architecture_runtime__read_fixture_artifact",
+      "arguments": {
+        "bundle_id": "dd12797b1c044f7e33239cc9cf8b3752",
+        "filename": "source.json"
+      },
+      "isError": false
+    },
+    {
+      "tool": "mcp__architecture_runtime__read_fixture_artifact",
+      "arguments": {
+        "bundle_id": "dd12797b1c044f7e33239cc9cf8b3752",
+        "filename": "source.dot"
+      },
+      "isError": false
+    },
+    {
+      "tool": "mcp__architecture_runtime__read_fixture_artifact",
+      "arguments": {
+        "bundle_id": "dd12797b1c044f7e33239cc9cf8b3752",
+        "filename": "manifest.json"
+      },
+      "isError": false
+    }
+  ],
+  "render_result": {
+    "scope": "synthetic-runtime-only",
+    "node_count": 3,
+    "edge_count": 2,
+    "elapsed_seconds": 0.0509,
+    "png_dimensions": [
+      918,
+      168
+    ],
+    "files": {
+      "source.json": {
+        "bytes": 211,
+        "sha256": "8f9fd1c6fbb2ffffb673b1d128d2ffe38d98ffecdd39ca4f1019258aed8aad88"
+      },
+      "diagram.png": {
+        "bytes": 20294,
+        "sha256": "3cbd22a640f1b0788698175cc0fc75bbf13471e132cb2154740c6b4a9e99a301"
+      },
+      "diagram.svg": {
+        "bytes": 3071,
+        "sha256": "07b037bae720868ad9701fb317989c485177f1bdf0d78e8f8304c51f7bd868b2"
+      },
+      "source.dot": {
+        "bytes": 800,
+        "sha256": "43943b991621592b0b2fcc4efdcb774974a59521081bc833a2bdc98375546fe4"
+      }
+    },
+    "production_semantics": "not_tested",
+    "work_host": "not_tested",
+    "runtime": {
+      "python": "3.13.13",
+      "system": "Linux",
+      "machine": "aarch64",
+      "uid": 501,
+      "graphviz": "dot - graphviz version 12.2.1 (20241206.2353)",
+      "packages": {
+        "diagrams": "0.25.1",
+        "graphviz": "0.20.3",
+        "mcp": "2.3.0"
+      },
+      "fonts": [
+        {
+          "requested_family": "Noto Sans",
+          "file": "/usr/share/fonts/noto/NotoSans-Regular.ttf",
+          "sha256": "478c558ea716033cd60c03438f628dfa75694dcf6b5f6d505a2f05fd2b4f3823",
+          "name_records": {
+            "0": "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic)",
+            "1": "Noto Sans",
+            "5": "Version 2.015; ttfautohint (v1.8.4.7-5d5b)",
+            "13": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL",
+            "14": "https://scripts.sil.org/OFL"
+          }
+        },
+        {
+          "requested_family": "Noto Sans Thai",
+          "file": "/usr/share/fonts/noto/NotoSansThai-Regular.ttf",
+          "sha256": "61cf814eec46b294d6ea4401ac295d0cecd5207bd2331dcc5a15e7301d30ee44",
+          "name_records": {
+            "0": "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/thai)",
+            "1": "Noto Sans Thai",
+            "5": "Version 2.002; ttfautohint (v1.8.4.7-5d5b)",
+            "13": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL",
+            "14": "https://scripts.sil.org/OFL"
+          }
+        }
+      ],
+      "cgroups": {
+        "memory.max": "1073741824",
+        "memory.swap.max": "0",
+        "pids.max": "64",
+        "cpu.max": "100000 100000"
+      },
+      "plugin_version": "0.1.0-alpha.1",
+      "execution": "local stdio; network-none container"
+    },
+    "bundle_id": "dd12797b1c044f7e33239cc9cf8b3752",
+    "host_paths": {
+      "diagram.png": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/dd12797b1c044f7e33239cc9cf8b3752/diagram.png",
+      "diagram.svg": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/dd12797b1c044f7e33239cc9cf8b3752/diagram.svg",
+      "manifest.json": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/dd12797b1c044f7e33239cc9cf8b3752/manifest.json",
+      "source.dot": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/dd12797b1c044f7e33239cc9cf8b3752/source.dot",
+      "source.json": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/dd12797b1c044f7e33239cc9cf8b3752/source.json"
+    }
+  },
+  "verification": {
+    "artifacts": {
+      "diagram.svg": {
+        "path": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/dd12797b1c044f7e33239cc9cf8b3752/diagram.svg",
+        "resource_uri": "artifact://dd12797b1c044f7e33239cc9cf8b3752/diagram.svg",
+        "mime_type": "image/svg+xml",
+        "bytes": 3071,
+        "sha256": "07b037bae720868ad9701fb317989c485177f1bdf0d78e8f8304c51f7bd868b2",
+        "tool_local_byte_equal": true,
+        "render_metadata_equal": true,
+        "manifest_metadata_equal": true
+      },
+      "diagram.png": {
+        "path": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/dd12797b1c044f7e33239cc9cf8b3752/diagram.png",
+        "resource_uri": "artifact://dd12797b1c044f7e33239cc9cf8b3752/diagram.png",
+        "mime_type": "image/png",
+        "bytes": 20294,
+        "sha256": "3cbd22a640f1b0788698175cc0fc75bbf13471e132cb2154740c6b4a9e99a301",
+        "tool_local_byte_equal": true,
+        "render_metadata_equal": true,
+        "manifest_metadata_equal": true
+      },
+      "source.json": {
+        "path": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/dd12797b1c044f7e33239cc9cf8b3752/source.json",
+        "resource_uri": "artifact://dd12797b1c044f7e33239cc9cf8b3752/source.json",
+        "mime_type": "application/json",
+        "bytes": 211,
+        "sha256": "8f9fd1c6fbb2ffffb673b1d128d2ffe38d98ffecdd39ca4f1019258aed8aad88",
+        "tool_local_byte_equal": true,
+        "render_metadata_equal": true,
+        "manifest_metadata_equal": true
+      },
+      "source.dot": {
+        "path": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/dd12797b1c044f7e33239cc9cf8b3752/source.dot",
+        "resource_uri": "artifact://dd12797b1c044f7e33239cc9cf8b3752/source.dot",
+        "mime_type": "text/plain",
+        "bytes": 800,
+        "sha256": "43943b991621592b0b2fcc4efdcb774974a59521081bc833a2bdc98375546fe4",
+        "tool_local_byte_equal": true,
+        "render_metadata_equal": true,
+        "manifest_metadata_equal": true
+      },
+      "manifest.json": {
+        "path": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/dd12797b1c044f7e33239cc9cf8b3752/manifest.json",
+        "resource_uri": "artifact://dd12797b1c044f7e33239cc9cf8b3752/manifest.json",
+        "mime_type": "application/json",
+        "bytes": 3287,
+        "sha256": "43d3d0378d37024eeb5da16ba577b0eea1bbf61da56eb255fabf39fdc1aad5a6",
+        "tool_local_byte_equal": true,
+        "render_metadata_equal": null
+      }
+    },
+    "inline_image_matches_tool_and_file": true,
+    "png_dimensions": [
+      918,
+      168
+    ],
+    "manifest_files_match": true,
+    "manifest_bundle_id_matches": true,
+    "source_labels_match": true,
+    "manifest": {
+      "scope": "synthetic-runtime-only",
+      "node_count": 3,
+      "edge_count": 2,
+      "elapsed_seconds": 0.0509,
+      "png_dimensions": [
+        918,
+        168
+      ],
+      "files": {
+        "source.json": {
+          "bytes": 211,
+          "sha256": "8f9fd1c6fbb2ffffb673b1d128d2ffe38d98ffecdd39ca4f1019258aed8aad88"
+        },
+        "diagram.png": {
+          "bytes": 20294,
+          "sha256": "3cbd22a640f1b0788698175cc0fc75bbf13471e132cb2154740c6b4a9e99a301"
+        },
+        "diagram.svg": {
+          "bytes": 3071,
+          "sha256": "07b037bae720868ad9701fb317989c485177f1bdf0d78e8f8304c51f7bd868b2"
+        },
+        "source.dot": {
+          "bytes": 800,
+          "sha256": "43943b991621592b0b2fcc4efdcb774974a59521081bc833a2bdc98375546fe4"
+        }
+      },
+      "production_semantics": "not_tested",
+      "work_host": "not_tested",
+      "runtime": {
+        "python": "3.13.13",
+        "system": "Linux",
+        "machine": "aarch64",
+        "uid": 501,
+        "graphviz": "dot - graphviz version 12.2.1 (20241206.2353)",
+        "packages": {
+          "diagrams": "0.25.1",
+          "graphviz": "0.20.3",
+          "mcp": "2.3.0"
+        },
+        "fonts": [
+          {
+            "requested_family": "Noto Sans",
+            "file": "/usr/share/fonts/noto/NotoSans-Regular.ttf",
+            "sha256": "478c558ea716033cd60c03438f628dfa75694dcf6b5f6d505a2f05fd2b4f3823",
+            "name_records": {
+              "0": "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic)",
+              "1": "Noto Sans",
+              "5": "Version 2.015; ttfautohint (v1.8.4.7-5d5b)",
+              "13": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL",
+              "14": "https://scripts.sil.org/OFL"
+            }
+          },
+          {
+            "requested_family": "Noto Sans Thai",
+            "file": "/usr/share/fonts/noto/NotoSansThai-Regular.ttf",
+            "sha256": "61cf814eec46b294d6ea4401ac295d0cecd5207bd2331dcc5a15e7301d30ee44",
+            "name_records": {
+              "0": "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/thai)",
+              "1": "Noto Sans Thai",
+              "5": "Version 2.002; ttfautohint (v1.8.4.7-5d5b)",
+              "13": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL",
+              "14": "https://scripts.sil.org/OFL"
+            }
+          }
+        ],
+        "cgroups": {
+          "memory.max": "1073741824",
+          "memory.swap.max": "0",
+          "pids.max": "64",
+          "cpu.max": "100000 100000"
+        },
+        "plugin_version": "0.1.0-alpha.1",
+        "execution": "local stdio; network-none container"
+      },
+      "bundle_id": "dd12797b1c044f7e33239cc9cf8b3752",
+      "host_paths": {
+        "diagram.png": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/dd12797b1c044f7e33239cc9cf8b3752/diagram.png",
+        "diagram.svg": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/dd12797b1c044f7e33239cc9cf8b3752/diagram.svg",
+        "manifest.json": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/dd12797b1c044f7e33239cc9cf8b3752/manifest.json",
+        "source.dot": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/dd12797b1c044f7e33239cc9cf8b3752/source.dot",
+        "source.json": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/dd12797b1c044f7e33239cc9cf8b3752/source.json"
+      }
+    }
+  },
+  "visual_inspection": {
+    "png": "Three left-to-right rounded nodes and two arrows; Client, Application with its literal Thai label, and Database with its literal Thai label are readable; no observed clipping. HTTPS and S04 runtime fixture caption are visible.",
+    "dimensions": [
+      918,
+      168
+    ],
+    "tool_inline_png": true,
+    "local_png_inspected": true,
+    "local_viewer_observation": {
+      "path": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/dd12797b1c044f7e33239cc9cf8b3752/diagram.png",
+      "view_image_mime": "application/octet-stream",
+      "display_mime_corrected_to": "image/png",
+      "pixel_bytes_unchanged": true
+    },
+    "provider_style_acceptance": false,
+    "svg_font_portability": "not_tested",
+    "work_host_ui_preview": "not_observed"
+  },
+  "evidence_copies": {
+    "diagram.png": {
+      "path": "/Users/visarut.pha/Documents/source/easybuy/mingrammer-diagram/doc/project-management/evidence/S04-work-host-fixture-dd12797b1c044f7e33239cc9cf8b3752.png",
+      "bytes": 20294,
+      "sha256": "3cbd22a640f1b0788698175cc0fc75bbf13471e132cb2154740c6b4a9e99a301"
+    },
+    "diagram.svg": {
+      "path": "/Users/visarut.pha/Documents/source/easybuy/mingrammer-diagram/doc/project-management/evidence/S04-work-host-fixture-dd12797b1c044f7e33239cc9cf8b3752.svg",
+      "bytes": 3071,
+      "sha256": "07b037bae720868ad9701fb317989c485177f1bdf0d78e8f8304c51f7bd868b2"
+    }
+  },
+  "limitations": [
+    "Synthetic three-node runtime proof only; full provider/Kubernetes semantics, product release acceptance, stress limits and independent review were not performed.",
+    "Manifest does not include a checksum of itself; its SHA-256 was computed independently and tool bytes matched the local file.",
+    "Artifacts remain at the plugin's returned local output paths; no ZIP was created because evidence writes were limited to the two reports and unique PNG/SVG copies.",
+    "Final Markdown embeds/local-file links will be supplied, but successful user clicks and host UI preview cannot be independently observed in this run."
+  ],
+  "mutation_scope": {
+    "created": [
+      "/Users/visarut.pha/Documents/source/easybuy/mingrammer-diagram/doc/project-management/evidence/S04-work-host-check.md",
+      "/Users/visarut.pha/Documents/source/easybuy/mingrammer-diagram/doc/project-management/evidence/S04-work-host-proof.json",
+      "/Users/visarut.pha/Documents/source/easybuy/mingrammer-diagram/doc/project-management/evidence/S04-work-host-fixture-dd12797b1c044f7e33239cc9cf8b3752.png",
+      "/Users/visarut.pha/Documents/source/easybuy/mingrammer-diagram/doc/project-management/evidence/S04-work-host-fixture-dd12797b1c044f7e33239cc9cf8b3752.svg"
+    ],
+    "plugin_created_bundle": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/dd12797b1c044f7e33239cc9cf8b3752",
+    "tracked_source_edited": false,
+    "existing_evidence_edited": false,
+    "plugin_cache_edited_by_agent": false,
+    "runtime_state_edited": false,
+    "git_commit_push_merge_deploy_or_branch_switch": false,
+    "other_chats_messaged": false
+  },
+  "errors_and_workarounds": [
+    {
+      "component": "host app UI",
+      "exact_error": "Computer Use is not allowed to use the app 'com.openai.codex' for safety reasons.",
+      "outcome": "No bypass attempted; exact Work UI mode and UI download/preview remain unverified."
+    },
+    {
+      "component": "functions view_image data URL MIME",
+      "observed": "Local PNG viewer returned data:application/octet-stream;base64, and displayed a blank strip.",
+      "workaround": "Changed only the in-memory data URL MIME to image/png; original PNG bytes remained unchanged. The image then displayed clearly."
+    }
+  ],
+  "checks": {
+    "all_seven_plugin_calls_succeeded": true,
+    "five_tool_payloads_equal_local_files": true,
+    "render_and_manifest_four_file_checksums_match": true,
+    "manifest_sha256_computed": true,
+    "inline_png_equal": true,
+    "runtime_image_and_fingerprint_match_existing_install": true
+  },
+  "final_validation": {
+    "checked_at": "2026-11-01T23:22:22.998290+07:00",
+    "head_and_branch_match": true,
+    "all_existing_tracked_files_equal_head": true,
+    "baseline_evidence_unchanged": true,
+    "runtime_state_unchanged": true,
+    "installed_cache_content_unchanged_since_read_only_snapshot": true,
+    "five_exported_artifacts_and_two_copies_rechecked": true,
+    "complete_bundle_links_exist": true,
+    "authored_evidence_files": 4,
+    "git_status_short": "?? doc/project-management/evidence/S04-native-host-discovery.json\n?? doc/project-management/evidence/S04-work-host-check.md\n?? doc/project-management/evidence/S04-work-host-fixture-dd12797b1c044f7e33239cc9cf8b3752.png\n?? doc/project-management/evidence/S04-work-host-fixture-dd12797b1c044f7e33239cc9cf8b3752.svg\n?? doc/project-management/evidence/S04-work-host-proof.json"
+  }
+}

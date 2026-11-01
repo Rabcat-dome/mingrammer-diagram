@@ -1,0 +1,25 @@
+{
+  "license": "SIL Open Font License 1.1",
+  "fonts": [
+    {
+      "family": "NotoSans",
+      "version": "2.015",
+      "filename": "NotoSans-Regular.ttf",
+      "sha256": "478c558ea716033cd60c03438f628dfa75694dcf6b5f6d505a2f05fd2b4f3823",
+      "license": "NotoSans-OFL.txt",
+      "archive_member": "NotoSans/hinted/ttf/NotoSans-Regular.ttf",
+      "source_url": "https://github.com/notofonts/latin-greek-cyrillic/releases/download/NotoSans-v2.015/NotoSans-v2.015.zip",
+      "archive_sha256": "0c34df072a3fa7efbb7cbf34950e1f971a4447cffe365d3a359e2d4089b958f5"
+    },
+    {
+      "family": "NotoSansThai",
+      "version": "2.002",
+      "filename": "NotoSansThai-Regular.ttf",
+      "sha256": "61cf814eec46b294d6ea4401ac295d0cecd5207bd2331dcc5a15e7301d30ee44",
+      "license": "NotoSansThai-OFL.txt",
+      "archive_member": "NotoSansThai/hinted/ttf/NotoSansThai-Regular.ttf",
+      "source_url": "https://github.com/notofonts/thai/releases/download/NotoSansThai-v2.002/NotoSansThai-v2.002.zip",
+      "archive_sha256": "af889cc673fc714060ce5e4e088fbad32aa4c0571a19958efeaff128a22da485"
+    }
+  ]
+}

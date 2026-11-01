@@ -1,6 +1,6 @@
 # Milestones and Work Breakdown
 
-Updated: 2026-11-01 | Status: S01-S03 complete; S04 local runtime/plugin proof in progress; actual Work proof pending. Huawei packaging rights remain unresolved.
+Updated: 2026-11-02 | Status: S01-S03 complete; S04 local runtime/plugin proof in progress; actual Work proof pending. Huawei packaging rights remain unresolved.
 
 Source of scope: [requirements](../requirements/requirements.md). Model abbreviations and review rules: [model strategy](model-strategy.md). Quality check definitions: [quality gate](quality-gate.md).
 
@@ -22,7 +22,7 @@ M0 investigates the Work execution route before core development. M5 delivers th
 
 ## M0 — Scope and feasibility
 
-Status: In progress; S01-S03 complete. D-013 selects local installation on each machine and supersedes D-012. S04 has local runtime evidence and an installable stdio plugin pilot. Actual Work invocation/preview/export and final supported modes/limits remain open. Huawei rights remain open for packaging. Implementation: Sol/High; required final architecture/runtime review: Astra/High, not yet performed.
+Status: In progress; S01-S03 complete. D-013 selects local installation on each machine and supersedes D-012. S04 has native direct-script/stdio runtime evidence and a versioned plugin pilot. Docker is optional. Actual Work invocation/preview/export and final supported modes/limits remain open. Huawei rights remain open for packaging. Implementation: Sol/High; Astra/High reviewed alpha.1 with one P2 finding, locally fixed in alpha.2; fresh native review remains pending.
 
 | Task | Work | Dependency / output |
 |---|---|---|
@@ -30,7 +30,7 @@ Status: In progress; S01-S03 complete. D-013 selects local installation on each 
 | M0-02 | Compare execution routes against cross-machine plugin delivery; prove Work can invoke a controlled renderer and retrieve SVG/PNG | Partial: D-013 selects local installation. [S04 evidence](evidence/S04-runtime-and-hosting.md) separates installed-plugin SDK checks from pending actual Work invocation/preview/export |
 | M0-03 | Investigate Huawei icon sources and terms; inventory upstream on-premises gaps | S02 research complete: [rights matrix/gaps](evidence/S02-icon-sources-and-rights.md) and source inventory; Huawei redistribution evidence still open, no extracted assets bundled |
 | M0-04 | Verify repository access/visibility, runner assignment, OS/arch/labels, service PATH and tooling | Complete: [S03 runner/service evidence](evidence/S03-repository-runner-preflight.md), two successful actual jobs at `5c3859b4a865c3e65fc6ed80a389ec8f8a32182e`; missing Graphviz and availability/enforcement limitations recorded |
-| M0-05 | Select Python/diagrams/Graphviz/font versions, isolation strategy and numeric limits | Partial: S04 container versions/fonts and local worker controls validated; native ARM64/emulated amd64 and synthetic measurements recorded. Final local product controls/Work transport limits pending |
+| M0-05 | Select Python/diagrams/Graphviz/font versions, isolation strategy and numeric limits | Partial: alpha.2 native Python/Graphviz/fonts, direct command, MCP and path/resource regressions pass on macOS ARM64. Native RSS/disk limits are sampled; production bounds, other OSs and exact Work transport remain pending |
 
 Exit: selected deployment route has real Work evidence; feasibility blockers and proposed fallback are recorded; runner evidence is current; scope is ready for implementation. Documentation alone does not satisfy M0-02 through M0-05.
 

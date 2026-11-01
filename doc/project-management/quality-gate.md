@@ -52,9 +52,9 @@ M0-04 is complete. Existing registrations/settings were preserved; renderer depe
 
 ## S04 runtime evidence before M1
 
-The [S04 evidence](evidence/S04-runtime-and-hosting.md) records synthetic render, English/Thai labels, installed local stdio plugin SDK checks, historical loopback HTTP/download research, negative cases and Docker resource configuration. It is not an Actions job, actual Work test or product quality-gate pass. The host remains without native Graphviz; tested Linux images contain the dependencies.
+The [S04 evidence](evidence/S04-runtime-and-hosting.md) records synthetic render, English/Thai labels, installed local stdio plugin SDK checks, historical loopback HTTP/download research, negative cases and Docker resource configuration. It is not an Actions job, actual Work test or product quality-gate pass. Graphviz 16.1.0 is now installed natively; historical Linux-image evidence remains separate. [Native checks](evidence/S04-native-runtime.md) cover direct command, installed/relocated MCP, filesystem regression and sampled resource-watchdog behavior.
 
-If M1 uses this Docker route on the existing Mac runner, use native shell steps invoking Docker CLI and verify that service account's actual daemon/context access first. This does not make GitHub `container:` or `services:` jobs supported on macOS. D-013 retires the central-host plan. An earlier amd64 smoke used emulation and does not prove another physical machine or OS. Preserve existing owner-only trust until the real product gate exists.
+The new alpha.2 default uses native Python/Graphviz with no required Docker; use native shell steps and verify the runner service PATH/runtime. Historical Docker research can remain an optional CI route. This does not make GitHub `container:` or `services:` jobs supported on macOS. D-013 retires the central-host plan. An earlier amd64 smoke used emulation and does not prove another physical machine or OS. Preserve existing owner-only trust until the real product gate exists.
 
 ## Workflow controls
 

@@ -1,4 +1,4 @@
-"""Build one self-contained experimental plugin; no account upload or install."""
+"""Build a self-contained native plugin; no Docker, upload or installation."""
 import hashlib
 import json
 from pathlib import Path
@@ -7,84 +7,85 @@ import zipfile
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
-NAME = "cloud-architecture-diagrams"
-VERSION = "0.1.0-alpha.1"
-OUTPUT = HERE / "output"
+NAME = 'cloud-architecture-diagrams'
+VERSION = '0.1.0-alpha.2'
+OUTPUT = HERE / 'output'
 PACKAGE = OUTPUT / NAME
 OUTPUT.mkdir(exist_ok=True)
 if PACKAGE.exists():
     shutil.rmtree(PACKAGE)
-for name in ["scripts", "runtime", "skills/cloud-architecture-runtime", ".codex-plugin"]:
+for name in ['scripts', 'runtime', 'assets/fonts', 'skills/cloud-architecture-runtime', '.codex-plugin']:
     (PACKAGE / name).mkdir(parents=True, exist_ok=True)
-interface = {"displayName": "Cloud Architecture Diagrams (S04)", "shortDescription": "Local runtime pilot",
-             "longDescription": "Experimental local runtime with a versioned installer, preflight and three-node SVG/PNG fixture. Provider catalogs and production architecture rendering are later milestones.",
-             "developerName": "Visarut", "category": "Productivity", "capabilities": ["Read", "Write"],
-             "defaultPrompt": "Check the local runtime and render the S04 three-node fixture."}
-manifest = {"$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json", "name": NAME, "version": VERSION,
-            "description": "Experimental local architecture diagram runtime for S04.", "author": {"name": "Visarut"},
-            "extensions": {"com.openai": {"requires_local_executor": True, "interface": interface}}}
-mcp = {"$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json", "mcpServers": {
-    "architecture-runtime": {"type": "stdio", "command": "python3", "args": ["${PLUGIN_ROOT}/scripts/launch.py"], "cwd": "${PLUGIN_ROOT}"}}}
+interface = {'displayName': 'Cloud Architecture Diagrams (S04)', 'shortDescription': 'Native local runtime pilot',
+    'longDescription': 'Experimental local Python/Graphviz runtime with setup, preflight, stdio tools and direct script execution. No Docker or central server required. Three-node S04 fixture only.',
+    'developerName': 'Visarut', 'category': 'Productivity', 'capabilities': ['Read', 'Write'],
+    'defaultPrompt': 'Check the native local runtime and render the S04 three-node fixture.'}
+manifest = {'$schema': 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json', 'name': NAME, 'version': VERSION,
+    'description': 'Experimental native local architecture diagram runtime for S04.', 'author': {'name': 'Visarut'},
+    'extensions': {'com.openai': {'requires_local_executor': True, 'interface': interface}}}
+mcp = {'$schema': 'https://agent-plugins.org/schemas/1.0.0/mcp.schema.json', 'mcpServers': {
+    'architecture-runtime': {'type': 'stdio', 'command': 'python3', 'args': ['-B', '${PLUGIN_ROOT}/scripts/launch.py'], 'cwd': '${PLUGIN_ROOT}'}}}
+
 def save(name, value):
-    (PACKAGE / name).write_text(json.dumps(value, indent=2) + "\n")
-save("plugin.json", manifest)
-save("mcp.json", mcp)
-save(".mcp.json", {"mcpServers": mcp["mcpServers"]})
-save(".codex-plugin/plugin.json", {"name": NAME, "version": VERSION, "description": manifest["description"],
-      "author": manifest["author"], "skills": "./skills/", "mcpServers": "./.mcp.json",
-      "requires_local_executor": True, "interface": interface})
-(PACKAGE / "README.md").write_text('''# Cloud Architecture Diagrams: S04 local pilot
+    (PACKAGE / name).write_text(json.dumps(value, indent=2) + '\n')
 
-Version: 0.1.0-alpha.1. Experimental three-node runtime proof, not the complete provider renderer.
+save('plugin.json', manifest)
+save('mcp.json', mcp)
+save('.mcp.json', {'mcpServers': mcp['mcpServers']})
+save('.codex-plugin/plugin.json', {'name': NAME, 'version': VERSION, 'description': manifest['description'],
+    'author': manifest['author'], 'skills': './skills/', 'mcpServers': './.mcp.json',
+    'requires_local_executor': True, 'interface': interface})
+for name in ['common.py', 'setup.py', 'launch.py', 'render.py']:
+    shutil.copyfile(HERE / name, PACKAGE / 'scripts' / name)
+for name in ['local_server.py', 'artifact_store.py', 'execution.py', 'native_worker.py', 'cli.py']:
+    shutil.copyfile(HERE / name, PACKAGE / 'runtime' / name)
+for name in ['render_fixture.py', 'requirements.lock']:
+    shutil.copyfile(REPO / 'spikes/s04-runtime' / name, PACKAGE / 'runtime' / name)
+(PACKAGE / 'runtime/network.sb').write_text('(version 1)\n(allow default)\n(deny network*)\n')
+for path in sorted((HERE / 'assets/fonts').iterdir()):
+    if path.is_file():
+        shutil.copyfile(path, PACKAGE / 'assets/fonts' / path.name)
+fonts = json.loads((PACKAGE / 'assets/fonts/sources.json').read_text())['fonts']
+for font in fonts:
+    assert hashlib.sha256((PACKAGE / 'assets/fonts' / font['filename']).read_bytes()).hexdigest() == font['sha256']
+    assert (PACKAGE / 'assets/fonts' / font['license']).is_file()
+(PACKAGE / 'README.md').write_text('''# Cloud Architecture Diagrams: native S04 pilot
 
-Requires a local-execution desktop host, Python 3.10+ on the host, and a running Linux Docker engine. macOS ARM64 is the tested host; other host systems remain unverified. No model API key, public rendering service or central server is required.
+Version: 0.1.0-alpha.2. Fixed three-node feasibility fixture; the full cloud/Kubernetes renderer is later work.
 
-After installing/extracting this plugin, run `python3 scripts/setup.py` from its root. This downloads public dependencies and builds a versioned local renderer image. Repeat on each machine. Keep Docker running. The MCP entrypoint is `python3 scripts/launch.py`; the host resolves `${PLUGIN_ROOT}` in mcp.json. No dependencies are installed during MCP startup.
+No Docker or central server is required. The plugin runs controlled local Python scripts and native Graphviz. MCP stdio is an optional host interface to the same code; it starts a local helper process without opening an HTTP/listening port. A direct script command is also provided.
 
-Call get_runtime_info, then render_fixture with exactly three literal labels. Tools return a PNG and local paths to SVG, PNG, DOT, request JSON and manifest under `~/Documents/CloudArchitectureDiagrams`. Outputs remain until the user removes them; this pilot has no automatic retention cleanup. read_fixture_artifact reads only those bundle files.
+The tested host is macOS ARM64. Install Python 3.10+, uv and Graphviz (for example, brew install uv graphviz), then run python3 scripts/setup.py from the installed plugin root. Setup creates a private Python 3.13 virtual environment under ~/.local/share/cloud-architecture-diagrams, installs hash-locked dependencies and uses the bundled Noto Sans/Thai fonts and OFL notices. Setup downloads dependencies; rendering performs no download. Native Graphviz is a host prerequisite, and its actual executable/version/hash is recorded and checked. Other OS paths remain unverified.
 
-Rendering runs without network access, with one CPU, 1 GiB memory/no swap, 64 PIDs, read-only root, dropped capabilities and a 256 MiB temporary filesystem. Only the designated output folder is bound from the host. Setup needs network access. Re-run setup for a changed runtime source/version; missing dependencies fail with a setup instruction.
+Run python3 scripts/render.py with a JSON object on stdin, for example {"labels":["Client","Application","Database"]}. The command returns paths/checksums for SVG, PNG, source JSON, DOT and manifest under ~/Documents/CloudArchitectureDiagrams. No MCP client is needed for this command. Through MCP, call get_runtime_info, render_fixture with {"request":{"labels":["Client","Application","Database"]}}, then read_fixture_artifact for the five exported files.
 
-Provider service catalogs, architecture JSON semantics, detailed Kubernetes, icon clearance, polished installation/upgrade/removal and cross-machine release acceptance are later milestones. SVG uses font-family references rather than embedded fonts; PNG is the current visual check. Actual Work chat preview/export and independent Astra review remain separate acceptance evidence. Source licenses/notices and fully frozen transitive OS dependencies need release packaging work.
+Output directories must be real, private and owned by the current user. Symlink directory components and symlink artifact files are rejected; descriptor-relative access anchors artifacts to the approved directory. Outputs persist until user removal. The renderer and descendants have network denied by the tested macOS sandbox-exec profile. CPU/file limits and a wall timeout are enforced; process-group RSS and scratch bytes are sampled, not kernel hard quotas or Docker isolation. Read runtime_info limits and the project evidence before relying on production isolation. Windows/Linux and future macOS sandbox availability remain separate validation work.
+
+SVG uses font-family references; cross-machine SVG appearance, actual ChatGPT Work mode/UI download and second-machine acceptance remain unverified. This prototype is not a product release, and its new native source requires a fresh independent review.
 ''')
-for name in ["common.py", "setup.py", "launch.py"]:
-    shutil.copyfile(HERE / name, PACKAGE / "scripts" / name)
-shutil.copyfile(HERE / "local_server.py", PACKAGE / "runtime/local_server.py")
-for name in ["render_fixture.py", "requirements.lock"]:
-    shutil.copyfile(REPO / "spikes/s04-runtime" / name, PACKAGE / "runtime" / name)
-(PACKAGE / "runtime/Dockerfile").write_text('''FROM python:3.13-alpine3.22@sha256:e81548ac35b07a3bd4805f275107592ef458b1e893c0e04d45aedaa19416cca5
-RUN apk add --no-cache graphviz=12.2.1-r0 fontconfig=2.15.0-r3 font-noto=2025.05.01-r0 font-noto-thai=2025.05.01-r0
-WORKDIR /app
-COPY requirements.lock .
-RUN pip install --no-cache-dir --require-hashes -r requirements.lock
-COPY render_fixture.py local_server.py ./
-ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 HOME=/tmp
-USER 10001:10001
-ENTRYPOINT ["python", "/app/local_server.py"]
-''')
-(PACKAGE / "skills/cloud-architecture-runtime/SKILL.md").write_text('''---
+(PACKAGE / 'skills/cloud-architecture-runtime/SKILL.md').write_text('''---
 name: cloud-architecture-runtime
-description: Use to preflight the experimental local architecture renderer and produce the S04 three-node SVG/PNG fixture.
+description: Use to preflight the native local Python and Graphviz renderer and produce the S04 three-node SVG/PNG fixture without Docker.
 ---
 
-This is an S04 pilot, not the five-environment release renderer. It provides local runtime verification and a synthetic three-node fixture only.
+This is a native S04 feasibility pilot. It has no provider service catalog or full architecture/Kubernetes semantics yet.
 
-Call get_runtime_info first. If runtime setup is missing, resolve the plugin root two directories above this file and run its scripts/setup.py with Python 3. It builds the local container once; a running Linux Docker engine is required. Do not install into another plugin's cache or send data to a public rendering service.
+Call get_runtime_info first. If setup is missing, use the installed plugin root's scripts/setup.py. It installs a private Python environment; native Graphviz and uv are prerequisites. No Docker, central server, renderer token or model API key is required. Do not install into another plugin or edit the plugin cache.
 
-Call render_fixture with exactly three literal labels. Use read_fixture_artifact for exported SVG/PNG/JSON/manifest data. The returned host_paths are confined to the local CloudArchitectureDiagrams output directory; inspect them and attach the verified PNG/SVG using the host's normal local-file mechanisms. Do not claim successful Work preview/download until observed there.
+Use render_fixture with request.labels containing exactly three literal strings, then read_fixture_artifact for SVG/PNG/JSON/DOT/manifest. Alternatively execute the fixed scripts/render.py with a JSON object containing labels on stdin; this uses the same validated renderer without an MCP client. Never generate or execute user-authored Python or arbitrary Graphviz options.
 
-Never execute user-authored Python, arbitrary Graphviz attributes or paths. Do not fabricate provider catalog support. Record startup/tool/label/artifact failures accurately. Rendering runs in a network-disabled local container; plugin install/build can download public dependencies.
+Inspect the returned PNG and verified file paths before attaching outputs. Record the actual host/mode; a successful Codex Desktop call does not prove a different Work mode. Do not claim visible preview/download without observed evidence. Native resource limits differ from the historical container prototype; report the actual runtime policy.
 ''')
-archive = OUTPUT / (NAME + "-" + VERSION + ".zip")
-with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as z:
-    for p in sorted(PACKAGE.rglob("*")):
+archive = OUTPUT / (NAME + '-' + VERSION + '.zip')
+with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED) as z:
+    for p in sorted(PACKAGE.rglob('*')):
         if p.is_file():
-            z.write(p, NAME + "/" + str(p.relative_to(PACKAGE)))
+            z.write(p, NAME + '/' + str(p.relative_to(PACKAGE)))
 with zipfile.ZipFile(archive) as z:
-    assert len({p.split("/")[0] for p in z.namelist()}) == 1
-    for p in z.namelist():
-        assert ".." not in Path(p).parts
-        if p.endswith(".json"):
-            json.loads(z.read(p))
-assert len(interface["shortDescription"]) <= 30
-print(json.dumps({"package": str(PACKAGE), "archive": str(archive), "sha256": hashlib.sha256(archive.read_bytes()).hexdigest(), "files": len([p for p in PACKAGE.rglob('*') if p.is_file()])}))
+    assert len({n.split('/')[0] for n in z.namelist()}) == 1
+    for n in z.namelist():
+        assert '..' not in Path(n).parts
+        if n.endswith('.json'):
+            json.loads(z.read(n))
+assert len(interface['shortDescription']) <= 30
+print(json.dumps({'package': str(PACKAGE), 'archive': str(archive), 'sha256': hashlib.sha256(archive.read_bytes()).hexdigest(), 'files': len([p for p in PACKAGE.rglob('*') if p.is_file()])}))

@@ -1,50 +1,42 @@
-# S04 Local Plugin Pilot
+# S04 Native Local Plugin Pilot
 
-Decision: D-013. Status: experimental runtime proof, not the complete architecture plugin.
+Current version: `0.1.0-alpha.2`. The default is native Python + Graphviz. Docker is not required; the earlier container is historical research. No central server or model API key is required.
 
-The selected product is an installable plugin with a bundled skill and local stdio MCP tools. Each machine installs its own runtime. This pilot uses Docker to contain Python, Graphviz and English/Thai fonts; the host needs Python 3.10+ and a running Linux Docker engine. macOS ARM64 is the tested host. Other operating systems, a second physical machine and actual Work preview/export remain unverified.
+## What runs locally
 
-## Build and install on this desktop
+The plugin packages a workflow skill, controlled renderer scripts and optional MCP stdio tools. MCP stdio starts a local helper process without opening a listening port. The direct script uses the same renderer without an MCP client. Both return a synthetic three-node SVG/PNG fixture; provider catalogs and detailed Kubernetes remain later work.
 
-From the repository root, with the Codex CLI available as `codex`:
+## Setup on each Mac
+
+Requires host Python 3.10+, uv and native Graphviz/Fontconfig. The tested host is macOS 27.0.1 ARM64, Python 3.13.7 and Graphviz 16.1.0. Other OS paths and future macOS sandbox availability are unverified.
+
+From the repository root:
 
 ```sh
+brew install uv graphviz
 python3 spikes/s04-local-plugin/build.py
 codex plugin marketplace add "$PWD" --json
 codex plugin add cloud-architecture-diagrams@mingrammer-local --json
 python3 spikes/s04-local-plugin/output/cloud-architecture-diagrams/scripts/setup.py
-uv run --no-project --python 3.13 --with mcp==2.3.0 python spikes/s04-local-plugin/verify.py
 ```
 
-On this Mac the bundled CLI is `/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex`. Use the supported CLI installer; do not edit the cache. Rebuild/reinstall for changed source. The S04 version is `0.1.0-alpha.1`; it has not been uploaded to an account or published. The generated marketplace points at the generated package; rebuild it after cloning on another machine. Source checkout/build is a development path, not the final FR-066 release installation experience.
+On this Mac the CLI is `/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex`. Setup creates a private Python 3.13 environment under `~/.local/share/cloud-architecture-diagrams/runtime/<version>`, syncs the hashed lock and verifies bundled Noto fonts. It records/checks native executable hashes. No global pip install or user-font installation is used. Initial setup downloads Python dependencies; rendering downloads nothing. The source's font binaries and SIL OFL notices are included in the ZIP.
 
-The builder produces a self-contained plugin directory and ZIP under ignored `output/`. The portable root manifest and `mcp.json` describe the real stdio launcher. A generated legacy overlay supports the installed CLI; both manifests identify the same plugin/version. The ZIP contains only one plugin and includes runtime source, hash-locked Python dependencies, setup/launch scripts, README and one useful workflow skill. The source marketplace is outside the ZIP.
+## Execute a script directly
 
-Setup builds a local image and records its immutable ID and runtime-source fingerprint under `~/.local/share/cloud-architecture-diagrams/`. Initial setup downloads public dependencies; startup does not download/install anything. Changing the source/version requires setup again. Rendering needs no central server, public rendering MCP or model API key. Docker must stay running. Setup/launch reject remote or TCP Docker endpoints; the pilot requires a local Unix socket (or named pipe on an unverified Windows host).
-
-## Tool and artifact contract
-
-- `get_runtime_info`: actual runtime/package/font versions, non-root UID and cgroup configuration.
-- `render_fixture`: `{"request":{"labels":["Client","Application","Database"]}}`; exactly three literal labels, with an inner request that rejects unknown fields. This is a fixed synthetic fixture, not the release architecture schema/catalog.
-- `read_fixture_artifact`: a returned bundle ID and one of the five allowlisted filenames. Reads are confined to the plugin's output directory.
-
-Only `~/Documents/CloudArchitectureDiagrams` is mounted from the host. Complete bundles are published there atomically with PNG/SVG, request JSON, DOT and manifest; the PNG is also returned as MCP image content. Outputs are retained until the user removes them. The container uses network `none`, read-only root, dropped capabilities, no-new-privileges, one CPU, 1 GiB memory/no swap, 64 PIDs and a 256 MiB `/tmp`. On POSIX desktops it runs under the calling non-root UID/GID so the scoped output mount remains writable. It receives no host model/API credentials.
-
-The SDK harness starts the actual installed cache, verifies discovery/render/read and byte checksums, inspects container controls and negative requests, then repeats from a ZIP extracted to a different path containing spaces. It verifies no pilot containers remain after client disconnect. Relocation on the same Mac is not second-machine acceptance.
-
-## Actual Work verification still required
-
-The local plugin was installed through this desktop's CLI. This active chat may require a fresh local-execution chat to discover newly installed components. No new chat was created automatically. In a locally executing Work Desktop chat, enable/mention **Cloud Architecture Diagrams (S04)** and request:
-
-```text
-Use the Cloud Architecture Diagrams S04 plugin. Call get_runtime_info,
-then render_fixture with three labels: Client, Application, Database.
-Inspect the output, display its PNG, and attach the SVG, PNG, source JSON,
-DOT and manifest. Report tool or file-access failures exactly.
+```sh
+printf '%s' '{"labels":["Client","Application","Database"]}' |
+  python3 spikes/s04-local-plugin/output/cloud-architecture-diagrams/scripts/render.py
 ```
 
-Record the actual host mode, tool invocation, visible preview and retrieved files under M0-02. Use a separate Astra/High review against the final commit before closing M0. See the [S04 evidence](../../doc/project-management/evidence/S04-runtime-and-hosting.md) and [handoff](../../doc/project-management/HANDOFF.md).
+After installation, the same `scripts/render.py` is inside the installed plugin root. JSON on stdin is data; arbitrary Python, paths and Graphviz options are not accepted. The command prints verified paths/checksums for PNG, SVG, source JSON, DOT and manifest under `~/Documents/CloudArchitectureDiagrams`.
 
-## Remaining product work
+For host tools, call `get_runtime_info`, `render_fixture` with `{"request":{"labels":["Client","Application","Database"]}}`, then `read_fixture_artifact`. Existing chats can retain the alpha.1 Docker process after a CLI upgrade; check the reported version and use a fresh/reloaded local chat for alpha.2. Do not claim an old live connection is native because the new package is installed.
 
-Provider catalogs/icons and rights, canonical architecture JSON, detailed Kubernetes, full validation, polished per-machine install/preflight/upgrade/removal, automated product gates and two-machine Work acceptance remain M1-M6 work. SVG references font families without embedded fonts; cross-machine SVG appearance is not proven. MCP envelope-size limits, timeout/OOM stress, cancellation under rendering, symlink-race hardening and complete dependency/license notices remain release work. Direct base/OS packages and Python hashes are pinned; transitive Alpine repositories are still mutable and actual image provenance is recorded. Do not call this pilot release-ready.
+## Verification and boundaries
+
+Run the private runtime Python against `spikes/s04-local-plugin/verify.py`. It tests the direct command with a failing Docker shim and irrelevant remote Docker environment, installed MCP, relocated ZIP, complete artifact reads/hashes, invalid input, seven filesystem cases and timeout/RSS/scratch watchdog cases. [Native evidence](../../doc/project-management/evidence/S04-native-runtime.md) records results. A same-Mac relocation is not second-machine acceptance.
+
+Output roots must be real, private directories. Descriptor-relative access rejects symlink components/files and detects root replacement. Bundles publish after integrity checks. macOS sandbox-exec denies renderer/descendant networking. CPU/file limits and a wall timeout apply; RSS and scratch size use a sampled watchdog, not kernel memory/disk quotas, CPU-core limits or a container sandbox. These limits still require production acceptance under NFR-009. Outputs remain until user removal. The renderer executes only project-controlled code.
+
+Actual ChatGPT Work mode/UI export, cross-machine SVG font appearance, another physical machine and fresh independent review of alpha.2 remain open. [The earlier live desktop test](../../doc/project-management/evidence/S04-work-host-check.md) established alpha.1 in Codex Desktop, not a different Work mode. [Handoff](../../doc/project-management/HANDOFF.md) contains the next steps. No account plugin, public release or cloud host was created.
