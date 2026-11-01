@@ -16,7 +16,7 @@ Build a personal ChatGPT Work plugin using mingrammer/diagrams + Graphviz for AW
 
 Use the [session plan](session-plan.md) to split work. No new chats were created/dispatched. Do not start S05 as though M0 were closed.
 
-Working branch: `codex/s04-runtime-proof`; base: `afbaccad87019d35bff12d335ec534166752f0bf`. Verify current HEAD before review.
+Working branch: `codex/s04-runtime-proof`; base: `afbaccad87019d35bff12d335ec534166752f0bf`. Verify current HEAD before review. Runtime/source checkpoint `07e507f958e11350b45a73c0dbcf04dca679e212` is published on the private feature branch; later documentation-only commits may advance HEAD.
 
 ## Verified state
 
