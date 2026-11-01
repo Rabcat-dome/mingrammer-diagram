@@ -1,0 +1,126 @@
+# Milestones and Work Breakdown
+
+Updated: 2026-11-01 | Status: S01/M0-01 and S02/M0-03 research complete; S03 runner installed/online, publication/job and runtime proof pending. Huawei packaging rights remain unresolved.
+
+Source of scope: [requirements](../requirements/requirements.md). Model abbreviations and review rules: [model strategy](model-strategy.md). Quality check definitions: [quality gate](quality-gate.md).
+
+## Delivery order
+
+```text
+M0 Scope + runtime/icon/runner feasibility
+ -> M1 Core contract + first CI checks
+ -> M2 Provider catalogs + approved assets
+ -> M3 Controlled rendering vertical slice
+ -> M4 Five-environment coverage + visual verification
+ -> M5 ChatGPT Work plugin
+ -> M6 Reproduction + release acceptance
+
+Later: M7 Claude Code adapter and selected P1 work
+```
+
+M0 investigates the Work execution route before core development. M5 delivers the complete plugin; a CLI demonstration is not completion of the first release. Catalog review may proceed by provider, but no parallel agent execution is implied by this plan.
+
+## M0 — Scope and feasibility
+
+Status: In progress; S01/S02 complete. S03 verified repository access and zero eligible runners, prepared a local workflow and recorded the plan-enforcement limitation. D-011 authorized setup/publication/testing and the separate runner is online; job and runtime proof remain pending; Huawei permission evidence remains open for packaging. Implementation: Sol/High for the technical spike; review: Astra/High for architecture/runtime decisions.
+
+| Task | Work | Dependency / output |
+|---|---|---|
+| M0-01 | Jointly refine scope, catalog breadth, and six representative diagrams | S01 scope planning complete: D-007/D-008/D-009 confirmed, detailed Kubernetes included, [six working briefs](evidence/S01-release-scope.md) prepared; rendered acceptance remains M4/M6 |
+| M0-02 | Compare execution routes against cross-machine plugin delivery; prove a supported Work mode can invoke a minimal controlled renderer and retrieve an SVG/PNG | Confirmed portability goal -> route recommendation with runtime/setup trade-offs and actual install/discovery/call/download evidence |
+| M0-03 | Investigate Huawei icon sources and terms; inventory upstream on-premises gaps | S02 research complete: [rights matrix/gaps](evidence/S02-icon-sources-and-rights.md) and source inventory; Huawei redistribution evidence still open, no extracted assets bundled |
+| M0-04 | Verify repository access/visibility, runner assignment, OS/arch/labels, service PATH and tooling | [S03 investigation](evidence/S03-repository-runner-preflight.md) complete: private/admin access, zero eligible runners, workflow checked locally; D-011 runner registration/labels verified online, publication and actual service job pending |
+| M0-05 | Select Python/diagrams/Graphviz/font versions, isolation strategy and numeric limits | Runtime spike -> version/limit decision; reference benchmark host |
+
+Exit: selected deployment route has real Work evidence; feasibility blockers and proposed fallback are recorded; runner evidence is current; scope is ready for implementation. Documentation alone does not satisfy M0-02 through M0-05.
+
+## M1 — Core contract and CI foundation
+
+Status: Not started. Implementation: Sol/High; review: Astra/High.
+
+| Task | Work | Dependency / output |
+|---|---|---|
+| M1-01 | Bootstrap Python package, lockfile, CLI shell, development setup | M0-05 -> clean install and tool/version report |
+| M1-02 | Implement architecture schema, model, strict/lenient error policy and diagnostics, including Kubernetes cluster/namespace/ownership/placement references | M0-01 -> versioned schema, valid/invalid fixtures; FR-001..006/018/029 |
+| M1-03 | Implement ID/reference/cycle checks and view selection validation, including Kubernetes scope/placement separation | M1-02 -> T-008/T-017; ownership/attachment dimensions stay independent |
+| M1-04 | Add documentation/static/schema/secret checks and aggregate CI result | M0-04 + working local commands -> first actual runner job and captured SHA |
+
+Exit: valid JSON passes, malformed/dangling/cyclic input fails, diagnostic contract is stable, local and runner checks agree. No placeholder green jobs for unimplemented render/package checks.
+
+## M2 — Provider semantics, catalogs and icon rights
+
+Status: Not started. Implementation: Sol/Medium; Sol/High for placement rules; review: Astra/High.
+
+| Task | Work | Dependency / output |
+|---|---|---|
+| M2-01 | Freeze taxonomy and exact cloud/platform minimum type inventory | M1-02 -> catalog schema and inventory covering requirements sections 6/6.1 |
+| M2-02 | Map AWS/Azure/GCP native types and documented placement rules | M2-01 -> mapping records, primary-source links, positive/negative fixtures |
+| M2-03 | Add Huawei type/icon mappings, IAM/enterprise-project distinctions and per-service rules | M0-03 + M2-01 + actual rights evidence -> approved assets, SHA-256 manifest and rules; FR-013. S02's technical source candidate is not packaging clearance. |
+| M2-04 | Map on-premises physical/logical components and prepare the eight draw.io-type generic representations | M2-01 + D-010/S02 follow-up -> exact approved symbols/compositions, source conditions/attribution, original/derived hashes and physical-vs-logical fixtures; FR-014 |
+| M2-05 | Implement catalog inventory and license/asset checks | M2-02..04 + M2-06 -> every required cloud/Kubernetes item resolves, missing rights/assets fail CI |
+| M2-06 | Add shared Kubernetes detail catalog, provider node-pool/group mappings and semantic rules | M2-01 + M2-02..04 -> FR-018/029; positive/negative cluster/namespace, ownership, Service/Ingress and storage/config/security fixtures across the five hosting environments |
+
+Exit: all five hosting inventories and the shared Kubernetes detail catalog meet minimum breadth; rules have evidence; asset rights are established. Do not mark Huawei complete using unapproved icons or undisclosed generic replacements.
+
+## M3 — Controlled rendering vertical slice
+
+Status: Not started. Implementation: Sol/High; review: Astra/High.
+
+| Task | Work | Dependency / output |
+|---|---|---|
+| M3-01 | Build view-to-graph mapper with controlled classes/groups/edges and stable mapping, including separate Kubernetes overview/detail selection | M1 + catalog subset from M2 -> one small diagram, no executable input; preserve namespace/worker-placement dimensions |
+| M3-02 | Add SVG/PNG export, portable SVG assets, diagnostic/model/view bundle and manifest | M3-01 -> FR-040..047; validate all outputs before success |
+| M3-03 | Implement strict failure and lenient draft fallback behavior | M2 + M3-01 -> T-007 with retained provider/type |
+| M3-04 | Add isolation, path/symlink controls, bounded parsing/rendering and SVG checks | M0-05 + M3-02 -> T-009 core cases, timeout cleanup and no runtime downloads |
+
+Exit: repeatable CLI render from a clean setup; invalid input cannot bypass validation; usable SVG/PNG and complete bundle; required security tests pass. This is an engineering slice, not the finished plugin.
+
+## M4 — Coverage and visual quality
+
+Status: Not started. Implementation: Sol/Medium; review: Astra/High for semantics; optional Terra/Medium for image inspection assistance.
+
+| Task | Work | Dependency / output |
+|---|---|---|
+| M4-01 | Build AWS, Azure, GCP, Huawei and on-premises reference models | M2 + M3 -> T-001..005 with expected semantics |
+| M4-02 | Build one hybrid model containing all five environments | M4-01 -> T-006; explicit link types/trust boundaries |
+| M4-03 | Verify TB/LR views, legends, icons, English/Thai labels, non-silent omissions and provider-reference fidelity | M4-01..02 + M4-05 + S01 official references -> reviewed samples, documented deviations and T-016 evidence; FR-048 |
+| M4-04 | Add structural/visual regression checks; measure chosen limits and performance | M3 -> normalized graph baseline, reviewed visual baseline, T-012 rejection evidence |
+| M4-05 | Build detailed Kubernetes subviews and provider-mapping fixtures | M2-06 + M3 -> T-017: workload/Pod/node/namespace, Ingress/Service, storage/config/security relationships and cross-view stable IDs; cover EKS/AKS/GKE/CCE/on-premises |
+
+Exit: six reference scenario families and their required Kubernetes detail subviews inspected by the owner/reviewer; T-017 passes and all required catalog entries have resolution/rule fixtures even if not all appear in one image. Record performance measurements; P1 automatic splitting and 200/300 stress work can remain deferred explicitly.
+
+## M5 — ChatGPT Work integration
+
+Status: Not started. Implementation: Sol/High for adapter/auth; Sol/Medium for skill/docs; review: Astra/High.
+
+| Task | Work | Dependency / output |
+|---|---|---|
+| M5-01 | Implement selected tool adapter and capability discovery | M0-02 + M3 -> schema/catalog/validate/render/info contracts; FR-055/063/064 |
+| M5-02 | Implement auth, artifact retrieval/isolation/retention for remote route, or verified local dependency setup | M5-01 -> actual deployment-mode tests; NFR-013 |
+| M5-03 | Package the versioned Work plugin with bundled skill, tool configuration and progressive-loading references | M4 + M5-01 -> installable product and repeatable setup/enablement instructions; FR-060/061/065/066 |
+| M5-04 | Run actual Work installation, discovery, rendering, invalid input and edit flows, including Kubernetes overview/detail requests | M5-02..03 -> T-011/013/014/017; preview/download evidence, stable IDs |
+
+Exit: installed plugin works in the selected Work mode, artifacts are retrievable, supported host modes are stated accurately. Local CLI or MCP protocol tests alone do not satisfy M5-04. A remote deployment location/cost must be selected before provisioning; none is selected or provisioned in this planning task.
+
+## M6 — Reproduction and personal release
+
+Status: Not started. Implementation: Sol/Medium; final review: Astra/High and owner inspection.
+
+| Task | Work | Dependency / output |
+|---|---|---|
+| M6-01 | Install/enable the same plugin version and complete the Work workflow on two supported machines; independently reproduce the core in a clean runtime | M5 -> T-010, plugin/version/setup/auth/artifact evidence from both machines, plus core reproduction results |
+| M6-02 | Verify distribution contents, notices, full P0 traceability and clean-install smoke test | M1..M5 -> T-015, requirement-to-check/evidence report |
+| M6-03 | Review final diff, six scenarios, release risks and unresolved findings | M6-01..02 -> review report at release SHA; owner disposition |
+| M6-04 | Tag/package the personal release and update handoff/activity log | M6-03 -> reproducible artifact/checksums; installation and rollback notes |
+
+Exit: all P0 pass; no unresolved Critical/High findings; justified Medium findings have owner disposition; actual Work plugin acceptance on two machines and clean-runtime reproduction evidence exist. No public directory submission is required.
+
+## M7 — Later work (not scheduled)
+
+- Claude Code adapter reusing the core, with independent installation/invocation/output tests. No Claude model version is selected yet.
+- P1 view presets, YAML, aliases, enterprise packs, PDF/DOT, automatic splitting, 200/300 stress validation, and expanded catalog coverage.
+- Optional shared-team features, IaC import/discovery, or public publication only under a separate scope decision.
+
+## Planning discipline
+
+Use one task ID per issue/PR when tracking begins. Each task records implementation model/effort, reviewed commit, review model/effort, checks, findings, and artifact evidence. Dependencies are exit conditions, not calendar promises. Estimate dates after M0 runtime/icon/runner uncertainties are resolved; do not treat this plan as a delivery commitment.

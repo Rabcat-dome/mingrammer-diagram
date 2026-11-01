@@ -1,0 +1,111 @@
+# Decisions, Open Questions and Source Reconciliation
+
+Updated: 2026-11-01 | Status: Joint-planning record with S03 repository/runner findings.
+
+## Confirmed user direction
+
+| ID | Direction | Origin |
+|---|---|---|
+| D-001 | Build a personal plugin based on `mingrammer/diagrams`, adding Huawei visuals and targeting AWS/Azure/GCP/Huawei/on-premises | Current user request |
+| D-002 | Target ChatGPT Work first; prepare for Claude Code later | Current user request; overrides attachment's Claude Cowork wording |
+| D-003 | Put requirements under repository-relative `doc/requirements` and planning under `doc/project-management` | Current user request; `/doc/...` interpreted as folders within this project |
+| D-004 | All repository documentation is English; include a portable activity summary/handoff | Current user request |
+| D-005 | Specify development/review models and assess a pipeline using existing self-hosted runner capacity | Current user request; does not establish runner registration for this repository |
+| D-006 | Deliver an installable plugin usable across machines. A skill may be bundled inside it; the final deliverable must remain a plugin. | User clarification on 2026-10-31; no hosting mode selected |
+| D-007 | Release 1 targets solution architecture overall: network/subnet, VM, database/storage and security, retaining existing minimum-catalog items. Kubernetes depth is governed by the subsequent D-009 correction. | Initial S01 answer, amended by the owner's Kubernetes clarification on 2026-10-31 |
+| D-008 | Start with white/provider-icon visuals close to each provider's published architecture conventions, including native service labels and meaningful boundaries/layout | Explicit S01 style answer on 2026-10-31; actual rendered samples still need later inspection |
+| D-009 | Kubernetes is detailed release-1 scope, including node pools/groups/nodes, namespaces, workloads/Pods, Service/Ingress and related storage/configuration/security relationships. This supersedes the earlier cluster-only limit; overall solution-architecture depth and D-008 visual direction remain. | Explicit user correction on 2026-10-31 |
+| D-010 | Use draw.io-type generic symbols/compositions for the eight on-premises gaps, with explicit type labels and applicable source/attribution checks before bundling. Keep the existing diagrams/Graphviz renderer. | User requested draw.io icon types as replacements on 2026-10-31; exact source-file/package clearance remains implementation evidence |
+| D-011 | Add a separate runner for this repository on the existing Mac, commit/push the documentation and workflow to the private repository, and execute the real preflight job | Explicit owner selection on 2026-11-01; authorizes the P-014 setup and initial publication/test, without changing other projects' registrations |
+
+## Recommendations and disposition
+
+| ID | Proposal | Rationale / resolution point |
+|---|---|---|
+| P-001 | Canonical JSON + taxonomy + provider catalogs + controlled renderer; wrap upstream first | Retains semantics and portability; freeze contract in M1 |
+| P-002 | Installable plugin containing a workflow skill and authenticated remote MCP tools for Work Cloud/Web portability; local CLI shares the core | Proposed route to reduce per-machine runtime setup; prove install/call/download in M0. The user's portability clarification does not approve hosting/provisioning. |
+| P-003 | Keep local Work execution as an alternative only after the exact desktop mode is tested | Local plugin upload does not make local processes available on web/mobile; narrow advertised host support if selected |
+| P-004 | Sol implementation, Astra separate code review; deterministic CI, no mandatory model API in renderer | Balance repeatable development with deeper review; detailed policy in model strategy |
+| P-005 | Quality gate pipeline starts in M1 and expands through M5 | Catch schema, semantics, asset-rights, render and adapter failures at their introduction |
+| P-006 | Strict final output; lenient mode only for disclosed draft fallback | Never downgrade structural/security errors or known invalid placement |
+| P-007 | Promote provenance, source export, bounded execution and reproducibility metadata to P0 | Required for reviewable plugin output and predictable execution |
+| P-008 | English/Thai request and label support with English documentation | Fits intended use; exact fonts and visual fixtures chosen in M0/M4 |
+| P-009 | Initial proposal: solution-architecture depth with a cluster-only Kubernetes limit | Overall depth accepted as D-007; the Kubernetes limit was superseded by D-009 and is not current scope. |
+| P-010 | Start with a white/provider-icon style, labeled boundaries and restrained colors | Refined and accepted as D-008: approximate each provider's published architecture conventions; actual sample acceptance remains later work. |
+| P-011 | Prefer the Huawei LATAM draw.io color family at a pinned revision as the Huawei technical source | S02 found candidates for all 17 named minimum items, but no clear plugin-redistribution grant in audited sources. Conditional recommendation only; O-002 remains open. |
+| P-012 | Original neutral-icon options included generic/project-authored/Tabler symbols; Kubernetes standard symbols use their declared source license | On-premises visual preference is now resolved by D-010 in favor of draw.io-type generic mappings. Tabler remains an alternative, not the selected default for these eight concepts. M2 verifies exact assets/terms and computes SHA-256. |
+| P-013 | Keep JuanDiaz00/Huawei-Cloud-draw.io-icons as an alternative Huawei technical source | User-supplied repo contains 155 PNG entries sourced from VeryIcon. Seven minimum items are unambiguous by title; remaining mapping and source-asset redistribution evidence need review. LATAM color/SVG remains the preferred technical candidate, not an adopted/cleared package. |
+| P-014 | Add a separate repository-scoped macOS ARM64 runner on the existing Mac, with custom label `mingrammer-macos-arm64` | Accepted by the owner as D-011 on 2026-11-01. Runner ID 2, version 2.338.2, is installed and online with verified labels. Initial publication/real-job verification are in progress; final evidence belongs in the S03 record. |
+
+P-001..008 remain technical proposals unless a later decision resolves them. P-009/P-010 are resolved by D-007/D-008 with D-009's detailed-Kubernetes correction. These answers do not approve all remaining technical choices, icon rights or a remote deployment.
+
+P-011/P-013 are source recommendations, not user decisions or packaging clearance. D-010 resolves the on-premises symbol direction from P-012 without granting third-party rights or approving a specific source package.
+
+## Open decisions
+
+| ID | Question | Working assumption / next action | Needed by |
+|---|---|---|---|
+| O-001 | Which Work execution modes and runtime route satisfy the cross-machine plugin requirement? | User clarified that plugin portability is the goal and asked whether a skill still counts as a plugin. Explained that the skill is bundled inside the plugin. No host mode selected; evaluate remote MCP first to minimize per-machine setup, subject to M0 evidence. | M0-02 |
+| O-002 | Which Huawei icon source/version and redistribution terms are acceptable? | LATAM v3.2 / commit 52c33aa12fb816a5de403da85067e1c0f039b5be covers 17 named items technically. The user supplied JuanDiaz00's 155-PNG alternative, whose README names VeryIcon; that site claims free personal/commercial use, but source-asset plugin redistribution remains unestablished in audited evidence. No source is adopted/cleared and no permission request was sent. | M2-03/package release |
+| O-003 | Which exact product variants/type IDs implement the minimum catalog? | Retain the five environments and named inventory, plus detailed Kubernetes kinds under D-009/FR-018/FR-029. M2 freezes cloud/platform variants, API versions and IDs against current documentation. | M2-01/M2-06 |
+| O-004 | Which exact rendered examples establish visual acceptance? | Direction resolved as D-008: white/provider-icon visuals close to each provider's published conventions. Six briefs and official source entry points are prepared; actual image comparison/acceptance remains M4/M6 work (FR-048/T-016). | M4-03/M6 |
+| O-005 | Which runner is eligible for this repository, with which trust/visibility policy? | S03 verified private/admin access, owner-only collaborator snapshot and zero eligible runners. D-011 accepted P-014; separate runner ID 2 is installed and online. Publish/run the prepared owner/main-only manual probe; existing project labels are ineligible. Required-check enforcement is unavailable on the current private-repository plan; use manual review/merge discipline unless capability changes. | M0-04; real-job evidence pending |
+| O-006 | If remote, where are the renderer/data hosted, with which auth/retention/budget? | Select after runtime feasibility. Proposed artifact retention <=24 h with protected retrieval; do not provision yet. | M0-02/M5-02 |
+| O-007 | Which versions/fonts/isolation and numeric limits are practical? | Measure in M0; proposed starting budget: 1 MiB input, 200 nodes/300 edges, 256-character labels, 60 s render, 1 GiB memory and 256 MiB temporary storage per request. Adjust with evidence and document enforcement limitations. | M0-05/M1 |
+| O-008 | What architecture granularity is required in release 1? | Resolved by D-007/D-009: solution architecture overall with detailed Kubernetes views. Existing required items such as Azure NIC remain in scope. | Resolved in S01 |
+
+Proposed numeric limits are not benchmarks or implemented guarantees. The reference host and actual Work transport/request limits may require lower limits or a later asynchronous job design.
+
+S01 result record: [release scope and scenario briefs](evidence/S01-release-scope.md). Scope-planning work is complete with explicit granularity/style answers; the record separates confirmed decisions from working examples and later acceptance evidence.
+
+S02 research record: [sources, rights and gaps](evidence/S02-icon-sources-and-rights.md), with [structured inventory](evidence/S02-icon-inventory.json). M0-03 research is complete; Huawei package clearance is unresolved. S03/S04 can proceed without treating that clearance as granted.
+
+S02 follow-up: [additional Huawei source and draw.io mappings](evidence/S02-additional-icon-sources.md), with [supplemental metadata](evidence/S02-supplemental-icons.json). Eight on-premises concepts are mapped; exact export/visual/asset-condition checks remain M2/M4 work. Source and stencil terms are recorded separately from application-code licenses.
+
+## Source reconciliation
+
+Input: `cloud-architecture-diagram-plugin-requirements.md`, document CADP-REQ-001 v1.1, supplied from the owner's Downloads folder. This repository's revision 0.5 is a planning baseline, not evidence of a v1.1 implementation release. Revision 0.2 added cross-machine delivery, revision 0.3 initial S01 depth/style, revision 0.4 detailed Kubernetes, and revision 0.5 draw.io-type on-premises mappings under D-010/FR-014. These do not approve a remote deployment or source-asset rights.
+
+Source fingerprint: SHA-256 `af3fd7fe7ff0d6b0b6da937839833bb4fc17b68bcc74f41581865ed1358ad3ee` (575 lines, read on 2026-10-31). The attached file remains unchanged. The baseline is self-contained; another machine does not need the Downloads path. No duplicate normative copy is maintained.
+
+| Source content | Treatment here |
+|---|---|
+| Sections 1–4, 11–12: goals, functional/non-functional scope, acceptance | Consolidated in requirements sections 1–4 and 7–8; retain original FR/NFR/T IDs where applicable |
+| Sections 2, 5–8: taxonomy, provider mappings, separate placement dimensions | Retained as proposed core design in requirements sections 3, 5–6; “accepted” labels are not carried forward as approvals |
+| Section 8 illustrative JSON | Not declared executable schema; M1 chooses consistent reference fields and validates fixtures |
+| Sections 9–10: local default, platform wrappers, repository structure | Runtime left subject to Work capability spike; remote MCP recommended for Cloud/Web; use requested `doc` paths |
+| Section 13: broad phases and late platform integration | Replaced with M0–M6 and early runtime proof; complete Work integration is part of release 1 |
+| Sections 14–15: risks/open decisions and recommendation | Converted into open decisions, milestone exit evidence and pipeline checks |
+| FR-008/028/045/046/047/055, NFR-009/010/011 | Promoted applicable source/view/label/control/limit/version/discovery/CI behavior to P0; optional automation/expansion remains P1 |
+| Claude Cowork and ChatGPT Work together | Replace with Work first and future Claude Code. No Cowork compatibility claimed. |
+| “Five reference diagrams” vs hybrid acceptance | Require six scenarios: five environment examples plus one combined hybrid model |
+| No language/host artifact details | Add FR-060..065, NFR-013..015 and T-013..015 for Work, edits, privacy, labels and packaging |
+| User follow-up: plugin portability | Add FR-066; explicitly bundle the skill inside the plugin and require two-machine Work acceptance in T-010 |
+| S01 answers: solution architecture and provider-published visual conventions | Add confirmed release-depth boundaries and FR-048/T-016; retain the minimum catalog and prepare six working scenario briefs |
+| S01 correction: Kubernetes at detail level | Supersede the earlier cluster-only limit; add shared Kubernetes catalog/rules/detail-view scope and FR-018/FR-029/T-017, with explicit M2/M4 tasks |
+| S02 user follow-up: Huawei alternative and draw.io-type on-premises symbols | Assess the alternative without assuming rights/complete coverage; resolve the eight generic symbol concepts under D-010 while retaining source/attribution checks |
+
+## Current verification and sources
+
+Historical planning checks on 2026-10-31 (repository/runner facts superseded by S03 below):
+
+- The local repository initially contained only `.git`; no commits, implementation, existing docs, or workflow files were present. No applicable `AGENTS.md` was found in its ancestor chain.
+- Local Git remote: `https://github.com/Rabcat-dome/mingrammer-diagram.git`. GitHub connector metadata lookup returned 404; repository visibility/access and runner registration remain unverified.
+- Current shell: Darwin/ARM64; Python found; `dot` absent from this shell PATH. No dependency installation was performed.
+- The inspected upstream `diagrams/` directory has AWS/Azure/GCP/onprem/custom entries and no Huawei entry. Snapshot reference: [upstream commit 8c1446f](https://github.com/mingrammer/diagrams/commit/8c1446fbfa4a8d88e5c7bca7101ddc5af7933379). This is research evidence, not the selected dependency pin. Recheck the selected release in M0/M2.
+- [Upstream license](https://github.com/mingrammer/diagrams/blob/8c1446fbfa4a8d88e5c7bca7101ddc5af7933379/LICENSE) is MIT. This does not establish third-party icon redistribution rights.
+
+Current S03 checks on 2026-11-01: [repository/runner evidence](evidence/S03-repository-runner-preflight.md). GitHub CLI verified private/admin access and enabled Actions despite the connector's 404. There are zero eligible runners and no remote branch/workflow. Seven loaded local services belong to other repositories; no service was changed. Rulesets/protection APIs returned 403 requiring a plan change for this private repository. The manual preflight passes actionlint/local probe checks. After the initial investigation the owner authorized setup/publication/testing as D-011; runner ID 2 is installed and online, with publication/job in progress. Product requirements remain revision 0.5.
+
+Platform sources read for planning:
+
+| Source | Supported point |
+|---|---|
+| [OpenAI plugin quickstart](https://developers.openai.com/plugins/quickstart) | Remote MCP can be connected as a personal plugin and tested in a Work chat; verify actual account access |
+| [OpenAI plugins guide](https://learn.chatgpt.com/docs/plugins) | Supported surfaces and capability differences; plugin hooks are not a universal cloud execution path |
+| [OpenAI models](https://learn.chatgpt.com/docs/models) | Current model IDs/roles informing our recommended allocation; availability varies |
+| [Diagrams installation](https://diagrams.mingrammer.com/docs/getting-started/installation) and [custom nodes](https://diagrams.mingrammer.com/docs/nodes/custom) | Separate Graphviz dependency and custom local icon mechanism |
+| [GitHub self-hosted runner reference](https://docs.github.com/en/actions/reference/runners/self-hosted-runners) | Labels, scheduling and Linux/Docker requirement for container jobs |
+| [GitHub secure use](https://docs.github.com/en/actions/reference/security/secure-use) | Least privilege, untrusted code and persistent runner considerations |
+
+Provider evidence is linked next to semantic anchors in the requirements. Detailed service rules, Huawei documentation and icon terms must be verified during catalog implementation; the supplied draft is not a substitute for primary sources.

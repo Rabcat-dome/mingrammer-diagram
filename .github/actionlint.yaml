@@ -1,0 +1,4 @@
+# Project runner label; configuration alone does not register a runner.
+self-hosted-runner:
+  labels:
+    - mingrammer-macos-arm64

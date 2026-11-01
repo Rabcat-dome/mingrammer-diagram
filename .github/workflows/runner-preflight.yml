@@ -1,0 +1,84 @@
+name: Runner preflight
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: mingrammer-runner-preflight
+  cancel-in-progress: false
+
+jobs:
+  runner-preflight:
+    # Project-specific registration; verify API labels before dispatch.
+    if: >-
+      github.repository == 'Rabcat-dome/mingrammer-diagram' &&
+      github.actor == 'Rabcat-dome' &&
+      github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, macOS, ARM64, mingrammer-macos-arm64]
+    timeout-minutes: 5
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Inspect runner job environment
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import platform
+          import pwd
+          import shutil
+          import subprocess
+          import sys
+          import tempfile
+          from pathlib import Path
+
+          temp_root = Path(os.environ["RUNNER_TEMP"])
+          with tempfile.TemporaryDirectory(prefix="mingrammer-preflight-", dir=temp_root) as scratch:
+              probe = Path(scratch) / "probe.txt"
+              probe.write_text("runner-preflight\n", encoding="utf-8")
+              assert probe.read_text(encoding="utf-8") == "runner-preflight\n"
+
+          tools = {}
+          for name, flag in [("uv", "--version"), ("dot", "-V"), ("git", "--version"), ("actionlint", "--version")]:
+              executable = shutil.which(name)
+              entry = {"path": executable, "version": None, "exit_code": None}
+              if executable:
+                  result = subprocess.run([executable, flag], capture_output=True, text=True, timeout=10)
+                  entry["version"] = (result.stdout + result.stderr).strip()[:1024]
+                  entry["exit_code"] = result.returncode
+              tools[name] = entry
+
+          report = {
+              "scope": "runner-shell-preflight",
+              "github_actions": os.environ.get("GITHUB_ACTIONS") == "true",
+              "commit": os.environ.get("GITHUB_SHA"),
+              "runner_name": os.environ.get("RUNNER_NAME"),
+              "runner_os": os.environ.get("RUNNER_OS"),
+              "runner_arch": os.environ.get("RUNNER_ARCH"),
+              "system": platform.system(),
+              "machine": platform.machine(),
+              "macos_version": platform.mac_ver()[0],
+              "service_user": pwd.getpwuid(os.getuid()).pw_name,
+              "path": os.environ.get("PATH"),
+              "python": platform.python_version(),
+              "python_path": sys.executable,
+              "tools": tools,
+              "temp_write_read_cleanup": "passed",
+              "free_space_gib": round(shutil.disk_usage(temp_root).free / 1024**3, 1),
+              "graphviz_found": tools["dot"]["path"] is not None,
+              "render_check": "not_executed",
+              "quality_gate": "not_executed",
+          }
+          output = json.dumps(report, indent=2)
+          print(output)
+          with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a", encoding="utf-8") as summary:
+              summary.write("## Runner shell preflight\n\n```json\n" + output + "\n```\n")
+              summary.write("\nThis job checks scheduling and the service job environment. Renderer and product quality checks have not run. Missing tools must be resolved before the relevant milestone.\n")
+          assert report["system"] == "Darwin", "Expected macOS"
+          assert report["machine"].lower() == "arm64", "Expected native ARM64 Python"
+          PY

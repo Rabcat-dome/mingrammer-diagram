@@ -1,0 +1,1431 @@
+{
+  "kind": "research_metadata_not_release_asset_manifest",
+  "checked_date": "2026-10-31",
+  "repository": "JuanDiaz00/Huawei-Cloud-draw.io-icons",
+  "commit": "ea52d7356e172a85cde7538f293a663eb137611d",
+  "source_path": "HuaweiCloud Icons.xml",
+  "git_blob_sha": "0bd260648d2525e86c87c671ea9f9deb8d825a14",
+  "source_xml_sha256": "1afc1f2a0fda735c7b9eda88466725b720045493e61a04d392467596b8c976cd",
+  "source_size_bytes": 1384382,
+  "entry_count": 155,
+  "formats": {
+    "image/png": 155
+  },
+  "readme_source_claim": "VeryIcon Huawei Cloud Icons",
+  "license_metadata": null,
+  "rights_status": "repository_grant_not_found_upstream_usage_claim_needs_bundling_scope_review",
+  "rendered": false,
+  "huawei_minimum_title_review": {
+    "unambiguous_named_matches": [
+      {
+        "type": "ECS",
+        "title": "computing-ecs",
+        "index": 28
+      },
+      {
+        "type": "ELB",
+        "title": "network-elb",
+        "index": 106
+      },
+      {
+        "type": "EIP",
+        "title": "network-eip",
+        "index": 100
+      },
+      {
+        "type": "VPC",
+        "title": "network-vpc",
+        "index": 104
+      },
+      {
+        "type": "RDS",
+        "title": "database-rds",
+        "index": 51
+      },
+      {
+        "type": "IAM",
+        "title": "managementdeployment-iam",
+        "index": 93
+      },
+      {
+        "type": "VPN",
+        "title": "network-vpn-2",
+        "index": 113
+      }
+    ],
+    "not_unambiguously_named": [
+      "Subnet",
+      "Security Group",
+      "NAT Gateway",
+      "CCE",
+      "OBS",
+      "API Gateway",
+      "FunctionGraph",
+      "Direct Connect",
+      "Cloud Eye",
+      "LTS"
+    ],
+    "ambiguous_candidates": [
+      {
+        "type": "FunctionGraph",
+        "title": "computing-fgs"
+      },
+      {
+        "type": "LTS",
+        "title": "log-and-trace-consolele"
+      },
+      {
+        "type": "CCE",
+        "title": "other-cluster-computing-platform-services"
+      },
+      {
+        "type": "OBS",
+        "title": "storage-55"
+      }
+    ],
+    "limitation": "Title screening only; do not infer a missing service asset from an opaque filename or claim all 17 minimum items are covered."
+  },
+  "upstream_usage_claim": {
+    "url": "https://www.veryicon.com/icons/miscellaneous/huawei-cloud-service-icon/computing-ecs.html",
+    "author_label": "AIyangyang",
+    "claim": "Free for personal and commercial purpose.",
+    "scope_limit": "The audited page does not explicitly establish source-asset redistribution in this plugin or original Huawei rights-holder authorization."
+  },
+  "drawio_onprem": {
+    "user_direction": "Use draw.io-type generic symbols for the eight formerly unmapped on-premises concepts.",
+    "current_snapshot": "3e707fd20b6930778d6f6bf6e4d0079b4bce366b",
+    "current_readme_blob": "2d854e6f655ee750625131ca83c5df93b096827c",
+    "current_stencils_license_blob": "346d459aade14a4ec60ee063991d56068c59f0a3",
+    "source_candidate_tag": "v29.3.2",
+    "source_candidate_commit": "bc0ccab15cb08e8e03491aa14a30eb2801caaf81",
+    "source_candidate_path": "src/main/webapp/stencils/networks.xml",
+    "source_candidate_git_blob_sha": "24191cc4ab46ce2bc2c3896b811f2afd9ade43cf",
+    "source_candidate_sidebar_sha": "b1794fc27e33b48121cfc46680e1188722ec9bd0",
+    "historical_readme_sha": "13aa96991ec18596455f598f4f2e972fe10081a5",
+    "historical_stencils_license_sha": "4391d8b806515059313d28fc6afd4d669b6c5fa2",
+    "rights_notes": [
+      "Historical README declares CC-BY-4.0 for JGraph-provided icons with third-party qualifications; the same snapshot's stencil LICENSE already contains an Atlassian ecosystem restriction.",
+      "Current README/stencil LICENSE also apply an Atlassian ecosystem restriction and distinguish generated end-user diagrams from bundled software assets.",
+      "This project currently targets ChatGPT Work and later Claude Code, not an Atlassian product; preserve all applicable terms/attribution and selected asset provenance before bundling.",
+      "Do not label all draw.io art Apache-2.0 merely because some application code is Apache-2.0."
+    ],
+    "mapping_status": "eight_concepts_mapped_source_symbols_verified_export_visual_and_package_checks_pending",
+    "runtime_strategy": "Export approved selected symbols to local assets at build time; retain diagrams/Graphviz as runtime backend.",
+    "mappings": [
+      {
+        "type": "load balancer",
+        "shape_ids": [
+          "mxgraph.networks.load_balancer"
+        ],
+        "kind": "direct_generic_shape",
+        "label": "Load Balancer"
+      },
+      {
+        "type": "hypervisor",
+        "shape_ids": [
+          "mxgraph.networks.server",
+          "mxgraph.networks.virtual_server"
+        ],
+        "kind": "labeled_host_composite",
+        "label": "Hypervisor",
+        "note": "Keep hypervisor host distinct from guest VM; do not invent a vendor."
+      },
+      {
+        "type": "VM",
+        "shape_ids": [
+          "mxgraph.networks.virtual_server"
+        ],
+        "kind": "direct_generic_shape",
+        "label": "VM"
+      },
+      {
+        "type": "NAS",
+        "shape_ids": [
+          "mxgraph.networks.nas_filer"
+        ],
+        "kind": "direct_generic_shape",
+        "label": "NAS"
+      },
+      {
+        "type": "SAN",
+        "shape_ids": [
+          "mxgraph.networks.storage"
+        ],
+        "kind": "labeled_storage_and_fabric_context",
+        "label": "SAN",
+        "note": "Do not substitute a NAS filer for SAN; retain declared block/fabric relationships."
+      },
+      {
+        "type": "identity service",
+        "shape_ids": [
+          "mxgraph.networks.server",
+          "mxgraph.networks.users"
+        ],
+        "kind": "labeled_service_composite",
+        "label": "Identity Service"
+      },
+      {
+        "type": "backup system",
+        "shape_ids": [
+          "mxgraph.networks.server_storage"
+        ],
+        "kind": "labeled_backup_service",
+        "label": "Backup System",
+        "note": "Tape Storage is used only if the architecture explicitly includes tape."
+      },
+      {
+        "type": "monitoring",
+        "shape_ids": [
+          "mxgraph.networks.server"
+        ],
+        "kind": "labeled_observability_service",
+        "label": "Monitoring",
+        "note": "A hardware monitor icon by itself is not observability."
+      }
+    ],
+    "assets_bundled": false,
+    "rendered": false
+  },
+  "entries": [
+    {
+      "index": 0,
+      "title": "apm",
+      "width": 512,
+      "height": 512,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 1,
+      "title": "app-builder-dmb",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 2,
+      "title": "aom",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 3,
+      "title": "aos",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 4,
+      "title": "application-ddm",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 5,
+      "title": "app-builder-wbs",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 6,
+      "title": "app-builder-ams",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 7,
+      "title": "application-ecpc",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 8,
+      "title": "application-dms",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 9,
+      "title": "application-functionstage",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 10,
+      "title": "application-cae",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 11,
+      "title": "application-servicestage",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 12,
+      "title": "cassandra-1",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 13,
+      "title": "cbr-2",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 14,
+      "title": "cbh",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 15,
+      "title": "cc-21",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 16,
+      "title": "cloud-communication-im",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 17,
+      "title": "cci",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 18,
+      "title": "cloud-communication-cloudipcc",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 19,
+      "title": "cmc",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 20,
+      "title": "cmn",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 21,
+      "title": "computing",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 22,
+      "title": "cloud-communication-meeting",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 23,
+      "title": "computing-as",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 24,
+      "title": "bcs",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 25,
+      "title": "computing-bms",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 26,
+      "title": "computing-fgs",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 27,
+      "title": "computing-ims",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 28,
+      "title": "computing-ecs",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 29,
+      "title": "cpts",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 30,
+      "title": "cvcs",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 31,
+      "title": "cse",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 32,
+      "title": "data-analysis-ai-data-access",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 33,
+      "title": "computing-dec",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 34,
+      "title": "daps",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 35,
+      "title": "data-analysis-ai-ais",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 36,
+      "title": "das",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 37,
+      "title": "data-analysisai-cdm",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 38,
+      "title": "data-analysis-ai-m-olap",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 39,
+      "title": "data-analysisai-cloudtable",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 40,
+      "title": "data-analysisai-cs",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 41,
+      "title": "data-analysisai-dis",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 42,
+      "title": "data-analysisai-dps",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 43,
+      "title": "data-analysisai-logistics",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 44,
+      "title": "data-analysisai-ocr-forms",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 45,
+      "title": "data-analysisai-mls",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 46,
+      "title": "data-analysisai-mrs",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 47,
+      "title": "data-analysisai-uquery",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 48,
+      "title": "database-106",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 49,
+      "title": "data-analysisai-usearch",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 50,
+      "title": "database-dcs",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 51,
+      "title": "database-rds",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 52,
+      "title": "database-taurus",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 53,
+      "title": "devcloud-cloudbuild",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 54,
+      "title": "deblur",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 55,
+      "title": "devcloud-clouddeploy",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 56,
+      "title": "devcloud-cloudide",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 57,
+      "title": "devcloud-cobehub",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 58,
+      "title": "devcloud-collaboration",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 59,
+      "title": "devcloud-cloudpipeline",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 60,
+      "title": "devcloud-testman",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 61,
+      "title": "devcloud-projectman",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 62,
+      "title": "efs",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 63,
+      "title": "drs",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 64,
+      "title": "dls",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 65,
+      "title": "domains",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 66,
+      "title": "em-3",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 67,
+      "title": "elastic-gpu",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 68,
+      "title": "face-18",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 69,
+      "title": "facs",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 70,
+      "title": "devcloud-mobiletest",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 71,
+      "title": "forecloud-stack",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 72,
+      "title": "function-console",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 73,
+      "title": "gacs",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 74,
+      "title": "ges",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 75,
+      "title": "fow-logs",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 76,
+      "title": "icp-license",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 77,
+      "title": "httpdns",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 78,
+      "title": "ifs",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 79,
+      "title": "images-recognition",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 80,
+      "title": "irs",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 81,
+      "title": "iot-iotplatform",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 82,
+      "title": "is-2",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 83,
+      "title": "im-10",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 84,
+      "title": "enterprise-app-workspace",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 85,
+      "title": "log-and-trace-consolele",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 86,
+      "title": "machine-translation-1",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 87,
+      "title": "iqa",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 88,
+      "title": "managementdeployment-cas",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 89,
+      "title": "management-deployment-maas",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 90,
+      "title": "its",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 91,
+      "title": "management-deployment-hcus",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 92,
+      "title": "managementdeployment-cts",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 93,
+      "title": "managementdeployment-iam",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 94,
+      "title": "managementdeployment-icms",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 95,
+      "title": "managementdeployment-ccs",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 96,
+      "title": "managementdeployment-rts",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 97,
+      "title": "memcached",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 98,
+      "title": "mls",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 99,
+      "title": "mpc-2",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 100,
+      "title": "network-eip",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 101,
+      "title": "mysql-9",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 102,
+      "title": "mysql-10",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 103,
+      "title": "lsa",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 104,
+      "title": "network-vpc",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 105,
+      "title": "network-dns",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 106,
+      "title": "network-elb",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 107,
+      "title": "networkqos",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 108,
+      "title": "managementdeployment-crs",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 109,
+      "title": "other-application-market",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 110,
+      "title": "nlp",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 111,
+      "title": "other-cloud-host-console",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 112,
+      "title": "other-cluster-computing-platform-services",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 113,
+      "title": "network-vpn-2",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 114,
+      "title": "other-diy-service",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 115,
+      "title": "private-number",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 116,
+      "title": "plas",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 117,
+      "title": "security-225",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 118,
+      "title": "postgre",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 119,
+      "title": "sdrs",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 120,
+      "title": "roma",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 121,
+      "title": "security-anti-ddos",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 122,
+      "title": "security-aad",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 123,
+      "title": "security-ars",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 124,
+      "title": "security-aag",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 125,
+      "title": "security-hids",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 126,
+      "title": "security-hss",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 127,
+      "title": "security-hwaf",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 128,
+      "title": "security-hvd",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 129,
+      "title": "security-dbss",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 130,
+      "title": "security-kms",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 131,
+      "title": "security-sas",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 132,
+      "title": "security-sca",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 133,
+      "title": "security-pts",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 134,
+      "title": "security-ssa",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 135,
+      "title": "security-wtp",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 136,
+      "title": "sms-25",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 137,
+      "title": "security-waf",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 138,
+      "title": "storage-55",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 139,
+      "title": "storage-dess",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 140,
+      "title": "storage-des",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 141,
+      "title": "storage-csbs",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 142,
+      "title": "storage-dss",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 143,
+      "title": "storage-evs",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 144,
+      "title": "storage-vbs",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 145,
+      "title": "vcm",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 146,
+      "title": "swr",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 147,
+      "title": "tts",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 148,
+      "title": "webscan",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 149,
+      "title": "sqlsever",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 150,
+      "title": "traffic-30",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 151,
+      "title": "vision-service",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 152,
+      "title": "web-server-5",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 153,
+      "title": "ws-3",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    },
+    {
+      "index": 154,
+      "title": "storage-dta",
+      "width": 256,
+      "height": 256,
+      "format": "image/png",
+      "source_type": "image_data_uri"
+    }
+  ]
+}

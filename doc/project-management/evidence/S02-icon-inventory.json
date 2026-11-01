@@ -1,0 +1,766 @@
+{
+  "kind": "research_metadata_not_release_asset_manifest",
+  "checked_date": "2026-10-31",
+  "status": "research_complete_huawei_redistribution_evidence_pending",
+  "follow_up_inventory": "S02-supplemental-icons.json",
+  "limitations": [
+    "No icon binaries or extracted SVG assets are bundled here.",
+    "Git blob SHA-1 values identify upstream source objects; they are not asset SHA-256 digests.",
+    "Icon titles and class/path existence are verified; rendering, visual fidelity and semantic mappings remain untested.",
+    "Snapshots are research references, not selected dependency pins.",
+    "The eight neutral_symbol_gap rows preserve initial findings. D-010 and S02-supplemental-icons.json now define draw.io-type mappings; asset export/visual/package checks remain pending."
+  ],
+  "sources": {
+    "huawei": {
+      "repository": "huaweicloud-latam/drawio-libraries",
+      "commit": "52c33aa12fb816a5de403da85067e1c0f039b5be",
+      "release": "v3.2",
+      "release_published_at": "2025-01-31T13:38:56Z",
+      "github_license_metadata": null,
+      "license_notice_files_found": [],
+      "audited_documents": {
+        "README.md": "1e7b364fe947131740bc4d6034fa4bb23003eb74",
+        "README.pt.md": "76b4f310a3994b2145ba4d0a8c7377c8bb3d7d57",
+        "CHANGELOG.md": "59a4bb6db72ba57aef06bf4949771ecefea64ca9"
+      },
+      "embedded_svg_rights_keyword_scan": {
+        "entries_scanned": 254,
+        "keywords": ["copyright", "license", "creativecommons", "apache", "redistribution", "SPDX"],
+        "matches_found": 0,
+        "limitation": "Keyword screening is supporting evidence only, not proof that no other permission exists."
+      },
+      "rights_status": "redistribution_grant_not_found_in_audited_sources",
+      "color_library_count": 15,
+      "total_color_entries": 262,
+      "svg_entries": 254,
+      "mxgraph_group_entries": 8
+    },
+    "diagrams": {
+      "repository": "mingrammer/diagrams",
+      "commit": "8c1446fbfa4a8d88e5c7bca7101ddc5af7933379",
+      "license": "MIT",
+      "latest_release_observed": "v0.25.1",
+      "latest_release_published_at": "2025-11-22T02:30:19Z",
+      "resource_counts": {
+        "onprem": 173,
+        "generic": 27,
+        "k8s": 46
+      },
+      "truncated_tree": false,
+      "huawei_native_provider_found": false,
+      "rights_status": "root_mit_declared_no_asset_scoped_origin_notices_found_in_audited_tree"
+    },
+    "kubernetes_icons": {
+      "repository": "kubernetes/community",
+      "commit": "309fa9adfc84a8d04b0817a8b11124bf479a8d5e",
+      "source_path": "icons/README.md",
+      "readme_git_blob_sha": "540b04d598243604c0e840b359abf92feeb61057",
+      "declared_licenses": [
+        "Apache-2.0",
+        "CC-BY-4.0"
+      ],
+      "suggested_license_choice": "Apache-2.0",
+      "rights_status": "explicit_license_choice_declared_preserve_applicable_notices_and_trademark_terms",
+      "adopted_for_release": false
+    },
+    "neutral_icons": {
+      "repository": "tabler/tabler-icons",
+      "commit": "ed177a085b652fe04ec4f37ced867c94621e7840",
+      "license": "MIT",
+      "rights_status": "license_declared_candidate_preserve_notice",
+      "adopted_for_release": false,
+      "scope": "unbranded_neutral_onprem_candidates_only"
+    }
+  },
+  "huawei_library_summaries": [
+    {
+      "path": "color/HWC Analytics (color).xml",
+      "git_blob_sha": "efe412480e2acd93096d3623c9ff57e722f09af8",
+      "entry_count": 13,
+      "formats": [
+        "image/svg+xml"
+      ]
+    },
+    {
+      "path": "color/HWC Artificial Intelligence (color).xml",
+      "git_blob_sha": "7fb82956f3a249902d7eef03963e4deb5160d74f",
+      "entry_count": 46,
+      "formats": [
+        "image/svg+xml"
+      ]
+    },
+    {
+      "path": "color/HWC Business Applications (color).xml",
+      "git_blob_sha": "5cc773f724c4821d330d9654c1eb218e608e6bb9",
+      "entry_count": 20,
+      "formats": [
+        "image/svg+xml"
+      ]
+    },
+    {
+      "path": "color/HWC Compute and Containers (color).xml",
+      "git_blob_sha": "25f09928318db73046cccc67240df66b5f4f44ab",
+      "entry_count": 17,
+      "formats": [
+        "image/svg+xml"
+      ]
+    },
+    {
+      "path": "color/HWC Databases (color).xml",
+      "git_blob_sha": "e122b11e7cb424ade604e84872029dd93aaaac29",
+      "entry_count": 17,
+      "formats": [
+        "image/svg+xml"
+      ]
+    },
+    {
+      "path": "color/HWC Developer Services (color).xml",
+      "git_blob_sha": "80d1232dcb1e4540ebc4fb98b7eb0e9ee56b21b7",
+      "entry_count": 22,
+      "formats": [
+        "image/svg+xml"
+      ]
+    },
+    {
+      "path": "color/HWC Flexus (color).xml",
+      "git_blob_sha": "d6dd33efbfffe8745d94f7228258ee60117de7a8",
+      "entry_count": 9,
+      "formats": [
+        "image/svg+xml"
+      ]
+    },
+    {
+      "path": "color/HWC Groups.xml",
+      "git_blob_sha": "2c2f71577f3cbe8d5fb7b49ade727fbb340c394c",
+      "entry_count": 8,
+      "formats": [
+        "mxgraph-xml"
+      ]
+    },
+    {
+      "path": "color/HWC Management and Governance (color).xml",
+      "git_blob_sha": "5d4c80d517b8776a57a481529613d05f183c8ff7",
+      "entry_count": 16,
+      "formats": [
+        "image/svg+xml"
+      ]
+    },
+    {
+      "path": "color/HWC Middleware (color).xml",
+      "git_blob_sha": "f656575ff0321fe6660d8545da14509140190cbc",
+      "entry_count": 15,
+      "formats": [
+        "image/svg+xml"
+      ]
+    },
+    {
+      "path": "color/HWC Migration (color).xml",
+      "git_blob_sha": "b409384c0864a32489e3210385aa0190e7202c47",
+      "entry_count": 5,
+      "formats": [
+        "image/svg+xml"
+      ]
+    },
+    {
+      "path": "color/HWC Misc (color).xml",
+      "git_blob_sha": "c10b2eca9ebaadc241bc7c2e95c86ad94b67698a",
+      "entry_count": 29,
+      "formats": [
+        "image/svg+xml"
+      ]
+    },
+    {
+      "path": "color/HWC Networking (color).xml",
+      "git_blob_sha": "c065b741f88758a986b978946962690508d0dd7c",
+      "entry_count": 12,
+      "formats": [
+        "image/svg+xml"
+      ]
+    },
+    {
+      "path": "color/HWC Security and Compliance (color).xml",
+      "git_blob_sha": "dcbfa1041b0888a6d9f533bb3fc65afb27d9f914",
+      "entry_count": 20,
+      "formats": [
+        "image/svg+xml"
+      ]
+    },
+    {
+      "path": "color/HWC Storage (color).xml",
+      "git_blob_sha": "5b2e0af9a4067a3cf87e28593e0fab498f8570e1",
+      "entry_count": 13,
+      "formats": [
+        "image/svg+xml"
+      ]
+    }
+  ],
+  "huawei_minimum_mapping_candidates": [
+    {
+      "requirement": "VPC",
+      "source_path": "color/HWC Networking (color).xml",
+      "source_title": "Virtual Private Cloud (VPC)",
+      "entry_index": 9,
+      "source_format": "image/svg+xml",
+      "representation": "svg_and_group",
+      "git_blob_sha": "c065b741f88758a986b978946962690508d0dd7c",
+      "technical_status": "title_and_format_verified_visual_mapping_pending",
+      "rights_status": "redistribution_grant_not_found",
+      "asset_sha256": null
+    },
+    {
+      "requirement": "Subnet",
+      "source_path": "color/HWC Groups.xml",
+      "source_title": "Subnet",
+      "entry_index": 4,
+      "source_format": "mxgraph-xml",
+      "representation": "group",
+      "git_blob_sha": "2c2f71577f3cbe8d5fb7b49ade727fbb340c394c",
+      "technical_status": "title_and_format_verified_visual_mapping_pending",
+      "rights_status": "redistribution_grant_not_found",
+      "asset_sha256": null
+    },
+    {
+      "requirement": "Security Group",
+      "source_path": "color/HWC Groups.xml",
+      "source_title": "Security Group",
+      "entry_index": 5,
+      "source_format": "mxgraph-xml",
+      "representation": "group",
+      "git_blob_sha": "2c2f71577f3cbe8d5fb7b49ade727fbb340c394c",
+      "technical_status": "title_and_format_verified_visual_mapping_pending",
+      "rights_status": "redistribution_grant_not_found",
+      "asset_sha256": null
+    },
+    {
+      "requirement": "ECS",
+      "source_path": "color/HWC Compute and Containers (color).xml",
+      "source_title": "Elastic Cloud Server (ECS)",
+      "entry_index": 6,
+      "source_format": "image/svg+xml",
+      "representation": "svg",
+      "git_blob_sha": "25f09928318db73046cccc67240df66b5f4f44ab",
+      "technical_status": "title_and_format_verified_visual_mapping_pending",
+      "rights_status": "redistribution_grant_not_found",
+      "asset_sha256": null
+    },
+    {
+      "requirement": "ELB",
+      "source_path": "color/HWC Networking (color).xml",
+      "source_title": "Elastic Load Balance (ELB)",
+      "entry_index": 3,
+      "source_format": "image/svg+xml",
+      "representation": "svg",
+      "git_blob_sha": "c065b741f88758a986b978946962690508d0dd7c",
+      "technical_status": "title_and_format_verified_visual_mapping_pending",
+      "rights_status": "redistribution_grant_not_found",
+      "asset_sha256": null
+    },
+    {
+      "requirement": "EIP",
+      "source_path": "color/HWC Networking (color).xml",
+      "source_title": "Elastic IP (EIP)",
+      "entry_index": 2,
+      "source_format": "image/svg+xml",
+      "representation": "svg",
+      "git_blob_sha": "c065b741f88758a986b978946962690508d0dd7c",
+      "technical_status": "title_and_format_verified_visual_mapping_pending",
+      "rights_status": "redistribution_grant_not_found",
+      "asset_sha256": null
+    },
+    {
+      "requirement": "NAT Gateway",
+      "source_path": "color/HWC Networking (color).xml",
+      "source_title": "NAT Gateway",
+      "entry_index": 8,
+      "source_format": "image/svg+xml",
+      "representation": "svg",
+      "git_blob_sha": "c065b741f88758a986b978946962690508d0dd7c",
+      "technical_status": "title_and_format_verified_visual_mapping_pending",
+      "rights_status": "redistribution_grant_not_found",
+      "asset_sha256": null
+    },
+    {
+      "requirement": "CCE",
+      "source_path": "color/HWC Compute and Containers (color).xml",
+      "source_title": "Cloud Container Engine (CCE)",
+      "entry_index": 12,
+      "source_format": "image/svg+xml",
+      "representation": "svg_and_group",
+      "git_blob_sha": "25f09928318db73046cccc67240df66b5f4f44ab",
+      "technical_status": "title_and_format_verified_visual_mapping_pending",
+      "rights_status": "redistribution_grant_not_found",
+      "asset_sha256": null
+    },
+    {
+      "requirement": "RDS",
+      "source_path": "color/HWC Databases (color).xml",
+      "source_title": "Relational Database Service (RDS)",
+      "entry_index": 15,
+      "source_format": "image/svg+xml",
+      "representation": "svg",
+      "git_blob_sha": "e122b11e7cb424ade604e84872029dd93aaaac29",
+      "technical_status": "title_and_format_verified_visual_mapping_pending",
+      "rights_status": "redistribution_grant_not_found",
+      "asset_sha256": null
+    },
+    {
+      "requirement": "OBS",
+      "source_path": "color/HWC Storage (color).xml",
+      "source_title": "Object Storage Service (OBS)",
+      "entry_index": 8,
+      "source_format": "image/svg+xml",
+      "representation": "svg",
+      "git_blob_sha": "5b2e0af9a4067a3cf87e28593e0fab498f8570e1",
+      "technical_status": "title_and_format_verified_visual_mapping_pending",
+      "rights_status": "redistribution_grant_not_found",
+      "asset_sha256": null
+    },
+    {
+      "requirement": "IAM",
+      "source_path": "color/HWC Management and Governance (color).xml",
+      "source_title": "Identity and Access Management (IAM)",
+      "entry_index": 7,
+      "source_format": "image/svg+xml",
+      "representation": "svg",
+      "git_blob_sha": "5d4c80d517b8776a57a481529613d05f183c8ff7",
+      "technical_status": "title_and_format_verified_visual_mapping_pending",
+      "rights_status": "redistribution_grant_not_found",
+      "asset_sha256": null
+    },
+    {
+      "requirement": "API Gateway",
+      "source_path": "color/HWC Middleware (color).xml",
+      "source_title": "API Gateway (APIG)",
+      "entry_index": 4,
+      "source_format": "image/svg+xml",
+      "representation": "svg",
+      "git_blob_sha": "f656575ff0321fe6660d8545da14509140190cbc",
+      "technical_status": "title_and_format_verified_visual_mapping_pending",
+      "rights_status": "redistribution_grant_not_found",
+      "asset_sha256": null
+    },
+    {
+      "requirement": "FunctionGraph",
+      "source_path": "color/HWC Compute and Containers (color).xml",
+      "source_title": "FunctionGraph",
+      "entry_index": 8,
+      "source_format": "image/svg+xml",
+      "representation": "svg",
+      "git_blob_sha": "25f09928318db73046cccc67240df66b5f4f44ab",
+      "technical_status": "title_and_format_verified_visual_mapping_pending",
+      "rights_status": "redistribution_grant_not_found",
+      "asset_sha256": null
+    },
+    {
+      "requirement": "VPN",
+      "source_path": "color/HWC Networking (color).xml",
+      "source_title": "Virtual Private Network (VPN)",
+      "entry_index": 10,
+      "source_format": "image/svg+xml",
+      "representation": "svg",
+      "git_blob_sha": "c065b741f88758a986b978946962690508d0dd7c",
+      "technical_status": "title_and_format_verified_visual_mapping_pending",
+      "rights_status": "redistribution_grant_not_found",
+      "asset_sha256": null
+    },
+    {
+      "requirement": "Direct Connect",
+      "source_path": "color/HWC Networking (color).xml",
+      "source_title": "Direct Connect",
+      "entry_index": 1,
+      "source_format": "image/svg+xml",
+      "representation": "svg",
+      "git_blob_sha": "c065b741f88758a986b978946962690508d0dd7c",
+      "technical_status": "title_and_format_verified_visual_mapping_pending",
+      "rights_status": "redistribution_grant_not_found",
+      "asset_sha256": null
+    },
+    {
+      "requirement": "Cloud Eye",
+      "source_path": "color/HWC Management and Governance (color).xml",
+      "source_title": "Cloud Eye Service (CES)",
+      "entry_index": 2,
+      "source_format": "image/svg+xml",
+      "representation": "svg",
+      "git_blob_sha": "5d4c80d517b8776a57a481529613d05f183c8ff7",
+      "technical_status": "title_and_format_verified_visual_mapping_pending",
+      "rights_status": "redistribution_grant_not_found",
+      "asset_sha256": null
+    },
+    {
+      "requirement": "LTS",
+      "source_path": "color/HWC Management and Governance (color).xml",
+      "source_title": "Log Tank Servce (LTS)",
+      "entry_index": 8,
+      "source_format": "image/svg+xml",
+      "representation": "svg",
+      "git_blob_sha": "5d4c80d517b8776a57a481529613d05f183c8ff7",
+      "technical_status": "title_and_format_verified_visual_mapping_pending",
+      "rights_status": "redistribution_grant_not_found",
+      "asset_sha256": null
+    }
+  ],
+  "onprem_inventory": [
+    {
+      "requirement": "site/data center",
+      "candidate": "diagrams.generic.place.Datacenter",
+      "source_path": "resources/generic/place/datacenter.png",
+      "git_blob_sha": "064eaa8f4bd03b5713018f7344a96253f88abda4",
+      "technical_status": "existing_candidate",
+      "rights_status": "upstream_mit_declared_asset_provenance_review_pending",
+      "visual_review": "not_performed"
+    },
+    {
+      "requirement": "room",
+      "candidate": "labeled physical boundary",
+      "source_path": null,
+      "git_blob_sha": null,
+      "technical_status": "layout_primitive",
+      "rights_status": "no_third_party_asset_selected",
+      "visual_review": "not_performed"
+    },
+    {
+      "requirement": "rack",
+      "candidate": "diagrams.generic.compute.Rack",
+      "source_path": "resources/generic/compute/rack.png",
+      "git_blob_sha": "c749fdd2c5c2f4f191303bbe34306cace2674d95",
+      "technical_status": "existing_candidate",
+      "rights_status": "upstream_mit_declared_asset_provenance_review_pending",
+      "visual_review": "not_performed"
+    },
+    {
+      "requirement": "security zone",
+      "candidate": "labeled security boundary",
+      "source_path": null,
+      "git_blob_sha": null,
+      "technical_status": "layout_primitive",
+      "rights_status": "no_third_party_asset_selected",
+      "visual_review": "not_performed"
+    },
+    {
+      "requirement": "VLAN",
+      "candidate": "labeled logical segment",
+      "source_path": null,
+      "git_blob_sha": null,
+      "technical_status": "layout_primitive",
+      "rights_status": "no_third_party_asset_selected",
+      "visual_review": "not_performed"
+    },
+    {
+      "requirement": "VRF",
+      "candidate": "labeled routing scope",
+      "source_path": null,
+      "git_blob_sha": null,
+      "technical_status": "layout_primitive",
+      "rights_status": "no_third_party_asset_selected",
+      "visual_review": "not_performed"
+    },
+    {
+      "requirement": "subnet",
+      "candidate": "diagrams.generic.network.Subnet",
+      "source_path": "resources/generic/network/subnet.png",
+      "git_blob_sha": "2808968edcf91cec88a2c6ee3e8bcfff10088e8d",
+      "technical_status": "existing_candidate",
+      "rights_status": "upstream_mit_declared_asset_provenance_review_pending",
+      "visual_review": "not_performed"
+    },
+    {
+      "requirement": "router",
+      "candidate": "diagrams.generic.network.Router",
+      "source_path": "resources/generic/network/router.png",
+      "git_blob_sha": "377e2b5519c9c6ddc60b470c775f061ceb1bafab",
+      "technical_status": "existing_candidate",
+      "rights_status": "upstream_mit_declared_asset_provenance_review_pending",
+      "visual_review": "not_performed"
+    },
+    {
+      "requirement": "L2/L3 switch",
+      "candidate": "diagrams.generic.network.Switch; label type explicitly",
+      "source_path": "resources/generic/network/switch.png",
+      "git_blob_sha": "9699b6910e44c7be1573e6a70bc83010cdc1e9b3",
+      "technical_status": "generic_candidate_needs_l2_l3_distinction",
+      "rights_status": "upstream_mit_declared_asset_provenance_review_pending",
+      "visual_review": "not_performed"
+    },
+    {
+      "requirement": "firewall",
+      "candidate": "diagrams.generic.network.Firewall",
+      "source_path": "resources/generic/network/firewall.png",
+      "git_blob_sha": "e6c21830d49676d7f2664df8907486c86a3a20db",
+      "technical_status": "existing_candidate",
+      "rights_status": "upstream_mit_declared_asset_provenance_review_pending",
+      "visual_review": "not_performed"
+    },
+    {
+      "requirement": "load balancer",
+      "candidate": "neutral labeled symbol; HAProxy only for an explicitly named HAProxy deployment",
+      "source_path": null,
+      "git_blob_sha": null,
+      "technical_status": "neutral_symbol_gap",
+      "rights_status": "no_third_party_asset_selected",
+      "visual_review": "not_performed"
+    },
+    {
+      "requirement": "hypervisor",
+      "candidate": "neutral host symbol; named QEMU/VMware/VirtualBox/Xen only when specified",
+      "source_path": null,
+      "git_blob_sha": null,
+      "technical_status": "neutral_symbol_gap",
+      "rights_status": "no_third_party_asset_selected",
+      "visual_review": "not_performed"
+    },
+    {
+      "requirement": "VM",
+      "candidate": "neutral VM symbol with explicit hypervisor/host relation",
+      "source_path": null,
+      "git_blob_sha": null,
+      "technical_status": "neutral_symbol_gap",
+      "rights_status": "no_third_party_asset_selected",
+      "visual_review": "not_performed"
+    },
+    {
+      "requirement": "physical server",
+      "candidate": "diagrams.onprem.compute.Server",
+      "source_path": "resources/onprem/compute/server.png",
+      "git_blob_sha": "6230344bf4729109b5d1a9d1e2d0ab02f41f55eb",
+      "technical_status": "existing_candidate",
+      "rights_status": "upstream_mit_declared_asset_provenance_review_pending",
+      "visual_review": "not_performed"
+    },
+    {
+      "requirement": "Kubernetes cluster",
+      "candidate": "labeled cluster group; Kubernetes identity only under its terms",
+      "source_path": null,
+      "git_blob_sha": null,
+      "technical_status": "layout_primitive_with_optional_k8s_mark",
+      "rights_status": "no_third_party_asset_selected",
+      "visual_review": "not_performed"
+    },
+    {
+      "requirement": "database",
+      "candidate": "diagrams.generic.database.SQL; named product only if specified",
+      "source_path": "resources/generic/database/sql.png",
+      "git_blob_sha": "19bae99bc5087ccf1540861fe256259a35ba6f0f",
+      "technical_status": "existing_relational_candidate",
+      "rights_status": "upstream_mit_declared_asset_provenance_review_pending",
+      "visual_review": "not_performed"
+    },
+    {
+      "requirement": "NAS",
+      "candidate": "neutral storage symbol with NAS label and file-service relations",
+      "source_path": null,
+      "git_blob_sha": null,
+      "technical_status": "neutral_symbol_gap",
+      "rights_status": "no_third_party_asset_selected",
+      "visual_review": "not_performed"
+    },
+    {
+      "requirement": "SAN",
+      "candidate": "neutral storage symbol with SAN label and block/fabric relations",
+      "source_path": null,
+      "git_blob_sha": null,
+      "technical_status": "neutral_symbol_gap",
+      "rights_status": "no_third_party_asset_selected",
+      "visual_review": "not_performed"
+    },
+    {
+      "requirement": "identity service",
+      "candidate": "neutral identity-service symbol; named directory/IAM product only if specified",
+      "source_path": null,
+      "git_blob_sha": null,
+      "technical_status": "neutral_symbol_gap",
+      "rights_status": "no_third_party_asset_selected",
+      "visual_review": "not_performed"
+    },
+    {
+      "requirement": "backup system",
+      "candidate": "neutral backup symbol and declared protected targets",
+      "source_path": null,
+      "git_blob_sha": null,
+      "technical_status": "neutral_symbol_gap",
+      "rights_status": "no_third_party_asset_selected",
+      "visual_review": "not_performed"
+    },
+    {
+      "requirement": "monitoring",
+      "candidate": "neutral monitoring symbol; Prometheus/Grafana only if specified",
+      "source_path": null,
+      "git_blob_sha": null,
+      "technical_status": "neutral_symbol_gap",
+      "rights_status": "no_third_party_asset_selected",
+      "visual_review": "not_performed"
+    }
+  ],
+  "kubernetes_existing_asset_candidates": [
+    {
+      "source_path": "resources/k8s/compute/cronjob.png",
+      "git_blob_sha": "e70aedddbd9ddb53d76d148aebfb602f39493311",
+      "technical_status": "exists_visual_and_origin_match_review_pending"
+    },
+    {
+      "source_path": "resources/k8s/compute/deploy.png",
+      "git_blob_sha": "c32b6b956b87e1dd202575b2d6e6442d3df77a16",
+      "technical_status": "exists_visual_and_origin_match_review_pending"
+    },
+    {
+      "source_path": "resources/k8s/compute/ds.png",
+      "git_blob_sha": "f327daaa28739fb16e0dc13eb5ca81603d0d8553",
+      "technical_status": "exists_visual_and_origin_match_review_pending"
+    },
+    {
+      "source_path": "resources/k8s/compute/job.png",
+      "git_blob_sha": "e6c2a382d9dd7a2841cfc53755cac33f6192d493",
+      "technical_status": "exists_visual_and_origin_match_review_pending"
+    },
+    {
+      "source_path": "resources/k8s/compute/pod.png",
+      "git_blob_sha": "e498a9af6581e1be80f8cb668be3448bef2e4fe4",
+      "technical_status": "exists_visual_and_origin_match_review_pending"
+    },
+    {
+      "source_path": "resources/k8s/compute/rs.png",
+      "git_blob_sha": "0e7863be653ba852a272f09e61e4536abc5d4d14",
+      "technical_status": "exists_visual_and_origin_match_review_pending"
+    },
+    {
+      "source_path": "resources/k8s/compute/sts.png",
+      "git_blob_sha": "71b46b95235a63e1ab7e4743882c5fc89de0ad3a",
+      "technical_status": "exists_visual_and_origin_match_review_pending"
+    },
+    {
+      "source_path": "resources/k8s/infra/node.png",
+      "git_blob_sha": "62befbff91e08c0dcfce2ba7036c7241509a4f76",
+      "technical_status": "exists_visual_and_origin_match_review_pending"
+    },
+    {
+      "source_path": "resources/k8s/group/ns.png",
+      "git_blob_sha": "9fafbfcaa1aa780bd9ea46f894cc1b1fdda2caae",
+      "technical_status": "exists_visual_and_origin_match_review_pending"
+    },
+    {
+      "source_path": "resources/k8s/network/ing.png",
+      "git_blob_sha": "8fe021788398acad3d07ee224399842dec812c8f",
+      "technical_status": "exists_visual_and_origin_match_review_pending"
+    },
+    {
+      "source_path": "resources/k8s/network/netpol.png",
+      "git_blob_sha": "67bd640e052b3b3f1dd7e3a7a208898843f17334",
+      "technical_status": "exists_visual_and_origin_match_review_pending"
+    },
+    {
+      "source_path": "resources/k8s/network/svc.png",
+      "git_blob_sha": "8cca4806f071ec151ecb43e6c512f9e124099621",
+      "technical_status": "exists_visual_and_origin_match_review_pending"
+    },
+    {
+      "source_path": "resources/k8s/podconfig/cm.png",
+      "git_blob_sha": "4f1c049e4f658a8f9585f77fe47b7b87672b4223",
+      "technical_status": "exists_visual_and_origin_match_review_pending"
+    },
+    {
+      "source_path": "resources/k8s/podconfig/secret.png",
+      "git_blob_sha": "e7a8b3ee046ef67ee2d688afe55d474a55437bf2",
+      "technical_status": "exists_visual_and_origin_match_review_pending"
+    },
+    {
+      "source_path": "resources/k8s/rbac/sa.png",
+      "git_blob_sha": "e642f37d8fa97b739c6107699f4de16db4ffe6d8",
+      "technical_status": "exists_visual_and_origin_match_review_pending"
+    },
+    {
+      "source_path": "resources/k8s/storage/pv.png",
+      "git_blob_sha": "9a0bbaf561fed6b08f0e8f55b7b69e09d44fdb76",
+      "technical_status": "exists_visual_and_origin_match_review_pending"
+    },
+    {
+      "source_path": "resources/k8s/storage/pvc.png",
+      "git_blob_sha": "de66402a4c343cd3458db17744e04b09c975d003",
+      "technical_status": "exists_visual_and_origin_match_review_pending"
+    },
+    {
+      "source_path": "resources/k8s/storage/sc.png",
+      "git_blob_sha": "63f85180b24484c0146f15b901e4ee851c707a88",
+      "technical_status": "exists_visual_and_origin_match_review_pending"
+    }
+  ],
+  "kubernetes_gaps": [
+    "Provider node pools/groups are modeled groups; do not invent a core Kubernetes node-pool object.",
+    "Ingress and its implementation/controller need distinct mappings; the Ingress icon alone does not identify a controller.",
+    "Logical cluster/control-plane boundaries must not imply visible managed control-plane VMs."
+  ],
+  "neutral_source_candidates": [
+    {
+      "path": "LICENSE",
+      "sha": "3e82379dab3fe93d9ee22251949604ed63ddea39",
+      "found": true,
+      "source_url": "https://github.com/tabler/tabler-icons/blob/ed177a085b652fe04ec4f37ced867c94621e7840/LICENSE",
+      "license_name": "MIT License"
+    },
+    {
+      "path": "icons/outline/server.svg",
+      "sha": "2cd69135f2c2885a60284966bcd0eb4444a73b76",
+      "found": true,
+      "source_url": "https://github.com/tabler/tabler-icons/blob/ed177a085b652fe04ec4f37ced867c94621e7840/icons/outline/server.svg"
+    },
+    {
+      "path": "icons/outline/server-2.svg",
+      "sha": "872a78c887dc10b43ed986375740752c113bc164",
+      "found": true,
+      "source_url": "https://github.com/tabler/tabler-icons/blob/ed177a085b652fe04ec4f37ced867c94621e7840/icons/outline/server-2.svg"
+    },
+    {
+      "path": "icons/outline/database.svg",
+      "sha": "0f5f7d864396aa3b773a89faaade4e6a0e72eb5d",
+      "found": true,
+      "source_url": "https://github.com/tabler/tabler-icons/blob/ed177a085b652fe04ec4f37ced867c94621e7840/icons/outline/database.svg"
+    },
+    {
+      "path": "icons/outline/router.svg",
+      "sha": "e8ff4cfdcba520df8a6c508d4879d78a380d3db6",
+      "found": true,
+      "source_url": "https://github.com/tabler/tabler-icons/blob/ed177a085b652fe04ec4f37ced867c94621e7840/icons/outline/router.svg"
+    },
+    {
+      "path": "icons/outline/network.svg",
+      "sha": "e6101f8258bc62a5e7956de3a5b662db4482673e",
+      "found": true,
+      "source_url": "https://github.com/tabler/tabler-icons/blob/ed177a085b652fe04ec4f37ced867c94621e7840/icons/outline/network.svg"
+    },
+    {
+      "path": "icons/outline/archive.svg",
+      "sha": "64f1177766da803b7c249e221b05d16638f83638",
+      "found": true,
+      "source_url": "https://github.com/tabler/tabler-icons/blob/ed177a085b652fe04ec4f37ced867c94621e7840/icons/outline/archive.svg"
+    },
+    {
+      "path": "icons/outline/device-desktop.svg",
+      "sha": "33ec1295640213d114104fd40c38a6f67376fceb",
+      "found": true,
+      "source_url": "https://github.com/tabler/tabler-icons/blob/ed177a085b652fe04ec4f37ced867c94621e7840/icons/outline/device-desktop.svg"
+    },
+    {
+      "path": "icons/outline/device-desktop-analytics.svg",
+      "sha": "9c90b6ff6d41930562c40dd62d40701068b0bb1e",
+      "found": true,
+      "source_url": "https://github.com/tabler/tabler-icons/blob/ed177a085b652fe04ec4f37ced867c94621e7840/icons/outline/device-desktop-analytics.svg"
+    },
+    {
+      "path": "icons/outline/users.svg",
+      "sha": "8dd81b6b67641d997d8761a0e26746fc080becb6",
+      "found": true,
+      "source_url": "https://github.com/tabler/tabler-icons/blob/ed177a085b652fe04ec4f37ced867c94621e7840/icons/outline/users.svg"
+    },
+    {
+      "path": "icons/outline/shield.svg",
+      "sha": "fdfac0021e79e95d780c80857ebf52a8dd0fe6ed",
+      "found": true,
+      "source_url": "https://github.com/tabler/tabler-icons/blob/ed177a085b652fe04ec4f37ced867c94621e7840/icons/outline/shield.svg"
+    }
+  ],
+  "next_steps": [
+    "M2: obtain Huawei extraction/conversion/bundling/output-use permission evidence before packaging these assets.",
+    "M2: pin approved assets, preserve license/attribution, compute original and derived SHA-256 hashes and validate SVG before any conversion.",
+    "S03: verify repository and self-hosted runner eligibility.",
+    "S04: prove runtime using a separately approved small fixture without treating unresolved Huawei rights as cleared."
+  ]
+}
