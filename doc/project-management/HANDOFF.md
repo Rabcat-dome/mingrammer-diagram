@@ -1,62 +1,56 @@
 # Cross-Machine Handoff
 
-Updated: 2026-11-01 | Current stage: M0 / S01-S03 complete; S04 runtime proof next.
+Updated: 2026-11-01 | Stage: M0. S01-S03 complete; S04 local plugin/runtime SDK proof passed; actual Work proof and independent review pending.
 
-## Goal
+## Goal and current direction
 
-Build a personal ChatGPT Work plugin using `mingrammer/diagrams` + Graphviz for AWS, Azure, GCP, Huawei Cloud and on-premises architecture. Add Huawei icons with verified rights. Keep the core reusable for a future Claude Code adapter. All documentation is English.
+Build a personal ChatGPT Work plugin using mingrammer/diagrams + Graphviz for AWS, Azure, GCP, Huawei and on-premises, with detailed Kubernetes and provider-reference visuals. Claude Code is later. Documentation is English and the single normative baseline is [requirements revision 0.7](../requirements/requirements.md).
 
-The user confirmed cross-machine use as the reason for choosing a plugin. The skill is bundled inside the installable plugin; it does not replace that deliverable. Hosting remains undecided.
+**D-013 supersedes D-012:** install the renderer/runtime on each machine using the plugin. The product remains an installable plugin with a bundled skill and local tools. Work Desktop/local execution is the first host to verify. No central server, hosting project/region/budget answer, public renderer or mandatory model API key is needed. Do not reopen the cloud-hosting question or assume cloud-only/mobile support.
 
 ## Read order
 
-1. This file, then the active milestone in [milestones](milestones.md).
-2. Relevant IDs from the single [requirements baseline](../requirements/requirements.md).
-3. [Decisions](decisions.md), [model strategy](model-strategy.md), or [quality gate](quality-gate.md) only as needed.
+1. This file and the active [milestone](milestones.md).
+2. Relevant IDs in the [requirements](../requirements/requirements.md).
+3. [S04 evidence](evidence/S04-runtime-and-hosting.md), [local plugin instructions](../../spikes/s04-local-plugin/README.md), [decisions](decisions.md), [model policy](model-strategy.md) or [quality gate](quality-gate.md) as needed.
 
-To split work into new chats, use the [session plan](session-plan.md). S03 installed and verified the separate runner, published the initial tree and passed two actual jobs under D-011. S04 proves the runtime before M1 implementation. No new chats have been created or dispatched.
+Use the [session plan](session-plan.md) to split work. No new chats were created/dispatched. Do not start S05 as though M0 were closed.
 
-## Current state
+Working branch: `codex/s04-runtime-proof`; base: `afbaccad87019d35bff12d335ec534166752f0bf`. Verify current HEAD before review.
 
-- Documentation draft prepared; owner refinement/acceptance remains pending.
-- S01 scope planning is complete. [Six working scenario families](evidence/S01-release-scope.md) include detailed Kubernetes subviews after the owner's correction (D-009). Overall solution-architecture depth and white/provider-specific visuals remain (D-007/D-008).
-- Requirements revision 0.5 retains detailed Kubernetes (FR-018/FR-029/T-017) and provider fidelity (FR-048/T-016), and adds the D-010/FR-014 draw.io-type on-premises preference. No rendered baseline is accepted yet.
-- [S02 research](evidence/S02-icon-sources-and-rights.md) found 17/17 Huawei minimum mapping candidates in LATAM color libraries at v3.2 / commit 52c33aa12fb816a5de403da85067e1c0f039b5be. Plugin redistribution evidence is still missing. The inventory contains metadata only; no icon package is cleared or bundled.
-- [S02 follow-up](evidence/S02-additional-icon-sources.md) maps the eight on-premises concepts to draw.io generic symbols/compositions (D-010). M2-04 handles selected-source terms/attribution, export and visual checks; the renderer remains diagrams/Graphviz.
-- The user-supplied JuanDiaz00 Huawei alternative contains 155 PNG entries and cites VeryIcon. A free-personal/commercial-use claim was found there, but full minimum mapping/source-asset redistribution evidence remains unresolved. Keep it as an alternative; no Huawei asset source is adopted or cleared. S02 also records 18 Kubernetes asset candidates.
-- [S03 evidence](evidence/S03-repository-runner-preflight.md): private repository/admin access verified through CLI; Actions enabled. Initial tree pushed to `main` at `5c3859b4a865c3e65fc6ed80a389ec8f8a32182e`; two real jobs passed at that SHA. The connector still returns 404, so CLI is the current private-repository fallback.
-- Runner `macbook-pro-m2-max-mingrammer` (ID 2, v2.338.2) is installed as a separate LaunchAgent in `~/Library/GitHubActions/mingrammer-macos-arm64`, label `mingrammer-macos-arm64`. All eight local services remain loaded. [Actual job reports](evidence/S03-runner-job.json) verify service user/PATH and native ARM64 execution. One transient offline/broker-timeout observation recovered without restart; the second job passed and final evidence captured online/idle. Monitor actual status before future jobs.
-- Actual service jobs: macOS 27.0.1 ARM64, Python 3.13.7, uv 0.13.0, actionlint 1.7.12, temporary write/read/cleanup passed. `dot` is absent from the job PATH; Graphviz/fonts and render isolation remain S04 work.
-- Rulesets and branch-protection APIs return 403 requiring a plan change for this private repository. CI can report results, but server-enforced required checks are unavailable at this snapshot. Keep a manual review/merge policy unless capability changes; no plan/visibility setting was changed.
-- No Python core, schema, catalogs, assets, renderer, plugin, deployment or product quality gate is implemented. No separate model review or render/Work test was performed. The two successful jobs are runner environment checks. Follow-up documentation preserves the tested workflow blob recorded in S03.
+## Verified state
 
-## Proposed approach
-
-Canonical JSON -> schema/semantic checks -> provider catalog/view mapper -> controlled diagrams/Graphviz -> SVG/PNG + model/view/diagnostics/version manifest. Never execute model-authored Python. Separate administrative, geographic, network, security, deployment and physical dimensions.
-
-Recommend an installable plugin containing a workflow skill and authenticated remote MCP tools for Work Cloud/Web portability; keep local CLI in the core. Remote execution can reduce per-machine runtime setup, but runtime selection is still open. Do not infer laptop execution or automatic installation/credential sync from plugin installation. Use Sol for implementation and a separate Astra code review pass; see the model strategy for exact IDs/effort and substitution rules.
+- S01/M0-01 scope planning is complete: solution architecture overall, detailed Kubernetes (D-009), white/provider-aware visuals (D-008). [Six scenario families](evidence/S01-release-scope.md) need later real rendering/owner acceptance.
+- S02/M0-03 research found technical Huawei mapping candidates for all 17 minimum items, but redistribution/extraction/output-use clearance remains open (O-002). The user-supplied JuanDiaz00 alternative and eight draw.io-type on-premises mappings are assessed in [S02 follow-up](evidence/S02-additional-icon-sources.md). No Huawei asset package is adopted/bundled. Detailed Kubernetes catalog/rules remain M2/M4 work.
+- S03/M0-04 is complete under D-011. Private repository access is available through CLI; the GitHub connector returns 404. Initial `main` commit `5c3859b4a865c3e65fc6ed80a389ec8f8a32182e` passed two real preflight jobs; [S03 evidence](evidence/S03-repository-runner-preflight.md) records the transient offline/broker recovery and actual job environment.
+- Runner ID 2, `macbook-pro-m2-max-mingrammer`, v2.338.2, label `mingrammer-macos-arm64`, runs as a separate LaunchAgent under `~/Library/GitHubActions/mingrammer-macos-arm64`. Existing seven services were preserved. Required-check enforcement is unavailable on the private repository's current plan; recheck live status before jobs and preserve owner-only trust. No product pipeline has run.
+- The host has Python 3.13.7 and Docker; native host Graphviz remains absent. S04 Linux images contain Python 3.13.13, diagrams 0.25.1, Graphviz 12.2.1, SDK 2.3.0 and Noto Sans/Thai. No host Graphviz/font installation was made.
+- Current S04 prototype: `cloud-architecture-diagrams@mingrammer-local`, version `0.1.0-alpha.1`, installed through the bundled Codex CLI 0.166.0-alpha.5.1. [Proof JSON](evidence/S04-local-plugin-proof.json) records the actual cache, immutable image ID, source/archive hashes and checks. Source is under `spikes/s04-local-plugin/`; build artifacts are ignored.
+- Installed-cache and relocated-ZIP SDK tests passed: three tools discovered, English/Thai fixture rendered, five local artifacts read with matching checksums, invalid requests rejected, inline PNG matched, network-none/read-only/non-root/resource controls inspected and no pilot containers left after disconnect. Relocation is on the same Mac, not second-machine acceptance. PNG was visually inspected; SVG font portability remains open.
+- Setup downloads/builds the runtime separately on each machine; MCP startup checks the image/source fingerprint and performs no install. Rendering mounts only `~/Documents/CloudArchitectureDiagrams`; files persist until user removal. Docker must be running. This is a fixed three-node feasibility pilot, not the full provider/Kubernetes renderer or release installation experience.
+- Earlier authenticated loopback HTTP/amd64-emulation work is retained as historical research under `spikes/s04-runtime/` and [historical metadata](evidence/S04-runtime-proof.json). D-013 retires that hosting proposal. No cloud resource, public endpoint or account plugin was created.
 
 ## Next activities
 
-1. Carry forward D-006/FR-066: deliver a versioned plugin usable across machines, with its skill bundled inside.
-2. Carry forward S01 decisions D-007/D-008/D-009: solution architecture overall, detailed Kubernetes, provider-reference visuals. Include M2-06/M4-05 and T-017; O-008 is resolved and O-004's sample acceptance remains M4/M6.
-3. Carry forward D-010: use the eight draw.io-type generic mappings and source-version/conditions evidence from the S02 follow-up. Mapped concepts are not yet exported/approved asset files.
-4. S03/M0-04/O-005 is complete/resolved under D-011: runner/service/labels and two actual jobs verified, initial tree pushed. Before future CI work, recheck live registration/status and preserve the manual owner-only trust boundary until M1 implements the product gate. No runtime-hosting choice is implied by this CI setup.
-5. S04/M0-02/O-001: compare runtime routes and prove actual Work tool invocation/artifact download; document modes/setup and select pinned runtime/fonts/limits (M0-05). Do not treat portability as approval of remote hosting.
-6. Carry S02/O-002 into M2-03: obtain Huawei extraction/conversion/bundling/output-use permission evidence before packaging. A prepared request exists in the research record, but no message was sent. Proceed with independent runner/runtime work while this is unresolved.
-7. Start M1 schema/package and first real quality gate checks after applicable M0 exit evidence exists. Use approved fixture assets for runtime proof; S02 research metadata is not an asset allowlist.
+1. Continue S04/M0-02 in a locally executing Work Desktop chat. The local plugin is installed, but the current chat may need a fresh session to discover it. Follow the concrete prompt in the [local plugin README](../../spikes/s04-local-plugin/README.md). Record actual tool discovery/invocation, visible PNG preview and retrieved SVG/PNG/JSON/DOT/manifest; SDK evidence does not satisfy this check.
+2. Review the final commit in a separate Astra/High pass. No independent model review has been executed. Use [model strategy](model-strategy.md); record model/effort, base/head SHAs, findings/disposition and checks. Do not label a self-check as Astra review.
+3. Finish M0-05 supported local host modes, runtime/fonts and provisional limits from actual Work evidence. Timeout/OOM/cancellation stress, complete transport limits and SVG font appearance remain open. M0-02/M0-05 are partial; S04/M0 is not complete.
+4. After applicable M0 exit evidence, continue S05/M1 canonical model/schema, package and deterministic quality gate. For Docker on the Mac runner, first verify actual service-account daemon/context access; do not use Linux-only GitHub container/service jobs on macOS.
+5. Carry O-002 into M2-03 before bundling Huawei icons; no permission request was sent. Carry D-010's generic on-premises mappings into M2-04 with exact source/terms/attribution/export checks.
+6. M5 replaces the pilot with the full local adapter and polished setup/preflight/upgrade/removal. M6 must run the same plugin version and complete Work workflow on two independently prepared machines. No automatic dependency or credential sync is established.
 
 ## Resume prompt
 
 ```text
 Continue this Cloud Architecture Diagram Plugin project from doc/project-management/HANDOFF.md.
-Read the active milestone and relevant requirements, verify current Git state,
-and check whether open decisions have new answers before implementation.
-Target ChatGPT Work first; Claude Code is later. Keep documentation English.
-Distinguish planning, local checks, runner checks, installed Work behavior and
-owner acceptance. Update HANDOFF.md and ACTIVITY-LOG.md with verified outcomes.
+D-013 selects an installable local plugin with runtime installation on each machine;
+it supersedes D-012 central hosting. Read the active milestone and relevant requirement
+IDs, verify Git state, then continue S04 actual local Work preview/export and M0 review.
+Target Work first; Claude Code is later. Keep docs English and distinguish local SDK,
+Actions checks, real Work behavior, independent review and owner acceptance.
+Update HANDOFF.md and ACTIVITY-LOG.md with verified outcomes.
 ```
 
 ## Update discipline
 
-After meaningful work, record completed task IDs, changed files, actual checks/results, commit SHA if any, unresolved decisions and next steps. Recheck dynamic facts such as models, dependencies, icons and runner registration. Keep this file short; place detailed evidence next to the relevant milestone/change.
+Record completed task IDs, actual checks/results, final commit when available, unresolved decisions and next steps. Keep this file compact; detailed evidence belongs with the relevant milestone. Recheck dynamic dependency/model/runner facts before relying on older snapshots.

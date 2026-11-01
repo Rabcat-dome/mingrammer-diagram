@@ -1,6 +1,6 @@
 # Milestones and Work Breakdown
 
-Updated: 2026-11-01 | Status: S01/M0-01, S02/M0-03 research and S03/M0-04 complete; S04 runtime proof next. Huawei packaging rights remain unresolved.
+Updated: 2026-11-01 | Status: S01-S03 complete; S04 local runtime/plugin proof in progress; actual Work proof pending. Huawei packaging rights remain unresolved.
 
 Source of scope: [requirements](../requirements/requirements.md). Model abbreviations and review rules: [model strategy](model-strategy.md). Quality check definitions: [quality gate](quality-gate.md).
 
@@ -22,15 +22,15 @@ M0 investigates the Work execution route before core development. M5 delivers th
 
 ## M0 — Scope and feasibility
 
-Status: In progress; S01-S03 complete. S03 installed the separate runner and passed two actual service jobs at the initial published SHA; Graphviz absence and the GitHub plan-enforcement limitation are recorded. Runtime/Work proof and version/font/isolation/limit selection remain S04. Huawei permission evidence remains open for packaging. Implementation: Sol/High for the technical spike; review: Astra/High for architecture/runtime decisions.
+Status: In progress; S01-S03 complete. D-013 selects local installation on each machine and supersedes D-012. S04 has local runtime evidence and an installable stdio plugin pilot. Actual Work invocation/preview/export and final supported modes/limits remain open. Huawei rights remain open for packaging. Implementation: Sol/High; required final architecture/runtime review: Astra/High, not yet performed.
 
 | Task | Work | Dependency / output |
 |---|---|---|
 | M0-01 | Jointly refine scope, catalog breadth, and six representative diagrams | S01 scope planning complete: D-007/D-008/D-009 confirmed, detailed Kubernetes included, [six working briefs](evidence/S01-release-scope.md) prepared; rendered acceptance remains M4/M6 |
-| M0-02 | Compare execution routes against cross-machine plugin delivery; prove a supported Work mode can invoke a minimal controlled renderer and retrieve an SVG/PNG | Confirmed portability goal -> route recommendation with runtime/setup trade-offs and actual install/discovery/call/download evidence |
+| M0-02 | Compare execution routes against cross-machine plugin delivery; prove Work can invoke a controlled renderer and retrieve SVG/PNG | Partial: D-013 selects local installation. [S04 evidence](evidence/S04-runtime-and-hosting.md) separates installed-plugin SDK checks from pending actual Work invocation/preview/export |
 | M0-03 | Investigate Huawei icon sources and terms; inventory upstream on-premises gaps | S02 research complete: [rights matrix/gaps](evidence/S02-icon-sources-and-rights.md) and source inventory; Huawei redistribution evidence still open, no extracted assets bundled |
 | M0-04 | Verify repository access/visibility, runner assignment, OS/arch/labels, service PATH and tooling | Complete: [S03 runner/service evidence](evidence/S03-repository-runner-preflight.md), two successful actual jobs at `5c3859b4a865c3e65fc6ed80a389ec8f8a32182e`; missing Graphviz and availability/enforcement limitations recorded |
-| M0-05 | Select Python/diagrams/Graphviz/font versions, isolation strategy and numeric limits | Runtime spike -> version/limit decision; reference benchmark host |
+| M0-05 | Select Python/diagrams/Graphviz/font versions, isolation strategy and numeric limits | Partial: S04 container versions/fonts and local worker controls validated; native ARM64/emulated amd64 and synthetic measurements recorded. Final local product controls/Work transport limits pending |
 
 Exit: selected deployment route has real Work evidence; feasibility blockers and proposed fallback are recorded; runner evidence is current; scope is ready for implementation. Documentation alone does not satisfy M0-02 through M0-05.
 
@@ -91,16 +91,16 @@ Exit: six reference scenario families and their required Kubernetes detail subvi
 
 ## M5 — ChatGPT Work integration
 
-Status: Not started. Implementation: Sol/High for adapter/auth; Sol/Medium for skill/docs; review: Astra/High.
+Status: Product integration not started; S04 feasibility pilot is separate. Implementation: Sol/High for local adapter/isolation; Sol/Medium for skill/docs; review: Astra/High.
 
 | Task | Work | Dependency / output |
 |---|---|---|
 | M5-01 | Implement selected tool adapter and capability discovery | M0-02 + M3 -> schema/catalog/validate/render/info contracts; FR-055/063/064 |
-| M5-02 | Implement auth, artifact retrieval/isolation/retention for remote route, or verified local dependency setup | M5-01 -> actual deployment-mode tests; NFR-013 |
+| M5-02 | Implement local runtime setup/preflight/upgrade/removal and scoped artifact retrieval/isolation/retention | M5-01 -> actual deployment-mode tests; NFR-013 |
 | M5-03 | Package the versioned Work plugin with bundled skill, tool configuration and progressive-loading references | M4 + M5-01 -> installable product and repeatable setup/enablement instructions; FR-060/061/065/066 |
 | M5-04 | Run actual Work installation, discovery, rendering, invalid input and edit flows, including Kubernetes overview/detail requests | M5-02..03 -> T-011/013/014/017; preview/download evidence, stable IDs |
 
-Exit: installed plugin works in the selected Work mode, artifacts are retrievable, supported host modes are stated accurately. Local CLI or MCP protocol tests alone do not satisfy M5-04. A remote deployment location/cost must be selected before provisioning; none is selected or provisioned in this planning task.
+Exit: installed plugin works in the selected Work mode, artifacts are retrievable, supported host modes are stated accurately. Local CLI or MCP protocol tests alone do not satisfy M5-04. D-013 selects per-machine local installation; no central host or cloud provisioning is required.
 
 ## M6 — Reproduction and personal release
 

@@ -1,8 +1,8 @@
 # Cloud Architecture Diagram Plugin Requirements
 
-Document: CADP-REQ-001 | Revision: 0.5 | Updated: 2026-10-31
+Document: CADP-REQ-001 | Revision: 0.7 | Updated: 2026-11-01
 
-Status: Draft baseline with confirmed S01 granularity/style decisions; implementation and release acceptance are pending.
+Status: Draft baseline with confirmed granularity/style and per-machine local-runtime direction; product implementation and release acceptance remain pending.
 
 ## 1. Authority and release scope
 
@@ -15,7 +15,7 @@ The user's current request takes precedence over the supplied v1.1 draft. In par
 - A personal ChatGPT Work plugin that turns architecture requests into reviewable structured models and SVG/PNG diagrams.
 - AWS, Azure, GCP, Huawei Cloud, and on-premises support, including hybrid and multi-cloud views.
 - A portable Python core using `mingrammer/diagrams` and Graphviz, versioned catalogs, approved icon assets, and a CLI for development/CI.
-- An installable personal plugin usable across machines, containing a Work adapter and a bundled workflow skill. The recommended execution route is authenticated remote MCP for Cloud/Web portability; hosting remains a proposal until the runtime spike is complete.
+- An installable personal plugin usable across machines, containing a Work adapter, bundled workflow skill and local renderer setup. D-013 supersedes the central-server choice: install the runtime on each machine using the plugin, with no required public rendering MCP or hosted renderer. Verify Work Desktop local execution first; supported modes and per-machine prerequisites must be proven.
 - Iterative edits that retain stable resource IDs and return the updated source with the images.
 
 ### Confirmed architecture depth and visual direction (S01)
@@ -60,7 +60,7 @@ ChatGPT Work: skill + host model
 
 Keep core and platform adapters separate. Start by wrapping the upstream dependency; an upstream fork is unnecessary unless a verified limitation requires it. A plugin manifest alone is not a runtime installer. Graphviz is a separate dependency in the [upstream installation guide](https://diagrams.mingrammer.com/docs/getting-started/installation).
 
-The plugin is the installable product; its skill supplies instructions/references, and its execution tools invoke the renderer. This follows the [OpenAI plugin/skill distinction](https://learn.chatgpt.com/docs/skills-and-plugins). Cross-machine use is confirmed user intent. It does not by itself select remote hosting, guarantee automatic installation/credential sync, or establish that Python/Graphviz are present on each host. M0 must compare these operational requirements and recommend a supported route.
+The plugin is the installable product; its skill supplies instructions/references, and its execution tools invoke the renderer. This follows the [OpenAI plugin/skill distinction](https://learn.chatgpt.com/docs/skills-and-plugins). Cross-machine use is confirmed user intent. D-013 selects per-machine local execution and supersedes D-012's central-server route. The plugin must include a reproducible installer/preflight for its local runtime. This does not guarantee automatic installation/dependency sync or support for cloud-only chats. M0 must prove the selected local Work mode and artifact retrieval. See the [S04 runtime investigation](../project-management/evidence/S04-runtime-and-hosting.md).
 
 ## 4. Functional requirements
 
@@ -130,13 +130,13 @@ The plugin is the installable product; its skill supplies instructions/reference
 
 | ID | Priority | Requirement |
 |---|---|---|
-| FR-060 | P0 | Install and invoke the personal plugin in the selected Work environment; test actual tool discovery and output delivery there. |
+| FR-060 | P0 | Install and invoke the personal plugin with its local runtime in the supported Work Desktop/local execution mode; test actual tool discovery and output delivery there. Cloud-only compatibility is not assumed. |
 | FR-061 | P0 | The skill guides catalog lookup, assumption handling, validation, rendering, and edits that preserve IDs. |
-| FR-062 | P0 | Return preview where supported and retrievable SVG/PNG/source/diagnostics. A renderer-local file path alone does not satisfy remote delivery. |
+| FR-062 | P0 | Return preview where supported and retrievable SVG/PNG/source/diagnostics. Verify actual local Work file access and attachment/export; returning an inaccessible renderer path is insufficient. |
 | FR-063 | P0 | Tool results distinguish success, validation failure, runtime failure, timeout, and unavailable artifact, with stable codes and actionable messages. |
-| FR-064 | P0 | Verify the adapter's Python/Graphviz/assets/fonts and execution permissions during the runtime spike. Document exact supported host modes and installation dependencies. |
+| FR-064 | P0 | Install/preflight the local Python/Graphviz/assets/fonts runtime on each supported machine; verify execution permissions and local Work transport. Document OS/runtime prerequisites, first-install downloads, offline rendering behavior and supported host modes. |
 | FR-065 | P0 | Keep the core independent of Work-specific APIs so a later Claude Code adapter reuses its model, catalogs, tests, and renderer. |
-| FR-066 | P0 | Distribute an identifiable, versioned plugin through a supported installation/enablement route. Demonstrate its complete diagram workflow from two supported machines; document any per-machine setup/authentication. A standalone skill folder or manual source checkout is not the final user deliverable. |
+| FR-066 | P0 | Distribute an identifiable, versioned plugin through a supported installation/enablement route. Demonstrate its complete local Work diagram workflow from two supported machines with independently installed runtimes; document any per-machine setup/authentication. A standalone skill folder or manual source checkout is not the final user deliverable. |
 
 ## 5. Canonical model and taxonomy
 
@@ -257,8 +257,8 @@ All P0 requirements must pass, including those not repeated below. Attach requir
 | T-007 Unknown type | Strict failure; lenient generic fallback warning and draft marking; no provider substitution | M3 |
 | T-008 Invalid model | Duplicate/missing IDs, cycles, bad scope/attachment fail with actionable diagnostics in both modes | M1/M2 |
 | T-009 Malicious input | Code, path/symlink escape, remote icon, SVG/Graphviz injection, oversize input and timeout fixtures fail safely | M3/M5 |
-| T-010 Cross-machine plugin and reproduction | Install/enable the same plugin version on two supported machines and complete the Work diagram workflow on both, including artifact retrieval and documented setup/auth. Separately reproduce the core from a clean runtime; compare model/view semantics and versions | M6 |
-| T-011 Work integration | Install, discovery, valid/invalid tool calls, authentication where applicable, visible preview, and downloaded complete bundle in the selected Work mode | M5/M6 |
+| T-010 Cross-machine plugin and reproduction | Install/enable the same plugin version on two supported machines and complete the local Work diagram workflow on both with independently installed runtimes, including artifact retrieval and documented setup/auth. Separately reproduce the core from a clean runtime; compare model/view semantics and versions | M6 |
+| T-011 Work integration | Install, discovery, valid/invalid tool calls, authentication where applicable, visible preview, and retrieved complete bundle in the verified local Work mode | M5/M6 |
 | T-012 Large view | P0 bounded rejection above limits; P1 200/300 stability and split-view/readability evaluation | M4 |
 | T-013 Iterative edit | Stable IDs, changed requirements reflected, unrelated relationships retained, updated source returned | M5 |
 | T-014 Language and privacy | English/Thai label inspection; remote artifact isolation/expiry and payload-log checks where applicable | M4/M5 |

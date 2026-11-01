@@ -1,0 +1,877 @@
+{
+  "session": "S04",
+  "recorded_at": "2026-11-01T08:08:42.560878+00:00",
+  "scope": "Local Docker/SDK HTTP proof, not an actual Work call or deployment",
+  "image_id": "sha256:9c3b55c2614d24465b2bed5a069aea2c7d4ef3fbf075f19ef7b97b18c3c43df1",
+  "runtime": {
+    "python": "3.13.13",
+    "system": "Linux",
+    "machine": "aarch64",
+    "uid": 10001,
+    "graphviz": "dot - graphviz version 12.2.1 (20241206.2353)",
+    "packages": {
+      "diagrams": "0.25.1",
+      "graphviz": "0.20.3",
+      "mcp": "2.3.0"
+    },
+    "fonts": [
+      {
+        "requested_family": "Noto Sans",
+        "file": "/usr/share/fonts/noto/NotoSans-Regular.ttf",
+        "sha256": "478c558ea716033cd60c03438f628dfa75694dcf6b5f6d505a2f05fd2b4f3823",
+        "name_records": {
+          "0": "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic)",
+          "1": "Noto Sans",
+          "5": "Version 2.015; ttfautohint (v1.8.4.7-5d5b)",
+          "13": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL",
+          "14": "https://scripts.sil.org/OFL"
+        }
+      },
+      {
+        "requested_family": "Noto Sans Thai",
+        "file": "/usr/share/fonts/noto/NotoSansThai-Regular.ttf",
+        "sha256": "61cf814eec46b294d6ea4401ac295d0cecd5207bd2331dcc5a15e7301d30ee44",
+        "name_records": {
+          "0": "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/thai)",
+          "1": "Noto Sans Thai",
+          "5": "Version 2.002; ttfautohint (v1.8.4.7-5d5b)",
+          "13": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL",
+          "14": "https://scripts.sil.org/OFL"
+        }
+      }
+    ],
+    "cgroups": {
+      "memory.max": "1073741824",
+      "memory.swap.max": "0",
+      "pids.max": "64",
+      "cpu.max": "100000 100000"
+    }
+  },
+  "isolation_probe": {
+    "interfaces": {
+      "lo": "0x9",
+      "ip6gre0": "0x80",
+      "sit0": "0x80",
+      "gretap0": "0x1002",
+      "erspan0": "0x1002",
+      "tunl0": "0x80",
+      "gre0": "0x80",
+      "ip6_vti0": "0x80",
+      "ip6tnl0": "0x80",
+      "ip_vti0": "0x80"
+    },
+    "ipv4_routes": [],
+    "tmp_bytes": 268435456
+  },
+  "negative_cases": [
+    "executable_field",
+    "oversized_label",
+    "control_label",
+    "oversized_graph",
+    "oversized_body",
+    "missing_auth",
+    "wrong_auth",
+    "http_body_limit",
+    "literal_script_text",
+    "artifact_traversal"
+  ],
+  "benchmarks": [
+    {
+      "nodes": 3,
+      "edges": 2,
+      "trials": [
+        {
+          "scope": "synthetic-runtime-only",
+          "node_count": 3,
+          "edge_count": 2,
+          "elapsed_seconds": 0.0917,
+          "png_dimensions": [
+            918,
+            168
+          ],
+          "files": {
+            "source.json": {
+              "bytes": 211,
+              "sha256": "8f9fd1c6fbb2ffffb673b1d128d2ffe38d98ffecdd39ca4f1019258aed8aad88"
+            },
+            "diagram.png": {
+              "bytes": 20294,
+              "sha256": "3cbd22a640f1b0788698175cc0fc75bbf13471e132cb2154740c6b4a9e99a301"
+            },
+            "diagram.svg": {
+              "bytes": 3071,
+              "sha256": "07b037bae720868ad9701fb317989c485177f1bdf0d78e8f8304c51f7bd868b2"
+            },
+            "source.dot": {
+              "bytes": 800,
+              "sha256": "43943b991621592b0b2fcc4efdcb774974a59521081bc833a2bdc98375546fe4"
+            }
+          },
+          "production_semantics": "not_tested",
+          "work_host": "not_tested"
+        },
+        {
+          "scope": "synthetic-runtime-only",
+          "node_count": 3,
+          "edge_count": 2,
+          "elapsed_seconds": 0.0965,
+          "png_dimensions": [
+            918,
+            168
+          ],
+          "files": {
+            "source.json": {
+              "bytes": 211,
+              "sha256": "8f9fd1c6fbb2ffffb673b1d128d2ffe38d98ffecdd39ca4f1019258aed8aad88"
+            },
+            "diagram.png": {
+              "bytes": 20294,
+              "sha256": "3cbd22a640f1b0788698175cc0fc75bbf13471e132cb2154740c6b4a9e99a301"
+            },
+            "diagram.svg": {
+              "bytes": 3071,
+              "sha256": "07b037bae720868ad9701fb317989c485177f1bdf0d78e8f8304c51f7bd868b2"
+            },
+            "source.dot": {
+              "bytes": 800,
+              "sha256": "43943b991621592b0b2fcc4efdcb774974a59521081bc833a2bdc98375546fe4"
+            }
+          },
+          "production_semantics": "not_tested",
+          "work_host": "not_tested"
+        },
+        {
+          "scope": "synthetic-runtime-only",
+          "node_count": 3,
+          "edge_count": 2,
+          "elapsed_seconds": 0.1051,
+          "png_dimensions": [
+            918,
+            168
+          ],
+          "files": {
+            "source.json": {
+              "bytes": 211,
+              "sha256": "8f9fd1c6fbb2ffffb673b1d128d2ffe38d98ffecdd39ca4f1019258aed8aad88"
+            },
+            "diagram.png": {
+              "bytes": 20294,
+              "sha256": "3cbd22a640f1b0788698175cc0fc75bbf13471e132cb2154740c6b4a9e99a301"
+            },
+            "diagram.svg": {
+              "bytes": 3071,
+              "sha256": "07b037bae720868ad9701fb317989c485177f1bdf0d78e8f8304c51f7bd868b2"
+            },
+            "source.dot": {
+              "bytes": 800,
+              "sha256": "43943b991621592b0b2fcc4efdcb774974a59521081bc833a2bdc98375546fe4"
+            }
+          },
+          "production_semantics": "not_tested",
+          "work_host": "not_tested"
+        }
+      ],
+      "median_seconds": 0.0965
+    },
+    {
+      "nodes": 30,
+      "edges": 29,
+      "trials": [
+        {
+          "scope": "synthetic-runtime-only",
+          "node_count": 30,
+          "edge_count": 29,
+          "elapsed_seconds": 0.1654,
+          "png_dimensions": [
+            257,
+            4236
+          ],
+          "files": {
+            "source.json": {
+              "bytes": 212,
+              "sha256": "ec4fe8fef8d28371c3c31ea618b8fe1c80d2a024077ce36df543c1de39a30a49"
+            },
+            "diagram.png": {
+              "bytes": 142558,
+              "sha256": "9694fc2d15a509da7fd404d3ea09471b952299a3bc3588c9be2e211f80b4bf20"
+            },
+            "diagram.svg": {
+              "bytes": 26782,
+              "sha256": "394d3bf9fe65e8096a82edbac46524ff923a28e7dc81dfc42636424b6b5452ea"
+            },
+            "source.dot": {
+              "bytes": 3783,
+              "sha256": "55b2103dca3864967748f98ed89e2a6b6ccad1a79f1af7fa44d80801c14668c2"
+            }
+          },
+          "production_semantics": "not_tested",
+          "work_host": "not_tested"
+        },
+        {
+          "scope": "synthetic-runtime-only",
+          "node_count": 30,
+          "edge_count": 29,
+          "elapsed_seconds": 0.1477,
+          "png_dimensions": [
+            257,
+            4236
+          ],
+          "files": {
+            "source.json": {
+              "bytes": 212,
+              "sha256": "ec4fe8fef8d28371c3c31ea618b8fe1c80d2a024077ce36df543c1de39a30a49"
+            },
+            "diagram.png": {
+              "bytes": 142558,
+              "sha256": "9694fc2d15a509da7fd404d3ea09471b952299a3bc3588c9be2e211f80b4bf20"
+            },
+            "diagram.svg": {
+              "bytes": 26782,
+              "sha256": "394d3bf9fe65e8096a82edbac46524ff923a28e7dc81dfc42636424b6b5452ea"
+            },
+            "source.dot": {
+              "bytes": 3783,
+              "sha256": "55b2103dca3864967748f98ed89e2a6b6ccad1a79f1af7fa44d80801c14668c2"
+            }
+          },
+          "production_semantics": "not_tested",
+          "work_host": "not_tested"
+        },
+        {
+          "scope": "synthetic-runtime-only",
+          "node_count": 30,
+          "edge_count": 29,
+          "elapsed_seconds": 0.1402,
+          "png_dimensions": [
+            257,
+            4236
+          ],
+          "files": {
+            "source.json": {
+              "bytes": 212,
+              "sha256": "ec4fe8fef8d28371c3c31ea618b8fe1c80d2a024077ce36df543c1de39a30a49"
+            },
+            "diagram.png": {
+              "bytes": 142558,
+              "sha256": "9694fc2d15a509da7fd404d3ea09471b952299a3bc3588c9be2e211f80b4bf20"
+            },
+            "diagram.svg": {
+              "bytes": 26782,
+              "sha256": "394d3bf9fe65e8096a82edbac46524ff923a28e7dc81dfc42636424b6b5452ea"
+            },
+            "source.dot": {
+              "bytes": 3783,
+              "sha256": "55b2103dca3864967748f98ed89e2a6b6ccad1a79f1af7fa44d80801c14668c2"
+            }
+          },
+          "production_semantics": "not_tested",
+          "work_host": "not_tested"
+        }
+      ],
+      "median_seconds": 0.1477
+    },
+    {
+      "nodes": 100,
+      "edges": 99,
+      "trials": [
+        {
+          "scope": "synthetic-runtime-only",
+          "node_count": 100,
+          "edge_count": 99,
+          "elapsed_seconds": 0.3916,
+          "png_dimensions": [
+            257,
+            14064
+          ],
+          "files": {
+            "source.json": {
+              "bytes": 213,
+              "sha256": "65133d023b3a7e7e808393f357cbaf77f3c47ef082caca23d73ea90007018725"
+            },
+            "diagram.png": {
+              "bytes": 481016,
+              "sha256": "79110282eee036df2c9d4ba4c5e5d0f91a2297e1112d49b42e90283dcc6d7efe"
+            },
+            "diagram.svg": {
+              "bytes": 89518,
+              "sha256": "85e05b3a3275daea19fcd56ec5b1ab7cfb480792eb58a0a48dbe8f072de929b6"
+            },
+            "source.dot": {
+              "bytes": 11763,
+              "sha256": "b42a8bf22df2670f499eea40659af962d6e57f0d44d6f09d66cca4f867ec72f0"
+            }
+          },
+          "production_semantics": "not_tested",
+          "work_host": "not_tested"
+        },
+        {
+          "scope": "synthetic-runtime-only",
+          "node_count": 100,
+          "edge_count": 99,
+          "elapsed_seconds": 0.3771,
+          "png_dimensions": [
+            257,
+            14064
+          ],
+          "files": {
+            "source.json": {
+              "bytes": 213,
+              "sha256": "65133d023b3a7e7e808393f357cbaf77f3c47ef082caca23d73ea90007018725"
+            },
+            "diagram.png": {
+              "bytes": 481016,
+              "sha256": "79110282eee036df2c9d4ba4c5e5d0f91a2297e1112d49b42e90283dcc6d7efe"
+            },
+            "diagram.svg": {
+              "bytes": 89518,
+              "sha256": "85e05b3a3275daea19fcd56ec5b1ab7cfb480792eb58a0a48dbe8f072de929b6"
+            },
+            "source.dot": {
+              "bytes": 11763,
+              "sha256": "b42a8bf22df2670f499eea40659af962d6e57f0d44d6f09d66cca4f867ec72f0"
+            }
+          },
+          "production_semantics": "not_tested",
+          "work_host": "not_tested"
+        },
+        {
+          "scope": "synthetic-runtime-only",
+          "node_count": 100,
+          "edge_count": 99,
+          "elapsed_seconds": 0.3294,
+          "png_dimensions": [
+            257,
+            14064
+          ],
+          "files": {
+            "source.json": {
+              "bytes": 213,
+              "sha256": "65133d023b3a7e7e808393f357cbaf77f3c47ef082caca23d73ea90007018725"
+            },
+            "diagram.png": {
+              "bytes": 481016,
+              "sha256": "79110282eee036df2c9d4ba4c5e5d0f91a2297e1112d49b42e90283dcc6d7efe"
+            },
+            "diagram.svg": {
+              "bytes": 89518,
+              "sha256": "85e05b3a3275daea19fcd56ec5b1ab7cfb480792eb58a0a48dbe8f072de929b6"
+            },
+            "source.dot": {
+              "bytes": 11763,
+              "sha256": "b42a8bf22df2670f499eea40659af962d6e57f0d44d6f09d66cca4f867ec72f0"
+            }
+          },
+          "production_semantics": "not_tested",
+          "work_host": "not_tested"
+        }
+      ],
+      "median_seconds": 0.3771
+    },
+    {
+      "nodes": 200,
+      "edges": 199,
+      "trials": [
+        {
+          "scope": "synthetic-runtime-only",
+          "node_count": 200,
+          "edge_count": 199,
+          "elapsed_seconds": 0.4894,
+          "png_dimensions": [
+            257,
+            28104
+          ],
+          "files": {
+            "source.json": {
+              "bytes": 213,
+              "sha256": "022060d4728e7037f6b38770536f83313a2a07d0f7ec213a1b87bf01878c5a86"
+            },
+            "diagram.png": {
+              "bytes": 934558,
+              "sha256": "18500b0dcb2432c12fe60f00b2e00a026094fe440415d86232f262a43b96ef28"
+            },
+            "diagram.svg": {
+              "bytes": 183096,
+              "sha256": "06a1d489c4da31c736911a396294c8789c240b16cf9f12e11afa296b1827656e"
+            },
+            "source.dot": {
+              "bytes": 23462,
+              "sha256": "ce1ffcd4a6e5492b22efce72af28cbac5be4f2fd4313dd8109014dedf4e0b0e1"
+            }
+          },
+          "production_semantics": "not_tested",
+          "work_host": "not_tested"
+        },
+        {
+          "scope": "synthetic-runtime-only",
+          "node_count": 200,
+          "edge_count": 199,
+          "elapsed_seconds": 0.4444,
+          "png_dimensions": [
+            257,
+            28104
+          ],
+          "files": {
+            "source.json": {
+              "bytes": 213,
+              "sha256": "022060d4728e7037f6b38770536f83313a2a07d0f7ec213a1b87bf01878c5a86"
+            },
+            "diagram.png": {
+              "bytes": 934558,
+              "sha256": "18500b0dcb2432c12fe60f00b2e00a026094fe440415d86232f262a43b96ef28"
+            },
+            "diagram.svg": {
+              "bytes": 183096,
+              "sha256": "06a1d489c4da31c736911a396294c8789c240b16cf9f12e11afa296b1827656e"
+            },
+            "source.dot": {
+              "bytes": 23462,
+              "sha256": "ce1ffcd4a6e5492b22efce72af28cbac5be4f2fd4313dd8109014dedf4e0b0e1"
+            }
+          },
+          "production_semantics": "not_tested",
+          "work_host": "not_tested"
+        },
+        {
+          "scope": "synthetic-runtime-only",
+          "node_count": 200,
+          "edge_count": 199,
+          "elapsed_seconds": 0.4399,
+          "png_dimensions": [
+            257,
+            28104
+          ],
+          "files": {
+            "source.json": {
+              "bytes": 213,
+              "sha256": "022060d4728e7037f6b38770536f83313a2a07d0f7ec213a1b87bf01878c5a86"
+            },
+            "diagram.png": {
+              "bytes": 934558,
+              "sha256": "18500b0dcb2432c12fe60f00b2e00a026094fe440415d86232f262a43b96ef28"
+            },
+            "diagram.svg": {
+              "bytes": 183096,
+              "sha256": "06a1d489c4da31c736911a396294c8789c240b16cf9f12e11afa296b1827656e"
+            },
+            "source.dot": {
+              "bytes": 23462,
+              "sha256": "ce1ffcd4a6e5492b22efce72af28cbac5be4f2fd4313dd8109014dedf4e0b0e1"
+            }
+          },
+          "production_semantics": "not_tested",
+          "work_host": "not_tested"
+        }
+      ],
+      "median_seconds": 0.4444
+    }
+  ],
+  "mcp_tools": [
+    "runtime_info_tool",
+    "render_fixture"
+  ],
+  "http_proof": {
+    "authenticated_render": true,
+    "invalid_tool_input_rejected": true,
+    "png_image_matches_download": true,
+    "artifact_hashes_verified": true,
+    "transport": "SDK Streamable HTTP on container loopback; authenticated host GET downloads"
+  },
+  "sample": {
+    "scope": "synthetic-runtime-only",
+    "node_count": 3,
+    "edge_count": 2,
+    "elapsed_seconds": 0.0606,
+    "png_dimensions": [
+      918,
+      168
+    ],
+    "files": {
+      "source.json": {
+        "bytes": 211,
+        "sha256": "8f9fd1c6fbb2ffffb673b1d128d2ffe38d98ffecdd39ca4f1019258aed8aad88"
+      },
+      "diagram.png": {
+        "bytes": 20294,
+        "sha256": "3cbd22a640f1b0788698175cc0fc75bbf13471e132cb2154740c6b4a9e99a301"
+      },
+      "diagram.svg": {
+        "bytes": 3071,
+        "sha256": "07b037bae720868ad9701fb317989c485177f1bdf0d78e8f8304c51f7bd868b2"
+      },
+      "source.dot": {
+        "bytes": 800,
+        "sha256": "43943b991621592b0b2fcc4efdcb774974a59521081bc833a2bdc98375546fe4"
+      }
+    },
+    "production_semantics": "not_tested",
+    "work_host": "not_tested",
+    "artifact_access": "Same development bearer token required; Work download untested",
+    "expires_after_seconds": 600
+  },
+  "container_readonly": true,
+  "actual_work_invocation": "pending",
+  "remote_authentication": "pending",
+  "hosting": "not_provisioned",
+  "host": {
+    "system": "Darwin",
+    "machine": "arm64",
+    "docker_server": "29.9.2",
+    "docker_engine_os": "linux",
+    "cpu": "Apple M2 Max",
+    "memory_bytes": 68719476736,
+    "docker_vm_memory_bytes": 8319238144,
+    "docker_vm_cpus": 12
+  },
+  "installed_apk_packages": [
+    ".python-rundeps-20260417.003932",
+    "alpine-baselayout-3.7.0-r0",
+    "alpine-baselayout-data-3.7.0-r0",
+    "alpine-keys-2.5-r0",
+    "alpine-release-3.22.4-r0",
+    "aom-libs-3.12.1-r0",
+    "apk-tools-2.14.9-r3",
+    "brotli-libs-1.1.1-r0",
+    "busybox-1.37.0-r20",
+    "busybox-binsh-1.37.0-r20",
+    "ca-certificates-20260413-r0",
+    "ca-certificates-bundle-20260413-r0",
+    "cairo-1.18.4-r0",
+    "font-cantarell-0.303.1-r2",
+    "font-noto-2025.05.01-r0",
+    "font-noto-common-2025.05.01-r0",
+    "font-noto-math-2025.05.01-r0",
+    "font-noto-symbols-2025.05.01-r0",
+    "font-noto-thai-2025.05.01-r0",
+    "fontconfig-2.15.0-r3",
+    "freetype-2.13.3-r0",
+    "fribidi-1.0.16-r1",
+    "gdbm-1.24-r0",
+    "glib-2.84.4-r0",
+    "graphite2-1.3.14-r6",
+    "graphviz-12.2.1-r0",
+    "graphviz-libs-12.2.1-r0",
+    "harfbuzz-11.2.1-r0",
+    "libapk2-2.14.9-r3",
+    "libavif-1.3.0-r0",
+    "libblkid-2.41.6-r1",
+    "libbsd-0.12.2-r0",
+    "libbz2-1.0.8-r6",
+    "libcrypto3-3.5.6-r0",
+    "libdav1d-1.5.1-r0",
+    "libeconf-0.6.3-r0",
+    "libexpat-2.9.0-r0",
+    "libffi-3.4.8-r0",
+    "libgcc-14.2.0-r6",
+    "libgd-2.3.3-r10",
+    "libice-1.1.2-r0",
+    "libintl-0.24.1-r0",
+    "libjpeg-turbo-3.1.0-r0",
+    "libmd-1.1.0-r0",
+    "libmount-2.41.6-r1",
+    "libncursesw-6.5_p20250503-r0",
+    "libpanelw-6.5_p20250503-r0",
+    "libpng-1.6.59-r0",
+    "libsharpyuv-1.5.0-r0",
+    "libsm-1.2.5-r0",
+    "libssl3-3.5.6-r0",
+    "libstdc++-14.2.0-r6",
+    "libuuid-2.41-r9",
+    "libwebp-1.5.0-r0",
+    "libx11-1.8.11-r0",
+    "libxau-1.0.12-r0",
+    "libxcb-1.17.0-r0",
+    "libxdmcp-1.1.5-r1",
+    "libxext-1.3.6-r2",
+    "libxft-2.3.8-r3",
+    "libxpm-3.5.19-r0",
+    "libxrender-0.9.12-r0",
+    "libxt-1.3.1-r0",
+    "libyuv-0.0.1887.20251502-r1",
+    "musl-1.2.5-r12",
+    "musl-utils-1.2.5-r12",
+    "ncurses-terminfo-base-6.5_p20250503-r0",
+    "pango-1.56.3-r0",
+    "pcre2-10.46-r1",
+    "pixman-0.46.4-r0",
+    "readline-8.2.13-r1",
+    "scanelf-1.3.8-r1",
+    "sqlite-libs-3.49.2-r1",
+    "ssl_client-1.37.0-r20",
+    "tiff-4.7.2-r0",
+    "tzdata-2026a-r0",
+    "xz-libs-5.8.1-r0",
+    "zlib-1.3.2-r0",
+    "zstd-libs-1.5.7-r0"
+  ],
+  "installed_python_packages": [
+    {
+      "name": "annotated-types",
+      "version": "0.8.0"
+    },
+    {
+      "name": "anyio",
+      "version": "4.15.1"
+    },
+    {
+      "name": "attrs",
+      "version": "26.1.0"
+    },
+    {
+      "name": "cffi",
+      "version": "2.1.1"
+    },
+    {
+      "name": "cfgv",
+      "version": "3.5.0"
+    },
+    {
+      "name": "click",
+      "version": "8.5.0"
+    },
+    {
+      "name": "cryptography",
+      "version": "50.0.2"
+    },
+    {
+      "name": "diagrams",
+      "version": "0.25.1"
+    },
+    {
+      "name": "distlib",
+      "version": "0.4.4"
+    },
+    {
+      "name": "filelock",
+      "version": "4.2.6"
+    },
+    {
+      "name": "graphviz",
+      "version": "0.20.3"
+    },
+    {
+      "name": "h11",
+      "version": "0.16.0"
+    },
+    {
+      "name": "httpcore2",
+      "version": "2.16.0"
+    },
+    {
+      "name": "httpx2",
+      "version": "2.16.0"
+    },
+    {
+      "name": "identify",
+      "version": "2.6.20"
+    },
+    {
+      "name": "idna",
+      "version": "3.20"
+    },
+    {
+      "name": "Jinja2",
+      "version": "3.1.6"
+    },
+    {
+      "name": "jsonschema",
+      "version": "4.26.0"
+    },
+    {
+      "name": "jsonschema-specifications",
+      "version": "2025.9.1"
+    },
+    {
+      "name": "MarkupSafe",
+      "version": "3.0.4"
+    },
+    {
+      "name": "mcp",
+      "version": "2.3.0"
+    },
+    {
+      "name": "mcp-types",
+      "version": "2.3.0"
+    },
+    {
+      "name": "nodeenv",
+      "version": "1.12.0"
+    },
+    {
+      "name": "opentelemetry-api",
+      "version": "1.45.2"
+    },
+    {
+      "name": "packaging",
+      "version": "26.3"
+    },
+    {
+      "name": "pip",
+      "version": "26.0.1"
+    },
+    {
+      "name": "platformdirs",
+      "version": "4.14.2"
+    },
+    {
+      "name": "pre_commit",
+      "version": "4.7.0"
+    },
+    {
+      "name": "pycparser",
+      "version": "3.12"
+    },
+    {
+      "name": "pydantic",
+      "version": "2.14.2"
+    },
+    {
+      "name": "pydantic_core",
+      "version": "2.50.2"
+    },
+    {
+      "name": "PyJWT",
+      "version": "2.15.1"
+    },
+    {
+      "name": "python-discovery",
+      "version": "1.9.0"
+    },
+    {
+      "name": "python-multipart",
+      "version": "0.0.33"
+    },
+    {
+      "name": "PyYAML",
+      "version": "6.0.3"
+    },
+    {
+      "name": "referencing",
+      "version": "0.37.0"
+    },
+    {
+      "name": "rpds-py",
+      "version": "2026.9.1"
+    },
+    {
+      "name": "sse-starlette",
+      "version": "3.6.0"
+    },
+    {
+      "name": "starlette",
+      "version": "1.10.0"
+    },
+    {
+      "name": "truststore",
+      "version": "0.10.5"
+    },
+    {
+      "name": "typing_extensions",
+      "version": "4.16.0"
+    },
+    {
+      "name": "typing-inspection",
+      "version": "0.4.4"
+    },
+    {
+      "name": "uvicorn",
+      "version": "0.54.0"
+    },
+    {
+      "name": "virtualenv",
+      "version": "21.15.2"
+    }
+  ],
+  "visual_inspection": {
+    "status": "passed_initial_fixture_inspection",
+    "date": "2026-11-01",
+    "observed": "English and Thai text readable; three labeled boxes, two directed edges and HTTPS label visible; no clipping observed",
+    "limitation": "Synthetic runtime fixture only; not provider-style or owner visual acceptance"
+  },
+  "source_digests": {
+    "Dockerfile": "43693742f82c7811fbb844e125cb9e6af65faad817b6ee6f4b6284ebbff1250c",
+    "requirements.in": "309211ed4a37c093bfe869474e86af6a3a112cd29ebab45ba1eb1edb7342d782",
+    "requirements.lock": "54354fcdee04b7a3191411f90b6e18d63d074d40c8b775d4dfde09767e2619f8",
+    "render_fixture.py": "69bb1aedbb493dfeafaaff24759cf1a086131d4676a58a5ff95e756ec2795438",
+    "server.py": "f27f4af9845e9f915e735990a1efa33bd770f6c1c2ca51774c85ef06ecbc7df1",
+    "verify.py": "1ab03348502e4e20053f4b00b89fede2bdffbe70bc0814e81f01e603fc9096a1"
+  },
+  "amd64_smoke": {
+    "image_id": "sha256:14ad0e7536073f1036bcff52ceda74e04c7e68cb94a8a885bab68bf65dd6aeb4",
+    "execution": "linux/amd64 emulation on ARM64 Docker Desktop; not Cloud Run or native x86 benchmark",
+    "runtime": {
+      "python": "3.13.13",
+      "system": "Linux",
+      "machine": "x86_64",
+      "uid": 10001,
+      "graphviz": "dot - graphviz version 12.2.1 (20241206.2353)",
+      "packages": {
+        "diagrams": "0.25.1",
+        "graphviz": "0.20.3",
+        "mcp": "2.3.0"
+      },
+      "fonts": [
+        {
+          "requested_family": "Noto Sans",
+          "file": "/usr/share/fonts/noto/NotoSans-Regular.ttf",
+          "sha256": "478c558ea716033cd60c03438f628dfa75694dcf6b5f6d505a2f05fd2b4f3823",
+          "name_records": {
+            "0": "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic)",
+            "1": "Noto Sans",
+            "5": "Version 2.015; ttfautohint (v1.8.4.7-5d5b)",
+            "13": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL",
+            "14": "https://scripts.sil.org/OFL"
+          }
+        },
+        {
+          "requested_family": "Noto Sans Thai",
+          "file": "/usr/share/fonts/noto/NotoSansThai-Regular.ttf",
+          "sha256": "61cf814eec46b294d6ea4401ac295d0cecd5207bd2331dcc5a15e7301d30ee44",
+          "name_records": {
+            "0": "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/thai)",
+            "1": "Noto Sans Thai",
+            "5": "Version 2.002; ttfautohint (v1.8.4.7-5d5b)",
+            "13": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL",
+            "14": "https://scripts.sil.org/OFL"
+          }
+        }
+      ],
+      "cgroups": {
+        "memory.max": "1073741824",
+        "memory.swap.max": "0",
+        "pids.max": "64",
+        "cpu.max": "100000 100000"
+      }
+    },
+    "english_thai_render": {
+      "scope": "synthetic-runtime-only",
+      "node_count": 3,
+      "edge_count": 2,
+      "elapsed_seconds": 0.376,
+      "png_dimensions": [
+        918,
+        168
+      ],
+      "files": {
+        "source.json": {
+          "bytes": 211,
+          "sha256": "8f9fd1c6fbb2ffffb673b1d128d2ffe38d98ffecdd39ca4f1019258aed8aad88"
+        },
+        "diagram.png": {
+          "bytes": 20294,
+          "sha256": "3cbd22a640f1b0788698175cc0fc75bbf13471e132cb2154740c6b4a9e99a301"
+        },
+        "diagram.svg": {
+          "bytes": 3071,
+          "sha256": "07b037bae720868ad9701fb317989c485177f1bdf0d78e8f8304c51f7bd868b2"
+        },
+        "source.dot": {
+          "bytes": 800,
+          "sha256": "43943b991621592b0b2fcc4efdcb774974a59521081bc833a2bdc98375546fe4"
+        }
+      },
+      "production_semantics": "not_tested",
+      "work_host": "not_tested"
+    }
+  },
+  "route_disposition": "Historical local HTTP experiment; central hosting superseded by owner local-install choice D-013"
+}

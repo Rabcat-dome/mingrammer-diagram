@@ -1,18 +1,20 @@
 # Session Plan and Starter Prompts
 
-Updated: 2026-11-01 | Status: S01-S03 complete; S04 next; no new chats created or dispatched.
+Updated: 2026-11-01 | Status: S01-S03 complete; S04 local plugin/runtime proof in progress; actual Work proof pending; no new chats dispatched.
 
 This is an execution index for the existing [milestones](milestones.md), not a second requirement baseline. Use the [requirements](../requirements/requirements.md) for product scope and the [decision log](decisions.md) for confirmed choices. The deliverable remains an installable cross-machine plugin with a bundled skill.
 
 ## Start here
 
-S01 has established release granularity and visual direction. S02 has completed source/rights research and recorded unresolved Huawei permission evidence. S03 installed the separate runner, published the initial tree and passed two actual jobs under D-011. S04 proves the runtime next. Complete the applicable M0 exit evidence before starting S05.
+S01 has established release granularity and visual direction. S02 has completed source/rights research and recorded unresolved Huawei permission evidence. S03 installed the separate runner, published the initial tree and passed two actual jobs under D-011. S04 has local runtime evidence and an installable stdio plugin pilot under D-013; actual Work proof is still required. Complete the applicable M0 exit evidence before starting S05.
 
 S01 result: [scope and six reference briefs](evidence/S01-release-scope.md). The owner selected solution architecture overall, then corrected Kubernetes to detailed architecture (D-009), with visuals close to each provider's published examples. Actual rendered sample acceptance remains S08/S10.
 
 S02 result: [source/rights assessment and gaps](evidence/S02-icon-sources-and-rights.md). All 17 named Huawei items have technical source candidates; release redistribution evidence remains unresolved. On-premises neutral gaps and detailed Kubernetes candidates are recorded.
 
-S03 result: [repository/runner evidence](evidence/S03-repository-runner-preflight.md) and [actual job reports](evidence/S03-runner-job.json). Private/admin access, runner ID 2/service/labels and two successful dispatches are verified at initial commit `5c3859b4a865c3e65fc6ed80a389ec8f8a32182e`; M0-04 is complete. Graphviz is absent, and a transient broker/offline observation is documented. Required-check enforcement is unavailable on the current private-repository plan. S04 and later sessions have not started.
+S03 result: [repository/runner evidence](evidence/S03-repository-runner-preflight.md) and [actual job reports](evidence/S03-runner-job.json). Private/admin access, runner ID 2/service/labels and two successful dispatches are verified at initial commit `5c3859b4a865c3e65fc6ed80a389ec8f8a32182e`; M0-04 is complete. Graphviz is absent, and a transient broker/offline observation is documented. Required-check enforcement is unavailable on the current private-repository plan. S04 is in progress; S05 and later sessions have not started.
+
+S04 result so far: [local runtime/hosting evidence](evidence/S04-runtime-and-hosting.md) and [proof metadata](evidence/S04-runtime-proof.json). D-013 selects per-machine installation and supersedes the central route. Local runtime and installed-plugin SDK checks are separate from actual Work preview/export; no hosting inputs are needed. M0-02/M0-05 remain open; do not start S05 as if they were complete.
 
 The [S02 user follow-up](evidence/S02-additional-icon-sources.md) assesses a 155-PNG Huawei alternative and maps all eight on-premises concepts to draw.io-type generic symbols/compositions under D-010. S06 implements the exact approved subset/export/attribution; symbol selection does not replace source-rights or rendered acceptance checks.
 
@@ -39,7 +41,7 @@ S04 can begin with an approved generic icon fixture while Huawei rights are inve
 | S01 — Release scope and examples | M0-01 | Propose minimum services, six reference scenarios and visual conventions; record agreed scope and unresolved choices | Prioritize services, describe intended diagrams and choose acceptable examples/style | Sol / High |
 | S02 — Huawei icons and asset rights | M0-03 | Research primary sources/terms; produce asset-rights matrix, checksums where assets are acquired, and on-premises icon gap inventory | Supply any owned icon pack/source and choose the product response to unresolved rights if needed | Sol / Medium; High for ambiguous terms |
 | S03 — Repository, runner and pipeline preflight | M0-04 | Verify repository access/visibility, actual runner scope/labels/tooling and trust policy; record a harmless real job when access permits | Resolve missing account/repository access or identify the intended runner if available evidence is ambiguous | Sol / Medium |
-| S04 — Cross-machine runtime proof | M0-02, M0-05 | Compare remote/local routes, prove Work invocation and image retrieval, recommend runtime/fonts/limits, and summarize M0 feasibility | Choose any unresolved host/data-location/cost trade-off after seeing concrete options; participate in actual Work checks where required | Sol / High; Astra / High review |
+| S04 — Cross-machine runtime proof | M0-02, M0-05 | Compare remote/local routes, prove Work invocation and image retrieval, recommend runtime/fonts/limits, and summarize M0 feasibility | Confirm the local runtime experience and participate in actual Work checks where required | Sol / High; Astra / High review |
 | S05 — Core contract and first CI | M1-01..04 | Implement package/schema/diagnostics/reference checks including Kubernetes context and a working initial quality gate | Review architecture model examples and materially changed scope decisions | Sol / High |
 | S06 — Cloud and Kubernetes catalogs | M2-01..06 | Freeze cloud/platform IDs, provider/Kubernetes semantics, approved assets and catalog/license checks | Resolve naming/coverage questions and inspect detailed Kubernetes/Huawei/on-premises representations | Sol / Medium; High for semantic rules |
 | S07 — Controlled renderer | M3-01..04 | Implement overview/detail view mapping, SVG/PNG/model bundle, strict/lenient behavior and security/resource controls | Inspect first representative output and clarify presentation choices | Sol / High |

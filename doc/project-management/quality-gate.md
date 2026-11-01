@@ -50,6 +50,12 @@ GitHub's [runner requirements](https://docs.github.com/en/actions/reference/runn
 
 M0-04 is complete. Existing registrations/settings were preserved; renderer dependencies were not installed. The manual preflight uses no checkout or third-party actions and zero repository token permissions. M1 still must implement and execute the product quality gate; a preflight success is not evidence of schema, provider, asset, renderer or plugin correctness.
 
+## S04 runtime evidence before M1
+
+The [S04 evidence](evidence/S04-runtime-and-hosting.md) records synthetic render, English/Thai labels, installed local stdio plugin SDK checks, historical loopback HTTP/download research, negative cases and Docker resource configuration. It is not an Actions job, actual Work test or product quality-gate pass. The host remains without native Graphviz; tested Linux images contain the dependencies.
+
+If M1 uses this Docker route on the existing Mac runner, use native shell steps invoking Docker CLI and verify that service account's actual daemon/context access first. This does not make GitHub `container:` or `services:` jobs supported on macOS. D-013 retires the central-host plan. An earlier amd64 smoke used emulation and does not prove another physical machine or OS. Preserve existing owner-only trust until the real product gate exists.
+
 ## Workflow controls
 
 - Trigger on trusted PR updates and default-branch pushes; permit manual reruns. Establish repository visibility/trust policy before enabling self-hosted PR execution. A same-repository branch check alone does not establish author trust.

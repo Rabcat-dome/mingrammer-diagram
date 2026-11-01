@@ -1,0 +1,581 @@
+{
+  "date": "2026-11-01",
+  "route": "D-013 per-machine local stdio plugin",
+  "scope": "synthetic runtime pilot",
+  "archive": {
+    "path": "/Users/visarut.pha/Documents/source/easybuy/mingrammer-diagram/spikes/s04-local-plugin/output/cloud-architecture-diagrams-0.1.0-alpha.1.zip",
+    "sha256": "3f1a50d8ac5f612afcb5efccec7cee16c8a8ec05d490b0d73f791387130b037b"
+  },
+  "installed_sdk": {
+    "root": "/Users/visarut.pha/.codex/plugins/cache/mingrammer-local/cloud-architecture-diagrams/0.1.0-alpha.1",
+    "runtime": {
+      "python": "3.13.13",
+      "system": "Linux",
+      "machine": "aarch64",
+      "uid": 501,
+      "graphviz": "dot - graphviz version 12.2.1 (20241206.2353)",
+      "packages": {
+        "diagrams": "0.25.1",
+        "graphviz": "0.20.3",
+        "mcp": "2.3.0"
+      },
+      "fonts": [
+        {
+          "requested_family": "Noto Sans",
+          "file": "/usr/share/fonts/noto/NotoSans-Regular.ttf",
+          "sha256": "478c558ea716033cd60c03438f628dfa75694dcf6b5f6d505a2f05fd2b4f3823",
+          "name_records": {
+            "0": "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic)",
+            "1": "Noto Sans",
+            "5": "Version 2.015; ttfautohint (v1.8.4.7-5d5b)",
+            "13": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL",
+            "14": "https://scripts.sil.org/OFL"
+          }
+        },
+        {
+          "requested_family": "Noto Sans Thai",
+          "file": "/usr/share/fonts/noto/NotoSansThai-Regular.ttf",
+          "sha256": "61cf814eec46b294d6ea4401ac295d0cecd5207bd2331dcc5a15e7301d30ee44",
+          "name_records": {
+            "0": "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/thai)",
+            "1": "Noto Sans Thai",
+            "5": "Version 2.002; ttfautohint (v1.8.4.7-5d5b)",
+            "13": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL",
+            "14": "https://scripts.sil.org/OFL"
+          }
+        }
+      ],
+      "cgroups": {
+        "memory.max": "1073741824",
+        "memory.swap.max": "0",
+        "pids.max": "64",
+        "cpu.max": "100000 100000"
+      },
+      "plugin_version": "0.1.0-alpha.1",
+      "execution": "local stdio; network-none container"
+    },
+    "bundle": {
+      "scope": "synthetic-runtime-only",
+      "node_count": 3,
+      "edge_count": 2,
+      "elapsed_seconds": 0.0408,
+      "png_dimensions": [
+        819,
+        168
+      ],
+      "files": {
+        "source.json": {
+          "bytes": 151,
+          "sha256": "439ba08df19ab89ec7a7a785959d5e2765493e9f65b55dfde7703e107e2897d9"
+        },
+        "diagram.png": {
+          "bytes": 17825,
+          "sha256": "b3cf20a1b13ba51c2f16c18df04cefb0115883a03bcae67d2c3add564c51439a"
+        },
+        "diagram.svg": {
+          "bytes": 3001,
+          "sha256": "98d1b6e15dae5e73d1f7fb9d0feee86af9a1e91af3891ff4e89926948f287a16"
+        },
+        "source.dot": {
+          "bytes": 770,
+          "sha256": "e9fa55dc426684d16d22c7e834f8700d656f21fe32a913ed12e901133e59e729"
+        }
+      },
+      "production_semantics": "not_tested",
+      "work_host": "not_tested",
+      "runtime": {
+        "python": "3.13.13",
+        "system": "Linux",
+        "machine": "aarch64",
+        "uid": 501,
+        "graphviz": "dot - graphviz version 12.2.1 (20241206.2353)",
+        "packages": {
+          "diagrams": "0.25.1",
+          "graphviz": "0.20.3",
+          "mcp": "2.3.0"
+        },
+        "fonts": [
+          {
+            "requested_family": "Noto Sans",
+            "file": "/usr/share/fonts/noto/NotoSans-Regular.ttf",
+            "sha256": "478c558ea716033cd60c03438f628dfa75694dcf6b5f6d505a2f05fd2b4f3823",
+            "name_records": {
+              "0": "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic)",
+              "1": "Noto Sans",
+              "5": "Version 2.015; ttfautohint (v1.8.4.7-5d5b)",
+              "13": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL",
+              "14": "https://scripts.sil.org/OFL"
+            }
+          },
+          {
+            "requested_family": "Noto Sans Thai",
+            "file": "/usr/share/fonts/noto/NotoSansThai-Regular.ttf",
+            "sha256": "61cf814eec46b294d6ea4401ac295d0cecd5207bd2331dcc5a15e7301d30ee44",
+            "name_records": {
+              "0": "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/thai)",
+              "1": "Noto Sans Thai",
+              "5": "Version 2.002; ttfautohint (v1.8.4.7-5d5b)",
+              "13": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL",
+              "14": "https://scripts.sil.org/OFL"
+            }
+          }
+        ],
+        "cgroups": {
+          "memory.max": "1073741824",
+          "memory.swap.max": "0",
+          "pids.max": "64",
+          "cpu.max": "100000 100000"
+        },
+        "plugin_version": "0.1.0-alpha.1",
+        "execution": "local stdio; network-none container"
+      },
+      "bundle_id": "ca7e85d1545679e168d6108dec091d38",
+      "host_paths": {
+        "diagram.png": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/ca7e85d1545679e168d6108dec091d38/diagram.png",
+        "diagram.svg": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/ca7e85d1545679e168d6108dec091d38/diagram.svg",
+        "manifest.json": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/ca7e85d1545679e168d6108dec091d38/manifest.json",
+        "source.dot": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/ca7e85d1545679e168d6108dec091d38/source.dot",
+        "source.json": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/ca7e85d1545679e168d6108dec091d38/source.json"
+      }
+    },
+    "tools": [
+      "get_runtime_info",
+      "read_fixture_artifact",
+      "render_fixture"
+    ],
+    "negative_cases": [
+      "label_count",
+      "label_length",
+      "control_character",
+      "code_field",
+      "artifact_traversal"
+    ],
+    "container_host_config": {
+      "Binds": null,
+      "ContainerIDFile": "",
+      "LogConfig": {
+        "Type": "local",
+        "Config": {}
+      },
+      "NetworkMode": "none",
+      "PortBindings": {},
+      "RestartPolicy": {
+        "Name": "no",
+        "MaximumRetryCount": 0
+      },
+      "AutoRemove": true,
+      "VolumeDriver": "",
+      "VolumesFrom": null,
+      "ConsoleSize": [
+        0,
+        0
+      ],
+      "CapAdd": null,
+      "CapDrop": [
+        "ALL"
+      ],
+      "CgroupnsMode": "private",
+      "Dns": null,
+      "DnsOptions": [],
+      "DnsSearch": [],
+      "ExtraHosts": null,
+      "GroupAdd": null,
+      "IpcMode": "private",
+      "Cgroup": "",
+      "Links": null,
+      "OomScoreAdj": 0,
+      "PidMode": "",
+      "Privileged": false,
+      "PublishAllPorts": false,
+      "ReadonlyRootfs": true,
+      "SecurityOpt": [
+        "no-new-privileges"
+      ],
+      "Tmpfs": {
+        "/tmp": "rw,noexec,nosuid,size=256m,mode=1777"
+      },
+      "UTSMode": "",
+      "UsernsMode": "",
+      "ShmSize": 67108864,
+      "Runtime": "runc",
+      "Isolation": "",
+      "CpuShares": 0,
+      "Memory": 1073741824,
+      "NanoCpus": 1000000000,
+      "CgroupParent": "",
+      "BlkioWeight": 0,
+      "BlkioWeightDevice": [],
+      "BlkioDeviceReadBps": [],
+      "BlkioDeviceWriteBps": [],
+      "BlkioDeviceReadIOps": [],
+      "BlkioDeviceWriteIOps": [],
+      "CpuPeriod": 0,
+      "CpuQuota": 0,
+      "CpuRealtimePeriod": 0,
+      "CpuRealtimeRuntime": 0,
+      "CpusetCpus": "",
+      "CpusetMems": "",
+      "Devices": [],
+      "DeviceCgroupRules": null,
+      "DeviceRequests": null,
+      "MemoryReservation": 0,
+      "MemorySwap": 1073741824,
+      "MemorySwappiness": null,
+      "OomKillDisable": null,
+      "PidsLimit": 64,
+      "Ulimits": null,
+      "CpuCount": 0,
+      "CpuPercent": 0,
+      "IOMaximumIOps": 0,
+      "IOMaximumBandwidth": 0,
+      "Mounts": [
+        {
+          "Type": "bind",
+          "Source": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams",
+          "Target": "/output"
+        }
+      ],
+      "MaskedPaths": [
+        "/proc/acpi",
+        "/proc/asound",
+        "/proc/interrupts",
+        "/proc/kcore",
+        "/proc/keys",
+        "/proc/latency_stats",
+        "/proc/sched_debug",
+        "/proc/scsi",
+        "/proc/timer_list",
+        "/proc/timer_stats",
+        "/sys/devices/virtual/powercap",
+        "/sys/firmware"
+      ],
+      "ReadonlyPaths": [
+        "/proc/bus",
+        "/proc/fs",
+        "/proc/irq",
+        "/proc/sys",
+        "/proc/sysrq-trigger"
+      ],
+      "Init": true
+    },
+    "elapsed_including_startup_seconds": 1.161
+  },
+  "relocated_zip_sdk": {
+    "root": "/var/folders/g7/rw_t0rcd7d7gv353pfdj6m1m0000gn/T/S04 relocated plugin 8w25hoqr/cloud-architecture-diagrams",
+    "runtime": {
+      "python": "3.13.13",
+      "system": "Linux",
+      "machine": "aarch64",
+      "uid": 501,
+      "graphviz": "dot - graphviz version 12.2.1 (20241206.2353)",
+      "packages": {
+        "diagrams": "0.25.1",
+        "graphviz": "0.20.3",
+        "mcp": "2.3.0"
+      },
+      "fonts": [
+        {
+          "requested_family": "Noto Sans",
+          "file": "/usr/share/fonts/noto/NotoSans-Regular.ttf",
+          "sha256": "478c558ea716033cd60c03438f628dfa75694dcf6b5f6d505a2f05fd2b4f3823",
+          "name_records": {
+            "0": "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic)",
+            "1": "Noto Sans",
+            "5": "Version 2.015; ttfautohint (v1.8.4.7-5d5b)",
+            "13": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL",
+            "14": "https://scripts.sil.org/OFL"
+          }
+        },
+        {
+          "requested_family": "Noto Sans Thai",
+          "file": "/usr/share/fonts/noto/NotoSansThai-Regular.ttf",
+          "sha256": "61cf814eec46b294d6ea4401ac295d0cecd5207bd2331dcc5a15e7301d30ee44",
+          "name_records": {
+            "0": "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/thai)",
+            "1": "Noto Sans Thai",
+            "5": "Version 2.002; ttfautohint (v1.8.4.7-5d5b)",
+            "13": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL",
+            "14": "https://scripts.sil.org/OFL"
+          }
+        }
+      ],
+      "cgroups": {
+        "memory.max": "1073741824",
+        "memory.swap.max": "0",
+        "pids.max": "64",
+        "cpu.max": "100000 100000"
+      },
+      "plugin_version": "0.1.0-alpha.1",
+      "execution": "local stdio; network-none container"
+    },
+    "bundle": {
+      "scope": "synthetic-runtime-only",
+      "node_count": 3,
+      "edge_count": 2,
+      "elapsed_seconds": 0.0394,
+      "png_dimensions": [
+        819,
+        168
+      ],
+      "files": {
+        "source.json": {
+          "bytes": 151,
+          "sha256": "439ba08df19ab89ec7a7a785959d5e2765493e9f65b55dfde7703e107e2897d9"
+        },
+        "diagram.png": {
+          "bytes": 17825,
+          "sha256": "b3cf20a1b13ba51c2f16c18df04cefb0115883a03bcae67d2c3add564c51439a"
+        },
+        "diagram.svg": {
+          "bytes": 3001,
+          "sha256": "98d1b6e15dae5e73d1f7fb9d0feee86af9a1e91af3891ff4e89926948f287a16"
+        },
+        "source.dot": {
+          "bytes": 770,
+          "sha256": "e9fa55dc426684d16d22c7e834f8700d656f21fe32a913ed12e901133e59e729"
+        }
+      },
+      "production_semantics": "not_tested",
+      "work_host": "not_tested",
+      "runtime": {
+        "python": "3.13.13",
+        "system": "Linux",
+        "machine": "aarch64",
+        "uid": 501,
+        "graphviz": "dot - graphviz version 12.2.1 (20241206.2353)",
+        "packages": {
+          "diagrams": "0.25.1",
+          "graphviz": "0.20.3",
+          "mcp": "2.3.0"
+        },
+        "fonts": [
+          {
+            "requested_family": "Noto Sans",
+            "file": "/usr/share/fonts/noto/NotoSans-Regular.ttf",
+            "sha256": "478c558ea716033cd60c03438f628dfa75694dcf6b5f6d505a2f05fd2b4f3823",
+            "name_records": {
+              "0": "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic)",
+              "1": "Noto Sans",
+              "5": "Version 2.015; ttfautohint (v1.8.4.7-5d5b)",
+              "13": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL",
+              "14": "https://scripts.sil.org/OFL"
+            }
+          },
+          {
+            "requested_family": "Noto Sans Thai",
+            "file": "/usr/share/fonts/noto/NotoSansThai-Regular.ttf",
+            "sha256": "61cf814eec46b294d6ea4401ac295d0cecd5207bd2331dcc5a15e7301d30ee44",
+            "name_records": {
+              "0": "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/thai)",
+              "1": "Noto Sans Thai",
+              "5": "Version 2.002; ttfautohint (v1.8.4.7-5d5b)",
+              "13": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL",
+              "14": "https://scripts.sil.org/OFL"
+            }
+          }
+        ],
+        "cgroups": {
+          "memory.max": "1073741824",
+          "memory.swap.max": "0",
+          "pids.max": "64",
+          "cpu.max": "100000 100000"
+        },
+        "plugin_version": "0.1.0-alpha.1",
+        "execution": "local stdio; network-none container"
+      },
+      "bundle_id": "e89d863d25bd34e0229b17610daaa2d0",
+      "host_paths": {
+        "diagram.png": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/e89d863d25bd34e0229b17610daaa2d0/diagram.png",
+        "diagram.svg": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/e89d863d25bd34e0229b17610daaa2d0/diagram.svg",
+        "manifest.json": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/e89d863d25bd34e0229b17610daaa2d0/manifest.json",
+        "source.dot": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/e89d863d25bd34e0229b17610daaa2d0/source.dot",
+        "source.json": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams/e89d863d25bd34e0229b17610daaa2d0/source.json"
+      }
+    },
+    "tools": [
+      "get_runtime_info",
+      "read_fixture_artifact",
+      "render_fixture"
+    ],
+    "negative_cases": [
+      "label_count",
+      "label_length",
+      "control_character",
+      "code_field",
+      "artifact_traversal"
+    ],
+    "container_host_config": {
+      "Binds": null,
+      "ContainerIDFile": "",
+      "LogConfig": {
+        "Type": "local",
+        "Config": {}
+      },
+      "NetworkMode": "none",
+      "PortBindings": {},
+      "RestartPolicy": {
+        "Name": "no",
+        "MaximumRetryCount": 0
+      },
+      "AutoRemove": true,
+      "VolumeDriver": "",
+      "VolumesFrom": null,
+      "ConsoleSize": [
+        0,
+        0
+      ],
+      "CapAdd": null,
+      "CapDrop": [
+        "ALL"
+      ],
+      "CgroupnsMode": "private",
+      "Dns": null,
+      "DnsOptions": [],
+      "DnsSearch": [],
+      "ExtraHosts": null,
+      "GroupAdd": null,
+      "IpcMode": "private",
+      "Cgroup": "",
+      "Links": null,
+      "OomScoreAdj": 0,
+      "PidMode": "",
+      "Privileged": false,
+      "PublishAllPorts": false,
+      "ReadonlyRootfs": true,
+      "SecurityOpt": [
+        "no-new-privileges"
+      ],
+      "Tmpfs": {
+        "/tmp": "rw,noexec,nosuid,size=256m,mode=1777"
+      },
+      "UTSMode": "",
+      "UsernsMode": "",
+      "ShmSize": 67108864,
+      "Runtime": "runc",
+      "Isolation": "",
+      "CpuShares": 0,
+      "Memory": 1073741824,
+      "NanoCpus": 1000000000,
+      "CgroupParent": "",
+      "BlkioWeight": 0,
+      "BlkioWeightDevice": [],
+      "BlkioDeviceReadBps": [],
+      "BlkioDeviceWriteBps": [],
+      "BlkioDeviceReadIOps": [],
+      "BlkioDeviceWriteIOps": [],
+      "CpuPeriod": 0,
+      "CpuQuota": 0,
+      "CpuRealtimePeriod": 0,
+      "CpuRealtimeRuntime": 0,
+      "CpusetCpus": "",
+      "CpusetMems": "",
+      "Devices": [],
+      "DeviceCgroupRules": null,
+      "DeviceRequests": null,
+      "MemoryReservation": 0,
+      "MemorySwap": 1073741824,
+      "MemorySwappiness": null,
+      "OomKillDisable": null,
+      "PidsLimit": 64,
+      "Ulimits": null,
+      "CpuCount": 0,
+      "CpuPercent": 0,
+      "IOMaximumIOps": 0,
+      "IOMaximumBandwidth": 0,
+      "Mounts": [
+        {
+          "Type": "bind",
+          "Source": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams",
+          "Target": "/output"
+        }
+      ],
+      "MaskedPaths": [
+        "/proc/acpi",
+        "/proc/asound",
+        "/proc/interrupts",
+        "/proc/kcore",
+        "/proc/keys",
+        "/proc/latency_stats",
+        "/proc/sched_debug",
+        "/proc/scsi",
+        "/proc/timer_list",
+        "/proc/timer_stats",
+        "/sys/devices/virtual/powercap",
+        "/sys/firmware"
+      ],
+      "ReadonlyPaths": [
+        "/proc/bus",
+        "/proc/fs",
+        "/proc/irq",
+        "/proc/sys",
+        "/proc/sysrq-trigger"
+      ],
+      "Init": true
+    },
+    "elapsed_including_startup_seconds": 1.12
+  },
+  "temporary_containers_remaining": 0,
+  "remote_docker_endpoint_rejected": true,
+  "actual_work_chat": "not_tested",
+  "second_physical_machine": "not_tested",
+  "independent_astra_review": "not_performed",
+  "cli": {
+    "version": "codex-cli 0.166.0-alpha.5.1",
+    "plugin_id": "cloud-architecture-diagrams@mingrammer-local",
+    "marketplace_source": "repository .agents/plugins/marketplace.json",
+    "cache_modified_directly": false,
+    "installed_entry": {
+      "pluginId": "cloud-architecture-diagrams@mingrammer-local",
+      "name": "cloud-architecture-diagrams",
+      "marketplaceName": "mingrammer-local",
+      "version": "0.1.0-alpha.1",
+      "installed": true,
+      "enabled": true,
+      "source": {
+        "source": "local",
+        "path": "/Users/visarut.pha/Documents/source/easybuy/mingrammer-diagram/spikes/s04-local-plugin/output/cloud-architecture-diagrams"
+      },
+      "marketplaceSource": {
+        "sourceType": "local",
+        "source": "/Users/visarut.pha/Documents/source/easybuy/mingrammer-diagram"
+      },
+      "installPolicy": "AVAILABLE",
+      "authPolicy": "ON_INSTALL"
+    }
+  },
+  "package_schema_validation": {
+    "plugin.json": {
+      "status": "passed",
+      "schema_url": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+      "schema_sha256": "0a4aad95ce337878ad38802ebf0daa3fde76abe3f65400c86bcbb1ec0b3ab883"
+    },
+    "mcp.json": {
+      "status": "passed",
+      "schema_url": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+      "schema_sha256": "6539175bfcdf43085855183e86da40ea94b166547a72b47ae9a0a390516d3acb"
+    }
+  },
+  "visual_inspection": {
+    "png": "English and Thai labels readable, no observed clipping; inspected using local image viewer",
+    "provider_style_acceptance": false,
+    "svg_font_portability": "not_tested",
+    "published_png": "doc/project-management/evidence/S04-local-plugin-fixture.png",
+    "published_svg": "doc/project-management/evidence/S04-local-plugin-fixture.svg"
+  },
+  "source_digests": {
+    "spikes/s04-local-plugin/README.md": "a9ee27391f876a6fcde87ce490d9f33c4c83864a1aedd25b20a6491db65eab73",
+    "spikes/s04-local-plugin/build.py": "8d7891249bf3c443426a021c575f6118a75a93c170c7abe50b189120dd65114e",
+    "spikes/s04-local-plugin/common.py": "7d53792b98b3e751c88749cd4f7ff714622f89373ba4deaa60bbda8de847ab67",
+    "spikes/s04-local-plugin/launch.py": "26fb66f0f52be30fdbf0e1542c9651a3fb1120d5b531c9b7038c37335e745d1f",
+    "spikes/s04-local-plugin/local_server.py": "552012fcfac5c54c1f881c83383bd719dd93f283320c54b18e2bbe47a48fedf1",
+    "spikes/s04-local-plugin/setup.py": "685a9f3e4fe0eec253c24cb86b32cffa3d6fe15b3a9a9cb6519fe9cb7d146b65",
+    "spikes/s04-local-plugin/verify.py": "84a825afbcf56f66402a7110f4ae89161c72eb09a5e8aa3c9acd8e3af67349ff"
+  },
+  "runtime_install": {
+    "version": "0.1.0-alpha.1",
+    "source_sha256": "8a92c48a321509f145b0d111a6cfd7d5b51960966884c70f3c3b60275eb1bc20",
+    "image_id": "sha256:0e79c3b7f66f0400d89cf7d4d97c1515e52cc954f9b1b562a1784d4de5f16f30",
+    "output_root": "/Users/visarut.pha/Documents/CloudArchitectureDiagrams",
+    "docker_endpoint": "unix:///Users/visarut.pha/.docker/run/docker.sock"
+  }
+}
