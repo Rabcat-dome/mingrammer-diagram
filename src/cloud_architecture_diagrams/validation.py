@@ -506,25 +506,32 @@ def validate_json(
         if view_id is not None
         else model.views[0]
     )
+    relationships = {edge.id for edge in model.relationships}
+    result.view_exclusions = {
+        view.id: sorted(
+            (set(checker.entities) - set(view.entity_refs))
+            | (relationships - set(view.relationship_refs))
+        )
+        for view in model.views
+    }
     if selected is None:
         checker.error("VIEW_NOT_FOUND", "/views")
     else:
         result.selected_view = selected.id
-        result.excluded_ids = sorted(
-            (set(checker.entities) - set(selected.entity_refs))
-            | ({edge.id for edge in model.relationships} - set(selected.relationship_refs))
-        )
+        result.excluded_ids = result.view_exclusions[selected.id]
     result.diagnostics = checker.diagnostics
     result.valid = not checker.diagnostics
-    if result.valid and result.excluded_ids:
-        result.diagnostics.append(
+    if result.valid:
+        result.diagnostics.extend(
             Diagnostic(
                 severity="warning",
                 code="VIEW_EXCLUSIONS",
-                field="/views",
-                entity_id=result.selected_view,
-                message="The selected view excludes declared IDs; see excluded_ids.",
+                field=f"/views/{index}",
+                entity_id=view.id,
+                message="This view excludes declared IDs; see view_exclusions.",
                 remedy="Include needed IDs explicitly or retain this disclosed partial view.",
             )
+            for index, view in enumerate(model.views)
+            if result.view_exclusions[view.id]
         )
     return result

@@ -117,13 +117,13 @@ Exit: all P0 pass; no unresolved Critical/High findings; justified Medium findin
 
 ## M7 — Claude Code adapter and later work
 
-Status: Adapter preparation started under D-015; not complete and not a first-release requirement. See [M7 evidence](evidence/M7-claude-plugin.md). Implementation: Claude Opus 5.5, the model of the owner's session rather than a project selection. A same-session review's findings are fixed; independent review not yet performed.
+Status: Adapter preparation started under D-015; not complete and not a first-release requirement. See [M7 evidence](evidence/M7-claude-plugin.md). Implementation: Claude Opus 5.5, the model of the owner's session rather than a project selection. A same-session review and a separate-session Claude review ran; their Critical, High and Medium findings are fixed and six Low findings await disposition. The Astra/High review has not been performed.
 
 | Task | Work | Dependency / output |
 |---|---|---|
 | M7-01 | Package the core as an installable Claude Code plugin with marketplace, bundled skill and command wrapper, reusing the core without a second copy | M1 + D-015 -> complete locally; `plugins/cloud-architecture-diagrams`, validate-only |
 | M7-02 | Add plugin package and wheel-content checks to the quality gate | M7-01 -> complete; `claude-plugin` and `package-contents` lanes passed actual CI, most recently run 41443551856 at `0220e94` |
-| M7-03 | Verify actual Claude Code installation and invocation | M7-01 -> local-path, private GitHub and real-config installs, plugin update, English/Thai/edit invocations and a Code tab runtime check verified on one Mac; interactive permission prompts and a second machine remain |
+| M7-03 | Verify actual Claude Code installation and invocation | M7-01 -> local-path, private GitHub and real-config installs, plugin update, English/Thai/edit invocations and a Code tab runtime check verified on one Mac; interactive permission prompts, `allowed-tools` breadth and a second machine remain |
 | M7-04 | Expose catalog discovery and rendering through the plugin as M2/M3 arrive, then update the skill's stated capabilities and plugin version | M2 + M3 -> not started |
 
 Exit: the same plugin version installs from the private repository on two machines and produces validated models and, after M3, retrievable SVG/PNG in actual Claude Code sessions, with independent review recorded.

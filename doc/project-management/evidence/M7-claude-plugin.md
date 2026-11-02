@@ -1,16 +1,16 @@
 # M7 Claude Code Plugin Preparation
 
-Recorded: 2026-11-02 (Asia/Bangkok) | Base: `c5f74b4` | First tested code: `22fc85e` | Review fixes: `0220e94` | Branch: `codex/m7-claude-plugin` | Host: macOS ARM64, Claude Code 2.1.309.
+Recorded: 2026-11-02 (Asia/Bangkok) | Base: `c5f74b4` | First tested code: `22fc85e` | Review fixes: `0220e94` and the commit after `a94b47a` | Branch: `codex/m7-claude-plugin` | Host: macOS ARM64, Claude Code 2.1.309.
 
 **M7-01 and M7-02 are complete. M7-03 is verified on one Mac for local-path, GitHub and real-config installs and for updating an installed plugin; a second machine and interactive permission prompts remain. M7-04 has not started.** This is a preparation build under D-015. It authors and validates models; it cannot render diagrams, and it does not change the Work first-release target.
 
-Actual CI and the GitHub and real-config installs below ran against commit `22fc85e`, before the review fixes. See [Same-session review](#same-session-review) for what changed afterward and what has been rerun.
+Actual CI and the GitHub and real-config installs below ran against commit `22fc85e`, before the review fixes. See [Same-session review](#same-session-review) and [Separate-session review](#separate-session-review) for what changed afterward and what has been rerun.
 
 ## Delivered
 
 | Item | Result |
 |---|---|
-| [Plugin](../../../plugins/cloud-architecture-diagrams/README.md) | `cloud-architecture-diagrams`, versioned by Git commit, running core `0.2.0a2` |
+| [Plugin](../../../plugins/cloud-architecture-diagrams/README.md) | `cloud-architecture-diagrams`, versioned by Git commit, running core `0.2.0a3` |
 | [Marketplace](../../../.claude-plugin/marketplace.json) | `mingrammer-local`, with a relative source. The Codex marketplace and S04 plugin are unchanged |
 | Skill | `architecture-model`, with a model guide and the two valid core fixtures as examples |
 | Command | `bin/cloud-diagrams` runs the core in a private hash-locked environment. It installs dependencies only, so no build backend runs and no install writes into the plugin |
@@ -74,11 +74,35 @@ A high-effort review of `c5f74b4..64aec62` ran with the Claude Code review skill
 
 After the fixes, the full gate passed locally and live English and Thai runs saved valid models with no permission denials. The Thai run loaded the plugin from a path containing a space.
 
+## Separate-session review
+
+A fresh Claude Code session reviewed `c5f74b4..a94b47a` read-only. Record it as a substitute review, not the Astra/High review the [model strategy](../model-strategy.md) names. It used the same model as the implementation, `claude-opus-5-5`, with session effort `xhigh`, and the implementing session wrote its brief, so its independence is limited. It found no Critical or High issues. It did not run the core tests or the full gate locally, relying on CI artifacts, and it had no `claude` CLI for installs, live runs or permission checks.
+
+The owner asked for the three Medium findings to be fixed:
+
+| Medium finding | Fix | Check |
+|---|---|---|
+| A result disclosed exclusions only for the first or selected view, so a complete first view hid a later partial view (FR-025) | Core `0.2.0a3` adds `view_exclusions` for every view and warns once per partial view. `selected_view` and `excluded_ids` keep their meaning | Reproduced before the fix; new test. A live run with a complete first view reported the second view's four excluded IDs from one validation |
+| The guide called `taxonomy` a closed list and the `k8s.<kind>` rule firm, while the validator enforces neither | The guide and the skill's caveat now say so. Enforcement stays with M2 | Reproduced with `made.up`. A test fails when enforcement arrives, and another compares the guide's list with the requirements |
+| No test protected the wrapper's setup flags | New tests cover a stale lock, an unchanged plugin tree, the exact installed package set and a fake uv that drains stdin | Removing each of `--locked`, `--no-dev`, `--no-install-project`, `</dev/null`, `>&2`, `-P` and `-B` now fails a test. The `-B` case needed `PYTHONDONTWRITEBYTECODE` removed from the test environment, because that variable masked it, including in CI |
+
+Six Low findings remain open and need an owner disposition:
+
+- The exit-code contract omits exit 1 for a non-UTF-8 locale or a failed `exec`, and `/bin/dash` exits 2 when `HOME` and `XDG_DATA_HOME` are unset.
+- A relative `XDG_DATA_HOME`, or a colon in the plugin path, can run project files. This needs control of the environment or an unusual install path.
+- The `claude-plugin` row in the [quality gate](../quality-gate.md) still names a removed version check, and only `render_available` is pinned for stale capabilities.
+- `package-contents` compares file names, so a zero-byte module with the right name passes.
+- Gate digests omit `pyproject.toml`, which affects only dirty local runs.
+- Spaces in paths and hostile ambient variables work when probed but have no test. The guide's enumeration test runs one way only, and the guide omits the rule for `ownership` edges to Kubernetes resources.
+
+The review also noted two M1 items outside this range: `field` echoes rejected key names, and `ID_DUPLICATE` does not name the duplicate ID.
+
 ## Not verified
 
 - A second machine, any other operating system, and first-run setup with an empty uv cache.
-- Interactive permission prompts. Headless runs exercised `allowed-tools`, but the Code tab check ran under bypass permissions, so it did not.
+- Interactive permission prompts, and how much `allowed-tools` admits at runtime, including whether a redirect such as `schema > file` prompts. Headless runs exercised `allowed-tools`, but the Code tab check ran under bypass permissions, so it did not.
+- Actual CI of the fixes after `a94b47a`. The owner's install holds `0220e94` until those fixes are pushed and it is updated; that copy lacks `view_exclusions` but has the working-directory fix.
 - Authoring a model from the Code tab.
-- Independent review. Implementation and the review below both used Claude Opus 5.5 in one session, so no separate review pass has been performed.
+- The Astra/High review the model strategy names. Implementation and both reviews above used Claude Opus 5.5.
 
 Prompts were run once each, so trigger rates are observations rather than measurements. Provider semantics are unchanged from M1: a passing result does not establish that a service type exists or that a placement is legal.

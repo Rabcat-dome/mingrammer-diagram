@@ -250,3 +250,11 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - Owner authorized the commit and push of `0220e94`, plus updating their install. Actual Quality gate run 41443551856 / job 125271024270 passed all 10 lanes with 86 core and 17 plugin tests, none skipped, and zero annotations.
 - Updated the owner's plugin from `0.2.0-alpha.1` to `0220e94300cb` with `settings.json` unchanged. On the updated copy a planted `pydantic.py` did not run, exit codes 0, 2 and 64 behaved, and a new headless session authored and validated a model with no permission denials.
 - Not done: independent review, second-machine or interactive checks, merge or release.
+
+
+## 2026-11-02 — M7 separate-session review and Medium fixes
+
+- The owner started a fresh Claude session to review `c5f74b4..a94b47a` read-only. It used `claude-opus-5-5` at effort `xhigh`, the implementing session wrote its brief, and it is recorded as a substitute, not the Astra/High review. It found no Critical or High issues, three Medium and six Low. The repository stayed clean at `a94b47a`.
+- The owner asked for the three Medium findings to be fixed. Core `0.2.0a3` adds `view_exclusions` and warns once per partial view. The guide and skill now say `taxonomy` and the `k8s.<kind>` rule are not enforced. New tests protect the wrapper's setup flags, and removing any of the seven flags now fails a test.
+- A live run with a complete first view reported the second view's excluded IDs from one validation, with no permission denials. See the [M7 evidence](evidence/M7-claude-plugin.md#separate-session-review).
+- Not done: disposition of the six Low findings, actual CI of these fixes, updating the owner's install, the Astra/High review, merge or release.

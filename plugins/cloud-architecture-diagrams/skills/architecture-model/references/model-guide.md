@@ -37,7 +37,7 @@ Unknown fields fail everywhere. At least one view is required. The input limit i
 `{id, name, provider, service_type, taxonomy, placement?, properties?, kubernetes?}`
 
 - `service_type` uses the ID format, for example `aws.compute.ec2`. No catalog resolves these yet, so treat them as provisional and keep the provider's native service name in `name`.
-- `taxonomy` is one of: `governance.scope`, `location.site`, `onprem.facility`, `network.boundary`, `network.subnet`, `network.routing`, `network.connectivity`, `network.load_balancing`, `edge.delivery`, `compute.vm`, `compute.physical`, `compute.containers`, `compute.serverless`, `application.platform`, `data.relational`, `data.nosql_cache`, `data.analytics_ai`, `storage.object`, `storage.block_file`, `integration.messaging`, `identity.access`, `security.control`, `security.secrets_keys`, `operations.observability`, `operations.backup_dr`.
+- `taxonomy`: use one of these IDs: `governance.scope`, `location.site`, `onprem.facility`, `network.boundary`, `network.subnet`, `network.routing`, `network.connectivity`, `network.load_balancing`, `edge.delivery`, `compute.vm`, `compute.physical`, `compute.containers`, `compute.serverless`, `application.platform`, `data.relational`, `data.nosql_cache`, `data.analytics_ai`, `storage.object`, `storage.block_file`, `integration.messaging`, `identity.access`, `security.control`, `security.secrets_keys`, `operations.observability`, `operations.backup_dr`. Until catalogs arrive, the validator checks only that an ID has two dot-separated parts, so it will not catch a wrong ID.
 - `properties` is closed: `replicas`, `labels`, `service_type` (Kubernetes Service type), `ports` (`{port, target_port?, protocol?}`).
 
 ### Placement keeps dimensions separate
@@ -65,11 +65,11 @@ An edge states what was modeled, not proven reachability. Include only connectiv
 
 - Selection is explicit, and a selected relationship needs both endpoints selected.
 - `grouping`: `none`, `provider` (default), `scope`, `network`, `namespace`, `node`, `physical`. `direction`: `TB` or `LR` (default). `style`: `provider` (default) or `neutral`.
-- IDs outside the selected view come back in `excluded_ids` with a `VIEW_EXCLUSIONS` warning; this is a disclosed partial view, not a failure.
+- Each view's unselected IDs come back in `view_exclusions`, with a `VIEW_EXCLUSIONS` warning for each partial view; this is disclosure, not a failure. `excluded_ids` repeats the list for the first view or the one named by `--view`.
 
 ## Kubernetes context
 
-Kubernetes is a platform inside a hosting provider, not a provider value. A resource carries `kubernetes: {kind, ...}` and keeps its real `provider`, and `service_type` follows `k8s.<kind>`, for example `k8s.pod` with taxonomy `compute.containers`.
+Kubernetes is a platform inside a hosting provider, not a provider value. A resource carries `kubernetes: {kind, ...}` and keeps its real `provider`, and `service_type` should follow `k8s.<kind>`, for example `k8s.pod` with taxonomy `compute.containers`. The validator does not check this match yet.
 
 Kinds: `Cluster`, `ControlPlane`, `NodePool`, `Node`, `Namespace`, `Deployment`, `ReplicaSet`, `StatefulSet`, `DaemonSet`, `Job`, `CronJob`, `Pod`, `Service`, `Ingress`, `IngressController`, `PersistentVolumeClaim`, `PersistentVolume`, `StorageClass`, `ConfigMap`, `Secret`, `ServiceAccount`, `NetworkPolicy`.
 

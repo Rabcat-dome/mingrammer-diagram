@@ -1,6 +1,6 @@
 # Core Contract v1.0.0
 
-S05 / M1 implementation guide, subordinate to the single [requirements](../requirements/requirements.md). Package `0.2.0a2` is a core development version; installed Work plugin `0.1.0-alpha.3` remains the independent S04 fixture. This change does not replace that plugin or claim full architecture rendering.
+S05 / M1 implementation guide, subordinate to the single [requirements](../requirements/requirements.md). Package `0.2.0a3` is a core development version; installed Work plugin `0.1.0-alpha.3` remains the independent S04 fixture. This change does not replace that plugin or claim full architecture rendering.
 
 ## Setup and discovery
 
@@ -44,7 +44,7 @@ The context rules use the concepts in [Kubernetes namespaces](https://kubernetes
 
 ## Views and diagnostics
 
-Every view reference must resolve; a selected edge requires both endpoints selected. A selected partial view returns every excluded entity/relationship ID and a `VIEW_EXCLUSIONS` warning. It never changes the canonical input or infers omitted security/traffic/placement. An explicit missing/empty view ID fails.
+Every view reference must resolve; a selected edge requires both endpoints selected. Every result lists each view's excluded entity/relationship IDs in `view_exclusions`, with a `VIEW_EXCLUSIONS` warning for each partial view; `selected_view` and `excluded_ids` describe the first or explicitly selected view. It never changes the canonical input or infers omitted security/traffic/placement. An explicit missing/empty view ID fails.
 
 Diagnostics contain severity, stable code, JSON-pointer-like field, optional entity ID, message and remedy. Rejected values and raw parser exceptions are excluded. Schema version mismatches, repeated JSON keys, invalid UTF-8, nonstandard constants, duplicate IDs, bad references, cycles and wrong Kubernetes scope are fatal in both modes. Up to 100 error diagnostics are emitted; this truncation does not convert failure into success.
 

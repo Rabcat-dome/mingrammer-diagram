@@ -24,6 +24,7 @@ class ValidationResult(BaseModel):
     diagnostics: list[Diagnostic] = Field(default_factory=list)
     selected_view: str | None = None
     excluded_ids: list[str] = Field(default_factory=list)
+    view_exclusions: dict[str, list[str]] = Field(default_factory=dict)
     pending_checks: list[str] = Field(
         default_factory=lambda: ["catalog", "provider_rules", "render"]
     )

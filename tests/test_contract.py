@@ -248,6 +248,18 @@ def test_long_chain_and_combined_entity_bound() -> None:
     assert "MODEL_ENTITY_LIMIT" in codes(data)
 
 
+def test_every_partial_view_is_disclosed_whichever_view_is_selected() -> None:
+    # FR-025: a complete first view must not hide a later partial view.
+    result = validate_json((FIXTURES / "kubernetes-valid.json").read_bytes())
+    assert result.valid and result.selected_view == "detail" and result.excluded_ids == []
+    assert result.view_exclusions["detail"] == []
+    assert result.view_exclusions["compact"]
+    assert [(d.code, d.entity_id) for d in result.diagnostics] == [("VIEW_EXCLUSIONS", "compact")]
+    selected = validate_json((FIXTURES / "kubernetes-valid.json").read_bytes(), view_id="compact")
+    assert selected.excluded_ids == result.view_exclusions["compact"]
+    assert selected.view_exclusions == result.view_exclusions
+
+
 def test_cli_exit_codes_and_discovery() -> None:
     for command in ["schema", "capabilities"]:
         result = subprocess.run(["cloud-diagrams", command], capture_output=True, check=True)
