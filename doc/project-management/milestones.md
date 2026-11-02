@@ -122,8 +122,8 @@ Status: Adapter preparation started under D-015; not complete and not a first-re
 | Task | Work | Dependency / output |
 |---|---|---|
 | M7-01 | Package the core as an installable Claude Code plugin with marketplace, bundled skill and command wrapper, reusing the core without a second copy | M1 + D-015 -> complete locally; `plugins/cloud-architecture-diagrams`, validate-only |
-| M7-02 | Add plugin package and wheel-content checks to the quality gate | M7-01 -> `claude-plugin` and `package-contents` lanes pass locally; actual CI runs after a push |
-| M7-03 | Verify actual Claude Code installation and invocation | M7-01 -> local-path install and session-loaded English/Thai/edit invocations verified on one Mac; GitHub install, interactive use and a second machine remain |
+| M7-02 | Add plugin package and wheel-content checks to the quality gate | M7-01 -> complete; `claude-plugin` and `package-contents` lanes passed actual CI run 41440133540 at `22fc85e` |
+| M7-03 | Verify actual Claude Code installation and invocation | M7-01 -> local-path, private GitHub and real-config installs, English/Thai/edit invocations and a Code tab runtime check verified on one Mac; interactive permission prompts, plugin updates and a second machine remain |
 | M7-04 | Expose catalog discovery and rendering through the plugin as M2/M3 arrive, then update the skill's stated capabilities and plugin version | M2 + M3 -> not started |
 
 Exit: the same plugin version installs from the private repository on two machines and produces validated models and, after M3, retrievable SVG/PNG in actual Claude Code sessions, with independent review recorded.

@@ -229,3 +229,12 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - Found and fixed a silent regression from the plugin's `src` symlink: hatchling dropped the real `src` from the sdist, so the wheel shipped no code while `package-build` passed. The sdist now skips the plugin. A new `package-contents` lane failed on the empty wheel and passes on the fixed one, which is byte-identical to the S05 CI wheel.
 - Verified with Claude Code 2.1.309 in throwaway configs and headless sessions: strict manifest validation, local-path and fresh-clone installs, and English, Thai and edit invocations with IDs preserved. The documented `bin/` path exposure did not appear, so the skill calls the command by full path. Real `~/.claude/plugins` state was unchanged. See the [M7 evidence](evidence/M7-claude-plugin.md).
 - Not done: no push, merge, account install or release. GitHub install, a second machine, actual CI for the new lanes and independent review remain open.
+
+
+## 2026-11-02 — M7 CI, installation and Node 24 follow-up
+
+- Owner authorized the push of `22fc85e`. Actual Quality gate run 41440133540 / job 125259629499 passed all 10 lanes on the project runner, with 82 core and 14 plugin tests, none skipped. The CI wheel matches the S05 wheel byte for byte.
+- Verified the private GitHub route in a throwaway config using the branch ref, including uninstall and marketplace removal. The owner then asked for the plugin in their own config: `settings.json` gained only the marketplace and enabled-plugin entries. A new headless session loaded the plugin, and the running Code tab session invoked the skill and ran `capabilities` from the installed path. The bare command stayed off the Bash path, which supports the skill's full-path call.
+- Corrected the plugin README: the install command names the branch until it merges, and removal now includes the marketplace.
+- Owner asked to move off the deprecated Node.js 20 runtime. Commit `8bde7b8` pins `actions/upload-artifact` v7.0.2 at `cf430e030ddbb5b0abf93d22962f4752f3646cd9`. Upstream shows a verified commit with `using: node24` and every input this workflow uses; its minimum runner is 2.327.1 and the job log reports 2.338.2. Actionlint passes; an actual CI run of this change needs a push.
+- Not done: no merge, release or independent review. See the [M7 evidence](evidence/M7-claude-plugin.md).
