@@ -220,5 +220,5 @@ Self-checks in this session are not a review. Astra/High later reviewed `5569459
 
 1. M2 is closed. N2-N4 remain deferred P3 findings; see the [fix review](S06-fable-review.md#follow-up-n1-fix-and-deferrals).
 2. The owner settled the asset-rights exit item under D-019.
-3. Update the owner's installed plugin only if asked. It remains on `917f46f`, so it has none of this work.
+3. Update the owner's installed plugin only if asked. It follows `main` and holds `3d235fa`, which has this work.
 4. S07 / M3 can proceed in parallel.
