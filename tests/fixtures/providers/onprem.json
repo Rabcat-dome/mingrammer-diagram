@@ -1,0 +1,505 @@
+{
+  "schema_version": "1.0.0",
+  "metadata": {
+    "id": "onprem-reference",
+    "title": "On-premises physical and logical separation",
+    "environment": "fixture",
+    "assumptions": [
+      "Synthetic fixture; no deployed infrastructure implied."
+    ]
+  },
+  "scopes": [
+    {
+      "id": "prod",
+      "name": "Production",
+      "provider": "onprem",
+      "kind": "environment"
+    }
+  ],
+  "boundaries": [
+    {
+      "id": "site",
+      "name": "Bangkok campus",
+      "provider": "onprem",
+      "kind": "site"
+    },
+    {
+      "id": "dc",
+      "name": "DC1",
+      "provider": "onprem",
+      "kind": "data_center",
+      "parent_ref": "site"
+    },
+    {
+      "id": "room",
+      "name": "Hall A",
+      "provider": "onprem",
+      "kind": "room",
+      "parent_ref": "dc"
+    },
+    {
+      "id": "rack",
+      "name": "Rack 12",
+      "provider": "onprem",
+      "kind": "rack",
+      "parent_ref": "room"
+    },
+    {
+      "id": "net",
+      "name": "Campus network",
+      "provider": "onprem",
+      "kind": "network",
+      "relations": [
+        {
+          "kind": "located_in",
+          "target_ref": "site"
+        }
+      ]
+    },
+    {
+      "id": "vrf",
+      "name": "VRF PROD",
+      "provider": "onprem",
+      "kind": "vrf",
+      "relations": [
+        {
+          "kind": "network_member_of",
+          "target_ref": "net"
+        }
+      ]
+    },
+    {
+      "id": "vlan",
+      "name": "VLAN 120",
+      "provider": "onprem",
+      "kind": "vlan",
+      "relations": [
+        {
+          "kind": "network_member_of",
+          "target_ref": "vrf"
+        }
+      ]
+    },
+    {
+      "id": "subnet",
+      "name": "10.20.0.0/24",
+      "provider": "onprem",
+      "kind": "subnet",
+      "parent_ref": "net",
+      "relations": [
+        {
+          "kind": "network_member_of",
+          "target_ref": "vlan"
+        }
+      ]
+    },
+    {
+      "id": "dmz",
+      "name": "DMZ",
+      "provider": "onprem",
+      "kind": "security_zone",
+      "relations": [
+        {
+          "kind": "network_member_of",
+          "target_ref": "vlan"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "router",
+      "name": "Router",
+      "provider": "onprem",
+      "service_type": "onprem.network.router",
+      "taxonomy": "network.routing",
+      "placement": {
+        "location": {
+          "rack_ref": "rack"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "l2",
+      "name": "L2 switch",
+      "provider": "onprem",
+      "service_type": "onprem.network.l2_switch",
+      "taxonomy": "network.routing",
+      "placement": {
+        "location": {
+          "rack_ref": "rack"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "l3",
+      "name": "L3 switch",
+      "provider": "onprem",
+      "service_type": "onprem.network.l3_switch",
+      "taxonomy": "network.routing",
+      "placement": {
+        "location": {
+          "rack_ref": "rack"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "fw",
+      "name": "Firewall",
+      "provider": "onprem",
+      "service_type": "onprem.security.firewall",
+      "taxonomy": "security.control",
+      "placement": {
+        "location": {
+          "rack_ref": "rack"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ],
+        "security_boundaries": [
+          "dmz"
+        ]
+      }
+    },
+    {
+      "id": "lb",
+      "name": "Load balancer",
+      "provider": "onprem",
+      "service_type": "onprem.network.load_balancer",
+      "taxonomy": "network.load_balancing",
+      "placement": {
+        "location": {
+          "rack_ref": "rack"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ],
+        "security_boundaries": [
+          "dmz"
+        ]
+      }
+    },
+    {
+      "id": "hv",
+      "name": "Hypervisor",
+      "provider": "onprem",
+      "service_type": "onprem.compute.hypervisor",
+      "taxonomy": "compute.physical",
+      "placement": {
+        "location": {
+          "site_ref": "site",
+          "rack_ref": "rack"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "vm",
+      "name": "Virtual machine",
+      "provider": "onprem",
+      "service_type": "onprem.compute.virtual_machine",
+      "taxonomy": "compute.vm",
+      "placement": {
+        "scope_refs": [
+          "prod"
+        ],
+        "location": {
+          "site_ref": "site"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ],
+        "security_boundaries": [
+          "dmz"
+        ],
+        "deployment_context": [
+          "hv"
+        ]
+      }
+    },
+    {
+      "id": "server",
+      "name": "Physical server",
+      "provider": "onprem",
+      "service_type": "onprem.compute.physical_server",
+      "taxonomy": "compute.physical",
+      "placement": {
+        "location": {
+          "rack_ref": "rack"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "k8s",
+      "name": "Kubernetes cluster",
+      "provider": "onprem",
+      "service_type": "onprem.containers.kubernetes_cluster",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "location": {
+          "site_ref": "site"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "Cluster"
+      }
+    },
+    {
+      "id": "db",
+      "name": "Database",
+      "provider": "onprem",
+      "service_type": "onprem.database.database",
+      "taxonomy": "data.relational",
+      "placement": {
+        "location": {
+          "rack_ref": "rack"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "nas",
+      "name": "NAS",
+      "provider": "onprem",
+      "service_type": "onprem.storage.nas",
+      "taxonomy": "storage.block_file",
+      "placement": {
+        "location": {
+          "rack_ref": "rack"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "san",
+      "name": "SAN",
+      "provider": "onprem",
+      "service_type": "onprem.storage.san",
+      "taxonomy": "storage.block_file",
+      "placement": {
+        "location": {
+          "rack_ref": "rack"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "idp",
+      "name": "Identity service",
+      "provider": "onprem",
+      "service_type": "onprem.identity.identity_service",
+      "taxonomy": "identity.access",
+      "placement": {
+        "network_attachments": [
+          {
+            "network_ref": "net",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "backup",
+      "name": "Backup system",
+      "provider": "onprem",
+      "service_type": "onprem.operations.backup_system",
+      "taxonomy": "operations.backup_dr",
+      "placement": {
+        "network_attachments": [
+          {
+            "network_ref": "net",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "mon",
+      "name": "Monitoring",
+      "provider": "onprem",
+      "service_type": "onprem.operations.monitoring",
+      "taxonomy": "operations.observability",
+      "placement": {
+        "network_attachments": [
+          {
+            "network_ref": "net",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "id": "t-lb-vm",
+      "source_ref": "lb",
+      "target_ref": "vm",
+      "kind": "traffic",
+      "protocol": "HTTPS"
+    },
+    {
+      "id": "t-vm-db",
+      "source_ref": "vm",
+      "target_ref": "db",
+      "kind": "traffic",
+      "protocol": "TCP 5432"
+    },
+    {
+      "id": "s-vm-nas",
+      "source_ref": "vm",
+      "target_ref": "nas",
+      "kind": "storage",
+      "protocol": "NFS"
+    },
+    {
+      "id": "s-hv-san",
+      "source_ref": "hv",
+      "target_ref": "san",
+      "kind": "storage",
+      "protocol": "FC"
+    },
+    {
+      "id": "b-db",
+      "source_ref": "backup",
+      "target_ref": "db",
+      "kind": "replication",
+      "label": "Nightly backup"
+    },
+    {
+      "id": "o-vm",
+      "source_ref": "mon",
+      "target_ref": "vm",
+      "kind": "observability"
+    }
+  ],
+  "views": [
+    {
+      "id": "detail",
+      "title": "On-premises physical and logical separation",
+      "entity_refs": [
+        "prod",
+        "site",
+        "dc",
+        "room",
+        "rack",
+        "net",
+        "vrf",
+        "vlan",
+        "subnet",
+        "dmz",
+        "router",
+        "l2",
+        "l3",
+        "fw",
+        "lb",
+        "hv",
+        "vm",
+        "server",
+        "k8s",
+        "db",
+        "nas",
+        "san",
+        "idp",
+        "backup",
+        "mon"
+      ],
+      "relationship_refs": [
+        "t-lb-vm",
+        "t-vm-db",
+        "s-vm-nas",
+        "s-hv-san",
+        "b-db",
+        "o-vm"
+      ]
+    }
+  ]
+}

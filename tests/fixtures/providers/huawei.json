@@ -1,0 +1,520 @@
+{
+  "schema_version": "1.0.0",
+  "metadata": {
+    "id": "huawei-reference",
+    "title": "Huawei Cloud catalog coverage",
+    "environment": "fixture",
+    "assumptions": [
+      "Synthetic fixture; no deployed infrastructure implied."
+    ]
+  },
+  "scopes": [
+    {
+      "id": "acct",
+      "name": "Account",
+      "provider": "huawei",
+      "kind": "account"
+    },
+    {
+      "id": "proj",
+      "name": "ap-southeast-2 project",
+      "provider": "huawei",
+      "kind": "iam_project",
+      "parent_ref": "acct"
+    },
+    {
+      "id": "sub",
+      "name": "App subproject",
+      "provider": "huawei",
+      "kind": "iam_project",
+      "parent_ref": "proj"
+    },
+    {
+      "id": "ep",
+      "name": "Finance",
+      "provider": "huawei",
+      "kind": "enterprise_project",
+      "parent_ref": "acct"
+    }
+  ],
+  "boundaries": [
+    {
+      "id": "region",
+      "name": "AP-Bangkok",
+      "provider": "huawei",
+      "kind": "region",
+      "scope_refs": [
+        "proj"
+      ]
+    },
+    {
+      "id": "az",
+      "name": "AZ1",
+      "provider": "huawei",
+      "kind": "zone",
+      "parent_ref": "region"
+    },
+    {
+      "id": "vpc",
+      "name": "App VPC",
+      "provider": "huawei",
+      "kind": "network",
+      "scope_refs": [
+        "proj",
+        "ep"
+      ],
+      "parent_ref": "region"
+    },
+    {
+      "id": "subnet",
+      "name": "App subnet",
+      "provider": "huawei",
+      "kind": "subnet",
+      "scope_refs": [
+        "proj"
+      ],
+      "parent_ref": "vpc",
+      "relations": [
+        {
+          "kind": "located_in",
+          "target_ref": "region"
+        }
+      ]
+    },
+    {
+      "id": "sg",
+      "name": "Web tier",
+      "provider": "huawei",
+      "kind": "security_group",
+      "scope_refs": [
+        "proj"
+      ],
+      "relations": [
+        {
+          "kind": "located_in",
+          "target_ref": "region"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "ecs",
+      "name": "Elastic Cloud Server",
+      "provider": "huawei",
+      "service_type": "huawei.compute.ecs",
+      "taxonomy": "compute.vm",
+      "placement": {
+        "scope_refs": [
+          "proj",
+          "ep"
+        ],
+        "location": {
+          "zone_ref": "az"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ],
+        "security_boundaries": [
+          "sg"
+        ]
+      }
+    },
+    {
+      "id": "elb",
+      "name": "Elastic Load Balance",
+      "provider": "huawei",
+      "service_type": "huawei.network.elb",
+      "taxonomy": "network.load_balancing",
+      "placement": {
+        "scope_refs": [
+          "proj",
+          "ep"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "eip",
+      "name": "Elastic IP",
+      "provider": "huawei",
+      "service_type": "huawei.network.eip",
+      "taxonomy": "network.connectivity",
+      "placement": {
+        "scope_refs": [
+          "proj"
+        ],
+        "location": {
+          "region_ref": "region"
+        }
+      }
+    },
+    {
+      "id": "nat",
+      "name": "NAT Gateway",
+      "provider": "huawei",
+      "service_type": "huawei.network.nat_gateway",
+      "taxonomy": "network.routing",
+      "placement": {
+        "scope_refs": [
+          "proj"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "cce",
+      "name": "CCE standard cluster",
+      "provider": "huawei",
+      "service_type": "huawei.containers.cce_standard",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "sub",
+          "ep"
+        ],
+        "location": {
+          "zone_ref": "az"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "Cluster"
+      }
+    },
+    {
+      "id": "turbo",
+      "name": "CCE Turbo cluster",
+      "provider": "huawei",
+      "service_type": "huawei.containers.cce_turbo",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "proj"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "Cluster"
+      }
+    },
+    {
+      "id": "autopilot",
+      "name": "CCE Autopilot cluster",
+      "provider": "huawei",
+      "service_type": "huawei.containers.cce_autopilot",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "proj"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "Cluster"
+      }
+    },
+    {
+      "id": "pool",
+      "name": "CCE node pool",
+      "provider": "huawei",
+      "service_type": "huawei.containers.cce_node_pool",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "proj"
+        ],
+        "location": {
+          "zone_ref": "az"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "NodePool",
+        "cluster_ref": "cce"
+      }
+    },
+    {
+      "id": "rds",
+      "name": "Relational Database Service",
+      "provider": "huawei",
+      "service_type": "huawei.database.rds",
+      "taxonomy": "data.relational",
+      "placement": {
+        "scope_refs": [
+          "proj",
+          "ep"
+        ],
+        "location": {
+          "zone_ref": "az"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "obs",
+      "name": "Object Storage Service",
+      "provider": "huawei",
+      "service_type": "huawei.storage.obs",
+      "taxonomy": "storage.object",
+      "placement": {
+        "scope_refs": [
+          "ep"
+        ],
+        "location": {
+          "region_ref": "region"
+        }
+      }
+    },
+    {
+      "id": "iam",
+      "name": "Identity and Access Management",
+      "provider": "huawei",
+      "service_type": "huawei.identity.iam",
+      "taxonomy": "identity.access",
+      "placement": {
+        "scope_refs": [
+          "acct"
+        ]
+      }
+    },
+    {
+      "id": "apig",
+      "name": "API Gateway",
+      "provider": "huawei",
+      "service_type": "huawei.integration.api_gateway",
+      "taxonomy": "integration.messaging",
+      "placement": {
+        "scope_refs": [
+          "proj"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "fn",
+      "name": "FunctionGraph",
+      "provider": "huawei",
+      "service_type": "huawei.compute.functiongraph",
+      "taxonomy": "compute.serverless",
+      "placement": {
+        "scope_refs": [
+          "proj"
+        ],
+        "location": {
+          "region_ref": "region"
+        }
+      }
+    },
+    {
+      "id": "vpn",
+      "name": "Virtual Private Network",
+      "provider": "huawei",
+      "service_type": "huawei.network.vpn",
+      "taxonomy": "network.connectivity",
+      "placement": {
+        "scope_refs": [
+          "proj"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "dc",
+      "name": "Direct Connect",
+      "provider": "huawei",
+      "service_type": "huawei.network.direct_connect",
+      "taxonomy": "network.connectivity",
+      "placement": {
+        "scope_refs": [
+          "proj"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ces",
+      "name": "Cloud Eye",
+      "provider": "huawei",
+      "service_type": "huawei.observability.cloud_eye",
+      "taxonomy": "operations.observability",
+      "placement": {
+        "scope_refs": [
+          "proj"
+        ],
+        "location": {
+          "region_ref": "region"
+        }
+      }
+    },
+    {
+      "id": "lts",
+      "name": "Log Tank Service",
+      "provider": "huawei",
+      "service_type": "huawei.observability.lts",
+      "taxonomy": "operations.observability",
+      "placement": {
+        "scope_refs": [
+          "proj"
+        ],
+        "location": {
+          "region_ref": "region"
+        }
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "id": "bind-eip",
+      "source_ref": "eip",
+      "target_ref": "elb",
+      "kind": "attachment"
+    },
+    {
+      "id": "t-elb-ecs",
+      "source_ref": "elb",
+      "target_ref": "ecs",
+      "kind": "traffic",
+      "protocol": "HTTPS"
+    },
+    {
+      "id": "t-ecs-rds",
+      "source_ref": "ecs",
+      "target_ref": "rds",
+      "kind": "traffic",
+      "protocol": "TCP 3306"
+    }
+  ],
+  "views": [
+    {
+      "id": "detail",
+      "title": "Huawei Cloud catalog coverage",
+      "entity_refs": [
+        "acct",
+        "proj",
+        "sub",
+        "ep",
+        "region",
+        "az",
+        "vpc",
+        "subnet",
+        "sg",
+        "ecs",
+        "elb",
+        "eip",
+        "nat",
+        "cce",
+        "turbo",
+        "autopilot",
+        "pool",
+        "rds",
+        "obs",
+        "iam",
+        "apig",
+        "fn",
+        "vpn",
+        "dc",
+        "ces",
+        "lts"
+      ],
+      "relationship_refs": [
+        "bind-eip",
+        "t-elb-ecs",
+        "t-ecs-rds"
+      ]
+    }
+  ]
+}

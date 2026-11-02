@@ -24,10 +24,13 @@ def fixture(name: str = "core-valid") -> dict[str, Any]:
     return value
 
 
-def codes(model: dict[str, Any], mode: Mode = "strict") -> set[str]:
+def codes(
+    model: dict[str, Any], mode: Mode = "strict", pending: list[str] | None = None
+) -> set[str]:
     result = validate_json(json.dumps(model).encode(), mode=mode)
     assert not result.valid
-    assert result.pending_checks == ["catalog", "provider_rules", "render"]
+    # A core failure stops before the semantic layer, and the result must say so.
+    assert result.pending_checks == (pending or ["catalog", "provider_rules", "render"])
     assert all(item.remedy and item.field and item.code for item in result.diagnostics)
     return {item.code for item in result.diagnostics}
 
@@ -40,7 +43,8 @@ def test_schema_and_core_agree_on_valid_fixtures(name: str) -> None:
     Draft202012Validator(schema).validate(data)
     result = validate_json(json.dumps(data).encode())
     assert result.valid and not result.draft
-    assert result.validation_scope == "core_only" and result.pending_checks
+    assert result.validation_scope == "core_catalog_provider"
+    assert result.pending_checks == ["render"]
 
 
 def test_published_schema_matches_discovery() -> None:
@@ -310,9 +314,14 @@ def test_port_bounds_match_schema(target_port: object) -> None:
 
 
 def test_label_keys_can_preserve_native_metadata_without_inference() -> None:
-    data = fixture()
-    data["resources"][0]["properties"] = {"labels": {"app.kubernetes.io/name": "api", "Empty": ""}}
+    labels = {"app.kubernetes.io/name": "api", "Empty": ""}
+    data = fixture("kubernetes-valid")
+    data["resources"][0]["properties"] = {"labels": labels}
     assert validate_json(json.dumps(data).encode()).valid
+    # The same keys break GCP's own label syntax, which M2 enforces on a non-Kubernetes resource.
+    data = fixture()
+    data["resources"][0]["properties"] = {"labels": labels}
+    assert "LABEL_SYNTAX_INVALID" in codes(data, pending=["render"])
 
 
 def test_foreign_provider_ownership_is_invalid() -> None:

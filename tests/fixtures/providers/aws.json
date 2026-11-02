@@ -1,0 +1,525 @@
+{
+  "schema_version": "1.0.0",
+  "metadata": {
+    "id": "aws-reference",
+    "title": "AWS catalog coverage",
+    "environment": "fixture",
+    "assumptions": [
+      "Synthetic fixture; no deployed infrastructure implied."
+    ]
+  },
+  "scopes": [
+    {
+      "id": "acct",
+      "name": "Workload account",
+      "provider": "aws",
+      "kind": "account"
+    }
+  ],
+  "boundaries": [
+    {
+      "id": "region",
+      "name": "ap-southeast-1",
+      "provider": "aws",
+      "kind": "region"
+    },
+    {
+      "id": "az-a",
+      "name": "ap-southeast-1a",
+      "provider": "aws",
+      "kind": "zone",
+      "parent_ref": "region"
+    },
+    {
+      "id": "az-b",
+      "name": "ap-southeast-1b",
+      "provider": "aws",
+      "kind": "zone",
+      "parent_ref": "region"
+    },
+    {
+      "id": "vpc",
+      "name": "Workload VPC",
+      "provider": "aws",
+      "kind": "network",
+      "scope_refs": [
+        "acct"
+      ],
+      "parent_ref": "region"
+    },
+    {
+      "id": "public-a",
+      "name": "Public A",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+        "acct"
+      ],
+      "parent_ref": "vpc",
+      "relations": [
+        {
+          "kind": "located_in",
+          "target_ref": "az-a"
+        }
+      ]
+    },
+    {
+      "id": "public-b",
+      "name": "Public B",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+        "acct"
+      ],
+      "parent_ref": "vpc",
+      "relations": [
+        {
+          "kind": "located_in",
+          "target_ref": "az-b"
+        }
+      ]
+    },
+    {
+      "id": "app-a",
+      "name": "App A",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+        "acct"
+      ],
+      "parent_ref": "vpc",
+      "relations": [
+        {
+          "kind": "located_in",
+          "target_ref": "az-a"
+        }
+      ]
+    },
+    {
+      "id": "data-a",
+      "name": "Data A",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+        "acct"
+      ],
+      "parent_ref": "vpc",
+      "relations": [
+        {
+          "kind": "located_in",
+          "target_ref": "az-a"
+        }
+      ]
+    },
+    {
+      "id": "sg-web",
+      "name": "Web tier",
+      "provider": "aws",
+      "kind": "security_group",
+      "scope_refs": [
+        "acct"
+      ],
+      "parent_ref": "vpc"
+    }
+  ],
+  "resources": [
+    {
+      "id": "alb",
+      "name": "Application Load Balancer",
+      "provider": "aws",
+      "service_type": "aws.network.application_load_balancer",
+      "taxonomy": "network.load_balancing",
+      "placement": {
+        "scope_refs": [
+          "acct"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "public-a",
+              "public-b"
+            ]
+          }
+        ],
+        "security_boundaries": [
+          "sg-web"
+        ]
+      }
+    },
+    {
+      "id": "web",
+      "name": "Amazon EC2 instance",
+      "provider": "aws",
+      "service_type": "aws.compute.ec2",
+      "taxonomy": "compute.vm",
+      "placement": {
+        "scope_refs": [
+          "acct"
+        ],
+        "location": {
+          "region_ref": "region",
+          "zone_ref": "az-a"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "app-a"
+            ]
+          }
+        ],
+        "security_boundaries": [
+          "sg-web"
+        ]
+      }
+    },
+    {
+      "id": "db",
+      "name": "Amazon RDS DB instance",
+      "provider": "aws",
+      "service_type": "aws.database.rds",
+      "taxonomy": "data.relational",
+      "placement": {
+        "scope_refs": [
+          "acct"
+        ],
+        "location": {
+          "zone_ref": "az-a"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "data-a"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "bucket",
+      "name": "Amazon S3 bucket",
+      "provider": "aws",
+      "service_type": "aws.storage.s3",
+      "taxonomy": "storage.object",
+      "placement": {
+        "scope_refs": [
+          "acct"
+        ],
+        "location": {
+          "region_ref": "region"
+        }
+      }
+    },
+    {
+      "id": "iam",
+      "name": "AWS IAM",
+      "provider": "aws",
+      "service_type": "aws.identity.iam",
+      "taxonomy": "identity.access",
+      "placement": {
+        "scope_refs": [
+          "acct"
+        ]
+      }
+    },
+    {
+      "id": "nat",
+      "name": "NAT gateway (zonal)",
+      "provider": "aws",
+      "service_type": "aws.network.nat_gateway",
+      "taxonomy": "network.routing",
+      "placement": {
+        "scope_refs": [
+          "acct"
+        ],
+        "location": {
+          "zone_ref": "az-a"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "public-a"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "nat-regional",
+      "name": "NAT gateway (regional)",
+      "provider": "aws",
+      "service_type": "aws.network.regional_nat_gateway",
+      "taxonomy": "network.routing",
+      "placement": {
+        "scope_refs": [
+          "acct"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc"
+          }
+        ]
+      }
+    },
+    {
+      "id": "igw",
+      "name": "Internet gateway",
+      "provider": "aws",
+      "service_type": "aws.network.internet_gateway",
+      "taxonomy": "network.routing",
+      "placement": {
+        "scope_refs": [
+          "acct"
+        ],
+        "network_attachments": [
+          {
+            "network_ref": "vpc"
+          }
+        ]
+      }
+    },
+    {
+      "id": "vpn",
+      "name": "AWS Site-to-Site VPN",
+      "provider": "aws",
+      "service_type": "aws.network.site_to_site_vpn",
+      "taxonomy": "network.connectivity",
+      "placement": {
+        "scope_refs": [
+          "acct"
+        ],
+        "network_attachments": [
+          {
+            "network_ref": "vpc"
+          }
+        ]
+      }
+    },
+    {
+      "id": "dx",
+      "name": "AWS Direct Connect",
+      "provider": "aws",
+      "service_type": "aws.network.direct_connect",
+      "taxonomy": "network.connectivity",
+      "placement": {
+        "scope_refs": [
+          "acct"
+        ],
+        "location": {
+          "region_ref": "region"
+        }
+      }
+    },
+    {
+      "id": "watch",
+      "name": "Amazon CloudWatch",
+      "provider": "aws",
+      "service_type": "aws.observability.cloudwatch",
+      "taxonomy": "operations.observability",
+      "placement": {
+        "scope_refs": [
+          "acct"
+        ],
+        "location": {
+          "region_ref": "region"
+        }
+      }
+    },
+    {
+      "id": "eks",
+      "name": "Amazon EKS cluster",
+      "provider": "aws",
+      "service_type": "aws.containers.eks",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "acct"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "app-a",
+              "public-b"
+            ]
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "Cluster"
+      }
+    },
+    {
+      "id": "eks-auto",
+      "name": "Amazon EKS cluster (Auto Mode)",
+      "provider": "aws",
+      "service_type": "aws.containers.eks_auto_mode",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "acct"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "app-a",
+              "public-b"
+            ]
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "Cluster"
+      }
+    },
+    {
+      "id": "mng",
+      "name": "EKS managed node group",
+      "provider": "aws",
+      "service_type": "aws.containers.eks_managed_node_group",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "acct"
+        ],
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "app-a"
+            ]
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "NodePool",
+        "cluster_ref": "eks"
+      }
+    },
+    {
+      "id": "self-managed",
+      "name": "EKS self-managed nodes",
+      "provider": "aws",
+      "service_type": "aws.containers.eks_self_managed_nodes",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "acct"
+        ],
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "app-a"
+            ]
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "NodePool",
+        "cluster_ref": "eks"
+      }
+    },
+    {
+      "id": "fargate",
+      "name": "EKS Fargate profile",
+      "provider": "aws",
+      "service_type": "aws.containers.eks_fargate_profile",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "acct"
+        ],
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "app-a"
+            ]
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "NodePool",
+        "cluster_ref": "eks"
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "id": "t-alb-web",
+      "source_ref": "alb",
+      "target_ref": "web",
+      "kind": "traffic",
+      "protocol": "HTTPS"
+    },
+    {
+      "id": "t-web-db",
+      "source_ref": "web",
+      "target_ref": "db",
+      "kind": "traffic",
+      "protocol": "TCP 3306"
+    },
+    {
+      "id": "o-web",
+      "source_ref": "web",
+      "target_ref": "watch",
+      "kind": "observability"
+    }
+  ],
+  "views": [
+    {
+      "id": "detail",
+      "title": "AWS catalog coverage",
+      "entity_refs": [
+        "acct",
+        "region",
+        "az-a",
+        "az-b",
+        "vpc",
+        "public-a",
+        "public-b",
+        "app-a",
+        "data-a",
+        "sg-web",
+        "alb",
+        "web",
+        "db",
+        "bucket",
+        "iam",
+        "nat",
+        "nat-regional",
+        "igw",
+        "vpn",
+        "dx",
+        "watch",
+        "eks",
+        "eks-auto",
+        "mng",
+        "self-managed",
+        "fargate"
+      ],
+      "relationship_refs": [
+        "t-alb-web",
+        "t-web-db",
+        "o-web"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1220 @@
+{
+ "checked": "2026-11-02",
+ "method": "One HTTPS fetch per page; HTML reduced to text; the text is hashed and not stored. A claim's pattern must match that text.",
+ "pages": [
+  {
+   "url": "https://aws.amazon.com/architecture/icons/",
+   "http_status": 200,
+   "text_sha256": "1e7761c2179b6e09e3d8c448d19994e65643ab5de39f66861185fda5255e4bbf",
+   "characters": 7276,
+   "claims": [
+    {
+     "claim": "AWS allows these assets for creating architecture diagrams",
+     "pattern": "allow customers and partners to use these toolkits and assets to create architecture diagrams",
+     "matched": true
+    },
+    {
+     "claim": "AWS recognizes preexisting libraries on third-party tools",
+     "pattern": "preexisting libraries on third-party tools",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://cloud.google.com/icons",
+   "http_status": 200,
+   "text_sha256": "e05ec3a083cf37e8f01bde330f371f0170b42c6b49463de7e3208e9969ccf83f",
+   "characters": 36238,
+   "claims": [
+    {
+     "claim": "Google's official library offers icons for diagrams and technical documentation",
+     "pattern": "official library for Google Cloud product icons",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-eni.html",
+   "http_status": 200,
+   "text_sha256": "17fdaaa265e652e635d9c304f9048008e749b636c3e6a82eac9efec9dfb2cf3f",
+   "characters": 9460,
+   "claims": [
+    {
+     "claim": "Network interfaces attach to instances in the same Availability Zone",
+     "pattern": "launch in the same Availability Zone",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html",
+   "http_status": 200,
+   "text_sha256": "468e45144a21e54629d45da0033cea420f42bb32bd98e8e4633c51830396e319",
+   "characters": 11807
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html",
+   "http_status": 200,
+   "text_sha256": "6839d747d6535d1ef1827d1e2eaab2720a78018b6ab81705b4cf8ef8b5b29d4d",
+   "characters": 30654,
+   "claims": [
+    {
+     "claim": "A DB subnet group should span at least two zones (advisory, not enforced here)",
+     "pattern": "at least two Availability Zones",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingBucket.html",
+   "http_status": 200,
+   "text_sha256": "3485c29c9fb67d234ab2a0a617349c2b6cfb0fec605de33d51d9e40d14a632ba",
+   "characters": 17357,
+   "claims": [
+    {
+     "claim": "A bucket is created in a Region",
+     "pattern": "create an S3 bucket in one of the AWS Regions",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html",
+   "http_status": 200,
+   "text_sha256": "ed2615a17f686c38c4b2cce69557ca63849a31475dd8c54c9870d8d380c4664c",
+   "characters": 4841
+  },
+  {
+   "url": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/Welcome.html",
+   "http_status": 200,
+   "text_sha256": "59ce1b97f8b77d34971bb102a77bfb111c265d8bff09495397d114345de658a4",
+   "characters": 7314
+  },
+  {
+   "url": "https://docs.aws.amazon.com/eks/latest/userguide/automode.html",
+   "http_status": 200,
+   "text_sha256": "5d023e2935f9d0981e22f1862e02e955c4292ff1a8ed848de6493e031416ae60",
+   "characters": 12301
+  },
+  {
+   "url": "https://docs.aws.amazon.com/eks/latest/userguide/fargate.html",
+   "http_status": 200,
+   "text_sha256": "6040bf49b99ccdfb270c6023a07a971eb48216b2915cefe9506232272347bf7f",
+   "characters": 10706
+  },
+  {
+   "url": "https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html",
+   "http_status": 200,
+   "text_sha256": "3a333851df3c21ef19158ac60f6feb765cb66775bfbb3806c6d172428fb6ad78",
+   "characters": 17082
+  },
+  {
+   "url": "https://docs.aws.amazon.com/eks/latest/userguide/network-reqs.html",
+   "http_status": 200,
+   "text_sha256": "de07b6333bb8491884f86328ee1a3df1b7ab042e31cfecb322b26903f4a14b92",
+   "characters": 19609,
+   "claims": [
+    {
+     "claim": "An EKS cluster takes at least two subnets in different Availability Zones",
+     "pattern": "at least two subnets that are in different Availability Zones",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/eks/latest/userguide/worker.html",
+   "http_status": 200,
+   "text_sha256": "686b452498ef8320a6f2bea3168968193a21fabd69b04f577863dd538ce89df3",
+   "characters": 3399
+  },
+  {
+   "url": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-application-load-balancer.html",
+   "http_status": 200,
+   "text_sha256": "81757855779b8d4b506a546eecfb8febd742976c291e78595b85e88b2b118ef4",
+   "characters": 10295,
+   "claims": [
+    {
+     "claim": "An ALB takes subnets from at least two Availability Zones (Local Zone and Outpost variants exist)",
+     "pattern": "subnets from at least two Availability Zones",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html",
+   "http_status": 200,
+   "text_sha256": "c7597c2a681f3de6e1c775f6c54e3f40dd092e1b266492123a1a1f94eb3acf6e",
+   "characters": 9878,
+   "claims": [
+    {
+     "claim": "Tag key 1-128 and value 0-256 characters",
+     "pattern": "maximum of 128 Unicode characters",
+     "matched": true
+    },
+    {
+     "claim": "The aws: prefix is reserved",
+     "pattern": "aws:",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html",
+   "http_status": 200,
+   "text_sha256": "669e0e38edd517ae6e3323632a5e2ed39db55f98a543818f650a5652a1faab61",
+   "characters": 5242,
+   "claims": [
+    {
+     "claim": "An internet gateway attaches to a VPC",
+     "pattern": "must attach it to a VPC",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/vpc/latest/userguide/configure-subnets.html",
+   "http_status": 200,
+   "text_sha256": "7eab0a8751989ff597e6be574bce011422c157b5f48a4488b78b6267cc7610b9",
+   "characters": 6228,
+   "claims": [
+    {
+     "claim": "An AWS subnet resides in one Availability Zone and cannot span zones",
+     "pattern": "reside entirely within one Availability Zone and cannot span zones",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/vpc/latest/userguide/creating-security-groups.html",
+   "http_status": 200,
+   "text_sha256": "7508567c7a9406e53d24733ec05eb5b34d496b5928c8fcb754df6a65414564e1",
+   "characters": 3251,
+   "claims": [
+    {
+     "claim": "A security group is created in the VPC of the resources it will protect",
+     "pattern": "choose the VPC in which you.ll create the resources",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateways-regional.html",
+   "http_status": 200,
+   "text_sha256": "72cf7955a68b17cf4523a06f9f3b35234a1203490e3d94dcca965222e8ba9bc9",
+   "characters": 7539,
+   "claims": [
+    {
+     "claim": "Regional NAT gateways expand across zones, unlike zonal ones in one zone",
+     "pattern": "regional NAT gateway automatically expands across Availability Zones",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html",
+   "http_status": 200,
+   "text_sha256": "5de48ffc89d0c860a3673915b7cfd11ee3e60a863d4f00ca9a5f0f7239b7d8cf",
+   "characters": 3717,
+   "claims": [
+    {
+     "claim": "A public zonal NAT gateway is created in a public subnet",
+     "pattern": "create a public NAT gateway in a public subnet",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html",
+   "http_status": 200,
+   "text_sha256": "7d489c71457fb5bea80350322dce852ebad20ff60d5897b6c0f532cdb83e813a",
+   "characters": 6153,
+   "claims": [
+    {
+     "claim": "Security groups are created for a VPC",
+     "pattern": "security groups for a VPC",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html",
+   "http_status": 200,
+   "text_sha256": "5410a70c4b4f31bd8186942541584629ce7bf2d3f143bdb67ffeea75778a6bff",
+   "characters": 7408
+  },
+  {
+   "url": "https://docs.aws.amazon.com/vpn/latest/s2svpn/how_it_works.html",
+   "http_status": 200,
+   "text_sha256": "7cf1b7182d1fdd941b01205381fb5d05b5f9cd3de5cbd843501edd69c71bdba8",
+   "characters": 6841,
+   "claims": [
+    {
+     "claim": "A virtual private gateway attaches to a VPC",
+     "pattern": "attach it to a virtual private cloud",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/global-services.html",
+   "http_status": 200,
+   "text_sha256": "fbe0a122f7829ba827b8782ab6c201d58c15c4969df190d963e8b9fa10b50e1a",
+   "characters": 12815,
+   "claims": [
+    {
+     "claim": "IAM is a partitional, not regional, service",
+     "pattern": "partitional services, such as IAM",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/asset-inventory/docs/asset-types",
+   "http_status": 200,
+   "text_sha256": "e0f1b5b7598899cc0e9afff2bf711c943935c723191b0737cbd4bab6b21df6ba",
+   "characters": 60029,
+   "claims": [
+    {
+     "claim": "Cloud Asset type names used as native IDs exist",
+     "pattern": "compute.googleapis.com/Instance",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/compute/docs/regions-zones",
+   "http_status": 200,
+   "text_sha256": "370c53e704e13df45b945812c8ef22b3d8e9dc2fb0563a5cdf1c138796ce32ac",
+   "characters": 80758
+  },
+  {
+   "url": "https://docs.cloud.google.com/compute/docs/regions-zones/global-regional-zonal-resources",
+   "http_status": 200,
+   "text_sha256": "e646fa0daef7d240818dffec10bd5682717f3c379c5036c2c584e06cf4b70c8b",
+   "characters": 45835
+  },
+  {
+   "url": "https://docs.cloud.google.com/firewall/docs/firewalls",
+   "http_status": 200,
+   "text_sha256": "592a0f27c2334b5c1e10028bd6951c391b36cab60e04c4a05f44a1dd07911b26",
+   "characters": 55361,
+   "claims": [
+    {
+     "claim": "VPC firewall rules are defined at the network level",
+     "pattern": "defined at the network level",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/iam/docs/overview",
+   "http_status": 200,
+   "text_sha256": "5053d9da000127cccbc8e90b84237fb522e9a739b0d2d10b096bb7359a76dd52",
+   "characters": 22072
+  },
+  {
+   "url": "https://docs.cloud.google.com/iam/docs/resource-hierarchy-access-control",
+   "http_status": 200,
+   "text_sha256": "09ad389471b1c79ed3eef7ac98b24a0b8d3dd4a6b516ff97cb1d34f32e97b9c3",
+   "characters": 21673
+  },
+  {
+   "url": "https://docs.cloud.google.com/kubernetes-engine/docs/concepts/autopilot-overview",
+   "http_status": 200,
+   "text_sha256": "7fc2eec48a54988efb4d01192339db6f43bc6707dfe7d4a14819b3d60224a59d",
+   "characters": 46317
+  },
+  {
+   "url": "https://docs.cloud.google.com/kubernetes-engine/docs/concepts/cluster-architecture",
+   "http_status": 200,
+   "text_sha256": "f99a33a2e6f0ed801966b2d8d4d06e6172f7491f0fd2bffb4511d39949ab19bb",
+   "characters": 29064
+  },
+  {
+   "url": "https://docs.cloud.google.com/kubernetes-engine/docs/concepts/configuration-overview",
+   "http_status": 200,
+   "text_sha256": "40196fab42e783a4a76e5c8eca311a0243d77444487243baed803ce7bf8170cc",
+   "characters": 43945,
+   "claims": [
+    {
+     "claim": "Autopilot clusters are always regional",
+     "pattern": "Autopilot clusters are always regional",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/kubernetes-engine/docs/concepts/node-pools",
+   "http_status": 200,
+   "text_sha256": "32b7748d70fc9021710cc6f5860d07dc05f8ef5c3ead52044364689f260ef589",
+   "characters": 27321,
+   "claims": [
+    {
+     "claim": "A node pool is a group of nodes within a Standard cluster",
+     "pattern": "within a Standard cluster",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/load-balancing/docs/application-load-balancer",
+   "http_status": 200,
+   "text_sha256": "78ff7fda27fba06b82afb92f96e62b3e648d781dd801af9f56895e71cd2b2024",
+   "characters": 29755
+  },
+  {
+   "url": "https://docs.cloud.google.com/load-balancing/docs/choosing-load-balancer",
+   "http_status": 200,
+   "text_sha256": "0be69e2d2b13610fd14b472dc58b828897be5a4d88cbc51aa33e5e586b6ddd55",
+   "characters": 23105
+  },
+  {
+   "url": "https://docs.cloud.google.com/load-balancing/docs/load-balancing-overview",
+   "http_status": 200,
+   "text_sha256": "a8c01238ac69d1499ce343f4651581c32e758ec8d156ed9a6dfe14de6c624d13",
+   "characters": 31471
+  },
+  {
+   "url": "https://docs.cloud.google.com/logging/docs/overview",
+   "http_status": 200,
+   "text_sha256": "27d2144e9913cfb14f8ee051315d5f347695b15b13cc2691dea3ad77cf214167",
+   "characters": 16354
+  },
+  {
+   "url": "https://docs.cloud.google.com/monitoring/docs/monitoring-overview",
+   "http_status": 200,
+   "text_sha256": "a297d08de3e0b820b3ac3b01bd07ed41653b40bdd339fb2ffe93ca76d3a521e0",
+   "characters": 22361
+  },
+  {
+   "url": "https://docs.cloud.google.com/nat/docs/overview",
+   "http_status": 200,
+   "text_sha256": "30a3afc05f720ffacd144fede67e3b72aa65af93ef8bcac43c65cf3f8889e28f",
+   "characters": 11466,
+   "claims": [
+    {
+     "claim": "A NAT gateway is configured on a Cloud Router",
+     "pattern": "configure a NAT gateway on a Cloud Router",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/network-connectivity/docs/interconnect/concepts/overview",
+   "http_status": 200,
+   "text_sha256": "43fd4764677467a502874bc2dab5822a8e0321800145d3dbc7dc8b1443779973",
+   "characters": 25316
+  },
+  {
+   "url": "https://docs.cloud.google.com/network-connectivity/docs/vpn/concepts/overview",
+   "http_status": 200,
+   "text_sha256": "0d232594bf8e4fc0848a517a7f448f0ca16af14f0483e3ff898aafa04d6a7622",
+   "characters": 30304
+  },
+  {
+   "url": "https://docs.cloud.google.com/resource-manager/docs/cloud-platform-resource-hierarchy",
+   "http_status": 200,
+   "text_sha256": "fc14d0c02f45cf0c4207677b0a2f03de0593abea11df924085cb035e4958492b",
+   "characters": 16693
+  },
+  {
+   "url": "https://docs.cloud.google.com/resource-manager/docs/labels-overview",
+   "http_status": 200,
+   "text_sha256": "322407e58c2616e7f3678e8f5c3225a372bfef9d5668d3cf34e0e80ebcaa7d0e",
+   "characters": 10934,
+   "claims": [
+    {
+     "claim": "Label keys and values are at most 63 lowercase characters",
+     "pattern": "maximum length of 63 characters",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/sql/docs/mysql/high-availability",
+   "http_status": 200,
+   "text_sha256": "654aa8597655b9f5f79267c5322fa3c83f0f488a38d345398fef774817cae699",
+   "characters": 24119
+  },
+  {
+   "url": "https://docs.cloud.google.com/sql/docs/mysql/instance-settings",
+   "http_status": 200,
+   "text_sha256": "db4a451fb7d54f4a22125b9704a5f06d306d7c6db673b753d0b8f2d74ab8a779",
+   "characters": 44738
+  },
+  {
+   "url": "https://docs.cloud.google.com/storage/docs/locations",
+   "http_status": 200,
+   "text_sha256": "52cccec6e79b7d28dd4f39b24ffea54a4edccef929a6ed887f7b4d972865bc2e",
+   "characters": 26168
+  },
+  {
+   "url": "https://docs.cloud.google.com/vpc/docs/multiple-interfaces-concepts",
+   "http_status": 200,
+   "text_sha256": "a38f238dbf57e555f6b17391c7cf43afd31c1933b5f70b93e35e8d3fa8d9faea",
+   "characters": 45260,
+   "claims": [
+    {
+     "claim": "Multi-NIC interfaces connect to different VPC networks",
+     "pattern": "different VPC networks",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/vpc/docs/shared-vpc",
+   "http_status": 200,
+   "text_sha256": "1a9bb0243f893948ea2488d29c2f681a700e6080db9edae07268dc3b390c6745",
+   "characters": 36563,
+   "claims": [
+    {
+     "claim": "A project cannot be both host and service",
+     "pattern": "cannot be both a host project and a service project",
+     "matched": true
+    },
+    {
+     "claim": "A service project attaches to one host project",
+     "pattern": "can only be attached to a single host project",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/vpc/docs/vpc",
+   "http_status": 200,
+   "text_sha256": "51dd67d34a53e4430e99bd223fbc16ff8cc292c93f65901db0ee8ceed0855d59",
+   "characters": 31737,
+   "claims": [
+    {
+     "claim": "VPC networks and their firewall rules are global",
+     "pattern": "are global resources",
+     "matched": true
+    },
+    {
+     "claim": "Subnets are regional",
+     "pattern": "Subnets are regional resources",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://github.com/jgraph/drawio/blob/3e707fd20b6930778d6f6bf6e4d0079b4bce366b/README.md",
+   "http_status": 200,
+   "text_sha256": "78e85c4cacb33f2a8680b62b5af09eb5c64162ce846d3ae8eff904fa1ff642ff",
+   "characters": 5384
+  },
+  {
+   "url": "https://github.com/jgraph/drawio/blob/48b181339578e11da7052ebf5b1fba8499418b77/README.md",
+   "http_status": 200,
+   "text_sha256": "8c3887f8066f5785c787dda0eac6dcbf0c22e7b0e61c718c9aa5bf640f1840af",
+   "characters": 6029
+  },
+  {
+   "url": "https://github.com/jgraph/drawio/blob/48b181339578e11da7052ebf5b1fba8499418b77/src/main/webapp/stencils/LICENSE",
+   "http_status": 200,
+   "text_sha256": "08f480c8407e198c2deae4164e128a858bc9469d7df0a93798c3d342fffffc5e",
+   "characters": 3111
+  },
+  {
+   "url": "https://github.com/kubernetes/community/blob/309fa9adfc84a8d04b0817a8b11124bf479a8d5e/icons/README.md",
+   "http_status": 200,
+   "text_sha256": "7173cbf43d3c2b397bcd2d8803f32760b32fabf9490f1ce5c0326bc166458476",
+   "characters": 4160
+  },
+  {
+   "url": "https://github.com/mingrammer/diagrams/blob/v0.25.1/LICENSE",
+   "http_status": 200,
+   "text_sha256": "ffe9f1c2c240016d4305c13951c7673cb263317b0a086b4b79f8dc4319345a14",
+   "characters": 3641
+  },
+  {
+   "url": "https://kubernetes.io/docs/concepts/configuration/secret/",
+   "http_status": 200,
+   "text_sha256": "55d1bdeaf0820ebe64808f9cd66e72316fd6d430414cc5829fd10966f572b8d6",
+   "characters": 54944
+  },
+  {
+   "url": "https://kubernetes.io/docs/concepts/overview/components/",
+   "http_status": 200,
+   "text_sha256": "29b415d1b7b9c1ff9ca0c68f61359dbebf330a2765f6b137b01dc331a2e94ac0",
+   "characters": 27520
+  },
+  {
+   "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/",
+   "http_status": 200,
+   "text_sha256": "e956b5b2927f875f0f0767cae2823e818b0951381016b4c2969d91ef14f9bc19",
+   "characters": 38035,
+   "claims": [
+    {
+     "claim": "Label name segment is at most 63 characters",
+     "pattern": "must be 63 characters or less",
+     "matched": true
+    },
+    {
+     "claim": "Label prefix is a DNS subdomain of at most 253 characters",
+     "pattern": "not longer than 253 characters",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/",
+   "http_status": 200,
+   "text_sha256": "75316ef5ae75da10b72ec100973e3dccb2fc16e739fea4bb0e90dc60a10a8cb5",
+   "characters": 30061,
+   "claims": [
+    {
+     "claim": "Namespaces apply to namespaced objects, not to Nodes or PersistentVolumes",
+     "pattern": "not for cluster-wide objects",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://kubernetes.io/docs/concepts/overview/working-with-objects/owners-dependents/",
+   "http_status": 200,
+   "text_sha256": "cde33be4ccf9984731249de7662a6cc2e861eb08306257a17e2149240b813f78",
+   "characters": 29224,
+   "claims": [
+    {
+     "claim": "Cross-namespace owner references are disallowed",
+     "pattern": "Cross-namespace owner references are disallowed",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/",
+   "http_status": 200,
+   "text_sha256": "4d55a2055fe8e1af05a8fb4136c9eec5e4e5d8cb4e998069c8ecda28dcd97f81",
+   "characters": 30391
+  },
+  {
+   "url": "https://kubernetes.io/docs/concepts/services-networking/ingress/",
+   "http_status": 200,
+   "text_sha256": "90a2b953885b087202c944f28abb2a75a3bcd8dfb7ab86e70bbcb4e72d5999b9",
+   "characters": 49306
+  },
+  {
+   "url": "https://kubernetes.io/docs/concepts/services-networking/network-policies/",
+   "http_status": 200,
+   "text_sha256": "73b992ce869659bd8b9037e4cc0ec85bccee2299be942775c0b44f4cf379ac4b",
+   "characters": 47543
+  },
+  {
+   "url": "https://kubernetes.io/docs/concepts/services-networking/service/",
+   "http_status": 200,
+   "text_sha256": "801ed68e67347588a2fad1f2b4e24cac73acf39e8d4723467acc279fbb4b75b4",
+   "characters": 65868
+  },
+  {
+   "url": "https://kubernetes.io/docs/concepts/storage/persistent-volumes/",
+   "http_status": 200,
+   "text_sha256": "3738520465670dd495b6fff7183255e6a2d4eb0bf014c715f92d2cc5e04f15c0",
+   "characters": 69182,
+   "claims": [
+    {
+     "claim": "PVC to PV binding is one-to-one",
+     "pattern": "one-to-one mapping",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://kubernetes.io/docs/concepts/workloads/",
+   "http_status": 200,
+   "text_sha256": "dbf025263202cc02ec093d2b1450bf0cdd2437629a1d05acb145d55e569a41e8",
+   "characters": 29683
+  },
+  {
+   "url": "https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/",
+   "http_status": 200,
+   "text_sha256": "4f28cbd868ab80e56c7fe84e43ff40ab33f31cd596de05d6e705f6a4b51145a8",
+   "characters": 37193
+  },
+  {
+   "url": "https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/",
+   "http_status": 200,
+   "text_sha256": "34c4e9c71c0078349fc78949dad1e919f8ba228edca3c5076fcfb496c303a4fd",
+   "characters": 37109,
+   "claims": [
+    {
+     "claim": "A DaemonSet runs a Pod copy per selected Node",
+     "pattern": "run a copy of a Pod",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+   "http_status": 200,
+   "text_sha256": "75b7ef8fb98ad53e423f8a45d88e6d40a9b3194c11f9768e63dc5feb80bb61b3",
+   "characters": 75314
+  },
+  {
+   "url": "https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/storage-class-v1/",
+   "http_status": 200,
+   "text_sha256": "66fc3342f2551d5a4c2776e52b0aa09420722a89b5137906041c82d04ba0d01e",
+   "characters": 71061,
+   "claims": [
+    {
+     "claim": "StorageClass is storage.k8s.io/v1",
+     "pattern": "storage.k8s.io/v1",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://kubernetes.io/docs/reference/kubernetes-api/policy-resources/network-policy-v1/",
+   "http_status": 200,
+   "text_sha256": "6e0ef05d025832e56157f6da9587ec378f7efe2729f10bc71e586f5d196143d7",
+   "characters": 91670,
+   "claims": [
+    {
+     "claim": "NetworkPolicy is networking.k8s.io/v1",
+     "pattern": "networking.k8s.io/v1",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/ingress-v1/",
+   "http_status": 200,
+   "text_sha256": "dc8f5de72fb314eef43e03e76e84635bef345045bfcc429157b28152750a3237",
+   "characters": 99460,
+   "claims": [
+    {
+     "claim": "Ingress is networking.k8s.io/v1",
+     "pattern": "networking.k8s.io/v1",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/cron-job-v1/",
+   "http_status": 200,
+   "text_sha256": "b44e592b921feeed6e1b959156e52e9867c493789342cd3a37d886a5897cc198",
+   "characters": 91702,
+   "claims": [
+    {
+     "claim": "CronJob is batch/v1",
+     "pattern": "batch/v1",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/deployment-v1/",
+   "http_status": 200,
+   "text_sha256": "c68fb852ac888eb98d40e8bd39e48cf39742826682200d41458dbb4b49e53d7d",
+   "characters": 99204,
+   "claims": [
+    {
+     "claim": "Deployment is apps/v1",
+     "pattern": "apps/v1",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://kubernetes.io/releases/",
+   "http_status": 200,
+   "text_sha256": "eb0bb867f5f27abd62914b70d4dd71147d8cbe555c90f81f0d71daf3272d9a70",
+   "characters": 4801,
+   "claims": [
+    {
+     "claim": "Kubernetes 1.37 is the verified current minor release",
+     "pattern": "1\\.37",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/aks/create-node-pools",
+   "http_status": 200,
+   "text_sha256": "f3749f1d5ff710681c21cf13ced085575b94fd6eb2a4dcacb09a29efe5480125",
+   "characters": 36393
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/aks/intro-aks-automatic",
+   "http_status": 200,
+   "text_sha256": "b39b09d75b79b84f0e1e877ecc9fd8d220a776119b267a8770fd454d9875fe95",
+   "characters": 16512,
+   "claims": [
+    {
+     "claim": "AKS Automatic node pools are fully managed",
+     "pattern": "fully managed node pools",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/aks/use-system-pools",
+   "http_status": 200,
+   "text_sha256": "705ff31c332e508552c48e5ce510e716e56cbc32dede435170c4b937cda23b5c",
+   "characters": 23498
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/application-gateway/configuration-infrastructure",
+   "http_status": 200,
+   "text_sha256": "a327f49414348e8a74f879fc39ca0ac9f50630366c3251ab989aad129ba68841",
+   "characters": 24436,
+   "claims": [
+    {
+     "claim": "No other resource type may share an Application Gateway subnet",
+     "pattern": "can't deploy any other resource in the Application Gateway subnet",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/architecture/icons/",
+   "http_status": 200,
+   "text_sha256": "db08909224e1e75d37a6e70fccb44d23ade1d79740a83a4018635ba1dd2bcc1b",
+   "characters": 4809,
+   "claims": [
+    {
+     "claim": "Microsoft permits icons in architectural diagrams, training materials and documentation",
+     "pattern": "permits the use of these icons in architectural diagrams",
+     "matched": true
+    },
+    {
+     "claim": "Icons must not be cropped, flipped, rotated or distorted",
+     "pattern": "crop, flip, or rotate",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/azure-monitor/fundamentals/overview",
+   "http_status": 200,
+   "text_sha256": "f493f31ee42fed95a934cf1b6273e6c255905953271779f02271e76564fa550a",
+   "characters": 9045
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/overview",
+   "http_status": 200,
+   "text_sha256": "442028b1c6a9ea7b2cb60d99769b5645bd0e46a0121c191d9d424ce5f41862f7",
+   "characters": 14283,
+   "claims": [
+    {
+     "claim": "A resource is in only one resource group",
+     "pattern": "exist in only one resource group",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/tag-resources",
+   "http_status": 200,
+   "text_sha256": "cfa41097adf911c163bc3d8563db17245522ed01091890be1d821d71ef643060",
+   "characters": 8190,
+   "claims": [
+    {
+     "claim": "Tag names are limited to 512 characters and values to 256",
+     "pattern": "limit of 512 characters",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/azure-sql/database/logical-servers",
+   "http_status": 200,
+   "text_sha256": "05b65be5e3ab56d1d2b706c93a040dfeb46ea53e4ea4322ea07fffbfefdd4f89",
+   "characters": 15520
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/azure-sql/database/sql-database-paas-overview",
+   "http_status": 200,
+   "text_sha256": "9cd495284450e142b1ffcabe7ae725a45a2e2838207bd908a8c4e203f9dfb248",
+   "characters": 28232
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/expressroute/expressroute-introduction",
+   "http_status": 200,
+   "text_sha256": "43e71b6cfd16306e9f84589ea1bec67af8183e63af4a9d6d000f53c7b0235c19",
+   "characters": 11365
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/firewall/firewall-faq",
+   "http_status": 200,
+   "text_sha256": "d532f4b45d097920980c2731a0d33bff1a6e890f987627de974e1191427ca0d5",
+   "characters": 33136,
+   "claims": [
+    {
+     "claim": "Azure Firewall and its VNet share a resource group",
+     "pattern": "Azure Firewall and virtual network must be in the same resource group",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/nat-gateway/nat-overview",
+   "http_status": 200,
+   "text_sha256": "d201fbb180af173452b5caf283f3c37c28efae09a1acfa18982b117f1eea4a07",
+   "characters": 16958,
+   "claims": [
+    {
+     "claim": "NAT Gateway serves subnets in a single VNet; the Standard SKU is zonal",
+     "pattern": "subnets in a single virtual network",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/role-based-access-control/scope-overview",
+   "http_status": 200,
+   "text_sha256": "1728072da2159a1e25d51d31546b536bd72e597f2d5e656f3cf8f5f02c81d3ba",
+   "characters": 8415
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction",
+   "http_status": 200,
+   "text_sha256": "343d0632f7bbf2927e32eaae9433db67064bdcb1cdc443b5589c7347bec82977",
+   "characters": 9370
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview",
+   "http_status": 200,
+   "text_sha256": "0007ffe6a66a3e0d9536b8bfdb9df068585090ebebe7a4bba9c02a9330faa320",
+   "characters": 27574
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/virtual-network/network-overview",
+   "http_status": 200,
+   "text_sha256": "2f0db023069ee7c2a1aa35854eba8e59077e89760eb2a2166aafa5bbd64ad8b8",
+   "characters": 24492,
+   "claims": [
+    {
+     "claim": "Each NIC is in the same location and subscription as its VM and its VNet",
+     "pattern": "same location and subscription as the VM",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-group-how-it-works",
+   "http_status": 200,
+   "text_sha256": "ee4d54920262ca0343df6461c289de7c5a25dc1da6b624605fcd3722fab012c0",
+   "characters": 8437,
+   "claims": [
+    {
+     "claim": "An NSG associates with subnets and network interfaces",
+     "pattern": "associate a network security group with each virtual network subnet and network interface",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-network-interface",
+   "http_status": 200,
+   "text_sha256": "9729aad94d156bc8a0f759d9fd44bd632d2517c5ba55fd5188906046eb39fb44",
+   "characters": 31686,
+   "claims": [
+    {
+     "claim": "A NIC joins a VNet only in the same subscription and location",
+     "pattern": "same subscription and location",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-vnet-plan-design-arm",
+   "http_status": 200,
+   "text_sha256": "9507253ade0f49ac0551d1da46a865fe513a43291c9a78a7e6d27c8e93e763ad",
+   "characters": 15198,
+   "claims": [
+    {
+     "claim": "A resource joins a VNet only in the same region and subscription",
+     "pattern": "same region and subscription as the resource",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq",
+   "http_status": 200,
+   "text_sha256": "8d45889f634c0de80467aa0b9bc25b1afa2f427e01a35e828d8d31984e15e7e5",
+   "characters": 46308,
+   "claims": [
+    {
+     "claim": "A VNet is limited to one region and spans availability zones",
+     "pattern": "limited to a single region",
+     "matched": true
+    },
+    {
+     "claim": "A VNet spans availability zones",
+     "pattern": "does span availability zones",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-about-vpn-gateway-settings",
+   "http_status": 200,
+   "text_sha256": "06330f89adcba024af48ef917a44ca17837e2cf0d900445406f9d2edbdcf12b8",
+   "characters": 10419,
+   "claims": [
+    {
+     "claim": "Gateway VMs deploy to a subnet always named GatewaySubnet",
+     "pattern": "always named GatewaySubnet",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-about-vpngateways",
+   "http_status": 200,
+   "text_sha256": "6c701e4923418e8b2a11526857f683bc500a6d7e6fac3d824f4b596669f150a9",
+   "characters": 10929
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/entra/fundamentals/how-subscriptions-associated-directory",
+   "http_status": 200,
+   "text_sha256": "0e03aef0b13b0d9ed39af6c5260a149d5bc9e491ddbd843e0a9eb043092fdec8",
+   "characters": 7464
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/iam_faq/iam_01_0101.html",
+   "http_status": 200,
+   "text_sha256": "d637697eced13bb8e41a5bb89771f7d55f235c7d1458cd6e622ff5b83db96611",
+   "characters": 5377,
+   "claims": [
+    {
+     "claim": "Enterprise Management isolates resources across regions",
+     "pattern": "isolate resources across regions",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/productdesc-apig/apig_01_0001.html",
+   "http_status": 200,
+   "text_sha256": "2acd5cc2b96fa6f9a947f9b95a861957633ce01f40de3f5136518fb8fefe4f51",
+   "characters": 2419
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/productdesc-cce-autopilot/cce_12_0001.html",
+   "http_status": 200,
+   "text_sha256": "ba10a09e2f31b7e9dfeedcc230eae33c3317fa099304b820e3a7ddb066f1caf3",
+   "characters": 6642,
+   "claims": [
+    {
+     "claim": "CCE Autopilot deploys without purchasing nodes",
+     "pattern": "without purchasing nodes",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/productdesc-dc/dc_01_0001.html",
+   "http_status": 200,
+   "text_sha256": "ce54684e6dca24e75b0c21b4b2a97f9ca0629813ac6b4b3eedba9717e54e00d9",
+   "characters": 2465
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/productdesc-ecs/en-us_topic_0013771112.html",
+   "http_status": 200,
+   "text_sha256": "1e3b13faa275f57698e737487278590a950ed9f33c8f22fd11ec3d79403f11e5",
+   "characters": 6521
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/productdesc-eip/overview_0001.html",
+   "http_status": 200,
+   "text_sha256": "bf8bbedaa3c71e83d04b634571300dc065150580ad45d993ee9dd8979a2a1ab9",
+   "characters": 14806,
+   "claims": [
+    {
+     "claim": "EIPs bind only to resources in the same region",
+     "pattern": "only be bound to resources in the same region",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/productdesc-elb/elb_pro_0004.html",
+   "http_status": 200,
+   "text_sha256": "569ee3bc3efaa9a34853674f1898cdb59566305a5ffbd4aa0c896cd2c7dd5b6b",
+   "characters": 7904
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/productdesc-elb/en-us_topic_0015479966.html",
+   "http_status": 200,
+   "text_sha256": "841c535d089ad43a1364ee9d6b34e9d57a338d698605d9706090a65915963fa2",
+   "characters": 4988
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/productdesc-functiongraph/functiongraph_01_0100.html",
+   "http_status": 200,
+   "text_sha256": "66785387958fcc0b6136061396038069819f6bd59fd89ea46632e0798e0a4aad",
+   "characters": 4177
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/productdesc-iam/iam_01_0023.html",
+   "http_status": 200,
+   "text_sha256": "83e0d5a75ebb1f331404cb747aa521437783d776b53cef275770f93f061a3375",
+   "characters": 13015,
+   "claims": [
+    {
+     "claim": "A region corresponds to a project",
+     "pattern": "A region corresponds to a project",
+     "matched": true
+    },
+    {
+     "claim": "Enterprise projects group resources across regions",
+     "pattern": "group and manage resources across regions",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/productdesc-iam/iam_01_0024.html",
+   "http_status": 200,
+   "text_sha256": "55435efbcb7fe1edeeeec0793cd8452710bf66107103f96c6a748bc105ac4828",
+   "characters": 11014,
+   "claims": [
+    {
+     "claim": "IAM and OBS are authorized globally; VPN and Direct Connect lack enterprise-project authorization",
+     "pattern": "Identity and Access Management \\(IAM\\) Global regions",
+     "matched": true
+    },
+    {
+     "claim": "OBS is authorized in global regions",
+     "pattern": "Object Storage Service \\(OBS\\) Global regions",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/productdesc-natgateway/en-us_topic_0086739762.html",
+   "http_status": 200,
+   "text_sha256": "69b21156c3fcff131150335b226691adf3a058fd0384fff0be9399b144f77198",
+   "characters": 5368
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/productdesc-obs/en-us_topic_0045829060.html",
+   "http_status": 200,
+   "text_sha256": "39663a2d27829c6675de03f00a326d395e8ebceca530ef4593990d8314cfb6ef",
+   "characters": 9964
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/productdesc-rds/en-us_topic_dashboard.html",
+   "http_status": 200,
+   "text_sha256": "0b2d770564e196a19ebee697ef9720cc980cd3ef97c3f228311ff6d6a7f5ccf4",
+   "characters": 4380
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/productdesc-vpc/overview_region.html",
+   "http_status": 200,
+   "text_sha256": "69bfe68f0ca0465e30f9859ed50223ec300f2a8e70a09ec1347a3c21c5554a6e",
+   "characters": 4691
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/usermanual-cce/cce_10_0012.html",
+   "http_status": 200,
+   "text_sha256": "7a424891d82356d74e20fcb8ee2fba1daee4ae343114542951f3cc5e6e8a09d5",
+   "characters": 27661
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/usermanual-cce/cce_10_0081.html",
+   "http_status": 200,
+   "text_sha256": "e4b6d02b3c168de9b7bf84dff555f8cec223e22bdf49dfd3d155a3a4a403443a",
+   "characters": 10810,
+   "claims": [
+    {
+     "claim": "A CCE node pool groups identically configured nodes",
+     "pattern": "identical configurations",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/usermanual-cce/cce_10_0342.html",
+   "http_status": 200,
+   "text_sha256": "244e73d86e1dbdf03092c62b26cb3589faec67d62dfa11c7002ea12742ff4f57",
+   "characters": 5782,
+   "claims": [
+    {
+     "claim": "CCE Autopilot is serverless with no node management",
+     "pattern": "do not need to manage nodes",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/usermanual-em/em_am_0006.html",
+   "http_status": 200,
+   "text_sha256": "90e461913230a139d829a36434f3160bc9cfd96d42189f954f9bcf48c435ba1d",
+   "characters": 4865
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/usermanual-iam/iam_05_0001.html",
+   "http_status": 200,
+   "text_sha256": "a1f3a7ac5ad394043ba66c60657e63ce54805b4b1b3efdbaed6ae18d3da51877",
+   "characters": 5194,
+   "claims": [
+    {
+     "claim": "Each region has one default project",
+     "pattern": "Each Huawei Cloud region has one default project",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/usermanual-vpc/en-us_topic_0013748715.html",
+   "http_status": 200,
+   "text_sha256": "b1bb01f0e9df451566d702cab903166623bbf714c784e98f80952fcc099889c7",
+   "characters": 9125,
+   "claims": [
+    {
+     "claim": "An instance must be in the same region as its security group",
+     "pattern": "same region as its associ",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/usermanual-vpc/en-us_topic_0013748726.html",
+   "http_status": 200,
+   "text_sha256": "b475018458ccb65a01000de956e6eafa3c39028a87e65f174e4a83523771d8a6",
+   "characters": 14086
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/usermanual-vpc/en-us_topic_0073379079.html",
+   "http_status": 200,
+   "text_sha256": "1c69c6dba73c1d5ed96bf3d446e2d58edfe37bc2a69ca93d0dc71d02d01dc95a",
+   "characters": 29055
+  },
+  {
+   "url": "https://www.huawei.com/en/legal",
+   "http_status": 200,
+   "text_sha256": "98efeb1e19aab2264772c51c5cb8fb00d413557f81ff76169572cad48b966cbf",
+   "characters": 12472,
+   "claims": [
+    {
+     "claim": "Huawei's corporate terms require consent for marks",
+     "pattern": "explicit prior written permission",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://www.huaweicloud.com/intl/en-us/declaration-sg/sa_st.html",
+   "http_status": 200,
+   "text_sha256": "74cccfe72528736b57a8eb722cf9965da9196d88b14b97b8f3a4ab663a3ae0b8",
+   "characters": 15601,
+   "claims": [
+    {
+     "claim": "Site content needs prior written consent to reproduce or distribute",
+     "pattern": "Without the prior written consent of Huawei Cloud",
+     "matched": true
+    },
+    {
+     "claim": "Logos need express prior written permission",
+     "pattern": "express prior written permission",
+     "matched": true
+    }
+   ]
+  }
+ ]
+}

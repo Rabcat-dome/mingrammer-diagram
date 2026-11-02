@@ -39,7 +39,7 @@
       "id": "app",
       "name": "Application",
       "provider": "gcp",
-      "service_type": "gcp.compute.vm",
+      "service_type": "gcp.compute.compute_engine",
       "taxonomy": "compute.vm",
       "placement": {
         "scope_refs": [

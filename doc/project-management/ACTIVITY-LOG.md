@@ -270,3 +270,14 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - Owner authorized the commit and push of `917f46f`, plus updating their install. Actual Quality gate run 41453874994 / job 125305537335 passed all 10 lanes with 90 core and 43 plugin tests, none skipped, and zero annotations.
 - Updated the owner's plugin from `87acce5fee50` to `917f46f6b1b1` with `settings.json` unchanged. On the updated copy, exit codes behaved, including exit 3 for a missing `HOME` under `/bin/dash`, and planted project files with a relative `XDG_DATA_HOME` did not run.
 - Not done: review of the Medium and Low fixes, the Astra/High review, second-machine or interactive checks, merge or release. Work moves to S06 / M2 on a new branch from this one.
+
+
+## 2026-11-02 — S06 / M2 provider catalogs and rights
+
+- Verified `c6a59e5` and CI run 41454230263, then created `codex/s06-provider-catalogs`. The baseline gate passed before any change.
+- Froze 26 taxonomy IDs and 148 catalog records for AWS, Azure, GCP, Huawei Cloud, on-premises, Kubernetes and external parties, with 93 required items mapped. Requirements revision 0.10 adds `external.entity`, and the schema gains the additive `security_group` boundary kind.
+- Implemented 55 sourced rules in a semantic layer that runs after core checks. Fetched all 124 cited pages and matched 70 specific claims. Current sources changed several rules, including AWS regional NAT gateways and multi-VPC EC2 interfaces.
+- Derived the eight D-010 on-premises assets from the seven audited draw.io shapes, with attribution and original and derived hashes. Corrected S02: `bc0ccab` is the tag object, and the commit is `48b1813`.
+- Huawei: found an official manifest of 196 logos with no license, plus site terms that require prior written consent. O-002 stays an open blocker, nothing is bundled and no request was sent.
+- Activated the `catalog-license` and `provider-semantics` lanes. The local gate passes 12 lanes with 480 tests, and four deliberate sabotage changes each failed their lane. Updated the Claude skill, guide and tests, which failed on purpose when capabilities moved.
+- Not done: commit, push and actual CI, owner inspection, the Astra/High review, or any update to the owner's plugin. See the [S06 evidence](evidence/S06-provider-catalogs.md).

@@ -1,4 +1,4 @@
-"""Bounded JSON parsing, identity/reference checks and Kubernetes context rules."""
+"""Bounded JSON parsing, identity/reference checks, Kubernetes context and the semantic layer."""
 
 import json
 from collections import Counter, deque
@@ -6,6 +6,7 @@ from typing import Literal
 
 from pydantic import ValidationError
 
+from .catalog import catalog
 from .diagnostics import Diagnostic, ValidationResult
 from .models import (
     CLUSTER_SCOPED,
@@ -19,6 +20,7 @@ from .models import (
     Resource,
     Scope,
 )
+from .semantics import check
 
 Mode = Literal["strict", "lenient"]
 WORKLOAD_OWNERS = {"Deployment", "ReplicaSet", "StatefulSet", "DaemonSet", "Job", "CronJob", "Pod"}
@@ -220,14 +222,17 @@ class Checker:
         field: str,
         source: str,
         expected: type[Scope] | type[Boundary] | type[Resource] | None = None,
-        kind: str | None = None,
+        kind: str | set[str] | None = None,
     ) -> Entity | None:
         target = self.entities.get(identifier)
         if target is None:
             self.error("REFERENCE_MISSING", field, source)
         elif expected is not None and not isinstance(target, expected):
             self.error("REFERENCE_KIND_INVALID", field, source)
-        elif kind is not None and (not isinstance(target, Boundary) or target.kind != kind):
+        elif kind is not None and (
+            not isinstance(target, Boundary)
+            or target.kind not in ({kind} if isinstance(kind, str) else kind)
+        ):
             self.error("REFERENCE_KIND_INVALID", field, source)
         else:
             source_entity = self.entities.get(source)
@@ -247,7 +252,7 @@ class Checker:
         field: str,
         source: str,
         expected: type[Scope] | type[Boundary] | type[Resource] | None = None,
-        kind: str | None = None,
+        kind: str | set[str] | None = None,
     ) -> None:
         if len(ids) != len(set(ids)):
             self.error("REFERENCE_DUPLICATE", field, source)
@@ -309,7 +314,7 @@ class Checker:
                 path + "/security_boundaries",
                 resource.id,
                 Boundary,
-                "security_zone",
+                {"security_zone", "security_group"},
             )
             self.refs(placement.deployment_context, path + "/deployment_context", resource.id)
             for n, identifier in enumerate(placement.deployment_context):
@@ -520,7 +525,13 @@ def validate_json(
         result.selected_view = selected.id
         result.excluded_ids = result.view_exclusions[selected.id]
     result.diagnostics = checker.diagnostics
-    result.valid = not checker.diagnostics
+    if not checker.diagnostics:
+        # Semantic rules assume resolved references, so they run only on a sound model.
+        result.diagnostics = check(model, mode)
+        result.validation_scope = "core_catalog_provider"
+        result.catalog_version = catalog().version
+        result.pending_checks = ["render"]
+    result.valid = not any(item.severity == "error" for item in result.diagnostics)
     if result.valid:
         result.diagnostics.extend(
             Diagnostic(

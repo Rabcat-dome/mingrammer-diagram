@@ -28,16 +28,27 @@ Unknown fields fail everywhere. At least one view is required. The input limit i
 
 ## Boundaries: geography, network, security, physical
 
-`{id, name, provider, kind, scope_refs?, parent_ref?, relations?}`. Kinds: `region`, `zone`, `network`, `subnet`, `security_zone`, `site`, `data_center`, `room`, `rack`, `vlan`, `vrf`, `cluster`, `environment`.
+`{id, name, provider, kind, scope_refs?, parent_ref?, relations?}`. Kinds: `region`, `zone`, `network`, `subnet`, `security_zone`, `security_group`, `site`, `data_center`, `room`, `rack`, `vlan`, `vrf`, `cluster`, `environment`.
 
 `relations` holds `{kind, target_ref}` with kind `located_in`, `network_member_of`, `security_member_of` or `deployment_member_of`. Containment and each relation kind reject cycles.
+
+A boundary's provider and kind resolve to one catalog type, so a boundary needs no `service_type`. `security_group` is the AWS security group, Azure NSG or Huawei security group; GCP has none, because a VPC firewall rule is the resource `gcp.security.vpc_firewall_rule`. `security_zone` is a logical trust zone. Physical kinds are on-premises only, and a logical VLAN cannot be contained by a rack.
+
+| Where | Network | Subnet | Also |
+|---|---|---|---|
+| AWS | Regional | One zone: `located_in` a zone | A subnet's zone must match its network's region |
+| Azure | Regional | Regional, spans zones | A resource attaches only within its subscription and region |
+| GCP | Global: no `parent_ref` region and no `located_in` | Regional: `located_in` a region | A Shared VPC workload's project differs from the network's: add an `attachment` relationship from the service project to the host project |
+| Huawei Cloud | Regional | Regional | An IAM project maps to one region. Enterprise projects are separate and span regions. Bind a project with the region's `scope_refs` |
+| On-premises | Logical | Logical: `network_member_of` a VLAN, VRF or network | `site` > `data_center` > `room` > `rack` is physical. A VM has no `rack_ref`; its `deployment_context` names the `onprem.compute.hypervisor` |
 
 ## Resources
 
 `{id, name, provider, service_type, taxonomy, placement?, properties?, kubernetes?}`
 
-- `service_type` uses the ID format, for example `aws.compute.ec2`. No catalog resolves these yet, so treat them as provisional and keep the provider's native service name in `name`.
-- `taxonomy`: use one of these IDs: `governance.scope`, `location.site`, `onprem.facility`, `network.boundary`, `network.subnet`, `network.routing`, `network.connectivity`, `network.load_balancing`, `edge.delivery`, `compute.vm`, `compute.physical`, `compute.containers`, `compute.serverless`, `application.platform`, `data.relational`, `data.nosql_cache`, `data.analytics_ai`, `storage.object`, `storage.block_file`, `integration.messaging`, `identity.access`, `security.control`, `security.secrets_keys`, `operations.observability`, `operations.backup_dr`. Until catalogs arrive, the validator checks only that an ID has two dot-separated parts, so it will not catch a wrong ID.
+- `service_type` is an exact ID from the `catalog` subcommand, for example `aws.compute.ec2`. It must belong to the resource's provider, and no provider is ever substituted. Keep the provider's native service name in `name`. Strict mode rejects an unknown ID; lenient mode warns and marks a draft.
+- `taxonomy` is the one primary ID the catalog shows for that type, and a mismatch fails in both modes. The frozen IDs are: `governance.scope`, `location.site`, `onprem.facility`, `network.boundary`, `network.subnet`, `network.routing`, `network.connectivity`, `network.load_balancing`, `edge.delivery`, `compute.vm`, `compute.physical`, `compute.containers`, `compute.serverless`, `application.platform`, `data.relational`, `data.nosql_cache`, `data.analytics_ai`, `storage.object`, `storage.block_file`, `integration.messaging`, `identity.access`, `security.control`, `security.secrets_keys`, `operations.observability`, `operations.backup_dr`, `external.entity`. A shared category never makes two services equivalent.
+- External parties use `provider: external` with `external.people.user`, `external.network.internet`, `external.organization.partner`, `external.service.saas` or `external.system.other`.
 - `properties` is closed: `replicas`, `labels`, `service_type` (Kubernetes Service type: `ClusterIP`, `NodePort`, `LoadBalancer` or `ExternalName`), `ports` (`{port, target_port?, protocol?}`, with `protocol` one of `TCP`, `UDP` or `SCTP`).
 
 ### Placement keeps dimensions separate
@@ -47,11 +58,15 @@ Each dimension is independent. Do not encode one through another: a multi-subnet
 | Field | Must reference |
 |---|---|
 | `scope_refs` | Scopes with the same provider as the resource |
-| `location.region_ref`, `zone_ref`, `site_ref`, `rack_ref` | Boundary of kind `region`, `zone`, `site`, `rack` |
+| `location.region_ref`, `zone_ref`, `site_ref`, `rack_ref` | Boundary of kind `region`, `zone`, `site`, `rack`, with the resource's provider |
 | `network_attachments[].network_ref` | Boundary of kind `network` |
 | `network_attachments[].subnet_refs` | Boundaries of kind `subnet` |
-| `security_boundaries` | Boundaries of kind `security_zone` |
+| `security_boundaries` | Boundaries of kind `security_zone` or `security_group`, the latter with the resource's provider |
 | `deployment_context` | Boundaries or resources |
+
+Each type's catalog record states which of these apply (an omitted `location` means any and an omitted `network` means none), and the validator enforces only what you declare, so an unspecified zone or subnet stays valid while a contradictory one fails. Examples: an ALB or EKS cluster that lists subnets needs at least two in different zones, an S3 bucket takes no network attachment, IAM takes no location, and a regional NAT gateway attaches to a VPC while a zonal one sits in one subnet.
+
+Labels follow the platform's syntax: Kubernetes rules on a Kubernetes resource, otherwise AWS tags, Azure tags or GCP labels. Huawei Cloud and on-premises labels are not syntax-checked.
 
 ## Relationships
 
@@ -69,7 +84,22 @@ An edge states what was modeled, not proven reachability. Include only connectiv
 
 ## Kubernetes context
 
-Kubernetes is a platform inside a hosting provider, not a provider value. A resource carries `kubernetes: {kind, ...}` and keeps its real `provider`, and `service_type` should follow `k8s.<kind>`, for example `k8s.pod` with taxonomy `compute.containers`. The validator does not check this match yet.
+Kubernetes is a platform inside a hosting provider, not a provider value. A resource carries `kubernetes: {kind, ...}` and keeps its real `provider`. `service_type` must match the kind: `k8s.<lowercase kind>`, for example `k8s.pod` with taxonomy `compute.containers`, except where a provider type below maps the kind. The catalog gives each kind's taxonomy and its Kubernetes API version, verified against release 1.37.
+
+| Cluster type (kind `Cluster`) | Control plane | Node-pool types (kind `NodePool`) |
+|---|---|---|
+| `k8s.cluster` | User managed | `k8s.nodepool` |
+| `onprem.containers.kubernetes_cluster` | User managed | `k8s.nodepool` |
+| `aws.containers.eks` | Provider managed | `aws.containers.eks_managed_node_group`, `aws.containers.eks_self_managed_nodes`, `aws.containers.eks_fargate_profile`, `k8s.nodepool` |
+| `aws.containers.eks_auto_mode` | Provider managed; nodes are abstracted | Same as `aws.containers.eks` |
+| `azure.containers.aks` | Provider managed | `azure.containers.aks_node_pool`, `k8s.nodepool` |
+| `azure.containers.aks_automatic` | Provider managed; nodes are abstracted | Same as `azure.containers.aks` |
+| `gcp.containers.gke_standard` | Provider managed | `gcp.containers.gke_node_pool`, `k8s.nodepool` |
+| `gcp.containers.gke_autopilot` | Provider managed; nodes are abstracted | None |
+| `huawei.containers.cce_standard`, `huawei.containers.cce_turbo` | Provider managed | `huawei.containers.cce_node_pool`, `k8s.nodepool` |
+| `huawei.containers.cce_autopilot` | Provider managed; nodes are abstracted | None |
+
+A provider-managed `ControlPlane` is a logical marker and takes no location or network attachment. Declaring a `Node` in an abstracted mode returns a `K8S_ABSTRACTED_NODE_DECLARED` warning: keep it only if the node was supplied.
 
 Kinds: `Cluster`, `ControlPlane`, `NodePool`, `Node`, `Namespace`, `Deployment`, `ReplicaSet`, `StatefulSet`, `DaemonSet`, `Job`, `CronJob`, `Pod`, `Service`, `Ingress`, `IngressController`, `PersistentVolumeClaim`, `PersistentVolume`, `StorageClass`, `ConfigMap`, `Secret`, `ServiceAccount`, `NetworkPolicy`.
 
@@ -81,16 +111,31 @@ Kinds: `Cluster`, `ControlPlane`, `NodePool`, `Node`, `Namespace`, `Deployment`,
 |---|---|---|
 | `node_pool_ref` | `Node` | `NodePool` |
 | `node_ref` | `Pod` | `Node` |
-| `owner_ref` | Any | Workload kind or `Pod`, same namespace |
+| `owner_ref` | `ReplicaSet`, `Job`, `Pod` | `Deployment` for a `ReplicaSet`; `CronJob` for a `Job`; `ReplicaSet`, `StatefulSet`, `DaemonSet` or `Job` for a `Pod`; same namespace |
 | `service_refs` | `Ingress` | `Service`, same namespace |
 | `target_refs` | `Service` | `Pod`, same namespace |
 | `volume_ref` | `PersistentVolumeClaim` | `PersistentVolume` |
 | `storage_class_ref` | `PersistentVolumeClaim`, `PersistentVolume` | `StorageClass` |
-| `volume_claim_refs` | Any | `PersistentVolumeClaim`, same namespace |
-| `config_refs` | Any | `ConfigMap`, same namespace |
-| `secret_refs` | Any | `Secret`, same namespace |
-| `service_account_ref` | Any | `ServiceAccount`, same namespace |
+| `volume_claim_refs` | `Pod` or workload kind | `PersistentVolumeClaim`, same namespace |
+| `config_refs` | `Pod`, workload kind or `IngressController` | `ConfigMap`, same namespace |
+| `secret_refs` | `Pod`, workload kind, `ServiceAccount`, `Ingress` or `IngressController` | `Secret`, same namespace |
+| `service_account_ref` | `Pod` or workload kind | `ServiceAccount`, same namespace |
 
-An `ownership` relationship pointing at a Kubernetes resource follows the same rule as `owner_ref`: its source must be a workload kind or `Pod` in the same cluster and namespace. A source that is an administrative scope must have the same provider.
+An `ownership` relationship pointing at a Kubernetes resource follows the same matrix as `owner_ref`, so a Deployment owns a ReplicaSet, not a Pod directly. Use `management` for a looser link. A source that is an administrative scope must have the same provider.
 
-A namespace is logical grouping and does not place a Pod on a Node. Leave `node_ref` unset when placement was not supplied; missing placement is valid, while invented placement is not. Do not model hidden managed control-plane machines or node pools the user did not describe. `Secret` resources cannot carry `properties`.
+Relationship kinds between Kubernetes resources stay distinct:
+
+| Kind | Source | Target |
+|---|---|---|
+| `scheduling` | `Pod` or workload kind | `Node` or `NodePool` |
+| `membership` | A resource in that scope | `Cluster`, its own `Namespace`, or a `NodePool` for a `Node` |
+| `policy` | `NetworkPolicy` | `Pod`, workload kind or `Namespace`, same namespace |
+| `storage` | `Pod`, workload kind, `PersistentVolumeClaim` or `PersistentVolume` | `PersistentVolumeClaim`, `PersistentVolume` or `StorageClass` |
+| `configuration` | `Pod`, workload kind, `ServiceAccount`, `Ingress` or `IngressController` | `ConfigMap`, `Secret` or `ServiceAccount`, same namespace |
+| `traffic` | Any except the kinds listed below | Any except the kinds listed below |
+
+`traffic` cannot touch `Namespace`, `ConfigMap`, `Secret`, `ServiceAccount`, `StorageClass`, `NetworkPolicy`, `PersistentVolumeClaim`, `PersistentVolume` or `NodePool`. An external load balancer the user supplied links to a Service with a `traffic` relationship, and an `Ingress` and its `IngressController` are separate resources, linked with `management`.
+
+`replicas` applies to `Deployment`, `ReplicaSet` and `StatefulSet`; `service_type` to `Service`; `ports` to Pods, workloads, `Service`, `Ingress` and `IngressController`. An `ExternalName` Service lists no `target_refs`.
+
+A namespace is logical grouping and does not place a Pod on a Node, so `deployment_context` cannot name a `Node` or `NodePool`. Leave `node_ref` unset when placement was not supplied; missing placement is valid, while invented placement is not. Do not model hidden managed control-plane machines or node pools the user did not describe. `Secret` resources cannot carry `properties`.

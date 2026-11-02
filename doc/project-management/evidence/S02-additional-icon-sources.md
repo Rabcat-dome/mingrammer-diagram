@@ -2,6 +2,8 @@
 
 Checked: 2026-10-31 | Status: Source assessment and eight concept mappings complete; asset export/visual/package checks remain M2/M4 work.
 
+**S06 correction:** `bc0ccab15cb08e8e03491aa14a30eb2801caaf81`, called a commit below, is the annotated tag object for v29.3.2. The commit is `48b181339578e11da7052ebf5b1fba8499418b77`, and the audited blobs are unchanged. See the [S06 record](S06-provider-catalogs.md#on-premises-representations).
+
 This supplements the [initial S02 assessment](S02-icon-sources-and-rights.md). Product authority remains [requirements revision 0.5](../../requirements/requirements.md). The user supplied a Huawei repository and requested draw.io-type symbols for the eight on-premises gaps. Detailed [supplemental metadata](S02-supplemental-icons.json) records audited sources and mappings; it contains no artwork or executable code.
 
 ## 1. Huawei repository assessment

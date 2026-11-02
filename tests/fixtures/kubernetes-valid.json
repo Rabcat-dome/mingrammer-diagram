@@ -23,7 +23,7 @@
       "name": "namespace",
       "provider": "gcp",
       "service_type": "k8s.namespace",
-      "taxonomy": "compute.containers",
+      "taxonomy": "governance.scope",
       "kubernetes": {
         "kind": "Namespace",
         "cluster_ref": "cluster"
@@ -131,7 +131,7 @@
       "name": "service",
       "provider": "gcp",
       "service_type": "k8s.service",
-      "taxonomy": "compute.containers",
+      "taxonomy": "network.load_balancing",
       "kubernetes": {
         "kind": "Service",
         "cluster_ref": "cluster",
@@ -147,7 +147,7 @@
       "name": "ingress",
       "provider": "gcp",
       "service_type": "k8s.ingress",
-      "taxonomy": "compute.containers",
+      "taxonomy": "network.load_balancing",
       "kubernetes": {
         "kind": "Ingress",
         "cluster_ref": "cluster",
@@ -162,7 +162,7 @@
       "name": "pvc",
       "provider": "gcp",
       "service_type": "k8s.persistentvolumeclaim",
-      "taxonomy": "compute.containers",
+      "taxonomy": "storage.block_file",
       "kubernetes": {
         "kind": "PersistentVolumeClaim",
         "cluster_ref": "cluster",
@@ -176,7 +176,7 @@
       "name": "pv",
       "provider": "gcp",
       "service_type": "k8s.persistentvolume",
-      "taxonomy": "compute.containers",
+      "taxonomy": "storage.block_file",
       "kubernetes": {
         "kind": "PersistentVolume",
         "cluster_ref": "cluster",
@@ -188,7 +188,7 @@
       "name": "storage",
       "provider": "gcp",
       "service_type": "k8s.storageclass",
-      "taxonomy": "compute.containers",
+      "taxonomy": "storage.block_file",
       "kubernetes": {
         "kind": "StorageClass",
         "cluster_ref": "cluster"
@@ -199,7 +199,7 @@
       "name": "config",
       "provider": "gcp",
       "service_type": "k8s.configmap",
-      "taxonomy": "compute.containers",
+      "taxonomy": "application.platform",
       "kubernetes": {
         "kind": "ConfigMap",
         "cluster_ref": "cluster",
@@ -211,7 +211,7 @@
       "name": "secret",
       "provider": "gcp",
       "service_type": "k8s.secret",
-      "taxonomy": "compute.containers",
+      "taxonomy": "security.secrets_keys",
       "kubernetes": {
         "kind": "Secret",
         "cluster_ref": "cluster",
@@ -223,7 +223,7 @@
       "name": "account",
       "provider": "gcp",
       "service_type": "k8s.serviceaccount",
-      "taxonomy": "compute.containers",
+      "taxonomy": "identity.access",
       "kubernetes": {
         "kind": "ServiceAccount",
         "cluster_ref": "cluster",

@@ -1,0 +1,496 @@
+{
+  "schema_version": "1.0.0",
+  "metadata": {
+    "id": "gcp-reference",
+    "title": "GCP catalog coverage and Shared VPC",
+    "environment": "fixture",
+    "assumptions": [
+      "Synthetic fixture; no deployed infrastructure implied."
+    ]
+  },
+  "scopes": [
+    {
+      "id": "org",
+      "name": "Example org",
+      "provider": "gcp",
+      "kind": "organization"
+    },
+    {
+      "id": "folder",
+      "name": "Platform",
+      "provider": "gcp",
+      "kind": "folder",
+      "parent_ref": "org"
+    },
+    {
+      "id": "host",
+      "name": "Network host",
+      "provider": "gcp",
+      "kind": "project",
+      "parent_ref": "folder"
+    },
+    {
+      "id": "service",
+      "name": "App service",
+      "provider": "gcp",
+      "kind": "project",
+      "parent_ref": "folder"
+    }
+  ],
+  "boundaries": [
+    {
+      "id": "region",
+      "name": "asia-southeast1",
+      "provider": "gcp",
+      "kind": "region"
+    },
+    {
+      "id": "zone",
+      "name": "asia-southeast1-a",
+      "provider": "gcp",
+      "kind": "zone",
+      "parent_ref": "region"
+    },
+    {
+      "id": "vpc",
+      "name": "Shared VPC",
+      "provider": "gcp",
+      "kind": "network",
+      "scope_refs": [
+        "host"
+      ]
+    },
+    {
+      "id": "vpc-b",
+      "name": "Second VPC",
+      "provider": "gcp",
+      "kind": "network",
+      "scope_refs": [
+        "service"
+      ]
+    },
+    {
+      "id": "subnet",
+      "name": "App subnet",
+      "provider": "gcp",
+      "kind": "subnet",
+      "scope_refs": [
+        "host"
+      ],
+      "parent_ref": "vpc",
+      "relations": [
+        {
+          "kind": "located_in",
+          "target_ref": "region"
+        }
+      ]
+    },
+    {
+      "id": "subnet-b",
+      "name": "Second subnet",
+      "provider": "gcp",
+      "kind": "subnet",
+      "scope_refs": [
+        "service"
+      ],
+      "parent_ref": "vpc-b",
+      "relations": [
+        {
+          "kind": "located_in",
+          "target_ref": "region"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "vm",
+      "name": "Compute Engine instance",
+      "provider": "gcp",
+      "service_type": "gcp.compute.compute_engine",
+      "taxonomy": "compute.vm",
+      "placement": {
+        "scope_refs": [
+          "service"
+        ],
+        "location": {
+          "zone_ref": "zone"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet"
+            ]
+          },
+          {
+            "network_ref": "vpc-b",
+            "subnet_refs": [
+              "subnet-b"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "gke",
+      "name": "GKE Standard cluster",
+      "provider": "gcp",
+      "service_type": "gcp.containers.gke_standard",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "service"
+        ],
+        "location": {
+          "zone_ref": "zone"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "Cluster"
+      }
+    },
+    {
+      "id": "autopilot",
+      "name": "GKE Autopilot cluster",
+      "provider": "gcp",
+      "service_type": "gcp.containers.gke_autopilot",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "service"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "Cluster"
+      }
+    },
+    {
+      "id": "pool",
+      "name": "GKE node pool",
+      "provider": "gcp",
+      "service_type": "gcp.containers.gke_node_pool",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "service"
+        ],
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "NodePool",
+        "cluster_ref": "gke"
+      }
+    },
+    {
+      "id": "glb",
+      "name": "Global external Application Load Balancer",
+      "provider": "gcp",
+      "service_type": "gcp.network.global_external_application_load_balancer",
+      "taxonomy": "network.load_balancing",
+      "placement": {
+        "scope_refs": [
+          "service"
+        ]
+      }
+    },
+    {
+      "id": "rlb",
+      "name": "Regional Application Load Balancer",
+      "provider": "gcp",
+      "service_type": "gcp.network.regional_application_load_balancer",
+      "taxonomy": "network.load_balancing",
+      "placement": {
+        "scope_refs": [
+          "service"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "nlb",
+      "name": "Passthrough Network Load Balancer",
+      "provider": "gcp",
+      "service_type": "gcp.network.passthrough_network_load_balancer",
+      "taxonomy": "network.load_balancing",
+      "placement": {
+        "scope_refs": [
+          "service"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "sql",
+      "name": "Cloud SQL instance",
+      "provider": "gcp",
+      "service_type": "gcp.database.cloud_sql",
+      "taxonomy": "data.relational",
+      "placement": {
+        "scope_refs": [
+          "service"
+        ],
+        "location": {
+          "zone_ref": "zone"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc"
+          }
+        ]
+      }
+    },
+    {
+      "id": "gcs",
+      "name": "Cloud Storage bucket",
+      "provider": "gcp",
+      "service_type": "gcp.storage.cloud_storage",
+      "taxonomy": "storage.object",
+      "placement": {
+        "scope_refs": [
+          "service"
+        ],
+        "location": {
+          "region_ref": "region"
+        }
+      }
+    },
+    {
+      "id": "iam",
+      "name": "Google Cloud IAM",
+      "provider": "gcp",
+      "service_type": "gcp.identity.iam",
+      "taxonomy": "identity.access",
+      "placement": {
+        "scope_refs": [
+          "org"
+        ]
+      }
+    },
+    {
+      "id": "fw",
+      "name": "VPC firewall rule",
+      "provider": "gcp",
+      "service_type": "gcp.security.vpc_firewall_rule",
+      "taxonomy": "security.control",
+      "placement": {
+        "scope_refs": [
+          "host"
+        ],
+        "network_attachments": [
+          {
+            "network_ref": "vpc"
+          }
+        ]
+      }
+    },
+    {
+      "id": "nat",
+      "name": "Cloud NAT",
+      "provider": "gcp",
+      "service_type": "gcp.network.cloud_nat",
+      "taxonomy": "network.routing",
+      "placement": {
+        "scope_refs": [
+          "host"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc"
+          }
+        ]
+      }
+    },
+    {
+      "id": "vpn",
+      "name": "Cloud VPN",
+      "provider": "gcp",
+      "service_type": "gcp.network.cloud_vpn",
+      "taxonomy": "network.connectivity",
+      "placement": {
+        "scope_refs": [
+          "host"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc"
+          }
+        ]
+      }
+    },
+    {
+      "id": "dedicated",
+      "name": "Cloud Interconnect (Dedicated)",
+      "provider": "gcp",
+      "service_type": "gcp.network.dedicated_interconnect",
+      "taxonomy": "network.connectivity",
+      "placement": {
+        "scope_refs": [
+          "host"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc"
+          }
+        ]
+      }
+    },
+    {
+      "id": "partner",
+      "name": "Cloud Interconnect (Partner)",
+      "provider": "gcp",
+      "service_type": "gcp.network.partner_interconnect",
+      "taxonomy": "network.connectivity",
+      "placement": {
+        "scope_refs": [
+          "host"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc"
+          }
+        ]
+      }
+    },
+    {
+      "id": "monitoring",
+      "name": "Cloud Monitoring",
+      "provider": "gcp",
+      "service_type": "gcp.observability.cloud_monitoring",
+      "taxonomy": "operations.observability",
+      "placement": {
+        "scope_refs": [
+          "service"
+        ]
+      }
+    },
+    {
+      "id": "logging",
+      "name": "Cloud Logging",
+      "provider": "gcp",
+      "service_type": "gcp.observability.cloud_logging",
+      "taxonomy": "operations.observability",
+      "placement": {
+        "scope_refs": [
+          "service"
+        ],
+        "location": {
+          "region_ref": "region"
+        }
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "id": "shared-vpc",
+      "source_ref": "service",
+      "target_ref": "host",
+      "kind": "attachment",
+      "purpose": "Shared VPC service project"
+    },
+    {
+      "id": "t-lb-vm",
+      "source_ref": "glb",
+      "target_ref": "vm",
+      "kind": "traffic",
+      "protocol": "HTTPS"
+    }
+  ],
+  "views": [
+    {
+      "id": "detail",
+      "title": "GCP catalog coverage and Shared VPC",
+      "entity_refs": [
+        "org",
+        "folder",
+        "host",
+        "service",
+        "region",
+        "zone",
+        "vpc",
+        "vpc-b",
+        "subnet",
+        "subnet-b",
+        "vm",
+        "gke",
+        "autopilot",
+        "pool",
+        "glb",
+        "rlb",
+        "nlb",
+        "sql",
+        "gcs",
+        "iam",
+        "fw",
+        "nat",
+        "vpn",
+        "dedicated",
+        "partner",
+        "monitoring",
+        "logging"
+      ],
+      "relationship_refs": [
+        "shared-vpc",
+        "t-lb-vm"
+      ]
+    }
+  ]
+}

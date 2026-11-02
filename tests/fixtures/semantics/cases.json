@@ -1,0 +1,2099 @@
+{
+ "errors": [
+  {
+   "id": "unknown-type",
+   "base": "providers/aws",
+   "expect": "CATALOG_TYPE_UNKNOWN",
+   "ops": [
+    {
+     "set": "resources/id:web/service_type",
+     "value": "aws.compute.not_a_service"
+    }
+   ]
+  },
+  {
+   "id": "scope-type-on-resource",
+   "base": "providers/aws",
+   "expect": "CATALOG_TYPE_ENTITY_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:web/service_type",
+     "value": "aws.network.vpc"
+    },
+    {
+     "set": "resources/id:web/taxonomy",
+     "value": "network.boundary"
+    }
+   ]
+  },
+  {
+   "id": "provider-substitution",
+   "base": "providers/hybrid",
+   "expect": "CATALOG_PROVIDER_MISMATCH",
+   "ops": [
+    {
+     "set": "resources/id:people/service_type",
+     "value": "aws.compute.ec2"
+    },
+    {
+     "set": "resources/id:people/taxonomy",
+     "value": "compute.vm"
+    }
+   ]
+  },
+  {
+   "id": "azure-type-on-gcp",
+   "base": "providers/gcp",
+   "expect": "CATALOG_PROVIDER_MISMATCH",
+   "ops": [
+    {
+     "set": "resources/id:glb/service_type",
+     "value": "azure.network.application_gateway"
+    },
+    {
+     "set": "resources/id:glb/taxonomy",
+     "value": "network.load_balancing"
+    }
+   ]
+  },
+  {
+   "id": "taxonomy-unknown",
+   "base": "providers/aws",
+   "expect": "CATALOG_TAXONOMY_UNKNOWN",
+   "ops": [
+    {
+     "set": "resources/id:web/taxonomy",
+     "value": "made.up"
+    }
+   ]
+  },
+  {
+   "id": "taxonomy-mismatch",
+   "base": "providers/aws",
+   "expect": "CATALOG_TAXONOMY_MISMATCH",
+   "ops": [
+    {
+     "set": "resources/id:web/taxonomy",
+     "value": "data.relational"
+    }
+   ]
+  },
+  {
+   "id": "k8s-type-kind-differs",
+   "base": "kubernetes/*",
+   "expect": "CATALOG_KUBERNETES_KIND_MISMATCH",
+   "ops": [
+    {
+     "set": "resources/id:pod-b/service_type",
+     "value": "k8s.node"
+    }
+   ]
+  },
+  {
+   "id": "k8s-type-without-context",
+   "base": "kubernetes/*",
+   "expect": "CATALOG_KUBERNETES_KIND_MISMATCH",
+   "ops": [
+    {
+     "del": "resources/id:pod-b/kubernetes"
+    },
+    {
+     "del": "relationships/id:own-pod"
+    },
+    {
+     "set": "views/id:detail/relationship_refs",
+     "value": [
+      "t-ing-svc"
+     ]
+    },
+    {
+     "set": "resources/id:svc/kubernetes/target_refs",
+     "value": [
+      "pod-a"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "node-group-without-context",
+   "base": "providers/aws",
+   "expect": "CATALOG_KUBERNETES_KIND_MISMATCH",
+   "ops": [
+    {
+     "del": "resources/id:fargate/kubernetes"
+    }
+   ]
+  },
+  {
+   "id": "aws-resource-group",
+   "base": "providers/aws",
+   "expect": "PROVIDER_SCOPE_KIND_INVALID",
+   "ops": [
+    {
+     "add": "scopes",
+     "value": {
+      "id": "rg",
+      "name": "RG",
+      "provider": "aws",
+      "kind": "resource_group"
+     }
+    }
+   ]
+  },
+  {
+   "id": "huawei-subscription",
+   "base": "providers/huawei",
+   "expect": "PROVIDER_SCOPE_KIND_INVALID",
+   "ops": [
+    {
+     "add": "scopes",
+     "value": {
+      "id": "sub-x",
+      "name": "Subscription",
+      "provider": "huawei",
+      "kind": "subscription"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-rack",
+   "base": "providers/aws",
+   "expect": "PROVIDER_BOUNDARY_KIND_INVALID",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "rack",
+      "name": "Rack",
+      "provider": "aws",
+      "kind": "rack"
+     }
+    }
+   ]
+  },
+  {
+   "id": "gcp-security-group",
+   "base": "providers/gcp",
+   "expect": "PROVIDER_BOUNDARY_KIND_INVALID",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "sg",
+      "name": "SG",
+      "provider": "gcp",
+      "kind": "security_group"
+     }
+    }
+   ]
+  },
+  {
+   "id": "gcp-folder-under-project",
+   "base": "providers/gcp",
+   "expect": "SCOPE_PARENT_KIND_INVALID",
+   "ops": [
+    {
+     "set": "scopes/id:folder/parent_ref",
+     "value": "host"
+    },
+    {
+     "set": "scopes/id:host/parent_ref",
+     "value": "org"
+    }
+   ]
+  },
+  {
+   "id": "azure-rg-under-tenant",
+   "base": "providers/azure",
+   "expect": "SCOPE_PARENT_KIND_INVALID",
+   "ops": [
+    {
+     "set": "scopes/id:rg-net/parent_ref",
+     "value": "tenant"
+    }
+   ]
+  },
+  {
+   "id": "huawei-project-under-enterprise",
+   "base": "providers/huawei",
+   "expect": "SCOPE_PARENT_KIND_INVALID",
+   "ops": [
+    {
+     "set": "scopes/id:proj/parent_ref",
+     "value": "ep"
+    }
+   ],
+   "note": "IAM projects and enterprise projects are separate dimensions."
+  },
+  {
+   "id": "huawei-enterprise-under-project",
+   "base": "providers/huawei",
+   "expect": "SCOPE_PARENT_KIND_INVALID",
+   "ops": [
+    {
+     "set": "scopes/id:ep/parent_ref",
+     "value": "proj"
+    }
+   ]
+  },
+  {
+   "id": "onprem-vlan-in-rack",
+   "base": "providers/onprem",
+   "expect": "BOUNDARY_PARENT_KIND_INVALID",
+   "ops": [
+    {
+     "set": "boundaries/id:vlan/parent_ref",
+     "value": "rack"
+    }
+   ],
+   "note": "Physical containment must not redefine a logical network."
+  },
+  {
+   "id": "onprem-rack-in-vlan",
+   "base": "providers/onprem",
+   "expect": "BOUNDARY_PARENT_KIND_INVALID",
+   "ops": [
+    {
+     "set": "boundaries/id:rack/parent_ref",
+     "value": "vlan"
+    }
+   ]
+  },
+  {
+   "id": "aws-subnet-parent-zone",
+   "base": "providers/aws",
+   "expect": "BOUNDARY_PARENT_KIND_INVALID",
+   "ops": [
+    {
+     "set": "boundaries/id:app-a/parent_ref",
+     "value": "az-a"
+    }
+   ]
+  },
+  {
+   "id": "gcp-vpc-in-region",
+   "base": "providers/gcp",
+   "expect": "BOUNDARY_PARENT_KIND_INVALID",
+   "ops": [
+    {
+     "set": "boundaries/id:vpc/parent_ref",
+     "value": "region"
+    }
+   ],
+   "note": "A GCP VPC network is global."
+  },
+  {
+   "id": "cross-provider-network",
+   "base": "providers/hybrid",
+   "expect": "BOUNDARY_PROVIDER_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "aws-net",
+      "name": "VPC",
+      "provider": "aws",
+      "kind": "network"
+     }
+    },
+    {
+     "set": "resources/id:az-vm/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "aws-net"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-subnet-in-region-only",
+   "base": "providers/aws",
+   "expect": "BOUNDARY_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "boundaries/id:app-a/relations",
+     "value": [
+      {
+       "kind": "located_in",
+       "target_ref": "region"
+      }
+     ]
+    }
+   ],
+   "note": "An AWS subnet is zonal."
+  },
+  {
+   "id": "azure-subnet-in-zone",
+   "base": "providers/azure",
+   "expect": "BOUNDARY_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "boundaries/id:app/relations",
+     "value": [
+      {
+       "kind": "located_in",
+       "target_ref": "az-1"
+      }
+     ]
+    }
+   ],
+   "note": "An Azure subnet spans zones."
+  },
+  {
+   "id": "gcp-vpc-located-in-region",
+   "base": "providers/gcp",
+   "expect": "BOUNDARY_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "boundaries/id:vpc/relations",
+     "value": [
+      {
+       "kind": "located_in",
+       "target_ref": "region"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "gcp-subnet-in-zone",
+   "base": "providers/gcp",
+   "expect": "BOUNDARY_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "boundaries/id:subnet/relations",
+     "value": [
+      {
+       "kind": "located_in",
+       "target_ref": "zone"
+      }
+     ]
+    }
+   ],
+   "note": "A GCP subnet is regional."
+  },
+  {
+   "id": "huawei-subnet-in-zone",
+   "base": "providers/huawei",
+   "expect": "BOUNDARY_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "boundaries/id:subnet/relations",
+     "value": [
+      {
+       "kind": "located_in",
+       "target_ref": "az"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-subnet-two-zones",
+   "base": "providers/aws",
+   "expect": "BOUNDARY_LOCATION_MULTIPLE",
+   "ops": [
+    {
+     "add": "boundaries/id:app-a/relations",
+     "value": {
+      "kind": "located_in",
+      "target_ref": "az-b"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-subnet-other-region",
+   "base": "providers/aws",
+   "expect": "BOUNDARY_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-2",
+      "name": "Second",
+      "provider": "aws",
+      "kind": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "az-2",
+      "name": "Second AZ",
+      "provider": "aws",
+      "kind": "zone",
+      "parent_ref": "region-2"
+     }
+    },
+    {
+     "set": "boundaries/id:app-a/relations",
+     "value": [
+      {
+       "kind": "located_in",
+       "target_ref": "az-2"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "onprem-rack-network-member",
+   "base": "providers/onprem",
+   "expect": "BOUNDARY_RELATION_KIND_INVALID",
+   "ops": [
+    {
+     "set": "boundaries/id:rack/relations",
+     "value": [
+      {
+       "kind": "network_member_of",
+       "target_ref": "vlan"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "onprem-security-member-of-network",
+   "base": "providers/onprem",
+   "expect": "BOUNDARY_RELATION_KIND_INVALID",
+   "ops": [
+    {
+     "set": "boundaries/id:vlan/relations",
+     "value": [
+      {
+       "kind": "security_member_of",
+       "target_ref": "net"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "huawei-region-bound-enterprise-project",
+   "base": "providers/huawei",
+   "expect": "PLACEMENT_SCOPE_KIND_INVALID",
+   "ops": [
+    {
+     "set": "boundaries/id:region/scope_refs",
+     "value": [
+      "ep"
+     ]
+    }
+   ],
+   "note": "Enterprise projects span regions."
+  },
+  {
+   "id": "azure-entra-in-resource-group",
+   "base": "providers/azure",
+   "expect": "PLACEMENT_SCOPE_KIND_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:entra/placement/scope_refs",
+     "value": [
+      "rg-app"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "azure-two-resource-groups",
+   "base": "providers/azure",
+   "expect": "PLACEMENT_SCOPE_CARDINALITY",
+   "ops": [
+    {
+     "set": "resources/id:vm/placement/scope_refs",
+     "value": [
+      "rg-app",
+      "rg-net"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "gcp-two-projects",
+   "base": "providers/gcp",
+   "expect": "PLACEMENT_SCOPE_CARDINALITY",
+   "ops": [
+    {
+     "set": "resources/id:vm/placement/scope_refs",
+     "value": [
+      "service",
+      "host"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "onprem-vm-in-rack",
+   "base": "providers/onprem",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:vm/placement/location",
+     "value": {
+      "rack_ref": "rack"
+     }
+    }
+   ],
+   "note": "A VM is not physically racked; its host is."
+  },
+  {
+   "id": "aws-iam-regional",
+   "base": "providers/aws",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:iam/placement/location",
+     "value": {
+      "region_ref": "region"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-alb-single-zone",
+   "base": "providers/aws",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:alb/placement/location",
+     "value": {
+      "zone_ref": "az-a"
+     }
+    }
+   ]
+  },
+  {
+   "id": "gke-autopilot-zonal",
+   "base": "providers/gcp",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:autopilot/placement/location",
+     "value": {
+      "zone_ref": "zone"
+     }
+    }
+   ]
+  },
+  {
+   "id": "gcp-firewall-regional",
+   "base": "providers/gcp",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:fw/placement/location",
+     "value": {
+      "region_ref": "region"
+     }
+    }
+   ]
+  },
+  {
+   "id": "huawei-iam-regional",
+   "base": "providers/huawei",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:iam/placement/location",
+     "value": {
+      "region_ref": "region"
+     }
+    }
+   ]
+  },
+  {
+   "id": "k8s-namespace-in-rack-or-zone",
+   "base": "kubernetes/onprem",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "rack",
+      "name": "Rack",
+      "provider": "onprem",
+      "kind": "rack"
+     }
+    },
+    {
+     "set": "resources/id:ns-app/placement",
+     "value": {
+      "location": {
+       "rack_ref": "rack"
+      }
+     }
+    }
+   ],
+   "note": "A namespace has no physical location."
+  },
+  {
+   "id": "aws-zone-outside-region",
+   "base": "providers/aws",
+   "expect": "PLACEMENT_ZONE_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-2",
+      "name": "Second",
+      "provider": "aws",
+      "kind": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "az-2",
+      "name": "Second AZ",
+      "provider": "aws",
+      "kind": "zone",
+      "parent_ref": "region-2"
+     }
+    },
+    {
+     "set": "resources/id:web/placement/location",
+     "value": {
+      "region_ref": "region-2",
+      "zone_ref": "az-a"
+     }
+    }
+   ]
+  },
+  {
+   "id": "onprem-rack-outside-site",
+   "base": "providers/onprem",
+   "expect": "PLACEMENT_RACK_SITE_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "site-2",
+      "name": "Other site",
+      "provider": "onprem",
+      "kind": "site"
+     }
+    },
+    {
+     "set": "resources/id:hv/placement/location",
+     "value": {
+      "site_ref": "site-2",
+      "rack_ref": "rack"
+     }
+    }
+   ]
+  },
+  {
+   "id": "azure-resource-other-region",
+   "base": "providers/azure",
+   "expect": "PLACEMENT_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-2",
+      "name": "Other",
+      "provider": "azure",
+      "kind": "region"
+     }
+    },
+    {
+     "set": "resources/id:ag/placement/location",
+     "value": {
+      "region_ref": "region-2"
+     }
+    }
+   ]
+  },
+  {
+   "id": "gcp-vm-subnet-other-region",
+   "base": "providers/gcp",
+   "expect": "PLACEMENT_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-2",
+      "name": "Other",
+      "provider": "gcp",
+      "kind": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "zone-2",
+      "name": "Other zone",
+      "provider": "gcp",
+      "kind": "zone",
+      "parent_ref": "region-2"
+     }
+    },
+    {
+     "set": "resources/id:vm/placement/location",
+     "value": {
+      "zone_ref": "zone-2"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-s3-in-vpc",
+   "base": "providers/aws",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:bucket/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "huawei-obs-in-vpc",
+   "base": "providers/huawei",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:obs/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-igw-in-subnet",
+   "base": "providers/aws",
+   "expect": "PLACEMENT_SUBNET_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:igw/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "public-a"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-regional-nat-in-subnet",
+   "base": "providers/aws",
+   "expect": "PLACEMENT_SUBNET_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:nat-regional/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "public-a"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "gcp-firewall-in-subnet",
+   "base": "providers/gcp",
+   "expect": "PLACEMENT_SUBNET_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:fw/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "subnet"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "gcp-subnet-other-network",
+   "base": "providers/gcp",
+   "expect": "PLACEMENT_SUBNET_NETWORK_MISMATCH",
+   "ops": [
+    {
+     "set": "resources/id:rlb/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "subnet-b"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-instance-zone-differs",
+   "base": "providers/aws",
+   "expect": "PLACEMENT_SUBNET_ZONE_MISMATCH",
+   "ops": [
+    {
+     "set": "resources/id:web/placement/location",
+     "value": {
+      "zone_ref": "az-b"
+     }
+    }
+   ],
+   "note": "The T-001 subnet and zone anchor."
+  },
+  {
+   "id": "aws-alb-one-subnet",
+   "base": "providers/aws",
+   "expect": "PLACEMENT_SUBNET_COUNT_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:alb/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "public-a"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-zonal-nat-two-subnets",
+   "base": "providers/aws",
+   "expect": "PLACEMENT_SUBNET_COUNT_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:nat/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "public-a",
+        "app-a"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "gcp-vm-two-subnets-one-network",
+   "base": "providers/gcp",
+   "expect": "PLACEMENT_SUBNET_COUNT_INVALID",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "subnet-c",
+      "name": "Third",
+      "provider": "gcp",
+      "kind": "subnet",
+      "parent_ref": "vpc"
+     }
+    },
+    {
+     "set": "resources/id:vm/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "subnet",
+        "subnet-c"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-alb-subnets-same-zone",
+   "base": "providers/aws",
+   "expect": "PLACEMENT_SUBNET_ZONES_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:alb/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "public-a",
+        "app-a"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-eks-subnets-same-zone",
+   "base": "providers/aws",
+   "expect": "PLACEMENT_SUBNET_ZONES_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:eks/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "public-a",
+        "app-a"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-ec2-interfaces-two-zones",
+   "base": "providers/aws",
+   "expect": "PLACEMENT_SUBNET_ZONES_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:web/placement/location",
+     "value": {}
+    },
+    {
+     "set": "resources/id:web/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "app-a",
+        "public-b"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "gcp-vm-repeated-network",
+   "base": "providers/gcp",
+   "expect": "PLACEMENT_NETWORK_COUNT_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:vm/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "subnet"
+       ]
+      },
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "gcp-firewall-two-networks",
+   "base": "providers/gcp",
+   "expect": "PLACEMENT_NETWORK_COUNT_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:fw/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      },
+      {
+       "network_ref": "vpc-b"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "azure-app-gateway-subnet-shared",
+   "base": "providers/azure",
+   "expect": "PLACEMENT_DEDICATED_SUBNET_CONFLICT",
+   "ops": [
+    {
+     "set": "resources/id:vm/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vnet",
+       "subnet_refs": [
+        "appgw"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-s3-in-security-group",
+   "base": "providers/aws",
+   "expect": "PLACEMENT_SECURITY_GROUP_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:bucket/placement/security_boundaries",
+     "value": [
+      "sg-web"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-security-group-other-vpc",
+   "base": "providers/aws",
+   "expect": "PLACEMENT_SECURITY_GROUP_NETWORK_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "vpc-2",
+      "name": "Other VPC",
+      "provider": "aws",
+      "kind": "network"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "sg-2",
+      "name": "Other SG",
+      "provider": "aws",
+      "kind": "security_group",
+      "parent_ref": "vpc-2"
+     }
+    },
+    {
+     "set": "resources/id:web/placement/security_boundaries",
+     "value": [
+      "sg-2"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "cross-provider-security-group",
+   "base": "providers/hybrid",
+   "expect": "BOUNDARY_PROVIDER_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "sg-x",
+      "name": "SG",
+      "provider": "aws",
+      "kind": "security_group"
+     }
+    },
+    {
+     "set": "resources/id:hw-vm/placement/security_boundaries",
+     "value": [
+      "sg-x"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "huawei-security-group-other-region",
+   "base": "providers/huawei",
+   "expect": "PLACEMENT_SECURITY_GROUP_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-2",
+      "name": "Second region",
+      "provider": "huawei",
+      "kind": "region"
+     }
+    },
+    {
+     "set": "boundaries/id:sg/relations",
+     "value": [
+      {
+       "kind": "located_in",
+       "target_ref": "region-2"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "onprem-vm-on-physical-server",
+   "base": "providers/onprem",
+   "expect": "PLACEMENT_HOST_TYPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:vm/placement/deployment_context",
+     "value": [
+      "server"
+     ]
+    }
+   ],
+   "note": "Physical and virtual compute stay distinct."
+  },
+  {
+   "id": "k8s-label-bad-key",
+   "base": "kubernetes/*",
+   "expect": "LABEL_SYNTAX_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:deploy/properties/labels",
+     "value": {
+      "-bad-": "x"
+     }
+    }
+   ]
+  },
+  {
+   "id": "k8s-label-bad-value",
+   "base": "kubernetes/*",
+   "expect": "LABEL_SYNTAX_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:deploy/properties/labels",
+     "value": {
+      "app": "has space"
+     }
+    }
+   ]
+  },
+  {
+   "id": "k8s-label-bad-prefix",
+   "base": "kubernetes/*",
+   "expect": "LABEL_SYNTAX_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:deploy/properties/labels",
+     "value": {
+      "UPPER.example/name": "x"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-reserved-tag",
+   "base": "providers/aws",
+   "expect": "LABEL_SYNTAX_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:web/properties",
+     "value": {
+      "labels": {
+       "aws:owner": "x"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "azure-tag-character",
+   "base": "providers/azure",
+   "expect": "LABEL_SYNTAX_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:vm/properties",
+     "value": {
+      "labels": {
+       "cost/center": "x"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "gcp-label-uppercase",
+   "base": "providers/gcp",
+   "expect": "LABEL_SYNTAX_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:vm/properties",
+     "value": {
+      "labels": {
+       "Team": "x"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "azure-network-other-subscription",
+   "base": "providers/azure",
+   "expect": "AZURE_NETWORK_SUBSCRIPTION_MISMATCH",
+   "ops": [
+    {
+     "add": "scopes",
+     "value": {
+      "id": "sub-2",
+      "name": "Other subscription",
+      "provider": "azure",
+      "kind": "subscription",
+      "parent_ref": "tenant"
+     }
+    },
+    {
+     "add": "scopes",
+     "value": {
+      "id": "rg-2",
+      "name": "Other RG",
+      "provider": "azure",
+      "kind": "resource_group",
+      "parent_ref": "sub-2"
+     }
+    },
+    {
+     "set": "resources/id:vm/placement/scope_refs",
+     "value": [
+      "rg-2"
+     ]
+    }
+   ],
+   "note": "The T-002 ownership and attachment anchor."
+  },
+  {
+   "id": "azure-nic-vm-other-subscription",
+   "base": "providers/azure",
+   "expect": "AZURE_NIC_VM_SCOPE_MISMATCH",
+   "ops": [
+    {
+     "add": "scopes",
+     "value": {
+      "id": "sub-2",
+      "name": "Other subscription",
+      "provider": "azure",
+      "kind": "subscription",
+      "parent_ref": "tenant"
+     }
+    },
+    {
+     "add": "scopes",
+     "value": {
+      "id": "rg-2",
+      "name": "Other RG",
+      "provider": "azure",
+      "kind": "resource_group",
+      "parent_ref": "sub-2"
+     }
+    },
+    {
+     "set": "resources/id:vm/placement",
+     "value": {
+      "scope_refs": [
+       "rg-2"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "azure-nic-vm-other-region",
+   "base": "providers/azure",
+   "expect": "AZURE_NIC_VM_SCOPE_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-2",
+      "name": "Other",
+      "provider": "azure",
+      "kind": "region"
+     }
+    },
+    {
+     "set": "resources/id:vm/placement",
+     "value": {
+      "scope_refs": [
+       "rg-app"
+      ],
+      "location": {
+       "region_ref": "region-2"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "azure-firewall-other-resource-group",
+   "base": "providers/azure",
+   "expect": "AZURE_FIREWALL_RESOURCE_GROUP_MISMATCH",
+   "ops": [
+    {
+     "set": "resources/id:fw/placement/scope_refs",
+     "value": [
+      "rg-app"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "gcp-shared-vpc-undeclared",
+   "base": "providers/gcp",
+   "expect": "GCP_SHARED_VPC_ATTACHMENT_REQUIRED",
+   "ops": [
+    {
+     "del": "relationships/id:shared-vpc"
+    },
+    {
+     "set": "views/id:detail/relationship_refs",
+     "value": [
+      "t-lb-vm"
+     ]
+    }
+   ],
+   "note": "Cross-project use must be declared, not inferred."
+  },
+  {
+   "id": "gcp-project-host-and-service",
+   "base": "providers/gcp",
+   "expect": "GCP_SHARED_VPC_PROJECT_ROLE_CONFLICT",
+   "ops": [
+    {
+     "add": "scopes",
+     "value": {
+      "id": "third",
+      "name": "Third",
+      "provider": "gcp",
+      "kind": "project",
+      "parent_ref": "folder"
+     }
+    },
+    {
+     "add": "relationships",
+     "value": {
+      "id": "sv-2",
+      "source_ref": "host",
+      "target_ref": "third",
+      "kind": "attachment"
+     }
+    }
+   ]
+  },
+  {
+   "id": "gcp-service-two-hosts",
+   "base": "providers/gcp",
+   "expect": "GCP_SHARED_VPC_MULTIPLE_HOSTS",
+   "ops": [
+    {
+     "add": "scopes",
+     "value": {
+      "id": "third",
+      "name": "Third",
+      "provider": "gcp",
+      "kind": "project",
+      "parent_ref": "folder"
+     }
+    },
+    {
+     "add": "relationships",
+     "value": {
+      "id": "sv-2",
+      "source_ref": "service",
+      "target_ref": "third",
+      "kind": "attachment"
+     }
+    }
+   ]
+  },
+  {
+   "id": "huawei-project-two-regions",
+   "base": "providers/huawei",
+   "expect": "HUAWEI_IAM_PROJECT_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-2",
+      "name": "Second region",
+      "provider": "huawei",
+      "kind": "region"
+     }
+    },
+    {
+     "set": "boundaries/id:region-2/scope_refs",
+     "value": [
+      "proj"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "huawei-resource-outside-project-region",
+   "base": "providers/huawei",
+   "expect": "HUAWEI_IAM_PROJECT_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-2",
+      "name": "Second region",
+      "provider": "huawei",
+      "kind": "region"
+     }
+    },
+    {
+     "add": "scopes",
+     "value": {
+      "id": "proj-2",
+      "name": "Other project",
+      "provider": "huawei",
+      "kind": "iam_project",
+      "parent_ref": "acct"
+     }
+    },
+    {
+     "set": "boundaries/id:region-2/scope_refs",
+     "value": [
+      "proj-2"
+     ]
+    },
+    {
+     "set": "resources/id:eip/placement/scope_refs",
+     "value": [
+      "proj-2"
+     ]
+    },
+    {
+     "del": "relationships/id:bind-eip"
+    },
+    {
+     "set": "views/id:detail/relationship_refs",
+     "value": [
+      "t-elb-ecs"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "huawei-obs-in-iam-project",
+   "base": "providers/huawei",
+   "expect": "HUAWEI_GLOBAL_AUTHORIZATION_PROJECT_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:obs/placement/scope_refs",
+     "value": [
+      "proj"
+     ]
+    }
+   ],
+   "note": "OBS is authorized globally even though a bucket has a region."
+  },
+  {
+   "id": "huawei-iam-in-project",
+   "base": "providers/huawei",
+   "expect": "HUAWEI_GLOBAL_AUTHORIZATION_PROJECT_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:iam/placement/scope_refs",
+     "value": [
+      "proj"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "huawei-eip-other-region",
+   "base": "providers/huawei",
+   "expect": "HUAWEI_EIP_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-2",
+      "name": "Second region",
+      "provider": "huawei",
+      "kind": "region"
+     }
+    },
+    {
+     "set": "resources/id:eip/placement/location",
+     "value": {
+      "region_ref": "region-2"
+     }
+    },
+    {
+     "set": "resources/id:eip/placement/scope_refs",
+     "value": [
+      "acct"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "gke-autopilot-node-pool",
+   "base": "providers/gcp",
+   "expect": "K8S_NODE_POOL_TYPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:pool/kubernetes/cluster_ref",
+     "value": "autopilot"
+    }
+   ],
+   "note": "Autopilot has no user node pools."
+  },
+  {
+   "id": "cce-autopilot-node-pool",
+   "base": "providers/huawei",
+   "expect": "K8S_NODE_POOL_TYPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:pool/kubernetes/cluster_ref",
+     "value": "autopilot"
+    }
+   ]
+  },
+  {
+   "id": "gke-autopilot-generic-pool",
+   "base": "providers/gcp",
+   "expect": "K8S_NODE_POOL_TYPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:pool/service_type",
+     "value": "k8s.nodepool"
+    },
+    {
+     "set": "resources/id:pool/kubernetes/cluster_ref",
+     "value": "autopilot"
+    }
+   ]
+  },
+  {
+   "id": "self-managed-with-provider-pool",
+   "base": "kubernetes/eks",
+   "expect": "K8S_NODE_POOL_TYPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:cluster/service_type",
+     "value": "k8s.cluster"
+    }
+   ],
+   "note": "A native managed node group implies EKS, not a self-managed cluster."
+  },
+  {
+   "id": "managed-control-plane-placed",
+   "base": "kubernetes/eks",
+   "expect": "K8S_MANAGED_CONTROL_PLANE_PLACEMENT",
+   "ops": [
+    {
+     "set": "resources/id:control-plane/placement",
+     "value": {
+      "network_attachments": [
+       {
+        "network_ref": "vpc"
+       }
+      ]
+     }
+    }
+   ],
+   "note": "Hidden control-plane machines must not be fabricated."
+  },
+  {
+   "id": "aks-control-plane-placed",
+   "base": "kubernetes/aks",
+   "expect": "K8S_MANAGED_CONTROL_PLANE_PLACEMENT",
+   "ops": [
+    {
+     "set": "resources/id:control-plane/placement",
+     "value": {
+      "network_attachments": [
+       {
+        "network_ref": "vnet"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "owner-skips-replicaset",
+   "base": "kubernetes/*",
+   "expect": "K8S_OWNER_KIND_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:pod-b/kubernetes/owner_ref",
+     "value": "deploy"
+    },
+    {
+     "del": "relationships/id:own-pod"
+    },
+    {
+     "set": "views/id:detail/relationship_refs",
+     "value": [
+      "t-ing-svc"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "owner-reversed",
+   "base": "kubernetes/*",
+   "expect": "K8S_OWNER_KIND_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:deploy/kubernetes/owner_ref",
+     "value": "pod-j"
+    }
+   ]
+  },
+  {
+   "id": "owner-on-namespace",
+   "base": "kubernetes/*",
+   "expect": "K8S_NAMESPACE_MISMATCH",
+   "ops": [
+    {
+     "set": "resources/id:ns-app/kubernetes/owner_ref",
+     "value": "deploy"
+    }
+   ]
+  },
+  {
+   "id": "ownership-edge-wrong-kind",
+   "base": "kubernetes/*",
+   "expect": "K8S_OWNER_KIND_INVALID",
+   "ops": [
+    {
+     "set": "relationships/id:own-rs/source_ref",
+     "value": "sts"
+    }
+   ]
+  },
+  {
+   "id": "config-on-configmap",
+   "base": "kubernetes/*",
+   "expect": "K8S_REFERENCE_SOURCE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:secret/kubernetes/config_refs",
+     "value": [
+      "cm"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "volume-claim-on-service",
+   "base": "kubernetes/*",
+   "expect": "K8S_REFERENCE_SOURCE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:svc/kubernetes/volume_claim_refs",
+     "value": [
+      "pvc"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "replicas-on-daemonset",
+   "base": "kubernetes/*",
+   "expect": "K8S_PROPERTY_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:ds/properties",
+     "value": {
+      "replicas": 2
+     }
+    }
+   ]
+  },
+  {
+   "id": "service-type-on-pod",
+   "base": "kubernetes/*",
+   "expect": "K8S_PROPERTY_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:pod-b/properties",
+     "value": {
+      "service_type": "ClusterIP"
+     }
+    }
+   ]
+  },
+  {
+   "id": "externalname-with-targets",
+   "base": "kubernetes/*",
+   "expect": "K8S_SERVICE_TARGET_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:svc-ext/kubernetes/target_refs",
+     "value": [
+      "pod-a"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "namespace-on-node",
+   "base": "kubernetes/*",
+   "expect": "K8S_SCHEDULING_CONTEXT_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:ns-app/placement",
+     "value": {
+      "deployment_context": [
+       "node-a"
+      ]
+     }
+    }
+   ],
+   "note": "A namespace is not a physical child of a worker node."
+  },
+  {
+   "id": "pod-context-on-node",
+   "base": "kubernetes/*",
+   "expect": "K8S_SCHEDULING_CONTEXT_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:pod-b/placement",
+     "value": {
+      "deployment_context": [
+       "node-b"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "namespace-scheduled",
+   "base": "kubernetes/*",
+   "expect": "K8S_RELATIONSHIP_INVALID",
+   "ops": [
+    {
+     "set": "relationships/id:sched-a/source_ref",
+     "value": "ns-app"
+    }
+   ]
+  },
+  {
+   "id": "pod-scheduled-on-namespace",
+   "base": "kubernetes/*",
+   "expect": "K8S_RELATIONSHIP_INVALID",
+   "ops": [
+    {
+     "set": "relationships/id:sched-a/target_ref",
+     "value": "ns-app"
+    }
+   ]
+  },
+  {
+   "id": "pod-member-of-node",
+   "base": "kubernetes/*",
+   "expect": "K8S_RELATIONSHIP_INVALID",
+   "ops": [
+    {
+     "set": "relationships/id:member-pod/target_ref",
+     "value": "node-a"
+    }
+   ],
+   "note": "Membership and scheduling stay distinct."
+  },
+  {
+   "id": "pod-member-of-other-namespace",
+   "base": "kubernetes/*",
+   "expect": "K8S_RELATIONSHIP_INVALID",
+   "ops": [
+    {
+     "set": "relationships/id:member-pod/target_ref",
+     "value": "ns-other"
+    }
+   ]
+  },
+  {
+   "id": "traffic-to-configmap",
+   "base": "kubernetes/*",
+   "expect": "K8S_RELATIONSHIP_INVALID",
+   "ops": [
+    {
+     "set": "relationships/id:t-svc-pod/target_ref",
+     "value": "cm"
+    }
+   ]
+  },
+  {
+   "id": "traffic-to-namespace",
+   "base": "kubernetes/*",
+   "expect": "K8S_RELATIONSHIP_INVALID",
+   "ops": [
+    {
+     "set": "relationships/id:t-svc-pod/target_ref",
+     "value": "ns-app"
+    }
+   ]
+  },
+  {
+   "id": "external-traffic-to-secret",
+   "base": "kubernetes/*",
+   "expect": "K8S_RELATIONSHIP_INVALID",
+   "ops": [
+    {
+     "set": "relationships/id:t-lb-svc/target_ref",
+     "value": "secret"
+    }
+   ]
+  },
+  {
+   "id": "policy-from-pod",
+   "base": "kubernetes/*",
+   "expect": "K8S_RELATIONSHIP_INVALID",
+   "ops": [
+    {
+     "set": "relationships/id:policy-pod/source_ref",
+     "value": "pod-a"
+    }
+   ]
+  },
+  {
+   "id": "policy-on-service",
+   "base": "kubernetes/*",
+   "expect": "K8S_RELATIONSHIP_INVALID",
+   "ops": [
+    {
+     "set": "relationships/id:policy-pod/target_ref",
+     "value": "svc"
+    }
+   ]
+  },
+  {
+   "id": "storage-to-configmap",
+   "base": "kubernetes/*",
+   "expect": "K8S_RELATIONSHIP_INVALID",
+   "ops": [
+    {
+     "set": "relationships/id:store-pod/target_ref",
+     "value": "cm"
+    }
+   ]
+  },
+  {
+   "id": "configuration-to-pod",
+   "base": "kubernetes/*",
+   "expect": "K8S_RELATIONSHIP_INVALID",
+   "ops": [
+    {
+     "set": "relationships/id:conf-map/target_ref",
+     "value": "pod-a"
+    }
+   ]
+  },
+  {
+   "id": "scheduling-from-provider-service",
+   "base": "kubernetes/*",
+   "expect": "K8S_RELATIONSHIP_INVALID",
+   "ops": [
+    {
+     "set": "relationships/id:sched-a/source_ref",
+     "value": "edge-lb"
+    }
+   ]
+  },
+  {
+   "id": "configuration-other-namespace",
+   "base": "kubernetes/*",
+   "expect": "K8S_RELATIONSHIP_CROSS_SCOPE",
+   "ops": [
+    {
+     "set": "relationships/id:conf-map/target_ref",
+     "value": "cm-other"
+    }
+   ]
+  },
+  {
+   "id": "policy-other-namespace",
+   "base": "kubernetes/*",
+   "expect": "K8S_RELATIONSHIP_CROSS_SCOPE",
+   "ops": [
+    {
+     "add": "resources",
+     "value": {
+      "id": "pod-x",
+      "name": "pod-x",
+      "provider": "@host",
+      "service_type": "k8s.pod",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+       "kind": "Pod",
+       "cluster_ref": "cluster",
+       "namespace_ref": "ns-other"
+      }
+     }
+    },
+    {
+     "add": "views/id:detail/entity_refs",
+     "value": "pod-x"
+    },
+    {
+     "set": "relationships/id:policy-pod/target_ref",
+     "value": "pod-x"
+    }
+   ]
+  },
+  {
+   "id": "policy-other-namespace-object",
+   "base": "kubernetes/*",
+   "expect": "K8S_RELATIONSHIP_CROSS_SCOPE",
+   "ops": [
+    {
+     "set": "relationships/id:policy-pod/target_ref",
+     "value": "ns-other"
+    }
+   ]
+  },
+  {
+   "id": "core-namespace-required",
+   "base": "kubernetes/*",
+   "expect": "K8S_NAMESPACE_REQUIRED",
+   "ops": [
+    {
+     "del": "resources/id:cm-other/kubernetes/namespace_ref"
+    }
+   ]
+  },
+  {
+   "id": "core-namespace-forbidden",
+   "base": "kubernetes/*",
+   "expect": "K8S_NAMESPACE_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:sc/kubernetes/namespace_ref",
+     "value": "ns-app"
+    }
+   ]
+  },
+  {
+   "id": "core-service-target-other-namespace",
+   "base": "kubernetes/*",
+   "expect": "K8S_NAMESPACE_MISMATCH",
+   "ops": [
+    {
+     "set": "resources/id:svc/kubernetes/namespace_ref",
+     "value": "ns-other"
+    }
+   ]
+  },
+  {
+   "id": "core-pvc-other-namespace",
+   "base": "kubernetes/*",
+   "expect": "K8S_NAMESPACE_MISMATCH",
+   "ops": [
+    {
+     "set": "resources/id:pod-a/kubernetes/volume_claim_refs",
+     "value": [
+      "pvc"
+     ]
+    },
+    {
+     "set": "resources/id:pvc/kubernetes/namespace_ref",
+     "value": "ns-other"
+    }
+   ]
+  },
+  {
+   "id": "core-secret-payload",
+   "base": "kubernetes/*",
+   "expect": "K8S_SECRET_REFERENCE_ONLY",
+   "ops": [
+    {
+     "set": "resources/id:secret/properties",
+     "value": {
+      "labels": {
+       "password": "example"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "core-ingress-targets-pod",
+   "base": "kubernetes/*",
+   "expect": "K8S_REFERENCE_KIND_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:ing/kubernetes/service_refs",
+     "value": [
+      "pod-a"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "core-node-pool-of-other-cluster",
+   "base": "kubernetes/*",
+   "expect": "K8S_CLUSTER_MISMATCH",
+   "ops": [
+    {
+     "add": "resources",
+     "value": {
+      "id": "cluster-2",
+      "name": "Other",
+      "provider": "@host",
+      "service_type": "k8s.cluster",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+       "kind": "Cluster"
+      }
+     }
+    },
+    {
+     "set": "resources/id:pool/kubernetes/cluster_ref",
+     "value": "cluster-2"
+    }
+   ]
+  }
+ ],
+ "warnings": [
+  {
+   "id": "huawei-icon-rights",
+   "base": "providers/huawei",
+   "expect": "ASSET_RIGHTS_BLOCKED",
+   "ops": []
+  },
+  {
+   "id": "abstracted-node",
+   "base": "providers/gcp",
+   "expect": "K8S_ABSTRACTED_NODE_DECLARED",
+   "ops": [
+    {
+     "add": "resources",
+     "value": {
+      "id": "node",
+      "name": "node",
+      "provider": "gcp",
+      "service_type": "k8s.node",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+       "kind": "Node",
+       "cluster_ref": "autopilot"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "huawei-vpn-enterprise-project",
+   "base": "providers/huawei",
+   "expect": "HUAWEI_ENTERPRISE_PROJECT_UNSUPPORTED",
+   "ops": [
+    {
+     "set": "resources/id:vpn/placement/scope_refs",
+     "value": [
+      "proj",
+      "ep"
+     ]
+    }
+   ]
+  }
+ ]
+}

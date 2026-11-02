@@ -1,0 +1,115 @@
+{
+  "catalog_version": "2026.11.0",
+  "taxonomy": [
+    {
+      "id": "governance.scope",
+      "meaning": "Administrative ownership or logical grouping scope"
+    },
+    {
+      "id": "location.site",
+      "meaning": "Geographic region, zone or named site"
+    },
+    {
+      "id": "onprem.facility",
+      "meaning": "Physical data center, room or rack"
+    },
+    {
+      "id": "network.boundary",
+      "meaning": "Network, VLAN or VRF boundary"
+    },
+    {
+      "id": "network.subnet",
+      "meaning": "Subnet"
+    },
+    {
+      "id": "network.routing",
+      "meaning": "Routers, switches and NAT or internet gateways"
+    },
+    {
+      "id": "network.connectivity",
+      "meaning": "VPN, private connectivity and public IP attachment"
+    },
+    {
+      "id": "network.load_balancing",
+      "meaning": "Load balancing and in-cluster traffic exposure"
+    },
+    {
+      "id": "edge.delivery",
+      "meaning": "Content delivery and edge services"
+    },
+    {
+      "id": "compute.vm",
+      "meaning": "Virtual machines and their network interfaces"
+    },
+    {
+      "id": "compute.physical",
+      "meaning": "Physical servers and hypervisor hosts"
+    },
+    {
+      "id": "compute.containers",
+      "meaning": "Container platforms and Kubernetes compute objects"
+    },
+    {
+      "id": "compute.serverless",
+      "meaning": "Function compute"
+    },
+    {
+      "id": "application.platform",
+      "meaning": "Application platform services and configuration"
+    },
+    {
+      "id": "data.relational",
+      "meaning": "Relational databases"
+    },
+    {
+      "id": "data.nosql_cache",
+      "meaning": "Non-relational stores and caches"
+    },
+    {
+      "id": "data.analytics_ai",
+      "meaning": "Analytics and AI services"
+    },
+    {
+      "id": "storage.object",
+      "meaning": "Object storage"
+    },
+    {
+      "id": "storage.block_file",
+      "meaning": "Block and file storage, including Kubernetes volumes"
+    },
+    {
+      "id": "integration.messaging",
+      "meaning": "API management, messaging and integration"
+    },
+    {
+      "id": "identity.access",
+      "meaning": "Identity and access management"
+    },
+    {
+      "id": "security.control",
+      "meaning": "Firewalls and security boundaries or policies"
+    },
+    {
+      "id": "security.secrets_keys",
+      "meaning": "Secret and key references"
+    },
+    {
+      "id": "operations.observability",
+      "meaning": "Monitoring and logging"
+    },
+    {
+      "id": "operations.backup_dr",
+      "meaning": "Backup and disaster recovery"
+    },
+    {
+      "id": "external.entity",
+      "meaning": "Users, the Internet, partners, SaaS and other external systems"
+    }
+  ],
+  "lenient_fallback": {
+    "kind": "native_class",
+    "class_path": "diagrams.generic.blank.Blank",
+    "pack": "diagrams-generic",
+    "label": "Unknown type"
+  }
+}

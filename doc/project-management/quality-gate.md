@@ -1,6 +1,6 @@
 # Quality Gate and Self-Hosted Runner Plan
 
-Updated: 2026-11-02 | Status: S05/M1 initial product quality gate implemented and passed on the real runner. S03 runner/service setup and two actual manual preflight jobs passed; M0-04 complete.
+Updated: 2026-11-02 | Status: S05/M1 product quality gate passed on the real runner. S06/M2 adds two lanes that pass locally and await actual CI. S03 runner/service setup and two actual manual preflight jobs passed; M0-04 complete.
 
 ## Recommendation
 
@@ -12,15 +12,15 @@ The current private repository's rulesets/protection endpoints return 403 requir
 
 ## Implemented M1 gate and planned additions
 
-Implemented [quality-gate.yml](../../.github/workflows/quality-gate.yml) runs docs-contract, secrets, lint, format, types, workflow, schema-core and core package-build checks. [S05 evidence](evidence/S05-core-and-ci.md) records actual run 41426653007 at 785e1ee: eight lanes and 82 tests passed. The stable job name is quality-gate. Catalog/provider/render/visual/plugin checks below remain planned until their components arrive; no placeholder pass is emitted. M7 preparation adds the `claude-plugin` and `package-contents` lanes, which passed actual CI, most recently run 41453874994 at `917f46f` with 10 lanes in total; see the [M7 evidence](evidence/M7-claude-plugin.md).
+Implemented [quality-gate.yml](../../.github/workflows/quality-gate.yml) runs docs-contract, secrets, lint, format, types, workflow, schema-core and core package-build checks. [S05 evidence](evidence/S05-core-and-ci.md) records actual run 41426653007 at 785e1ee: eight lanes and 82 tests passed. The stable job name is quality-gate. Render/visual/plugin checks below remain planned until their components arrive; no placeholder pass is emitted. M7 preparation adds the `claude-plugin` and `package-contents` lanes, which passed actual CI, most recently run 41453874994 at `917f46f` with 10 lanes in total; see the [M7 evidence](evidence/M7-claude-plugin.md). S06 activates `catalog-license` and `provider-semantics`, for 12 lanes. A test lane now fails if it runs no tests, and the report carries `release_blockers`, because a passing gate does not clear them. See the [S06 evidence](evidence/S06-provider-catalogs.md#validation); no actual CI run covers them yet.
 
 | Check | Starts | Blocking result | Evidence |
 |---|---|---|---|
 | `docs-contract` | M1 | Broken local links, duplicate requirement IDs, invalid task/test references, malformed examples | Documentation/contract report |
 | `static` | M1 | Formatting/lint/type errors in implemented Python; invalid workflow syntax | Ruff/type checker/actionlint or selected equivalents |
 | `schema` | M1 | Valid fixtures rejected; invalid IDs/references/cycles accepted | Unit/contract report with requirement IDs |
-| `catalog-license` | M2 | Missing required types/assets, invalid mappings, missing rights/notice evidence | Inventory, asset digests and license report |
-| `provider-semantics` | M2 | Provider/Kubernetes rules fail, wrong cluster/namespace scope, conflated ownership/placement, or invalid Service/Ingress/storage references | Rule fixtures and primary references; FR-018/029 and T-017 |
+| `catalog-license` | M2, active | Missing required types/assets, invalid mappings, missing rights/notice evidence, any visual asset under `src` outside the manifest, unsafe SVG, a Huawei substitute | Inventory, asset digests and license report in `reports/catalog-license.json` |
+| `provider-semantics` | M2, active | Provider/Kubernetes rules fail, wrong cluster/namespace scope, conflated ownership/placement, invalid Service/Ingress/storage references, or a rule or catalog type with no fixture | Rule fixtures and primary references; FR-018/029 and T-017 |
 | `render-security` | M3 | Code/path/URL/Graphviz/SVG injection, limits, cleanup or isolation regression | Negative cases and bounded-execution results |
 | `render-smoke` | M3/M4 | Invalid/missing SVG/PNG or bundle metadata, icon loss, unreadable required labels | Model, diagnostics, images, normalized graph |
 | `visual-regression` | M4 | Unexpected structural/visual change lacking reviewed baseline update; unresolved provider-reference mismatch under FR-048/T-016 | Before/after/diff images, pinned official references and inspection/deviation notes |

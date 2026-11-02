@@ -12,6 +12,7 @@ from typing import Any, get_args
 import pytest
 import yaml
 
+from cloud_architecture_diagrams.catalog import catalog
 from cloud_architecture_diagrams.cli import capabilities
 from cloud_architecture_diagrams.models import (
     CLUSTER_SCOPED,
@@ -153,9 +154,11 @@ def test_skill_discloses_the_missing_renderer() -> None:
     assert mentions and all(mention.startswith(f"`{COMMAND}") for mention in mentions)
     # When capabilities move this fails, so the skill cannot keep describing old ones.
     assert capabilities()["render_available"] is False
-    assert capabilities()["commands"] == ["schema", "capabilities", "validate"]
-    assert capabilities()["pending_checks"] == ["catalog", "provider_rules", "render"]
+    assert capabilities()["commands"] == ["schema", "capabilities", "validate", "catalog"]
+    assert capabilities()["pending_checks"] == ["render"]
     assert "cannot render" in metadata["description"]
+    # The discovery command the skill relies on must stay in its workflow.
+    assert f"{COMMAND} catalog" in body
 
 
 @pytest.mark.parametrize(("pattern", "expected"), GUIDE_LISTS.values(), ids=GUIDE_LISTS.keys())
@@ -176,19 +179,62 @@ def test_model_guide_taxonomy_matches_requirements() -> None:
 
 
 def test_skill_discloses_what_validation_leaves_unchecked() -> None:
-    # When M2 enforces these, this fails so the skill's caveat is rewritten with them.
+    # M2 enforces these, so the caveat must stop calling them unchecked and name what is left.
     model = load(FIXTURES / "core-valid.json")
     model["resources"][0]["taxonomy"] = "made.up"
     model["resources"][0]["service_type"] = "not.a.real.service"
-    assert validate_json(json.dumps(model).encode()).valid
+    result = validate_json(json.dumps(model).encode())
+    assert {"CATALOG_TAXONOMY_UNKNOWN", "CATALOG_TYPE_UNKNOWN"} <= {
+        item.code for item in result.diagnostics
+    }
+    assert not result.valid
     skill = (SKILL / "SKILL.md").read_text()
     caveat = next(line for line in skill.splitlines() if line.startswith('A `"valid": true`'))
-    assert "`service_type`" in caveat and "`taxonomy`" in caveat
+    assert "`service_type`" not in caveat and "`taxonomy`" not in caveat
+    for limit in ("reachab", "deployed", "render"):
+        assert limit in caveat, limit
+
+
+def test_skill_discloses_the_huawei_icon_blocker() -> None:
+    # A Huawei model validates, so the skill must still say that it has no approved icons.
+    blockers = capabilities()["release_blockers"]
+    assert isinstance(blockers, list) and [item["id"] for item in blockers] == ["O-002"]
+    assert "ASSET_RIGHTS_BLOCKED" in (SKILL / "SKILL.md").read_text()
+    assert "generic" in (SKILL / "SKILL.md").read_text()
+
+
+def test_model_guide_types_exist_in_the_catalog() -> None:
+    guide = (SKILL / "references/model-guide.md").read_text()
+    pattern = r"`((?:aws|azure|gcp|huawei|onprem|external|k8s|common)\.[a-z_.]+)`"
+    named = set(re.findall(pattern, guide)) - set(catalog().taxonomy_ids)
+    assert len(named) > 10
+    assert named <= set(catalog().records), named - set(catalog().records)
+
+
+def test_model_guide_lists_every_kubernetes_mapping_rule() -> None:
+    guide = (SKILL / "references/model-guide.md").read_text()
+    for cluster, mode in catalog().cluster_modes.items():
+        assert f"`{cluster}`" in guide, cluster
+        for pool in mode.node_pool_types:
+            assert f"`{pool}`" in guide, pool
 
 
 def test_skill_reports_exclusions_for_every_view() -> None:
     skill = (SKILL / "SKILL.md").read_text()
     assert "`view_exclusions`" in skill and "every view" in skill
+
+
+def test_copy_serves_catalog_data_and_assets_from_its_own_tree(
+    installed: tuple[Path, dict[str, str]],
+) -> None:
+    # Data files must survive the same copy that real installs use, not only the checkout.
+    result = run(installed, "catalog", "--type", "onprem.storage.nas")
+    assert result.returncode == 0, result.stderr
+    [record] = json.loads(result.stdout)["records"]
+    assert record["representation"]["asset"] == "onprem-nas"
+    copied = installed[0] / "src/cloud_architecture_diagrams"
+    assert (copied / "assets/onprem/nas.svg").is_file()
+    assert (copied / "assets/NOTICE.md").is_file()
 
 
 def test_model_guide_examples_validate() -> None:
@@ -320,7 +366,7 @@ def test_copy_validates_models_from_stdin(installed: tuple[Path, dict[str, str]]
     model["metadata"]["title"] = "สถาปัตยกรรม"
     valid = run(installed, "validate", payload=json.dumps(model, ensure_ascii=False).encode())
     assert valid.returncode == 0, valid.stderr
-    assert json.loads(valid.stdout)["validation_scope"] == "core_only"
+    assert json.loads(valid.stdout)["validation_scope"] == "core_catalog_provider"
 
     invalid = run(installed, "validate", payload=b'{"schema_version":"1.0.0"}')
     assert invalid.returncode == 2

@@ -1,6 +1,6 @@
 # Cloud Architecture Diagrams for Claude Code
 
-This is a preparation build, versioned by Git commit so that installed copies can pick up every change. It reuses the project's core contract to author and validate canonical architecture models. **It cannot render SVG or PNG diagrams yet**, and provider catalogs and placement rules are not implemented. The installed ChatGPT Work pilot is a separate plugin.
+This is a preparation build, versioned by Git commit so that installed copies can pick up every change. It reuses the project's core contract and catalogs to author and validate canonical architecture models, including provider placement and Kubernetes rules. **It cannot render SVG or PNG diagrams yet**, and no Huawei Cloud service icon is approved. The installed ChatGPT Work pilot is a separate plugin.
 
 ## Requirements
 
@@ -39,8 +39,9 @@ The skill runs `bin/cloud-diagrams` from the plugin root by its full path:
 
 | Subcommand | Purpose |
 |---|---|
-| `capabilities` | Implemented capabilities, pending layers and limits |
+| `capabilities` | Implemented capabilities, pending layers, limits and release blockers |
 | `schema` | Versioned JSON Schema |
+| `catalog [--provider P] [--query TEXT] [--type ID] [--entity E] [--taxonomy T] [--kubernetes] [--limit N]` | Search provider and Kubernetes types; results are bounded |
 | `validate [--mode strict\|lenient] [--view ID] < model.json` | Validate a model from stdin |
 
 Exit codes: `0` success, `2` invalid model with JSON diagnostics on stdout, `3` the runtime could not be prepared or failed unexpectedly, `64` the command was used incorrectly.
@@ -75,4 +76,4 @@ rm -rf ~/.local/share/cloud-architecture-diagrams/claude-plugin
 
 ## How the package is built
 
-`pyproject.toml`, `uv.lock`, `src` and the skill examples are symlinks into the repository, so there is one copy of the core. Claude Code replaces symlinks that stay inside the marketplace with real files at install time, so an installed plugin is self-contained. Everything else in the repository, including research records and uncleared assets, stays out of the package.
+`pyproject.toml`, `uv.lock`, `src` and the skill examples are symlinks into the repository, so there is one copy of the core. Claude Code replaces symlinks that stay inside the marketplace with real files at install time, so an installed plugin is self-contained. Anything under `src` ships, so the `catalog-license` lane fails on any visual asset there that the rights manifest does not list. `src/cloud_architecture_diagrams/assets/NOTICE.md` holds the attribution for the bundled on-premises symbols. Everything else in the repository, including research records and uncleared assets, stays out of the package.

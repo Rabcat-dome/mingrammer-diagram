@@ -1,0 +1,449 @@
+{
+  "catalog_version": "2026.11.0",
+  "packs": [
+    {
+      "id": "drawio-network-2018",
+      "status": "approved",
+      "distribution": "bundled",
+      "publisher": "JGraph Ltd / draw.io",
+      "license": "CC-BY-4.0",
+      "rights_basis": "license",
+      "source_url": "https://github.com/jgraph/drawio/blob/48b181339578e11da7052ebf5b1fba8499418b77/src/main/webapp/stencils/networks.xml",
+      "source_version": "v29.3.2",
+      "source_commit": "48b181339578e11da7052ebf5b1fba8499418b77",
+      "source_tag_object": "bc0ccab15cb08e8e03491aa14a30eb2801caaf81",
+      "source_git_blob": "24191cc4ab46ce2bc2c3896b811f2afd9ade43cf",
+      "source_sha256": "2921086e1eec8cddcde937feec78caff85fa6b2b82670f29ded51e69b21e3711",
+      "retrieved": "2026-11-02",
+      "terms": [
+        {
+          "url": "https://github.com/jgraph/drawio/blob/48b181339578e11da7052ebf5b1fba8499418b77/README.md",
+          "sha256": "aa2c254169ddc36e907fde83836ea1e69b8af48553d269aa01b24fcb1c15d8c5",
+          "summary": "JGraph-provided icons are CC BY 4.0, with additional terms possible for third-party originals; no copyright claim on content created with the software."
+        },
+        {
+          "url": "https://github.com/jgraph/drawio/blob/48b181339578e11da7052ebf5b1fba8499418b77/src/main/webapp/stencils/LICENSE",
+          "sha256": "64d853e2f1d170ec6b19846848a4047175ad0bfdca5e7f207076fc542dba80d3",
+          "summary": "Icon sets and derivatives may not be displayed within, distributed for use with, or incorporated into products distributed through the Atlassian marketplace or plugin ecosystem without written permission."
+        },
+        {
+          "url": "https://github.com/jgraph/drawio/blob/3e707fd20b6930778d6f6bf6e4d0079b4bce366b/README.md",
+          "summary": "The current v32.6.9 README restates and widens the Atlassian restriction; networks.xml is no longer published as a stencil file at that tag."
+        }
+      ],
+      "conditions": [
+        "Attribute JGraph Ltd / draw.io and link the CC BY 4.0 license, and state that the assets were modified",
+        "Do not distribute these assets, or products containing them, through the Atlassian marketplace or plugin ecosystem without written permission from draw.io",
+        "This is limited to the seven audited generic shapes; it is not clearance for other draw.io libraries or for later distribution targets"
+      ],
+      "attribution": "Network 2018 shapes from draw.io (https://github.com/jgraph/drawio), copyright JGraph Ltd, licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Converted and in two cases combined by this project.",
+      "redistribution_evidence": "CC BY 4.0 permits sharing and adapting, including for this private plugin, subject to attribution and the stencil LICENSE restriction, which does not cover the Work and Claude Code targets."
+    },
+    {
+      "id": "aws-architecture-icons",
+      "status": "approved",
+      "distribution": "dependency",
+      "publisher": "Amazon Web Services",
+      "license": null,
+      "rights_basis": "publisher_permission",
+      "source_url": "https://aws.amazon.com/architecture/icons/",
+      "source_version": "as shipped by diagrams 0.25.1",
+      "retrieved": "2026-11-02",
+      "terms": [
+        {
+          "url": "https://aws.amazon.com/architecture/icons/",
+          "summary": "AWS allows customers and partners to use these assets to create architecture diagrams, and recognizes preexisting libraries in third-party tools."
+        }
+      ],
+      "conditions": [
+        "Use only to create architecture diagrams",
+        "Do not extract into this repository or redistribute separately; the icons arrive only through the pinned diagrams package",
+        "Upstream copies may be older than the current AWS set, which M4 checks under FR-048"
+      ],
+      "attribution": "AWS icons, copyright Amazon Web Services, delivered by the diagrams package.",
+      "redistribution_evidence": "Not redistributed by this project; the pinned dependency supplies them."
+    },
+    {
+      "id": "azure-architecture-icons",
+      "status": "approved",
+      "distribution": "dependency",
+      "publisher": "Microsoft",
+      "license": null,
+      "rights_basis": "publisher_permission",
+      "source_url": "https://learn.microsoft.com/en-us/azure/architecture/icons/",
+      "source_version": "as shipped by diagrams 0.25.1",
+      "retrieved": "2026-11-02",
+      "terms": [
+        {
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/icons/",
+          "summary": "Microsoft permits the icons in architectural diagrams, training materials and documentation, and allows copying, distribution and display only for that use. Icons must not be cropped, flipped, rotated or distorted."
+        }
+      ],
+      "conditions": [
+        "Use only in architectural diagrams, training materials or documentation",
+        "Do not crop, flip, rotate or distort an icon; M3 must draw them unmodified",
+        "Do not extract into this repository; the icons arrive only through the pinned diagrams package"
+      ],
+      "attribution": "Azure icons, copyright Microsoft, delivered by the diagrams package.",
+      "redistribution_evidence": "Not redistributed by this project; the pinned dependency supplies them."
+    },
+    {
+      "id": "gcp-product-icons",
+      "status": "approved",
+      "distribution": "dependency",
+      "publisher": "Google",
+      "license": null,
+      "rights_basis": "publisher_invitation",
+      "source_url": "https://cloud.google.com/icons",
+      "source_version": "as shipped by diagrams 0.25.1",
+      "retrieved": "2026-11-02",
+      "terms": [
+        {
+          "url": "https://cloud.google.com/icons",
+          "summary": "Google's official icon library offers the icons for diagrams and technical documentation. The page states no separate license text, so this is weaker evidence than the AWS and Microsoft statements."
+        }
+      ],
+      "conditions": [
+        "Use only in diagrams and technical documentation",
+        "Do not extract into this repository; the icons arrive only through the pinned diagrams package",
+        "Recheck for an explicit license before any distribution beyond this personal plugin"
+      ],
+      "attribution": "Google Cloud icons, copyright Google, delivered by the diagrams package.",
+      "redistribution_evidence": "Not redistributed by this project; the pinned dependency supplies them."
+    },
+    {
+      "id": "kubernetes-community-icons",
+      "status": "approved",
+      "distribution": "dependency",
+      "publisher": "The Kubernetes Authors",
+      "license": "Apache-2.0",
+      "rights_basis": "license",
+      "source_url": "https://github.com/kubernetes/community/tree/309fa9adfc84a8d04b0817a8b11124bf479a8d5e/icons",
+      "source_version": "as shipped by diagrams 0.25.1",
+      "retrieved": "2026-11-02",
+      "terms": [
+        {
+          "url": "https://github.com/kubernetes/community/blob/309fa9adfc84a8d04b0817a8b11124bf479a8d5e/icons/README.md",
+          "summary": "The icon set is offered under a choice of Apache-2.0 or CC-BY-4.0, and the Kubernetes logo stays subject to The Linux Foundation's trademark guidelines."
+        }
+      ],
+      "conditions": [
+        "Standard resource icons only; do not use the Kubernetes logo as a trademark",
+        "diagrams ships 256-pixel copies, which are not byte-identical to the 128-pixel community PNGs; a visual sample matches, but exact origin is not proven"
+      ],
+      "attribution": "Kubernetes icon set, copyright The Kubernetes Authors, Apache-2.0, delivered by the diagrams package.",
+      "redistribution_evidence": "Apache-2.0 permits redistribution; the pinned dependency supplies them."
+    },
+    {
+      "id": "diagrams-generic",
+      "status": "approved",
+      "distribution": "dependency",
+      "publisher": "mingrammer/diagrams",
+      "license": "MIT",
+      "rights_basis": "license",
+      "source_url": "https://github.com/mingrammer/diagrams/tree/v0.25.1",
+      "source_version": "0.25.1",
+      "retrieved": "2026-11-02",
+      "terms": [
+        {
+          "url": "https://github.com/mingrammer/diagrams/blob/v0.25.1/LICENSE",
+          "summary": "The repository, including its unbranded generic and on-premises resources used here, is MIT-licensed."
+        }
+      ],
+      "conditions": [
+        "Limited to unbranded generic symbols; named product logos must not imply an unspecified deployment product",
+        "Upstream records no per-icon origin for these symbols"
+      ],
+      "attribution": "Generic icons, copyright 2020 MinJae Kwon, MIT, delivered by the diagrams package.",
+      "redistribution_evidence": "MIT permits redistribution; the pinned dependency supplies them."
+    },
+    {
+      "id": "huawei-cloud-icons",
+      "status": "blocked",
+      "distribution": "none",
+      "publisher": "Huawei Cloud",
+      "license": null,
+      "rights_basis": "none",
+      "blocker": "O-002",
+      "blocker_reason": "Huawei Cloud's site terms reserve all rights and require prior written consent to reproduce, modify or distribute site content, and express written permission to use its logos. No license or written consent covering its icons was found, so none may be bundled or substituted.",
+      "source_url": "https://open.huaweicloud.com/openplatform/icons",
+      "source_version": "manifest.v1.json generated 2026-07-31",
+      "retrieved": "2026-11-02",
+      "terms": [
+        {
+          "url": "https://www.huaweicloud.com/intl/en-us/declaration-sg/sa_st.html",
+          "summary": "Site terms: content may not be reproduced, modified, distributed or otherwise used without prior written consent, and trademarks or logos may not be used without express prior written permission."
+        },
+        {
+          "url": "https://www.huawei.com/en/legal",
+          "summary": "Huawei's corporate terms state the same consent requirement for website content and marks."
+        }
+      ],
+      "candidates": [
+        {
+          "url": "https://open.huaweicloud.com/openplatform/icons/manifest.v1.json",
+          "sha256": "2862d932cdaff5ca1407910d5b0a85cf826cbda9b5576e93d0291626208f1f69",
+          "note": "Huawei-operated manifest of 196 logos; every architecture icon is marked planned; no license field. It covers 15 of the 17 named items; Subnet and Security Group have no entry and stay labeled boundaries."
+        },
+        {
+          "url": "https://github.com/huaweicloud-latam/drawio-libraries/tree/52c33aa12fb816a5de403da85067e1c0f039b5be",
+          "note": "Regional publisher account with SVG libraries; no license file and null GitHub license metadata."
+        },
+        {
+          "url": "https://github.com/JuanDiaz00/Huawei-Cloud-draw.io-icons/tree/ea52d7356e172a85cde7538f293a663eb137611d",
+          "note": "Community repack of a third-party site's PNGs; no license file."
+        }
+      ],
+      "conditions": [
+        "Bundle nothing, and render no generic substitute, until written consent or a clear license covers extraction, local conversion, bundling and generated diagrams",
+        "Record the consent and its scope here, then clear the blocker"
+      ],
+      "attribution": null,
+      "redistribution_evidence": null
+    }
+  ],
+  "assets": [
+    {
+      "id": "onprem-load-balancer",
+      "pack": "drawio-network-2018",
+      "concept": "Load balancer",
+      "required_label": "Load balancer",
+      "composition": "direct",
+      "symbols": [
+        "mxgraph.networks.load_balancer"
+      ],
+      "original": [
+        {
+          "name": "Load Balancer",
+          "canonical_sha256": "d905027fde65347a5f216761f364daffde06ee713188602f7f96174ba66cc4bb"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/onprem/load-balancer.svg",
+          "sha256": "4c4643e3e62786844a625bbce9cc2b376b6823aaf9ed029cf1165c46bbe5a633"
+        },
+        "png": {
+          "path": "assets/onprem/load-balancer.png",
+          "sha256": "0c66c75dffea48da587dc9f4025ef9a7c367597f4aba123edb751ead1728728a",
+          "width": 256,
+          "height": 88
+        }
+      },
+      "changes": "Converted the stencil geometry to SVG, applied the palette's default colors, and rasterized to PNG"
+    },
+    {
+      "id": "onprem-hypervisor",
+      "pack": "drawio-network-2018",
+      "concept": "Hypervisor",
+      "required_label": "Hypervisor",
+      "composition": "labeled host with a guest symbol, distinct from the VM asset",
+      "symbols": [
+        "mxgraph.networks.server",
+        "mxgraph.networks.virtual_server"
+      ],
+      "original": [
+        {
+          "name": "Server",
+          "canonical_sha256": "916b6bdd8c0bd7a73a564f4bfd7ff94be952a78628b6e07b29379076b68f22ef"
+        },
+        {
+          "name": "Virtual Server",
+          "canonical_sha256": "4a89dfa5bbec6ff883c07eb2c165391b75098d523611226138f74ad7b14a2220"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/onprem/hypervisor.svg",
+          "sha256": "313e9e0850e08de1a82c53b8865b0c8a68833410b2a1be199488070e33d332e8"
+        },
+        "png": {
+          "path": "assets/onprem/hypervisor.png",
+          "sha256": "49bb6f58f99f4a2117dd56e8906b917510ed8e5180e3a03d45ff3437b93cf82b",
+          "width": 256,
+          "height": 226
+        }
+      },
+      "changes": "Converted the stencil geometry to SVG, applied the palette's default colors, and rasterized to PNG; layered two symbols"
+    },
+    {
+      "id": "onprem-vm",
+      "pack": "drawio-network-2018",
+      "concept": "VM",
+      "required_label": "VM",
+      "composition": "direct virtual-server symbol, labeled VM",
+      "symbols": [
+        "mxgraph.networks.virtual_server"
+      ],
+      "original": [
+        {
+          "name": "Virtual Server",
+          "canonical_sha256": "4a89dfa5bbec6ff883c07eb2c165391b75098d523611226138f74ad7b14a2220"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/onprem/vm.svg",
+          "sha256": "becab47cea345193e8d594d1cee1fb399997092eedc1f7890fc204c5bc332ea4"
+        },
+        "png": {
+          "path": "assets/onprem/vm.png",
+          "sha256": "f78e73eb4230413cb89bb48a0f35135960307ee0c43d39ebf0aedc6ce1fcf54a",
+          "width": 236,
+          "height": 256
+        }
+      },
+      "changes": "Converted the stencil geometry to SVG, applied the palette's default colors, and rasterized to PNG"
+    },
+    {
+      "id": "onprem-nas",
+      "pack": "drawio-network-2018",
+      "concept": "NAS",
+      "required_label": "NAS",
+      "composition": "direct NAS filer symbol",
+      "symbols": [
+        "mxgraph.networks.nas_filer"
+      ],
+      "original": [
+        {
+          "name": "NAS Filer",
+          "canonical_sha256": "9535c44c77fa1d67bf8b2508dc5fc7f3c851495e901d06fcd131a5f970f3ed50"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/onprem/nas.svg",
+          "sha256": "9539ad8c08a8ac7381da47dd1bea9e68c4368088a2ddd4f9b24f6abd2eb3f6ec"
+        },
+        "png": {
+          "path": "assets/onprem/nas.png",
+          "sha256": "2591168b936e9b05fe06b25ba6e043eadf6584aa2a011c0028bdf31561d23dc9",
+          "width": 256,
+          "height": 100
+        }
+      },
+      "changes": "Converted the stencil geometry to SVG, applied the palette's default colors, and rasterized to PNG"
+    },
+    {
+      "id": "onprem-san",
+      "pack": "drawio-network-2018",
+      "concept": "SAN",
+      "required_label": "SAN",
+      "composition": "storage symbol labeled SAN; block and fabric links come from the model",
+      "symbols": [
+        "mxgraph.networks.storage"
+      ],
+      "original": [
+        {
+          "name": "Storage",
+          "canonical_sha256": "a3e4ac6e49f584592f69496cfd5a06e15e20c188f0c440e5c715197aa8f4b25a"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/onprem/san.svg",
+          "sha256": "24c61b143c6ca6508a9b88284fea7f64d26b336bef8925e20d5afa8a09ca6fe2"
+        },
+        "png": {
+          "path": "assets/onprem/san.png",
+          "sha256": "348fe688ef2fc78224f474fd6bdc428fc16bccf5074dcc9a4f6f916a2f53fd07",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "Converted the stencil geometry to SVG, applied the palette's default colors, and rasterized to PNG"
+    },
+    {
+      "id": "onprem-identity-service",
+      "pack": "drawio-network-2018",
+      "concept": "Identity service",
+      "required_label": "Identity service",
+      "composition": "labeled server with a people symbol; implies no named product",
+      "symbols": [
+        "mxgraph.networks.server",
+        "mxgraph.networks.users"
+      ],
+      "original": [
+        {
+          "name": "Server",
+          "canonical_sha256": "916b6bdd8c0bd7a73a564f4bfd7ff94be952a78628b6e07b29379076b68f22ef"
+        },
+        {
+          "name": "Users",
+          "canonical_sha256": "ec3a62c210160ecdadb180293a3a3a002150fb41ee2013b0c888e339f0ea57c5"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/onprem/identity-service.svg",
+          "sha256": "b7daeef23203b0d4eb557c2de12f1bcbc315be9d1d4a65de940ca300fead7358"
+        },
+        "png": {
+          "path": "assets/onprem/identity-service.png",
+          "sha256": "ec136f7f221b9d9c2ce4a87ea6e179173270cc969a6dc897e8da9044c1e68a0b",
+          "width": 256,
+          "height": 237
+        }
+      },
+      "changes": "Converted the stencil geometry to SVG, applied the palette's default colors, and rasterized to PNG; layered two symbols"
+    },
+    {
+      "id": "onprem-backup-system",
+      "pack": "drawio-network-2018",
+      "concept": "Backup system",
+      "required_label": "Backup system",
+      "composition": "server-storage symbol labeled as a backup service; no tape imagery",
+      "symbols": [
+        "mxgraph.networks.server_storage"
+      ],
+      "original": [
+        {
+          "name": "Server Storage",
+          "canonical_sha256": "fd00d17d864c24b83237da6b91f8f5d6f6ad1e00d4be66e8793e38b91eccfc5f"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/onprem/backup-system.svg",
+          "sha256": "97905471d8061544639ad76781f678825e1274c03178a2fb3f1771c4b2fdc187"
+        },
+        "png": {
+          "path": "assets/onprem/backup-system.png",
+          "sha256": "231b442173f39f04aa2a34c3ad49f4f5e47102f55b08b2a29b385a7fa1904d0d",
+          "width": 249,
+          "height": 256
+        }
+      },
+      "changes": "Converted the stencil geometry to SVG, applied the palette's default colors, and rasterized to PNG"
+    },
+    {
+      "id": "onprem-monitoring",
+      "pack": "drawio-network-2018",
+      "concept": "Monitoring",
+      "required_label": "Monitoring",
+      "composition": "server symbol with a required Monitoring label, not a display symbol",
+      "symbols": [
+        "mxgraph.networks.server"
+      ],
+      "original": [
+        {
+          "name": "Server",
+          "canonical_sha256": "916b6bdd8c0bd7a73a564f4bfd7ff94be952a78628b6e07b29379076b68f22ef"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/onprem/monitoring.svg",
+          "sha256": "7ba8255b5926877f7dbe6bac4895b20c0eab81dd2ebc433c9549c2d1f39b9a86"
+        },
+        "png": {
+          "path": "assets/onprem/monitoring.png",
+          "sha256": "cf55264a8dfe6b5ea92e25b69d7e3faac7fdf10372c32c1325dd005942ee01b5",
+          "width": 232,
+          "height": 256
+        }
+      },
+      "changes": "Converted the stencil geometry to SVG, applied the palette's default colors, and rasterized to PNG"
+    }
+  ]
+}

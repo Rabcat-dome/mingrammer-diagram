@@ -1,0 +1,313 @@
+{
+  "catalog_version": "2026.11.0",
+  "required": {
+    "aws": {
+      "Account": [
+        "aws.scope.account"
+      ],
+      "region": [
+        "aws.location.region"
+      ],
+      "AZ": [
+        "aws.location.availability_zone"
+      ],
+      "VPC": [
+        "aws.network.vpc"
+      ],
+      "subnet": [
+        "aws.network.subnet"
+      ],
+      "EC2": [
+        "aws.compute.ec2"
+      ],
+      "ALB": [
+        "aws.network.application_load_balancer"
+      ],
+      "EKS": [
+        "aws.containers.eks",
+        "aws.containers.eks_auto_mode"
+      ],
+      "RDS": [
+        "aws.database.rds"
+      ],
+      "S3": [
+        "aws.storage.s3"
+      ],
+      "IAM": [
+        "aws.identity.iam"
+      ],
+      "Security Group": [
+        "aws.security.security_group"
+      ],
+      "NAT Gateway": [
+        "aws.network.nat_gateway",
+        "aws.network.regional_nat_gateway"
+      ],
+      "Internet Gateway": [
+        "aws.network.internet_gateway"
+      ],
+      "Site-to-Site VPN": [
+        "aws.network.site_to_site_vpn"
+      ],
+      "Direct Connect": [
+        "aws.network.direct_connect"
+      ],
+      "CloudWatch": [
+        "aws.observability.cloudwatch"
+      ]
+    },
+    "azure": {
+      "Tenant": [
+        "azure.scope.tenant"
+      ],
+      "subscription": [
+        "azure.scope.subscription"
+      ],
+      "resource group": [
+        "azure.scope.resource_group"
+      ],
+      "region": [
+        "azure.location.region"
+      ],
+      "VNet": [
+        "azure.network.vnet"
+      ],
+      "subnet": [
+        "azure.network.subnet"
+      ],
+      "VM": [
+        "azure.compute.virtual_machine"
+      ],
+      "NIC": [
+        "azure.network.network_interface"
+      ],
+      "Application Gateway": [
+        "azure.network.application_gateway"
+      ],
+      "AKS": [
+        "azure.containers.aks",
+        "azure.containers.aks_automatic"
+      ],
+      "Azure SQL Database": [
+        "azure.database.sql_database"
+      ],
+      "Blob Storage": [
+        "azure.storage.blob_storage"
+      ],
+      "Entra ID/Azure RBAC context": [
+        "azure.identity.entra_id",
+        "azure.identity.rbac"
+      ],
+      "NSG": [
+        "azure.security.network_security_group"
+      ],
+      "Azure Firewall": [
+        "azure.security.firewall"
+      ],
+      "NAT Gateway": [
+        "azure.network.nat_gateway"
+      ],
+      "VPN Gateway": [
+        "azure.network.vpn_gateway"
+      ],
+      "ExpressRoute": [
+        "azure.network.expressroute"
+      ],
+      "Azure Monitor": [
+        "azure.observability.monitor"
+      ]
+    },
+    "gcp": {
+      "Organization/folder/project": [
+        "gcp.scope.organization",
+        "gcp.scope.folder",
+        "gcp.scope.project"
+      ],
+      "region/zone": [
+        "gcp.location.region",
+        "gcp.location.zone"
+      ],
+      "VPC": [
+        "gcp.network.vpc"
+      ],
+      "subnet": [
+        "gcp.network.subnet"
+      ],
+      "Compute Engine": [
+        "gcp.compute.compute_engine"
+      ],
+      "GKE": [
+        "gcp.containers.gke_standard",
+        "gcp.containers.gke_autopilot"
+      ],
+      "selected Cloud Load Balancing product": [
+        "gcp.network.global_external_application_load_balancer",
+        "gcp.network.regional_application_load_balancer",
+        "gcp.network.passthrough_network_load_balancer"
+      ],
+      "Cloud SQL": [
+        "gcp.database.cloud_sql"
+      ],
+      "Cloud Storage": [
+        "gcp.storage.cloud_storage"
+      ],
+      "IAM": [
+        "gcp.identity.iam"
+      ],
+      "VPC firewall rule": [
+        "gcp.security.vpc_firewall_rule"
+      ],
+      "Cloud NAT": [
+        "gcp.network.cloud_nat"
+      ],
+      "Cloud VPN": [
+        "gcp.network.cloud_vpn"
+      ],
+      "Cloud Interconnect": [
+        "gcp.network.dedicated_interconnect",
+        "gcp.network.partner_interconnect"
+      ],
+      "Cloud Monitoring/Logging": [
+        "gcp.observability.cloud_monitoring",
+        "gcp.observability.cloud_logging"
+      ],
+      "Shared VPC host/service-project references": [
+        "gcp.scope.project",
+        "gcp.network.vpc"
+      ]
+    },
+    "huawei": {
+      "Account": [
+        "huawei.scope.account"
+      ],
+      "IAM project": [
+        "huawei.scope.iam_project"
+      ],
+      "enterprise-project context where applicable": [
+        "huawei.scope.enterprise_project"
+      ],
+      "region/AZ": [
+        "huawei.location.region",
+        "huawei.location.availability_zone"
+      ],
+      "VPC": [
+        "huawei.network.vpc"
+      ],
+      "subnet": [
+        "huawei.network.subnet"
+      ],
+      "ECS": [
+        "huawei.compute.ecs"
+      ],
+      "ELB": [
+        "huawei.network.elb"
+      ],
+      "EIP": [
+        "huawei.network.eip"
+      ],
+      "NAT Gateway": [
+        "huawei.network.nat_gateway"
+      ],
+      "CCE": [
+        "huawei.containers.cce_standard",
+        "huawei.containers.cce_turbo",
+        "huawei.containers.cce_autopilot"
+      ],
+      "RDS": [
+        "huawei.database.rds"
+      ],
+      "OBS": [
+        "huawei.storage.obs"
+      ],
+      "IAM": [
+        "huawei.identity.iam"
+      ],
+      "Security Group": [
+        "huawei.security.security_group"
+      ],
+      "API Gateway": [
+        "huawei.integration.api_gateway"
+      ],
+      "FunctionGraph": [
+        "huawei.compute.functiongraph"
+      ],
+      "VPN": [
+        "huawei.network.vpn"
+      ],
+      "Direct Connect": [
+        "huawei.network.direct_connect"
+      ],
+      "Cloud Eye": [
+        "huawei.observability.cloud_eye"
+      ],
+      "LTS": [
+        "huawei.observability.lts"
+      ]
+    },
+    "onprem": {
+      "Site/data center": [
+        "onprem.location.site",
+        "onprem.location.data_center"
+      ],
+      "room/rack": [
+        "onprem.location.room",
+        "onprem.location.rack"
+      ],
+      "security zone": [
+        "common.boundary.security_zone"
+      ],
+      "VLAN": [
+        "onprem.network.vlan"
+      ],
+      "VRF": [
+        "onprem.network.vrf"
+      ],
+      "subnet": [
+        "onprem.network.subnet"
+      ],
+      "router": [
+        "onprem.network.router"
+      ],
+      "L2/L3 switch": [
+        "onprem.network.l2_switch",
+        "onprem.network.l3_switch"
+      ],
+      "firewall": [
+        "onprem.security.firewall"
+      ],
+      "load balancer": [
+        "onprem.network.load_balancer"
+      ],
+      "hypervisor": [
+        "onprem.compute.hypervisor"
+      ],
+      "VM": [
+        "onprem.compute.virtual_machine"
+      ],
+      "physical server": [
+        "onprem.compute.physical_server"
+      ],
+      "Kubernetes cluster": [
+        "onprem.containers.kubernetes_cluster"
+      ],
+      "database": [
+        "onprem.database.database"
+      ],
+      "NAS": [
+        "onprem.storage.nas"
+      ],
+      "SAN": [
+        "onprem.storage.san"
+      ],
+      "identity service": [
+        "onprem.identity.identity_service"
+      ],
+      "backup system": [
+        "onprem.operations.backup_system"
+      ],
+      "monitoring": [
+        "onprem.operations.monitoring"
+      ]
+    }
+  }
+}

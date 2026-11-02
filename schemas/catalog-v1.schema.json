@@ -1,0 +1,661 @@
+{
+  "$defs": {
+    "CatalogRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "api_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Api Version"
+        },
+        "capabilities": {
+          "items": {
+            "enum": [
+              "api_management",
+              "backup",
+              "block_storage",
+              "container_cluster",
+              "database",
+              "external_party",
+              "file_storage",
+              "firewall",
+              "gateway",
+              "hypervisor",
+              "identity",
+              "kubernetes_config",
+              "kubernetes_identity",
+              "kubernetes_policy",
+              "kubernetes_storage",
+              "kubernetes_traffic",
+              "kubernetes_workload",
+              "load_balancing",
+              "location",
+              "logging",
+              "monitoring",
+              "nat",
+              "network",
+              "node_group",
+              "object_storage",
+              "physical_compute",
+              "policy",
+              "private_connectivity",
+              "public_ip",
+              "routing",
+              "scope",
+              "security_boundary",
+              "serverless",
+              "subnet",
+              "switching",
+              "virtual_compute",
+              "vpn"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Capabilities",
+          "type": "array"
+        },
+        "display_name": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Display Name",
+          "type": "string"
+        },
+        "entity": {
+          "enum": [
+            "resource",
+            "boundary",
+            "scope"
+          ],
+          "title": "Entity",
+          "type": "string"
+        },
+        "id": {
+          "maxLength": 64,
+          "pattern": "^(aws|azure|gcp|huawei|onprem|external|k8s|common)\\.[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)?$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Kind"
+        },
+        "kubernetes_kinds": {
+          "default": [],
+          "items": {
+            "enum": [
+              "Cluster",
+              "ControlPlane",
+              "NodePool",
+              "Node",
+              "Namespace",
+              "Deployment",
+              "ReplicaSet",
+              "StatefulSet",
+              "DaemonSet",
+              "Job",
+              "CronJob",
+              "Pod",
+              "Service",
+              "Ingress",
+              "IngressController",
+              "PersistentVolumeClaim",
+              "PersistentVolume",
+              "StorageClass",
+              "ConfigMap",
+              "Secret",
+              "ServiceAccount",
+              "NetworkPolicy"
+            ],
+            "type": "string"
+          },
+          "title": "Kubernetes Kinds",
+          "type": "array"
+        },
+        "namespaced": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Namespaced"
+        },
+        "native_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Native Id"
+        },
+        "placement": {
+          "$ref": "#/$defs/PlacementRule",
+          "default": {
+            "dedicated_subnet": false,
+            "enterprise_project_authorization": null,
+            "host_types": [],
+            "iam_authorization": null,
+            "location": "any",
+            "max_networks": null,
+            "max_subnets": null,
+            "max_subnets_per_network": null,
+            "min_subnet_zones": 0,
+            "min_subnets": 0,
+            "network": "none",
+            "network_member_kinds": [],
+            "parent_kinds": [],
+            "same_resource_group_as_network": false,
+            "scope_kinds": null,
+            "security_group_scope": null,
+            "single_subnet_zone": false,
+            "unique_networks": false
+          }
+        },
+        "providers": {
+          "items": {
+            "enum": [
+              "aws",
+              "azure",
+              "gcp",
+              "huawei",
+              "onprem",
+              "external"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Providers",
+          "type": "array"
+        },
+        "representation": {
+          "$ref": "#/$defs/Representation"
+        },
+        "sources": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "supported",
+            "semantics_only"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "taxonomy": {
+          "title": "Taxonomy",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "providers",
+        "entity",
+        "display_name",
+        "taxonomy",
+        "capabilities",
+        "representation",
+        "status",
+        "sources"
+      ],
+      "title": "CatalogRecord",
+      "type": "object"
+    },
+    "ClusterMode": {
+      "additionalProperties": false,
+      "properties": {
+        "abstracted_nodes": {
+          "title": "Abstracted Nodes",
+          "type": "boolean"
+        },
+        "control_plane": {
+          "enum": [
+            "provider_managed",
+            "user_managed"
+          ],
+          "title": "Control Plane",
+          "type": "string"
+        },
+        "node_pool_types": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Node Pool Types",
+          "type": "array"
+        }
+      },
+      "required": [
+        "control_plane",
+        "node_pool_types",
+        "abstracted_nodes"
+      ],
+      "title": "ClusterMode",
+      "type": "object"
+    },
+    "PlacementRule": {
+      "additionalProperties": false,
+      "description": "Absence means unspecified, so these constrain only what a model actually declares.",
+      "properties": {
+        "dedicated_subnet": {
+          "default": false,
+          "title": "Dedicated Subnet",
+          "type": "boolean"
+        },
+        "enterprise_project_authorization": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Enterprise Project Authorization"
+        },
+        "host_types": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Host Types",
+          "type": "array"
+        },
+        "iam_authorization": {
+          "anyOf": [
+            {
+              "enum": [
+                "project",
+                "global"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Iam Authorization"
+        },
+        "location": {
+          "default": "any",
+          "enum": [
+            "none",
+            "global",
+            "regional",
+            "zonal",
+            "site",
+            "physical",
+            "any"
+          ],
+          "title": "Location",
+          "type": "string"
+        },
+        "max_networks": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Networks"
+        },
+        "max_subnets": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Subnets"
+        },
+        "max_subnets_per_network": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Subnets Per Network"
+        },
+        "min_subnet_zones": {
+          "default": 0,
+          "title": "Min Subnet Zones",
+          "type": "integer"
+        },
+        "min_subnets": {
+          "default": 0,
+          "title": "Min Subnets",
+          "type": "integer"
+        },
+        "network": {
+          "default": "none",
+          "enum": [
+            "none",
+            "network",
+            "subnet"
+          ],
+          "title": "Network",
+          "type": "string"
+        },
+        "network_member_kinds": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Network Member Kinds",
+          "type": "array"
+        },
+        "parent_kinds": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Parent Kinds",
+          "type": "array"
+        },
+        "same_resource_group_as_network": {
+          "default": false,
+          "title": "Same Resource Group As Network",
+          "type": "boolean"
+        },
+        "scope_kinds": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scope Kinds"
+        },
+        "security_group_scope": {
+          "anyOf": [
+            {
+              "enum": [
+                "network",
+                "region"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Security Group Scope"
+        },
+        "single_subnet_zone": {
+          "default": false,
+          "title": "Single Subnet Zone",
+          "type": "boolean"
+        },
+        "unique_networks": {
+          "default": false,
+          "title": "Unique Networks",
+          "type": "boolean"
+        }
+      },
+      "title": "PlacementRule",
+      "type": "object"
+    },
+    "Representation": {
+      "additionalProperties": false,
+      "properties": {
+        "asset": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Asset"
+        },
+        "blocker": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Blocker"
+        },
+        "class_path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Class Path"
+        },
+        "kind": {
+          "enum": [
+            "native_class",
+            "custom_asset",
+            "labeled_boundary",
+            "labeled_node",
+            "blocked"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Label"
+        },
+        "pack": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pack"
+        },
+        "source_candidate": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Candidate"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "Representation",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "catalog_version": {
+      "title": "Catalog Version",
+      "type": "string"
+    },
+    "cluster_modes": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ClusterMode"
+      },
+      "title": "Cluster Modes",
+      "type": "object"
+    },
+    "label_source": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Label Source"
+    },
+    "label_syntax": {
+      "anyOf": [
+        {
+          "enum": [
+            "aws",
+            "azure",
+            "gcp"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Label Syntax"
+    },
+    "platform": {
+      "anyOf": [
+        {
+          "enum": [
+            "common",
+            "kubernetes"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Platform"
+    },
+    "provider": {
+      "anyOf": [
+        {
+          "enum": [
+            "aws",
+            "azure",
+            "gcp",
+            "huawei",
+            "onprem",
+            "external"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Provider"
+    },
+    "records": {
+      "items": {
+        "$ref": "#/$defs/CatalogRecord"
+      },
+      "title": "Records",
+      "type": "array"
+    },
+    "single_scope_kinds": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Single Scope Kinds",
+      "type": "array"
+    },
+    "verified_release": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Verified Release"
+    },
+    "verified_release_source": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Verified Release Source"
+    }
+  },
+  "required": [
+    "catalog_version",
+    "records"
+  ],
+  "title": "ProviderFile",
+  "type": "object"
+}

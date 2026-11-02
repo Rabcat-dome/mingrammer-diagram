@@ -1,0 +1,116 @@
+{
+  "catalog_version": "2026.11.0",
+  "platform": "kubernetes",
+  "verified_release": "1.37",
+  "verified_release_source": "https://kubernetes.io/releases/",
+  "cluster_modes": {
+    "k8s.cluster": {
+      "control_plane": "user_managed",
+      "node_pool_types": [
+        "k8s.nodepool"
+      ],
+      "abstracted_nodes": false
+    },
+    "aws.containers.eks": {
+      "control_plane": "provider_managed",
+      "node_pool_types": [
+        "aws.containers.eks_managed_node_group",
+        "aws.containers.eks_self_managed_nodes",
+        "aws.containers.eks_fargate_profile",
+        "k8s.nodepool"
+      ],
+      "abstracted_nodes": false
+    },
+    "aws.containers.eks_auto_mode": {
+      "control_plane": "provider_managed",
+      "node_pool_types": [
+        "aws.containers.eks_managed_node_group",
+        "aws.containers.eks_self_managed_nodes",
+        "aws.containers.eks_fargate_profile",
+        "k8s.nodepool"
+      ],
+      "abstracted_nodes": true
+    },
+    "azure.containers.aks": {
+      "control_plane": "provider_managed",
+      "node_pool_types": [
+        "azure.containers.aks_node_pool",
+        "k8s.nodepool"
+      ],
+      "abstracted_nodes": false
+    },
+    "azure.containers.aks_automatic": {
+      "control_plane": "provider_managed",
+      "node_pool_types": [
+        "azure.containers.aks_node_pool",
+        "k8s.nodepool"
+      ],
+      "abstracted_nodes": true
+    },
+    "gcp.containers.gke_standard": {
+      "control_plane": "provider_managed",
+      "node_pool_types": [
+        "gcp.containers.gke_node_pool",
+        "k8s.nodepool"
+      ],
+      "abstracted_nodes": false
+    },
+    "gcp.containers.gke_autopilot": {
+      "control_plane": "provider_managed",
+      "node_pool_types": [],
+      "abstracted_nodes": true
+    },
+    "huawei.containers.cce_standard": {
+      "control_plane": "provider_managed",
+      "node_pool_types": [
+        "huawei.containers.cce_node_pool",
+        "k8s.nodepool"
+      ],
+      "abstracted_nodes": false
+    },
+    "huawei.containers.cce_turbo": {
+      "control_plane": "provider_managed",
+      "node_pool_types": [
+        "huawei.containers.cce_node_pool",
+        "k8s.nodepool"
+      ],
+      "abstracted_nodes": false
+    },
+    "huawei.containers.cce_autopilot": {
+      "control_plane": "provider_managed",
+      "node_pool_types": [],
+      "abstracted_nodes": true
+    },
+    "onprem.containers.kubernetes_cluster": {
+      "control_plane": "user_managed",
+      "node_pool_types": [
+        "k8s.nodepool"
+      ],
+      "abstracted_nodes": false
+    }
+  },
+  "records": [
+    {"id": "k8s.cluster", "providers": ["aws", "azure", "gcp", "huawei", "onprem"], "entity": "resource", "display_name": "Cluster", "taxonomy": "compute.containers", "capabilities": ["container_cluster"], "placement": {"location": "any", "network": "subnet"}, "kubernetes_kinds": ["Cluster"], "representation": {"kind": "labeled_boundary", "label": "Kubernetes cluster"}, "status": "supported", "sources": ["https://kubernetes.io/docs/concepts/overview/components/"], "namespaced": false},
+    {"id": "k8s.controlplane", "providers": ["aws", "azure", "gcp", "huawei", "onprem"], "entity": "resource", "display_name": "ControlPlane", "taxonomy": "compute.containers", "capabilities": ["container_cluster"], "placement": {"location": "any", "network": "subnet"}, "kubernetes_kinds": ["ControlPlane"], "representation": {"kind": "labeled_boundary", "label": "Control plane"}, "status": "supported", "sources": ["https://kubernetes.io/docs/concepts/overview/components/"], "namespaced": false},
+    {"id": "k8s.nodepool", "providers": ["aws", "azure", "gcp", "huawei", "onprem"], "entity": "resource", "display_name": "NodePool", "taxonomy": "compute.containers", "capabilities": ["node_group"], "placement": {"location": "any", "network": "subnet"}, "kubernetes_kinds": ["NodePool"], "representation": {"kind": "labeled_boundary", "label": "Node group"}, "status": "supported", "sources": ["https://kubernetes.io/docs/concepts/overview/components/"], "namespaced": false},
+    {"id": "k8s.node", "providers": ["aws", "azure", "gcp", "huawei", "onprem"], "entity": "resource", "display_name": "Node", "taxonomy": "compute.containers", "capabilities": ["node_group"], "placement": {"location": "any", "network": "subnet"}, "kubernetes_kinds": ["Node"], "representation": {"kind": "native_class", "class_path": "diagrams.k8s.infra.Node", "pack": "kubernetes-community-icons"}, "status": "supported", "sources": ["https://kubernetes.io/docs/concepts/overview/components/", "https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"], "namespaced": false, "api_version": "v1", "native_id": "v1 Node"},
+    {"id": "k8s.namespace", "providers": ["aws", "azure", "gcp", "huawei", "onprem"], "entity": "resource", "display_name": "Namespace", "taxonomy": "governance.scope", "capabilities": ["scope"], "placement": {"location": "none", "network": "none"}, "kubernetes_kinds": ["Namespace"], "representation": {"kind": "native_class", "class_path": "diagrams.k8s.group.Namespace", "pack": "kubernetes-community-icons"}, "status": "supported", "sources": ["https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"], "namespaced": false, "api_version": "v1", "native_id": "v1 Namespace"},
+    {"id": "k8s.deployment", "providers": ["aws", "azure", "gcp", "huawei", "onprem"], "entity": "resource", "display_name": "Deployment", "taxonomy": "compute.containers", "capabilities": ["kubernetes_workload"], "placement": {"location": "none", "network": "none"}, "kubernetes_kinds": ["Deployment"], "representation": {"kind": "native_class", "class_path": "diagrams.k8s.compute.Deployment", "pack": "kubernetes-community-icons"}, "status": "supported", "sources": ["https://kubernetes.io/docs/concepts/workloads/controllers/deployment/", "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/deployment-v1/"], "namespaced": true, "api_version": "apps/v1", "native_id": "apps/v1 Deployment"},
+    {"id": "k8s.replicaset", "providers": ["aws", "azure", "gcp", "huawei", "onprem"], "entity": "resource", "display_name": "ReplicaSet", "taxonomy": "compute.containers", "capabilities": ["kubernetes_workload"], "placement": {"location": "none", "network": "none"}, "kubernetes_kinds": ["ReplicaSet"], "representation": {"kind": "native_class", "class_path": "diagrams.k8s.compute.ReplicaSet", "pack": "kubernetes-community-icons"}, "status": "supported", "sources": ["https://kubernetes.io/docs/concepts/workloads/controllers/deployment/", "https://kubernetes.io/docs/concepts/overview/working-with-objects/owners-dependents/"], "namespaced": true, "api_version": "apps/v1", "native_id": "apps/v1 ReplicaSet"},
+    {"id": "k8s.statefulset", "providers": ["aws", "azure", "gcp", "huawei", "onprem"], "entity": "resource", "display_name": "StatefulSet", "taxonomy": "compute.containers", "capabilities": ["kubernetes_workload"], "placement": {"location": "none", "network": "none"}, "kubernetes_kinds": ["StatefulSet"], "representation": {"kind": "native_class", "class_path": "diagrams.k8s.compute.StatefulSet", "pack": "kubernetes-community-icons"}, "status": "supported", "sources": ["https://kubernetes.io/docs/concepts/workloads/"], "namespaced": true, "api_version": "apps/v1", "native_id": "apps/v1 StatefulSet"},
+    {"id": "k8s.daemonset", "providers": ["aws", "azure", "gcp", "huawei", "onprem"], "entity": "resource", "display_name": "DaemonSet", "taxonomy": "compute.containers", "capabilities": ["kubernetes_workload"], "placement": {"location": "none", "network": "none"}, "kubernetes_kinds": ["DaemonSet"], "representation": {"kind": "native_class", "class_path": "diagrams.k8s.compute.DaemonSet", "pack": "kubernetes-community-icons"}, "status": "supported", "sources": ["https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/"], "namespaced": true, "api_version": "apps/v1", "native_id": "apps/v1 DaemonSet"},
+    {"id": "k8s.job", "providers": ["aws", "azure", "gcp", "huawei", "onprem"], "entity": "resource", "display_name": "Job", "taxonomy": "compute.containers", "capabilities": ["kubernetes_workload"], "placement": {"location": "none", "network": "none"}, "kubernetes_kinds": ["Job"], "representation": {"kind": "native_class", "class_path": "diagrams.k8s.compute.Job", "pack": "kubernetes-community-icons"}, "status": "supported", "sources": ["https://kubernetes.io/docs/concepts/workloads/"], "namespaced": true, "api_version": "batch/v1", "native_id": "batch/v1 Job"},
+    {"id": "k8s.cronjob", "providers": ["aws", "azure", "gcp", "huawei", "onprem"], "entity": "resource", "display_name": "CronJob", "taxonomy": "compute.containers", "capabilities": ["kubernetes_workload"], "placement": {"location": "none", "network": "none"}, "kubernetes_kinds": ["CronJob"], "representation": {"kind": "native_class", "class_path": "diagrams.k8s.compute.Cronjob", "pack": "kubernetes-community-icons"}, "status": "supported", "sources": ["https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/", "https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/cron-job-v1/"], "namespaced": true, "api_version": "batch/v1", "native_id": "batch/v1 CronJob"},
+    {"id": "k8s.pod", "providers": ["aws", "azure", "gcp", "huawei", "onprem"], "entity": "resource", "display_name": "Pod", "taxonomy": "compute.containers", "capabilities": ["kubernetes_workload"], "placement": {"location": "none", "network": "none"}, "kubernetes_kinds": ["Pod"], "representation": {"kind": "native_class", "class_path": "diagrams.k8s.compute.Pod", "pack": "kubernetes-community-icons"}, "status": "supported", "sources": ["https://kubernetes.io/docs/concepts/workloads/"], "namespaced": true, "api_version": "v1", "native_id": "v1 Pod"},
+    {"id": "k8s.service", "providers": ["aws", "azure", "gcp", "huawei", "onprem"], "entity": "resource", "display_name": "Service", "taxonomy": "network.load_balancing", "capabilities": ["kubernetes_traffic"], "placement": {"location": "none", "network": "none"}, "kubernetes_kinds": ["Service"], "representation": {"kind": "native_class", "class_path": "diagrams.k8s.network.Service", "pack": "kubernetes-community-icons"}, "status": "supported", "sources": ["https://kubernetes.io/docs/concepts/services-networking/service/"], "namespaced": true, "api_version": "v1", "native_id": "v1 Service"},
+    {"id": "k8s.ingress", "providers": ["aws", "azure", "gcp", "huawei", "onprem"], "entity": "resource", "display_name": "Ingress", "taxonomy": "network.load_balancing", "capabilities": ["kubernetes_traffic"], "placement": {"location": "none", "network": "none"}, "kubernetes_kinds": ["Ingress"], "representation": {"kind": "native_class", "class_path": "diagrams.k8s.network.Ingress", "pack": "kubernetes-community-icons"}, "status": "supported", "sources": ["https://kubernetes.io/docs/concepts/services-networking/ingress/", "https://kubernetes.io/docs/reference/kubernetes-api/service-resources/ingress-v1/"], "namespaced": true, "api_version": "networking.k8s.io/v1", "native_id": "networking.k8s.io/v1 Ingress"},
+    {"id": "k8s.ingresscontroller", "providers": ["aws", "azure", "gcp", "huawei", "onprem"], "entity": "resource", "display_name": "IngressController", "taxonomy": "network.load_balancing", "capabilities": ["kubernetes_traffic"], "placement": {"location": "any", "network": "subnet"}, "kubernetes_kinds": ["IngressController"], "representation": {"kind": "labeled_node", "label": "Ingress controller"}, "status": "supported", "sources": ["https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/"], "namespaced": false},
+    {"id": "k8s.persistentvolumeclaim", "providers": ["aws", "azure", "gcp", "huawei", "onprem"], "entity": "resource", "display_name": "PersistentVolumeClaim", "taxonomy": "storage.block_file", "capabilities": ["kubernetes_storage"], "placement": {"location": "none", "network": "none"}, "kubernetes_kinds": ["PersistentVolumeClaim"], "representation": {"kind": "native_class", "class_path": "diagrams.k8s.storage.PersistentVolumeClaim", "pack": "kubernetes-community-icons"}, "status": "supported", "sources": ["https://kubernetes.io/docs/concepts/storage/persistent-volumes/"], "namespaced": true, "api_version": "v1", "native_id": "v1 PersistentVolumeClaim"},
+    {"id": "k8s.persistentvolume", "providers": ["aws", "azure", "gcp", "huawei", "onprem"], "entity": "resource", "display_name": "PersistentVolume", "taxonomy": "storage.block_file", "capabilities": ["kubernetes_storage"], "placement": {"location": "any", "network": "none"}, "kubernetes_kinds": ["PersistentVolume"], "representation": {"kind": "native_class", "class_path": "diagrams.k8s.storage.PersistentVolume", "pack": "kubernetes-community-icons"}, "status": "supported", "sources": ["https://kubernetes.io/docs/concepts/storage/persistent-volumes/", "https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"], "namespaced": false, "api_version": "v1", "native_id": "v1 PersistentVolume"},
+    {"id": "k8s.storageclass", "providers": ["aws", "azure", "gcp", "huawei", "onprem"], "entity": "resource", "display_name": "StorageClass", "taxonomy": "storage.block_file", "capabilities": ["kubernetes_storage"], "placement": {"location": "none", "network": "none"}, "kubernetes_kinds": ["StorageClass"], "representation": {"kind": "native_class", "class_path": "diagrams.k8s.storage.StorageClass", "pack": "kubernetes-community-icons"}, "status": "supported", "sources": ["https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/storage-class-v1/"], "namespaced": false, "api_version": "storage.k8s.io/v1", "native_id": "storage.k8s.io/v1 StorageClass"},
+    {"id": "k8s.configmap", "providers": ["aws", "azure", "gcp", "huawei", "onprem"], "entity": "resource", "display_name": "ConfigMap", "taxonomy": "application.platform", "capabilities": ["kubernetes_config"], "placement": {"location": "none", "network": "none"}, "kubernetes_kinds": ["ConfigMap"], "representation": {"kind": "native_class", "class_path": "diagrams.k8s.podconfig.ConfigMap", "pack": "kubernetes-community-icons"}, "status": "supported", "sources": ["https://kubernetes.io/docs/concepts/workloads/"], "namespaced": true, "api_version": "v1", "native_id": "v1 ConfigMap"},
+    {"id": "k8s.secret", "providers": ["aws", "azure", "gcp", "huawei", "onprem"], "entity": "resource", "display_name": "Secret", "taxonomy": "security.secrets_keys", "capabilities": ["kubernetes_config"], "placement": {"location": "none", "network": "none"}, "kubernetes_kinds": ["Secret"], "representation": {"kind": "native_class", "class_path": "diagrams.k8s.podconfig.Secret", "pack": "kubernetes-community-icons"}, "status": "supported", "sources": ["https://kubernetes.io/docs/concepts/configuration/secret/"], "namespaced": true, "api_version": "v1", "native_id": "v1 Secret"},
+    {"id": "k8s.serviceaccount", "providers": ["aws", "azure", "gcp", "huawei", "onprem"], "entity": "resource", "display_name": "ServiceAccount", "taxonomy": "identity.access", "capabilities": ["kubernetes_identity"], "placement": {"location": "none", "network": "none"}, "kubernetes_kinds": ["ServiceAccount"], "representation": {"kind": "native_class", "class_path": "diagrams.k8s.rbac.ServiceAccount", "pack": "kubernetes-community-icons"}, "status": "supported", "sources": ["https://kubernetes.io/docs/concepts/workloads/"], "namespaced": true, "api_version": "v1", "native_id": "v1 ServiceAccount"},
+    {"id": "k8s.networkpolicy", "providers": ["aws", "azure", "gcp", "huawei", "onprem"], "entity": "resource", "display_name": "NetworkPolicy", "taxonomy": "security.control", "capabilities": ["kubernetes_policy"], "placement": {"location": "none", "network": "none"}, "kubernetes_kinds": ["NetworkPolicy"], "representation": {"kind": "native_class", "class_path": "diagrams.k8s.network.NetworkPolicy", "pack": "kubernetes-community-icons"}, "status": "supported", "sources": ["https://kubernetes.io/docs/concepts/services-networking/network-policies/", "https://kubernetes.io/docs/reference/kubernetes-api/policy-resources/network-policy-v1/"], "namespaced": true, "api_version": "networking.k8s.io/v1", "native_id": "networking.k8s.io/v1 NetworkPolicy"}
+  ]
+}

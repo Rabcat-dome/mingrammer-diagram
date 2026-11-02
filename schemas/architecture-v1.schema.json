@@ -15,6 +15,7 @@
             "network",
             "subnet",
             "security_zone",
+            "security_group",
             "site",
             "data_center",
             "room",

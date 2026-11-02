@@ -1,4 +1,4 @@
-"""Closed, strict data contract. Provider catalog rules arrive in M2."""
+"""Closed, strict data contract. Catalog and provider rules live in catalog.py and semantics.py."""
 
 from typing import Annotated, Literal
 
@@ -99,6 +99,7 @@ class Boundary(Entity):
         "network",
         "subnet",
         "security_zone",
+        "security_group",
         "site",
         "data_center",
         "room",

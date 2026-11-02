@@ -44,6 +44,8 @@ Astra/High reviewed alpha.1 (afbacca to 7208317) and found one P2 output-root sy
 
 S05 used GPT-6.1 Sol / XHigh inherited from the current app setting; the project recommendation remains High for this work and no model setting was changed. Separate GPT-6 Astra / High reviewed ff53a88 to e645415, found two P2 issues and confirmed both fixes at 785e1ee with no additional actionable findings. [Exact review/evidence](evidence/S05-astra-review.md) separates reviewer checks from root's actual fix-head CI verification.
 
+S06 used Claude Opus 5.5 (`claude-opus-5-5`), the model of the session the owner started, rather than Sol, with no model setting changed. The Astra/High review M2 requires has not been performed, and self-checks in that session are not a review. See the [S06 evidence](evidence/S06-provider-catalogs.md#model-and-review).
+
 ## Pipeline policy
 
 Deterministic checks are the required automated gate. AI review starts as a required recorded review activity, performed manually in the development tool; it is not an API dependency for every CI run.

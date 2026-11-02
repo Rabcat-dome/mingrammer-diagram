@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" width="108" height="108">
+<g transform="translate(4 4) scale(1)">
+<path d="M0 65 A50 15 0 0 1 100 65 L100 85 A50 15 0 1 1 0 85 Z" fill="#CCCCCC" stroke="#6881B3" stroke-width="2"/>
+<path d="M0 40 A50 15 0 0 1 100 40 L100 60 A50 15 0 1 1 0 60 Z" fill="#CCCCCC" stroke="#6881B3" stroke-width="2"/>
+<path d="M0 15 A50 15 0 0 1 100 15 L100 35 A50 15 0 1 1 0 35 Z" fill="#CCCCCC" stroke="#6881B3" stroke-width="2"/>
+<path d="M0 65 A50 15 0 1 0 100 65 M0 40 A50 15 0 1 0 100 40 M0 15 A50 15 0 1 0 100 15" fill="none" stroke="#6881B3" stroke-width="2"/>
+</g>
+</svg>

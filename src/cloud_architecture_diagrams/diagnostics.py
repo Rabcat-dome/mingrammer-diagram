@@ -19,8 +19,9 @@ class ValidationResult(BaseModel):
     valid: bool
     mode: Literal["strict", "lenient"]
     draft: bool
-    validation_scope: Literal["core_only"] = "core_only"
+    validation_scope: Literal["core_only", "core_catalog_provider"] = "core_only"
     schema_version: str = "1.0.0"
+    catalog_version: str | None = None
     diagnostics: list[Diagnostic] = Field(default_factory=list)
     selected_view: str | None = None
     excluded_ids: list[str] = Field(default_factory=list)

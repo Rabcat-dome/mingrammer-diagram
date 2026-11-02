@@ -1,0 +1,479 @@
+{
+  "schema_version": "1.0.0",
+  "metadata": {
+    "id": "azure-reference",
+    "title": "Azure catalog coverage",
+    "environment": "fixture",
+    "assumptions": [
+      "Synthetic fixture; no deployed infrastructure implied."
+    ]
+  },
+  "scopes": [
+    {
+      "id": "tenant",
+      "name": "Contoso tenant",
+      "provider": "azure",
+      "kind": "tenant"
+    },
+    {
+      "id": "sub",
+      "name": "Production",
+      "provider": "azure",
+      "kind": "subscription",
+      "parent_ref": "tenant"
+    },
+    {
+      "id": "rg-net",
+      "name": "Network RG",
+      "provider": "azure",
+      "kind": "resource_group",
+      "parent_ref": "sub"
+    },
+    {
+      "id": "rg-app",
+      "name": "App RG",
+      "provider": "azure",
+      "kind": "resource_group",
+      "parent_ref": "sub"
+    }
+  ],
+  "boundaries": [
+    {
+      "id": "region",
+      "name": "southeastasia",
+      "provider": "azure",
+      "kind": "region"
+    },
+    {
+      "id": "az-1",
+      "name": "Zone 1",
+      "provider": "azure",
+      "kind": "zone",
+      "parent_ref": "region"
+    },
+    {
+      "id": "vnet",
+      "name": "Spoke VNet",
+      "provider": "azure",
+      "kind": "network",
+      "scope_refs": [
+        "rg-net"
+      ],
+      "parent_ref": "region"
+    },
+    {
+      "id": "app",
+      "name": "App subnet",
+      "provider": "azure",
+      "kind": "subnet",
+      "scope_refs": [
+        "rg-net"
+      ],
+      "parent_ref": "vnet"
+    },
+    {
+      "id": "appgw",
+      "name": "Gateway subnet for Application Gateway",
+      "provider": "azure",
+      "kind": "subnet",
+      "scope_refs": [
+        "rg-net"
+      ],
+      "parent_ref": "vnet"
+    },
+    {
+      "id": "afw",
+      "name": "AzureFirewallSubnet",
+      "provider": "azure",
+      "kind": "subnet",
+      "scope_refs": [
+        "rg-net"
+      ],
+      "parent_ref": "vnet"
+    },
+    {
+      "id": "gw",
+      "name": "GatewaySubnet",
+      "provider": "azure",
+      "kind": "subnet",
+      "scope_refs": [
+        "rg-net"
+      ],
+      "parent_ref": "vnet"
+    },
+    {
+      "id": "nsg",
+      "name": "App NSG",
+      "provider": "azure",
+      "kind": "security_group",
+      "scope_refs": [
+        "rg-app"
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "vm",
+      "name": "Azure Virtual Machine",
+      "provider": "azure",
+      "service_type": "azure.compute.virtual_machine",
+      "taxonomy": "compute.vm",
+      "placement": {
+        "scope_refs": [
+          "rg-app"
+        ],
+        "location": {
+          "zone_ref": "az-1"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vnet",
+            "subnet_refs": [
+              "app"
+            ]
+          }
+        ],
+        "security_boundaries": [
+          "nsg"
+        ]
+      }
+    },
+    {
+      "id": "nic",
+      "name": "Network interface",
+      "provider": "azure",
+      "service_type": "azure.network.network_interface",
+      "taxonomy": "compute.vm",
+      "placement": {
+        "scope_refs": [
+          "rg-app"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vnet",
+            "subnet_refs": [
+              "app"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "ag",
+      "name": "Azure Application Gateway",
+      "provider": "azure",
+      "service_type": "azure.network.application_gateway",
+      "taxonomy": "network.load_balancing",
+      "placement": {
+        "scope_refs": [
+          "rg-app"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vnet",
+            "subnet_refs": [
+              "appgw"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "aks",
+      "name": "Azure Kubernetes Service cluster",
+      "provider": "azure",
+      "service_type": "azure.containers.aks",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "rg-app"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vnet",
+            "subnet_refs": [
+              "app"
+            ]
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "Cluster"
+      }
+    },
+    {
+      "id": "aks-auto",
+      "name": "AKS Automatic cluster",
+      "provider": "azure",
+      "service_type": "azure.containers.aks_automatic",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "rg-app"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vnet",
+            "subnet_refs": [
+              "app"
+            ]
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "Cluster"
+      }
+    },
+    {
+      "id": "pool",
+      "name": "AKS node pool",
+      "provider": "azure",
+      "service_type": "azure.containers.aks_node_pool",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "rg-app"
+        ],
+        "network_attachments": [
+          {
+            "network_ref": "vnet",
+            "subnet_refs": [
+              "app"
+            ]
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "NodePool",
+        "cluster_ref": "aks"
+      }
+    },
+    {
+      "id": "sql",
+      "name": "Azure SQL Database",
+      "provider": "azure",
+      "service_type": "azure.database.sql_database",
+      "taxonomy": "data.relational",
+      "placement": {
+        "scope_refs": [
+          "rg-app"
+        ],
+        "location": {
+          "region_ref": "region"
+        }
+      }
+    },
+    {
+      "id": "blob",
+      "name": "Azure Blob Storage",
+      "provider": "azure",
+      "service_type": "azure.storage.blob_storage",
+      "taxonomy": "storage.object",
+      "placement": {
+        "scope_refs": [
+          "rg-app"
+        ],
+        "location": {
+          "region_ref": "region"
+        }
+      }
+    },
+    {
+      "id": "entra",
+      "name": "Microsoft Entra ID",
+      "provider": "azure",
+      "service_type": "azure.identity.entra_id",
+      "taxonomy": "identity.access",
+      "placement": {
+        "scope_refs": [
+          "tenant"
+        ]
+      }
+    },
+    {
+      "id": "rbac",
+      "name": "Azure RBAC",
+      "provider": "azure",
+      "service_type": "azure.identity.rbac",
+      "taxonomy": "identity.access",
+      "placement": {
+        "scope_refs": [
+          "sub"
+        ]
+      }
+    },
+    {
+      "id": "fw",
+      "name": "Azure Firewall",
+      "provider": "azure",
+      "service_type": "azure.security.firewall",
+      "taxonomy": "security.control",
+      "placement": {
+        "scope_refs": [
+          "rg-net"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vnet",
+            "subnet_refs": [
+              "afw"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "nat",
+      "name": "Azure NAT Gateway",
+      "provider": "azure",
+      "service_type": "azure.network.nat_gateway",
+      "taxonomy": "network.routing",
+      "placement": {
+        "scope_refs": [
+          "rg-net"
+        ],
+        "location": {
+          "zone_ref": "az-1"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vnet",
+            "subnet_refs": [
+              "app"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "vpn",
+      "name": "Azure VPN Gateway",
+      "provider": "azure",
+      "service_type": "azure.network.vpn_gateway",
+      "taxonomy": "network.connectivity",
+      "placement": {
+        "scope_refs": [
+          "rg-net"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vnet",
+            "subnet_refs": [
+              "gw"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "er",
+      "name": "Azure ExpressRoute circuit",
+      "provider": "azure",
+      "service_type": "azure.network.expressroute",
+      "taxonomy": "network.connectivity",
+      "placement": {
+        "scope_refs": [
+          "rg-net"
+        ],
+        "location": {
+          "region_ref": "region"
+        }
+      }
+    },
+    {
+      "id": "monitor",
+      "name": "Azure Monitor",
+      "provider": "azure",
+      "service_type": "azure.observability.monitor",
+      "taxonomy": "operations.observability",
+      "placement": {
+        "scope_refs": [
+          "rg-app"
+        ],
+        "location": {
+          "region_ref": "region"
+        }
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "id": "a-vm-nic",
+      "source_ref": "vm",
+      "target_ref": "nic",
+      "kind": "attachment"
+    },
+    {
+      "id": "t-ag-vm",
+      "source_ref": "ag",
+      "target_ref": "vm",
+      "kind": "traffic",
+      "protocol": "HTTPS"
+    },
+    {
+      "id": "t-vm-sql",
+      "source_ref": "vm",
+      "target_ref": "sql",
+      "kind": "traffic",
+      "protocol": "TCP 1433"
+    }
+  ],
+  "views": [
+    {
+      "id": "detail",
+      "title": "Azure catalog coverage",
+      "entity_refs": [
+        "tenant",
+        "sub",
+        "rg-net",
+        "rg-app",
+        "region",
+        "az-1",
+        "vnet",
+        "app",
+        "appgw",
+        "afw",
+        "gw",
+        "nsg",
+        "vm",
+        "nic",
+        "ag",
+        "aks",
+        "aks-auto",
+        "pool",
+        "sql",
+        "blob",
+        "entra",
+        "rbac",
+        "fw",
+        "nat",
+        "vpn",
+        "er",
+        "monitor"
+      ],
+      "relationship_refs": [
+        "a-vm-nic",
+        "t-ag-vm",
+        "t-vm-sql"
+      ]
+    }
+  ]
+}

@@ -105,6 +105,10 @@ Removing or weakening any of 11 wrapper behaviors now fails a test: `--locked`, 
 
 The review also noted two M1 items outside this range: `field` echoes rejected key names, and `ID_DUPLICATE` does not name the duplicate ID.
 
+## S06 follow-up
+
+S06 / M2 moved the core, and the checks built to catch that fired as intended. Five `claude-plugin` tests failed, and each was resolved by updating the skill, guide or expected contract, not by loosening a check. The caveat test now requires that `service_type` and `taxonomy` are rejected and no longer called unchecked. New tests cover catalog data in a clean copy, the Huawei warning, and the guide's type IDs and Kubernetes mappings. The plugin allowlist did not change, because catalogs and assets arrive through the `src` link, and the `catalog-license` lane covers them. The owner's installed plugin was not updated. See the [S06 evidence](S06-provider-catalogs.md).
+
 ## Not verified
 
 - A second machine, any other operating system, and first-run setup with an empty uv cache.

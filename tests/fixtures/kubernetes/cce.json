@@ -1,0 +1,634 @@
+{
+  "schema_version": "1.0.0",
+  "metadata": {
+    "id": "cce-detail",
+    "title": "Kubernetes detail on huawei",
+    "environment": "fixture",
+    "assumptions": [
+      "Synthetic Kubernetes fixture; nothing here is observed from a live cluster."
+    ]
+  },
+  "scopes": [
+    {
+      "id": "proj",
+      "name": "Project",
+      "provider": "huawei",
+      "kind": "iam_project"
+    }
+  ],
+  "boundaries": [
+    {
+      "id": "vpc",
+      "name": "VPC",
+      "provider": "huawei",
+      "kind": "network",
+      "scope_refs": [
+        "proj"
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "cluster",
+      "name": "Cluster",
+      "provider": "huawei",
+      "service_type": "huawei.containers.cce_standard",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "proj"
+        ],
+        "network_attachments": [
+          {
+            "network_ref": "vpc"
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "Cluster"
+      }
+    },
+    {
+      "id": "control-plane",
+      "name": "control-plane",
+      "provider": "huawei",
+      "service_type": "k8s.controlplane",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "ControlPlane",
+        "cluster_ref": "cluster"
+      }
+    },
+    {
+      "id": "pool",
+      "name": "Workers",
+      "provider": "huawei",
+      "service_type": "huawei.containers.cce_node_pool",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "NodePool",
+        "cluster_ref": "cluster"
+      }
+    },
+    {
+      "id": "node-a",
+      "name": "node-a",
+      "provider": "huawei",
+      "service_type": "k8s.node",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Node",
+        "cluster_ref": "cluster",
+        "node_pool_ref": "pool"
+      }
+    },
+    {
+      "id": "node-b",
+      "name": "node-b",
+      "provider": "huawei",
+      "service_type": "k8s.node",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Node",
+        "cluster_ref": "cluster",
+        "node_pool_ref": "pool"
+      }
+    },
+    {
+      "id": "ns-app",
+      "name": "ns-app",
+      "provider": "huawei",
+      "service_type": "k8s.namespace",
+      "taxonomy": "governance.scope",
+      "kubernetes": {
+        "kind": "Namespace",
+        "cluster_ref": "cluster"
+      }
+    },
+    {
+      "id": "ns-other",
+      "name": "ns-other",
+      "provider": "huawei",
+      "service_type": "k8s.namespace",
+      "taxonomy": "governance.scope",
+      "kubernetes": {
+        "kind": "Namespace",
+        "cluster_ref": "cluster"
+      }
+    },
+    {
+      "id": "deploy",
+      "name": "deploy",
+      "provider": "huawei",
+      "service_type": "k8s.deployment",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Deployment",
+        "cluster_ref": "cluster",
+        "namespace_ref": "ns-app"
+      },
+      "properties": {
+        "replicas": 2,
+        "labels": {
+          "app.kubernetes.io/name": "web",
+          "tier": ""
+        }
+      }
+    },
+    {
+      "id": "rs",
+      "name": "rs",
+      "provider": "huawei",
+      "service_type": "k8s.replicaset",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "ReplicaSet",
+        "cluster_ref": "cluster",
+        "namespace_ref": "ns-app",
+        "owner_ref": "deploy"
+      }
+    },
+    {
+      "id": "sts",
+      "name": "sts",
+      "provider": "huawei",
+      "service_type": "k8s.statefulset",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "StatefulSet",
+        "cluster_ref": "cluster",
+        "namespace_ref": "ns-app"
+      }
+    },
+    {
+      "id": "ds",
+      "name": "ds",
+      "provider": "huawei",
+      "service_type": "k8s.daemonset",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "DaemonSet",
+        "cluster_ref": "cluster",
+        "namespace_ref": "ns-app"
+      }
+    },
+    {
+      "id": "cron",
+      "name": "cron",
+      "provider": "huawei",
+      "service_type": "k8s.cronjob",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "CronJob",
+        "cluster_ref": "cluster",
+        "namespace_ref": "ns-app"
+      }
+    },
+    {
+      "id": "job",
+      "name": "job",
+      "provider": "huawei",
+      "service_type": "k8s.job",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Job",
+        "cluster_ref": "cluster",
+        "namespace_ref": "ns-app",
+        "owner_ref": "cron"
+      }
+    },
+    {
+      "id": "pod-a",
+      "name": "pod-a",
+      "provider": "huawei",
+      "service_type": "k8s.pod",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Pod",
+        "cluster_ref": "cluster",
+        "namespace_ref": "ns-app",
+        "owner_ref": "rs",
+        "node_ref": "node-a",
+        "volume_claim_refs": [
+          "pvc"
+        ],
+        "config_refs": [
+          "cm"
+        ],
+        "secret_refs": [
+          "secret"
+        ],
+        "service_account_ref": "sa"
+      }
+    },
+    {
+      "id": "pod-b",
+      "name": "pod-b",
+      "provider": "huawei",
+      "service_type": "k8s.pod",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Pod",
+        "cluster_ref": "cluster",
+        "namespace_ref": "ns-app",
+        "owner_ref": "rs"
+      }
+    },
+    {
+      "id": "pod-s",
+      "name": "pod-s",
+      "provider": "huawei",
+      "service_type": "k8s.pod",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Pod",
+        "cluster_ref": "cluster",
+        "namespace_ref": "ns-app",
+        "owner_ref": "sts"
+      }
+    },
+    {
+      "id": "pod-d",
+      "name": "pod-d",
+      "provider": "huawei",
+      "service_type": "k8s.pod",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Pod",
+        "cluster_ref": "cluster",
+        "namespace_ref": "ns-app",
+        "owner_ref": "ds",
+        "node_ref": "node-b"
+      }
+    },
+    {
+      "id": "pod-j",
+      "name": "pod-j",
+      "provider": "huawei",
+      "service_type": "k8s.pod",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Pod",
+        "cluster_ref": "cluster",
+        "namespace_ref": "ns-app",
+        "owner_ref": "job"
+      }
+    },
+    {
+      "id": "svc",
+      "name": "svc",
+      "provider": "huawei",
+      "service_type": "k8s.service",
+      "taxonomy": "network.load_balancing",
+      "kubernetes": {
+        "kind": "Service",
+        "cluster_ref": "cluster",
+        "namespace_ref": "ns-app",
+        "target_refs": [
+          "pod-a",
+          "pod-b"
+        ]
+      },
+      "properties": {
+        "service_type": "ClusterIP",
+        "ports": [
+          {
+            "port": 443,
+            "target_port": "https"
+          }
+        ]
+      }
+    },
+    {
+      "id": "svc-ext",
+      "name": "svc-ext",
+      "provider": "huawei",
+      "service_type": "k8s.service",
+      "taxonomy": "network.load_balancing",
+      "kubernetes": {
+        "kind": "Service",
+        "cluster_ref": "cluster",
+        "namespace_ref": "ns-app"
+      },
+      "properties": {
+        "service_type": "ExternalName"
+      }
+    },
+    {
+      "id": "ing",
+      "name": "ing",
+      "provider": "huawei",
+      "service_type": "k8s.ingress",
+      "taxonomy": "network.load_balancing",
+      "kubernetes": {
+        "kind": "Ingress",
+        "cluster_ref": "cluster",
+        "namespace_ref": "ns-app",
+        "service_refs": [
+          "svc"
+        ],
+        "secret_refs": [
+          "tls"
+        ]
+      }
+    },
+    {
+      "id": "ictl",
+      "name": "ictl",
+      "provider": "huawei",
+      "service_type": "k8s.ingresscontroller",
+      "taxonomy": "network.load_balancing",
+      "kubernetes": {
+        "kind": "IngressController",
+        "cluster_ref": "cluster"
+      }
+    },
+    {
+      "id": "pvc",
+      "name": "pvc",
+      "provider": "huawei",
+      "service_type": "k8s.persistentvolumeclaim",
+      "taxonomy": "storage.block_file",
+      "kubernetes": {
+        "kind": "PersistentVolumeClaim",
+        "cluster_ref": "cluster",
+        "namespace_ref": "ns-app",
+        "volume_ref": "pv",
+        "storage_class_ref": "sc"
+      }
+    },
+    {
+      "id": "pv",
+      "name": "pv",
+      "provider": "huawei",
+      "service_type": "k8s.persistentvolume",
+      "taxonomy": "storage.block_file",
+      "kubernetes": {
+        "kind": "PersistentVolume",
+        "cluster_ref": "cluster",
+        "storage_class_ref": "sc"
+      }
+    },
+    {
+      "id": "sc",
+      "name": "sc",
+      "provider": "huawei",
+      "service_type": "k8s.storageclass",
+      "taxonomy": "storage.block_file",
+      "kubernetes": {
+        "kind": "StorageClass",
+        "cluster_ref": "cluster"
+      }
+    },
+    {
+      "id": "cm",
+      "name": "cm",
+      "provider": "huawei",
+      "service_type": "k8s.configmap",
+      "taxonomy": "application.platform",
+      "kubernetes": {
+        "kind": "ConfigMap",
+        "cluster_ref": "cluster",
+        "namespace_ref": "ns-app"
+      }
+    },
+    {
+      "id": "cm-other",
+      "name": "cm-other",
+      "provider": "huawei",
+      "service_type": "k8s.configmap",
+      "taxonomy": "application.platform",
+      "kubernetes": {
+        "kind": "ConfigMap",
+        "cluster_ref": "cluster",
+        "namespace_ref": "ns-other"
+      }
+    },
+    {
+      "id": "secret",
+      "name": "secret",
+      "provider": "huawei",
+      "service_type": "k8s.secret",
+      "taxonomy": "security.secrets_keys",
+      "kubernetes": {
+        "kind": "Secret",
+        "cluster_ref": "cluster",
+        "namespace_ref": "ns-app"
+      }
+    },
+    {
+      "id": "tls",
+      "name": "tls",
+      "provider": "huawei",
+      "service_type": "k8s.secret",
+      "taxonomy": "security.secrets_keys",
+      "kubernetes": {
+        "kind": "Secret",
+        "cluster_ref": "cluster",
+        "namespace_ref": "ns-app"
+      }
+    },
+    {
+      "id": "sa",
+      "name": "sa",
+      "provider": "huawei",
+      "service_type": "k8s.serviceaccount",
+      "taxonomy": "identity.access",
+      "kubernetes": {
+        "kind": "ServiceAccount",
+        "cluster_ref": "cluster",
+        "namespace_ref": "ns-app"
+      }
+    },
+    {
+      "id": "netpol",
+      "name": "netpol",
+      "provider": "huawei",
+      "service_type": "k8s.networkpolicy",
+      "taxonomy": "security.control",
+      "kubernetes": {
+        "kind": "NetworkPolicy",
+        "cluster_ref": "cluster",
+        "namespace_ref": "ns-app"
+      }
+    },
+    {
+      "id": "edge-lb",
+      "name": "External load balancer",
+      "provider": "huawei",
+      "service_type": "huawei.network.elb",
+      "taxonomy": "network.load_balancing"
+    }
+  ],
+  "relationships": [
+    {
+      "id": "t-lb-svc",
+      "source_ref": "edge-lb",
+      "target_ref": "svc",
+      "kind": "traffic",
+      "label": "Supplied external load balancer"
+    },
+    {
+      "id": "t-ing-svc",
+      "source_ref": "ing",
+      "target_ref": "svc",
+      "kind": "traffic"
+    },
+    {
+      "id": "t-svc-pod",
+      "source_ref": "svc",
+      "target_ref": "pod-a",
+      "kind": "traffic"
+    },
+    {
+      "id": "m-ictl-ing",
+      "source_ref": "ictl",
+      "target_ref": "ing",
+      "kind": "management",
+      "label": "Separate implementation"
+    },
+    {
+      "id": "sched-a",
+      "source_ref": "pod-a",
+      "target_ref": "node-a",
+      "kind": "scheduling"
+    },
+    {
+      "id": "member-node",
+      "source_ref": "node-a",
+      "target_ref": "pool",
+      "kind": "membership"
+    },
+    {
+      "id": "member-pod",
+      "source_ref": "pod-a",
+      "target_ref": "ns-app",
+      "kind": "membership"
+    },
+    {
+      "id": "policy-pod",
+      "source_ref": "netpol",
+      "target_ref": "pod-a",
+      "kind": "policy"
+    },
+    {
+      "id": "store-pod",
+      "source_ref": "pod-a",
+      "target_ref": "pvc",
+      "kind": "storage"
+    },
+    {
+      "id": "store-bind",
+      "source_ref": "pvc",
+      "target_ref": "pv",
+      "kind": "storage"
+    },
+    {
+      "id": "store-class",
+      "source_ref": "pv",
+      "target_ref": "sc",
+      "kind": "storage"
+    },
+    {
+      "id": "conf-map",
+      "source_ref": "deploy",
+      "target_ref": "cm",
+      "kind": "configuration"
+    },
+    {
+      "id": "conf-secret",
+      "source_ref": "deploy",
+      "target_ref": "secret",
+      "kind": "configuration"
+    },
+    {
+      "id": "conf-sa",
+      "source_ref": "deploy",
+      "target_ref": "sa",
+      "kind": "configuration"
+    },
+    {
+      "id": "own-rs",
+      "source_ref": "deploy",
+      "target_ref": "rs",
+      "kind": "ownership"
+    },
+    {
+      "id": "own-pod",
+      "source_ref": "rs",
+      "target_ref": "pod-b",
+      "kind": "ownership"
+    }
+  ],
+  "views": [
+    {
+      "id": "detail",
+      "title": "Kubernetes detail on huawei",
+      "entity_refs": [
+        "proj",
+        "vpc",
+        "cluster",
+        "control-plane",
+        "pool",
+        "node-a",
+        "node-b",
+        "ns-app",
+        "ns-other",
+        "deploy",
+        "rs",
+        "sts",
+        "ds",
+        "cron",
+        "job",
+        "pod-a",
+        "pod-b",
+        "pod-s",
+        "pod-d",
+        "pod-j",
+        "svc",
+        "svc-ext",
+        "ing",
+        "ictl",
+        "pvc",
+        "pv",
+        "sc",
+        "cm",
+        "cm-other",
+        "secret",
+        "tls",
+        "sa",
+        "netpol",
+        "edge-lb"
+      ],
+      "relationship_refs": [
+        "t-lb-svc",
+        "t-ing-svc",
+        "t-svc-pod",
+        "m-ictl-ing",
+        "sched-a",
+        "member-node",
+        "member-pod",
+        "policy-pod",
+        "store-pod",
+        "store-bind",
+        "store-class",
+        "conf-map",
+        "conf-secret",
+        "conf-sa",
+        "own-rs",
+        "own-pod"
+      ]
+    },
+    {
+      "id": "overview",
+      "title": "Compact overview",
+      "entity_refs": [
+        "cluster",
+        "edge-lb"
+      ],
+      "relationship_refs": [],
+      "grouping": "provider",
+      "legend": true
+    }
+  ]
+}

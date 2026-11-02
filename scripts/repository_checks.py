@@ -13,6 +13,7 @@ from urllib.parse import unquote, urlsplit
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOTS = {
     ".claude-plugin",
+    "assets-source",
     ".github",
     "plugins",
     "pyproject.toml",

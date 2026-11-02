@@ -1,6 +1,6 @@
 # Cloud Architecture Diagram Plugin Requirements
 
-Document: CADP-REQ-001 | Revision: 0.9 | Updated: 2026-11-02
+Document: CADP-REQ-001 | Revision: 0.10 | Updated: 2026-11-02
 
 Status: Draft baseline with confirmed granularity/style and per-machine local-runtime direction; product implementation and release acceptance remain pending.
 
@@ -155,7 +155,7 @@ The following is the product contract outline. M1 implements the [executable cor
 
 Use one primary taxonomy ID per type. Preserve native provider/service identity; a shared taxonomy category never establishes functional equivalence. Presentation groups cannot override canonical references. Multi-network resources retain every attachment even when a view shows one visual placement.
 
-Initial taxonomy IDs, grouped for compact reference:
+Initial taxonomy IDs, grouped for compact reference. M2 froze this list and added `external.entity` for the external parties in FR-024:
 
 ```text
 governance.scope            location.site             onprem.facility
@@ -166,14 +166,14 @@ compute.serverless          application.platform      data.relational
 data.nosql_cache            data.analytics_ai         storage.object
 storage.block_file          integration.messaging     identity.access
 security.control            security.secrets_keys     operations.observability
-operations.backup_dr
+operations.backup_dr        external.entity
 ```
 
 Taxonomy availability does not require every provider to implement every category in release 1. Each catalog record includes a stable type ID, provider, display name, taxonomy, capabilities, documented scope/placement rules, renderer mapping, icon/license reference, status, and catalog version. Aliases are optional until P1. Schema/catalog breaking changes require migration guidance and a version change.
 
 ## 6. Minimum release catalog
 
-These are required catalog targets, not claims that mappings/assets have already been verified. M2 freezes exact type IDs, product variants, current documentation, and icon mappings in a machine-readable inventory. A supported item needs a valid record, approved visual representation, applicable rules, and positive/negative fixtures. Scope/group items may use labeled boundaries instead of service icons.
+These are required catalog targets. M2 froze exact type IDs, product variants and icon mappings in a machine-readable inventory (`catalog_data/inventory.json`, catalog `2026.11.0`), which a check compares with this table, so edit both together. A supported item needs a valid record, approved visual representation, applicable rules, and positive/negative fixtures. Scope/group items may use labeled boundaries instead of service icons.
 
 | Environment | Minimum scope and services |
 |---|---|
@@ -210,7 +210,7 @@ Primary semantic references: [components](https://kubernetes.io/docs/concepts/ov
 
 Huawei native service icons are a release objective, not silently replaceable with generic symbols. If rights cannot be established, record a release blocker and discuss a reduced scope explicitly. Do not infer icon rights from the upstream code license. `Custom` supports local assets in the [upstream guide](https://diagrams.mingrammer.com/docs/nodes/custom).
 
-The [S02 source/rights assessment](../project-management/evidence/S02-icon-sources-and-rights.md) identifies a Huawei color-library candidate covering the named minimum inventory, plus on-premises/Kubernetes candidates and gaps. Huawei redistribution evidence remains unresolved; the research inventory is not a release asset allowlist. This finding does not change the P0 coverage or licensing requirements.
+The [S02 source/rights assessment](../project-management/evidence/S02-icon-sources-and-rights.md) identifies a Huawei color-library candidate covering the named minimum inventory, plus on-premises/Kubernetes candidates and gaps. [S06](../project-management/evidence/S06-provider-catalogs.md#huawei-cloud-o-002-stays-open-with-stronger-evidence) found a Huawei-operated icon manifest with no license, and site terms that require prior written consent. Huawei rights remain unresolved under O-002, so no Huawei icon is bundled. The research inventory is not a release asset allowlist. These findings do not change the P0 coverage or licensing requirements.
 
 The [user-supplied Huawei pack follow-up](../project-management/evidence/S02-additional-icon-sources.md#1-huawei-repository-assessment) records a 155-PNG community alternative and its VeryIcon usage claim. It is not an adopted replacement or a packaging-rights resolution. Source selection remains evidence-based under FR-052/NFR-004.
 
@@ -219,7 +219,7 @@ The [user-supplied Huawei pack follow-up](../project-management/evidence/S02-add
 - AWS subnets are AZ-scoped: test incompatible subnet/AZ references. [AWS subnet documentation](https://docs.aws.amazon.com/vpc/latest/userguide/configure-subnets.html).
 - Azure administrative ownership and VNet/subnet attachment are separate dimensions. Use regional VNet constraints as documented; verify NIC/resource-group details during M2. [Azure network planning](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-vnet-plan-design-arm).
 - GCP VPC networks are global and subnets are regional; support Shared VPC references without forcing one ownership tree. [GCP VPC documentation](https://docs.cloud.google.com/vpc/docs/vpc).
-- Huawei IAM projects, enterprise projects, service scope, and zone placement require per-service primary-source verification in M2; no universal hierarchy is assumed. Current Huawei documentation and icon rights remain unresolved.
+- Huawei IAM projects map to one region, while enterprise projects group resources across regions. Authorization scope and location are separate per service, for example on OBS. [S06](../project-management/evidence/S06-provider-catalogs.md) records the verified rules; no universal hierarchy is assumed. Icon rights remain unresolved.
 - On-premises physical placement, virtualization membership, and logical network/security membership can overlap; test these independently.
 
 ## 7. Non-functional requirements

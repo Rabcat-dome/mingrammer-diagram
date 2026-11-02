@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 118 128" width="118" height="128">
+<g transform="translate(4 4) scale(1)">
+<rect x="10" y="95" width="90" height="15" rx="1.999" fill="#CCCCCC" stroke="#6881B3" stroke-width="2"/>
+<rect x="10" y="77.5" width="90" height="15" rx="1.999" fill="#CCCCCC" stroke="#6881B3" stroke-width="2"/>
+<rect x="10" y="60" width="90" height="15" rx="1.999" fill="#CCCCCC" stroke="#6881B3" stroke-width="2"/>
+<rect x="10" y="42.5" width="90" height="15" rx="1.999" fill="#CCCCCC" stroke="#6881B3" stroke-width="2"/>
+<rect x="10" y="25" width="90" height="15" rx="1.999" fill="#CCCCCC" stroke="#6881B3" stroke-width="2"/>
+<path d="M14 23 L35 10 L75 10 L96 23 Z" fill="#CCCCCC" stroke="#6881B3" stroke-width="2"/>
+<ellipse cx="92" cy="102.5" rx="4" ry="4" fill="#ffffff" stroke="none"/>
+<ellipse cx="92" cy="85" rx="4" ry="4" fill="#ffffff" stroke="none"/>
+<ellipse cx="92" cy="67.5" rx="4" ry="4" fill="#ffffff" stroke="none"/>
+<ellipse cx="92" cy="50" rx="4" ry="4" fill="#ffffff" stroke="none"/>
+<ellipse cx="92" cy="32.5" rx="4" ry="4" fill="#ffffff" stroke="none"/>
+<path d="M15 108 L20 97 L25 97 L20 108 Z M25 108 L30 97 L35 97 L30 108 Z M35 108 L40 97 L45 97 L40 108 Z M45 108 L50 97 L55 97 L50 108 Z M55 108 L60 97 L65 97 L60 108 Z M65 108 L70 97 L75 97 L70 108 Z M15 90.5 L20 79.5 L25 79.5 L20 90.5 Z M25 90.5 L30 79.5 L35 79.5 L30 90.5 Z M35 90.5 L40 79.5 L45 79.5 L40 90.5 Z M45 90.5 L50 79.5 L55 79.5 L50 90.5 Z M55 90.5 L60 79.5 L65 79.5 L60 90.5 Z M65 90.5 L70 79.5 L75 79.5 L70 90.5 Z M15 73 L20 62 L25 62 L20 73 Z M25 73 L30 62 L35 62 L30 73 Z M35 73 L39.5 62 L44.5 62 L39.5 73 Z M45 73 L50 62 L55 62 L50 73 Z M55 73 L60 62 L65 62 L60 73 Z M65 73 L70 62 L75 62 L70 73 Z M15 55.5 L20 44.5 L25 44.5 L20 55.5 Z M25 55.5 L30 44.5 L35 44.5 L30 55.5 Z M35 55.5 L40 44.5 L45 44.5 L40 55.5 Z M45 55.5 L50 44.5 L55 44.5 L50 55.5 Z M55 55.5 L60 44.5 L65 44.5 L60 55.5 Z M65 55.5 L70 44.5 L75 44.5 L70 55.5 Z M15 38 L20 27 L25 27 L20 38 Z M25 38 L30 27 L35 27 L30 38 Z M35 38 L40 27 L45 27 L40 38 Z M45 38 L50 27 L55 27 L50 38 Z M55 38 L60 27 L65 27 L60 38 Z M65 38 L70 27 L75 27 L70 38 Z" fill="#ffffff" stroke="none"/>
+<rect x="0" y="0" width="110" height="120" rx="5.005" fill="none" stroke="#6881B3" stroke-width="2" stroke-dasharray="5 5"/>
+</g>
+</svg>

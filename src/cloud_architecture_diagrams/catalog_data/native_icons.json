@@ -1,0 +1,317 @@
+{
+  "catalog_version": "2026.11.0",
+  "package": "diagrams",
+  "package_version": "0.25.1",
+  "icons": {
+    "diagrams.aws.compute.EC2": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/compute/ec2.png",
+      "sha256": "b77c918ad4ed02d54fd28f547d81eafd88bb1d1bb0c08ad8e0bf048845998fc2"
+    },
+    "diagrams.aws.compute.EKS": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/compute/elastic-kubernetes-service.png",
+      "sha256": "2e13d9bf26e01849cb41eafafc2a661eccfe3204af61b00be1b8119543fbbf07"
+    },
+    "diagrams.aws.database.RDS": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/database/rds.png",
+      "sha256": "92508cd5c2cc82a3cbebe0657d02b69294277a876b20010d4bbe73cca2b3c935"
+    },
+    "diagrams.aws.management.Cloudwatch": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/management/cloudwatch.png",
+      "sha256": "f2bfe7bca7e17455a668364fbc67d61e2a1a2ef16aa639f960fc75409d5073d8"
+    },
+    "diagrams.aws.network.DirectConnect": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/network/direct-connect.png",
+      "sha256": "17989b2e1c65353c2436d8f42eb7e864a29986ee72db1843f7d5a37dbe228a99"
+    },
+    "diagrams.aws.network.ElbApplicationLoadBalancer": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/network/elb-application-load-balancer.png",
+      "sha256": "f3d8087cd510f3eccabbc3b954ffe4cdfbe5aabc539c177bb2a30ec522840aa1"
+    },
+    "diagrams.aws.network.InternetGateway": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/network/internet-gateway.png",
+      "sha256": "b2ff98e5979155a3a527dbb5bf0bb682fec8a0153c55f0fc2705590003244ba8"
+    },
+    "diagrams.aws.network.NATGateway": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/network/nat-gateway.png",
+      "sha256": "bb2ce8082e007e931b923bb8973aa4169128a57a7f848f46a85c8c1713f26866"
+    },
+    "diagrams.aws.network.SiteToSiteVpn": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/network/site-to-site-vpn.png",
+      "sha256": "eb865cc644d60d71a6189adbb4f09f4420c510a9de2ec82f13cf53f2933873b0"
+    },
+    "diagrams.aws.security.IAM": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/security/identity-and-access-management-iam.png",
+      "sha256": "f9b9f5fbe062a82a3a0eff49bba209561b11815c91d9806576ccc7a25e7a8bb7"
+    },
+    "diagrams.aws.storage.S3": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/storage/simple-storage-service-s3.png",
+      "sha256": "656fdea609bf68df6dd032d56e0beedbf47b26051fb5238aa4d85c9c52d33f62"
+    },
+    "diagrams.azure.compute.VM": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/compute/vm.png",
+      "sha256": "e43f6872fd7e4f1ea28b6a86f5152e491b6c881080d8a2579f136e390a994547"
+    },
+    "diagrams.azure.containers.KubernetesServices": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/containers/kubernetes-services.png",
+      "sha256": "6ffa41da74ea0555af6abca839aefd33f1105748f0fb4e2d54df95c1f471b62f"
+    },
+    "diagrams.azure.databases.SQLDatabase": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/databases/sql-database.png",
+      "sha256": "a68207af2fc47bc5348a8f512007a1eddc2fa59d291b58469296c687edf8f207"
+    },
+    "diagrams.azure.identity.ActiveDirectory": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/identity/active-directory.png",
+      "sha256": "a8b60589d384de595cfa2ec7797991e0a4ed8003039c8fc1d1f83ac3a536fc57"
+    },
+    "diagrams.azure.monitor.Monitor": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/monitor/monitor.png",
+      "sha256": "23a2ac851b9a78c290e6df390c3afb32e00a5bb2adc57ed8232b3c96b1ded6ad"
+    },
+    "diagrams.azure.networking.ApplicationGateways": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/networking/application-gateways.png",
+      "sha256": "8eb684218ad635400f3fd7802802a1880f929b0659357d4d37a119799ef03271"
+    },
+    "diagrams.azure.networking.ExpressrouteCircuits": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/networking/expressroute-circuits.png",
+      "sha256": "f337a4b255e0a28e96a87f3b35807b0c8822fdfb9f61bd661777059cfc278f4b"
+    },
+    "diagrams.azure.networking.Firewalls": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/networking/firewalls.png",
+      "sha256": "6e32ea67635e8fc21053c99106cb4ee42647c7daf230deaf7a7e125845db66d0"
+    },
+    "diagrams.azure.networking.Nat": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/networking/nat.png",
+      "sha256": "aec6802d7e41383740ba533d2969557cf4b0c952c497ab41095631fd90ede6bc"
+    },
+    "diagrams.azure.networking.NetworkInterfaces": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/networking/network-interfaces.png",
+      "sha256": "34e839f5aabe681baf1903ff09a0ccc092e97855845b625b70d46507a403d7ee"
+    },
+    "diagrams.azure.networking.VirtualNetworkGateways": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/networking/virtual-network-gateways.png",
+      "sha256": "8bd8353aaefdf7aef97d9a9805fee525c633f544f2b8e9f610e89e1afab76791"
+    },
+    "diagrams.azure.storage.BlobStorage": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/storage/blob-storage.png",
+      "sha256": "375264b1418547dc9e454a41c9ea98adea419d63a61a3090b016980d9b310f28"
+    },
+    "diagrams.gcp.compute.ComputeEngine": {
+      "pack": "gcp-product-icons",
+      "resource": "resources/gcp/compute/compute-engine.png",
+      "sha256": "5c56281fbb387259a8dd15a9eb574fba78e879b18630d9df4917e1222fafcf2a"
+    },
+    "diagrams.gcp.compute.KubernetesEngine": {
+      "pack": "gcp-product-icons",
+      "resource": "resources/gcp/compute/kubernetes-engine.png",
+      "sha256": "8a52bfa4739aa91d66d1a5b10cd674c2893788cabafb827ceaae9e4246ed1b56"
+    },
+    "diagrams.gcp.database.SQL": {
+      "pack": "gcp-product-icons",
+      "resource": "resources/gcp/database/sql.png",
+      "sha256": "6fa8ba3a56612156f73265182f4c84094cdb1eaaaa79171ecf64af1e821b3dba"
+    },
+    "diagrams.gcp.network.DedicatedInterconnect": {
+      "pack": "gcp-product-icons",
+      "resource": "resources/gcp/network/dedicated-interconnect.png",
+      "sha256": "ebb730c6e6dfb6932a318e5ffd92db687fabc68fe66450960640ccfa06601bc7"
+    },
+    "diagrams.gcp.network.FirewallRules": {
+      "pack": "gcp-product-icons",
+      "resource": "resources/gcp/network/firewall-rules.png",
+      "sha256": "eeb59f26072b71a5c934f62d61a3c51d7616be03ef3c9a43eba1cde53802347f"
+    },
+    "diagrams.gcp.network.LoadBalancing": {
+      "pack": "gcp-product-icons",
+      "resource": "resources/gcp/network/load-balancing.png",
+      "sha256": "b4ef99738d008eca358b24ee5eac678a7e32dc86699efaca76d2e97340e1b324"
+    },
+    "diagrams.gcp.network.NAT": {
+      "pack": "gcp-product-icons",
+      "resource": "resources/gcp/network/nat.png",
+      "sha256": "b8cdbff76d502fc90a0ac70e7049e2e652b759242b6b0f7d8de9b0d67c83c68d"
+    },
+    "diagrams.gcp.network.PartnerInterconnect": {
+      "pack": "gcp-product-icons",
+      "resource": "resources/gcp/network/partner-interconnect.png",
+      "sha256": "bbda19c06f067b271efe18c4bd2df385f0992027f2ffdee68939535ccb9ac55d"
+    },
+    "diagrams.gcp.network.VPN": {
+      "pack": "gcp-product-icons",
+      "resource": "resources/gcp/network/vpn.png",
+      "sha256": "34ee17f756f9bb45fbaee34177395bc2fe0306d0324987898dc147f3ae86c64f"
+    },
+    "diagrams.gcp.operations.Logging": {
+      "pack": "gcp-product-icons",
+      "resource": "resources/gcp/operations/logging.png",
+      "sha256": "2829f60744bfe7061832a67e2d2b5b13d1d99b4a2f0375113837a073057319df"
+    },
+    "diagrams.gcp.operations.Monitoring": {
+      "pack": "gcp-product-icons",
+      "resource": "resources/gcp/operations/monitoring.png",
+      "sha256": "33755b2b4756acd4cbd18a177fc534b812172c018cb539ad8785244cc019b264"
+    },
+    "diagrams.gcp.security.Iam": {
+      "pack": "gcp-product-icons",
+      "resource": "resources/gcp/security/iam.png",
+      "sha256": "79817719ff17a2f767c575e7d6c792f6b3f69406dfc54d51f2733ced2dcbed0a"
+    },
+    "diagrams.gcp.storage.Storage": {
+      "pack": "gcp-product-icons",
+      "resource": "resources/gcp/storage/storage.png",
+      "sha256": "d5f357b6b81155393a0d049bd4cde4809cbbc600ca36f72349c4e2438a05d7ff"
+    },
+    "diagrams.generic.blank.Blank": {
+      "pack": "diagrams-generic",
+      "resource": "resources/generic/blank/blank.png",
+      "sha256": "3ae6a9e607b163f750d8e253b01ec334d6c7cfa22b1080a84e16ad6e90ac00b3"
+    },
+    "diagrams.generic.database.SQL": {
+      "pack": "diagrams-generic",
+      "resource": "resources/generic/database/sql.png",
+      "sha256": "729d94d634b367bc5ae215d557762ded6cb8c628ff0b5c089c6345e980634ec1"
+    },
+    "diagrams.generic.network.Firewall": {
+      "pack": "diagrams-generic",
+      "resource": "resources/generic/network/firewall.png",
+      "sha256": "5d6e0daa05aa28f101b07a92e7f01d7b0f6d4f2c7290267d4d1d4b45ba17fbfd"
+    },
+    "diagrams.generic.network.Router": {
+      "pack": "diagrams-generic",
+      "resource": "resources/generic/network/router.png",
+      "sha256": "090558ea62d5754dae5a48d08bf94a1f9a0fdc2390ef8264923098d7c3b51844"
+    },
+    "diagrams.generic.network.Switch": {
+      "pack": "diagrams-generic",
+      "resource": "resources/generic/network/switch.png",
+      "sha256": "32f944abb338bc8c3d3c5d979801216230834cf46dd5bb1f742e052cee056fc5"
+    },
+    "diagrams.k8s.compute.Cronjob": {
+      "pack": "kubernetes-community-icons",
+      "resource": "resources/k8s/compute/cronjob.png",
+      "sha256": "f4fe247adef571a9ba8b89b8ccf42a37dcbe640a369360cfe087129e05c1af52"
+    },
+    "diagrams.k8s.compute.DaemonSet": {
+      "pack": "kubernetes-community-icons",
+      "resource": "resources/k8s/compute/ds.png",
+      "sha256": "f9162330568ce4731023ab0da28695fd331bac532ea04378720c2cbd40424515"
+    },
+    "diagrams.k8s.compute.Deployment": {
+      "pack": "kubernetes-community-icons",
+      "resource": "resources/k8s/compute/deploy.png",
+      "sha256": "fa500352bdfe8c86b0b8d052895aa89385ff81a7a106d6cfd2a324fa64989796"
+    },
+    "diagrams.k8s.compute.Job": {
+      "pack": "kubernetes-community-icons",
+      "resource": "resources/k8s/compute/job.png",
+      "sha256": "647b7d522fc0c27e9b031ac8ce25b0e08e769e8bf44f0a0a75834cde337bea49"
+    },
+    "diagrams.k8s.compute.Pod": {
+      "pack": "kubernetes-community-icons",
+      "resource": "resources/k8s/compute/pod.png",
+      "sha256": "4144b81e689887ae4dcf4f6235b7abc4fa03da838eaceef1e4d2cd6c084a9cba"
+    },
+    "diagrams.k8s.compute.ReplicaSet": {
+      "pack": "kubernetes-community-icons",
+      "resource": "resources/k8s/compute/rs.png",
+      "sha256": "caa0459b0d9ce3447b7d612aeadde47e973ae6fb5cd0f1dcd7408e01df8e403b"
+    },
+    "diagrams.k8s.compute.StatefulSet": {
+      "pack": "kubernetes-community-icons",
+      "resource": "resources/k8s/compute/sts.png",
+      "sha256": "a7baa2729cb8511014d90749540ec2532d760282e13721cc8b40c23445042b86"
+    },
+    "diagrams.k8s.group.Namespace": {
+      "pack": "kubernetes-community-icons",
+      "resource": "resources/k8s/group/ns.png",
+      "sha256": "bf7af756746e835d1316f24f7eeb99a5647530c4786e116ea570c0b49f54a3fc"
+    },
+    "diagrams.k8s.infra.Node": {
+      "pack": "kubernetes-community-icons",
+      "resource": "resources/k8s/infra/node.png",
+      "sha256": "45769c046377ffe12ad93a5fccd5c98d921a53c950140cc1b1eae7ee65a9d41d"
+    },
+    "diagrams.k8s.network.Ingress": {
+      "pack": "kubernetes-community-icons",
+      "resource": "resources/k8s/network/ing.png",
+      "sha256": "37f385cabc9c6f17131c6a224b5c877cdac44cfd1efbfc19bf5f3c5139cd5e4e"
+    },
+    "diagrams.k8s.network.NetworkPolicy": {
+      "pack": "kubernetes-community-icons",
+      "resource": "resources/k8s/network/netpol.png",
+      "sha256": "16851f8d12335a5f36640f33511a4fec44b7bf6b4b15d3780e0bfb4b914e19d8"
+    },
+    "diagrams.k8s.network.Service": {
+      "pack": "kubernetes-community-icons",
+      "resource": "resources/k8s/network/svc.png",
+      "sha256": "19b8ec0b2e53104ff6f1874f39642473d049308646efaccb85a6cd472d4d3732"
+    },
+    "diagrams.k8s.podconfig.ConfigMap": {
+      "pack": "kubernetes-community-icons",
+      "resource": "resources/k8s/podconfig/cm.png",
+      "sha256": "179ebffcfed9c0d042a3b905d3bfff028ff06c8c8a61bdd59f46b80758943232"
+    },
+    "diagrams.k8s.podconfig.Secret": {
+      "pack": "kubernetes-community-icons",
+      "resource": "resources/k8s/podconfig/secret.png",
+      "sha256": "4d55879218a5ef0e4807f2f849326852d6a62b3a9946255d6cbd40e7e3f0cf0a"
+    },
+    "diagrams.k8s.rbac.ServiceAccount": {
+      "pack": "kubernetes-community-icons",
+      "resource": "resources/k8s/rbac/sa.png",
+      "sha256": "de3fa45dfc91e4e0ed62be3ec7e123d08e4a1b10053430fe1d7c7b2e78933ce5"
+    },
+    "diagrams.k8s.storage.PersistentVolume": {
+      "pack": "kubernetes-community-icons",
+      "resource": "resources/k8s/storage/pv.png",
+      "sha256": "e680503f97429239b39200287cd614adfeac5df3db28f4908019af46af4b3c4b"
+    },
+    "diagrams.k8s.storage.PersistentVolumeClaim": {
+      "pack": "kubernetes-community-icons",
+      "resource": "resources/k8s/storage/pvc.png",
+      "sha256": "cb856d858d42ad24254c9dc00e4b7db9e7e0ebdcd48f749667ae797bfde237ff"
+    },
+    "diagrams.k8s.storage.StorageClass": {
+      "pack": "kubernetes-community-icons",
+      "resource": "resources/k8s/storage/sc.png",
+      "sha256": "d93eb0a6d55248a7802b3d056bcd8a4a4adb1c8407a4871b788619a455ca34c1"
+    },
+    "diagrams.onprem.client.Users": {
+      "pack": "diagrams-generic",
+      "resource": "resources/onprem/client/users.png",
+      "sha256": "4aef201405ce7dc9bccdb47916c9c825c3ea64c89ad504eeadbbb993478ec5e7"
+    },
+    "diagrams.onprem.compute.Server": {
+      "pack": "diagrams-generic",
+      "resource": "resources/onprem/compute/server.png",
+      "sha256": "a1502036bca981f076459f78e1d4d06ab789dfd12e451a4f643898a11b90cb5b"
+    },
+    "diagrams.onprem.network.Internet": {
+      "pack": "diagrams-generic",
+      "resource": "resources/onprem/network/internet.png",
+      "sha256": "5e15c362434c884337550870d856481c4ae262252c9d332f02f9b46bb7a9c3bd"
+    }
+  }
+}

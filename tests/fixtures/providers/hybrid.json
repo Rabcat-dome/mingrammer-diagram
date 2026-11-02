@@ -1,0 +1,324 @@
+{
+  "schema_version": "1.0.0",
+  "metadata": {
+    "id": "hybrid-reference",
+    "title": "Five environments and external parties",
+    "environment": "fixture",
+    "assumptions": [
+      "Synthetic fixture; no deployed infrastructure implied."
+    ]
+  },
+  "scopes": [
+    {
+      "id": "env-prod",
+      "name": "Production",
+      "provider": "onprem",
+      "kind": "environment"
+    },
+    {
+      "id": "aws-env",
+      "name": "Production",
+      "provider": "aws",
+      "kind": "environment"
+    },
+    {
+      "id": "azure-env",
+      "name": "Production",
+      "provider": "azure",
+      "kind": "environment"
+    },
+    {
+      "id": "gcp-env",
+      "name": "Production",
+      "provider": "gcp",
+      "kind": "environment"
+    },
+    {
+      "id": "huawei-env",
+      "name": "Production",
+      "provider": "huawei",
+      "kind": "environment"
+    }
+  ],
+  "boundaries": [
+    {
+      "id": "zone-ext",
+      "name": "Internet",
+      "provider": "external",
+      "kind": "security_zone"
+    },
+    {
+      "id": "env-all",
+      "name": "Production estate",
+      "provider": "external",
+      "kind": "environment"
+    },
+    {
+      "id": "cluster-group",
+      "name": "Kubernetes group",
+      "provider": "onprem",
+      "kind": "cluster"
+    },
+    {
+      "id": "env-onprem",
+      "name": "On-premises production",
+      "provider": "onprem",
+      "kind": "environment",
+      "parent_ref": "env-onprem-parent"
+    },
+    {
+      "id": "env-onprem-parent",
+      "name": "Estate",
+      "provider": "onprem",
+      "kind": "environment"
+    },
+    {
+      "id": "zone-aws",
+      "name": "AWS trust zone",
+      "provider": "aws",
+      "kind": "security_zone"
+    },
+    {
+      "id": "zone-az",
+      "name": "Azure trust zone",
+      "provider": "azure",
+      "kind": "security_zone"
+    },
+    {
+      "id": "zone-gcp",
+      "name": "GCP trust zone",
+      "provider": "gcp",
+      "kind": "security_zone"
+    },
+    {
+      "id": "zone-hw",
+      "name": "Huawei trust zone",
+      "provider": "huawei",
+      "kind": "security_zone"
+    }
+  ],
+  "resources": [
+    {
+      "id": "people",
+      "name": "User",
+      "provider": "external",
+      "service_type": "external.people.user",
+      "taxonomy": "external.entity"
+    },
+    {
+      "id": "internet",
+      "name": "Internet",
+      "provider": "external",
+      "service_type": "external.network.internet",
+      "taxonomy": "external.entity"
+    },
+    {
+      "id": "partner",
+      "name": "Partner",
+      "provider": "external",
+      "service_type": "external.organization.partner",
+      "taxonomy": "external.entity"
+    },
+    {
+      "id": "saas",
+      "name": "SaaS application",
+      "provider": "external",
+      "service_type": "external.service.saas",
+      "taxonomy": "external.entity"
+    },
+    {
+      "id": "legacy",
+      "name": "External system",
+      "provider": "external",
+      "service_type": "external.system.other",
+      "taxonomy": "external.entity"
+    },
+    {
+      "id": "aws-vm",
+      "name": "Amazon EC2 instance",
+      "provider": "aws",
+      "service_type": "aws.compute.ec2",
+      "taxonomy": "compute.vm",
+      "placement": {
+        "scope_refs": [
+          "aws-env"
+        ],
+        "security_boundaries": [
+          "zone-aws"
+        ]
+      }
+    },
+    {
+      "id": "az-vm",
+      "name": "Azure Virtual Machine",
+      "provider": "azure",
+      "service_type": "azure.compute.virtual_machine",
+      "taxonomy": "compute.vm",
+      "placement": {
+        "scope_refs": [
+          "azure-env"
+        ],
+        "security_boundaries": [
+          "zone-az"
+        ]
+      }
+    },
+    {
+      "id": "gcp-vm",
+      "name": "Compute Engine instance",
+      "provider": "gcp",
+      "service_type": "gcp.compute.compute_engine",
+      "taxonomy": "compute.vm",
+      "placement": {
+        "scope_refs": [
+          "gcp-env"
+        ],
+        "security_boundaries": [
+          "zone-gcp"
+        ]
+      }
+    },
+    {
+      "id": "hw-vm",
+      "name": "Elastic Cloud Server",
+      "provider": "huawei",
+      "service_type": "huawei.compute.ecs",
+      "taxonomy": "compute.vm",
+      "placement": {
+        "scope_refs": [
+          "huawei-env"
+        ],
+        "security_boundaries": [
+          "zone-hw"
+        ]
+      }
+    },
+    {
+      "id": "dc-vm",
+      "name": "Virtual machine",
+      "provider": "onprem",
+      "service_type": "onprem.compute.virtual_machine",
+      "taxonomy": "compute.vm",
+      "placement": {
+        "scope_refs": [
+          "env-prod"
+        ],
+        "deployment_context": [
+          "cluster-group"
+        ]
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "id": "t-people",
+      "source_ref": "people",
+      "target_ref": "internet",
+      "kind": "traffic",
+      "protocol": "HTTPS"
+    },
+    {
+      "id": "t-aws",
+      "source_ref": "internet",
+      "target_ref": "aws-vm",
+      "kind": "traffic",
+      "protocol": "HTTPS"
+    },
+    {
+      "id": "v-dc-aws",
+      "source_ref": "dc-vm",
+      "target_ref": "aws-vm",
+      "kind": "vpn",
+      "direction": "undirected",
+      "label": "Site-to-site VPN",
+      "security": "IPsec"
+    },
+    {
+      "id": "v-dc-az",
+      "source_ref": "dc-vm",
+      "target_ref": "az-vm",
+      "kind": "vpn",
+      "direction": "undirected",
+      "security": "IPsec"
+    },
+    {
+      "id": "t-gcp",
+      "source_ref": "aws-vm",
+      "target_ref": "gcp-vm",
+      "kind": "peering",
+      "direction": "undirected",
+      "label": "Private interconnect"
+    },
+    {
+      "id": "t-hw",
+      "source_ref": "dc-vm",
+      "target_ref": "hw-vm",
+      "kind": "vpn",
+      "direction": "undirected",
+      "security": "IPsec"
+    },
+    {
+      "id": "t-partner",
+      "source_ref": "partner",
+      "target_ref": "aws-vm",
+      "kind": "traffic",
+      "protocol": "HTTPS"
+    },
+    {
+      "id": "t-saas",
+      "source_ref": "aws-vm",
+      "target_ref": "saas",
+      "kind": "traffic",
+      "protocol": "HTTPS"
+    },
+    {
+      "id": "t-legacy",
+      "source_ref": "dc-vm",
+      "target_ref": "legacy",
+      "kind": "traffic"
+    }
+  ],
+  "views": [
+    {
+      "id": "detail",
+      "title": "Five environments and external parties",
+      "entity_refs": [
+        "env-prod",
+        "aws-env",
+        "azure-env",
+        "gcp-env",
+        "huawei-env",
+        "zone-ext",
+        "env-all",
+        "cluster-group",
+        "env-onprem",
+        "env-onprem-parent",
+        "zone-aws",
+        "zone-az",
+        "zone-gcp",
+        "zone-hw",
+        "people",
+        "internet",
+        "partner",
+        "saas",
+        "legacy",
+        "aws-vm",
+        "az-vm",
+        "gcp-vm",
+        "hw-vm",
+        "dc-vm"
+      ],
+      "relationship_refs": [
+        "t-people",
+        "t-aws",
+        "v-dc-aws",
+        "v-dc-az",
+        "t-gcp",
+        "t-hw",
+        "t-partner",
+        "t-saas",
+        "t-legacy"
+      ]
+    }
+  ]
+}
