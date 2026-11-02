@@ -1,6 +1,6 @@
 # Quality Gate and Self-Hosted Runner Plan
 
-Updated: 2026-11-02 | Status: S05/M1 product quality gate passed on the real runner. S06/M2 adds two lanes that pass locally and await actual CI. S03 runner/service setup and two actual manual preflight jobs passed; M0-04 complete.
+Updated: 2026-11-02 | Status: S05/M1 product quality gate passed on the real runner. S06/M2 adds two lanes, which passed actual CI at `4b9b826`. S03 runner/service setup and two actual manual preflight jobs passed; M0-04 complete.
 
 ## Recommendation
 
@@ -12,7 +12,7 @@ The current private repository's rulesets/protection endpoints return 403 requir
 
 ## Implemented M1 gate and planned additions
 
-Implemented [quality-gate.yml](../../.github/workflows/quality-gate.yml) runs docs-contract, secrets, lint, format, types, workflow, schema-core and core package-build checks. [S05 evidence](evidence/S05-core-and-ci.md) records actual run 41426653007 at 785e1ee: eight lanes and 82 tests passed. The stable job name is quality-gate. Render/visual/plugin checks below remain planned until their components arrive; no placeholder pass is emitted. M7 preparation adds the `claude-plugin` and `package-contents` lanes, which passed actual CI, most recently run 41453874994 at `917f46f` with 10 lanes in total; see the [M7 evidence](evidence/M7-claude-plugin.md). S06 activates `catalog-license` and `provider-semantics`, for 12 lanes. A test lane now fails if it runs no tests, and the report carries `release_blockers`, because a passing gate does not clear them. See the [S06 evidence](evidence/S06-provider-catalogs.md#validation); no actual CI run covers them yet.
+Implemented [quality-gate.yml](../../.github/workflows/quality-gate.yml) runs docs-contract, secrets, lint, format, types, workflow, schema-core and core package-build checks. [S05 evidence](evidence/S05-core-and-ci.md) records actual run 41426653007 at 785e1ee: eight lanes and 82 tests passed. The stable job name is quality-gate. Render/visual/plugin checks below remain planned until their components arrive; no placeholder pass is emitted. M7 preparation adds the `claude-plugin` and `package-contents` lanes, which passed actual CI, most recently run 41453874994 at `917f46f` with 10 lanes in total; see the [M7 evidence](evidence/M7-claude-plugin.md). S06 activates `catalog-license` and `provider-semantics`, for 12 lanes. A test lane now fails if it runs no tests, and the report carries `release_blockers`, because a passing gate does not clear them. Actual CI [run 41462453632](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41462453632) at `4b9b826` passed all 12 lanes with 480 tests; see the [S06 evidence](evidence/S06-provider-catalogs.md#validation).
 
 | Check | Starts | Blocking result | Evidence |
 |---|---|---|---|

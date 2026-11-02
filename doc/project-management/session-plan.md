@@ -18,7 +18,7 @@ S04 result: [M0/S04 closeout](evidence/S04-closeout.md), [native proof](evidence
 
 S05 result: [core/CI evidence](evidence/S05-core-and-ci.md), [contract/setup](../design/core-contract.md) and [Astra review](evidence/S05-astra-review.md). M1-01..04 are complete at code head 785e1ee: 82 tests, eight real runner lanes, clean CI wheel and both initial P2 findings confirmed fixed. This is core-only validation; provider catalogs/rules/assets remain S06 and full rendering/Work/release acceptance remains later work.
 
-S06 result: [catalogs, rules and rights](evidence/S06-provider-catalogs.md). M2-01, 02, 04, 05 and 06 are complete, with catalogs, rules, on-premises assets and two gate lanes passing a full local gate. M2-03's icons stay blocked by O-002. Owner inspection, actual CI and the Astra/High review remain.
+S06 result: [catalogs, rules and rights](evidence/S06-provider-catalogs.md). M2-01, 02, 04, 05 and 06 are complete, with catalogs, rules, on-premises assets and two gate lanes passing actual CI at `4b9b826`. M2-03's icons stay blocked by O-002. Owner inspection and the Astra/High review remain.
 
 The [S02 user follow-up](evidence/S02-additional-icon-sources.md) assesses a 155-PNG Huawei alternative and maps all eight on-premises concepts to draw.io-type generic symbols/compositions under D-010. S06 implements the exact approved subset/export/attribution; symbol selection does not replace source-rights or rendered acceptance checks.
 

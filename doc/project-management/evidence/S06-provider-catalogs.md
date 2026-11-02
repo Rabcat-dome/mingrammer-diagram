@@ -2,7 +2,7 @@
 
 Date: 2026-11-02 | Tasks: M2-01..06 | Branch: `codex/s06-provider-catalogs`, from `c6a59e5`
 
-**Result: the catalogs, semantic rules, on-premises assets and both new gate lanes are implemented, and the full local gate passes. M2 cannot close yet:** Huawei icon rights remain an explicit packaging and release blocker, the required Astra/High review has not run, and no CI run covers this work because nothing is committed or pushed.
+**Result: the catalogs, semantic rules, on-premises assets and both new gate lanes are implemented, and actual CI passes at `4b9b826`. M2 cannot close yet:** Huawei icon rights remain an explicit packaging and release blocker, and the required Astra/High review and owner inspection have not happened.
 
 ## Task status
 
@@ -27,7 +27,7 @@ Date: 2026-11-02 | Tasks: M2-01..06 | Branch: `codex/s06-provider-catalogs`, fro
 
 ## Validation
 
-The full local `scripts/quality_gate.py` passed all 12 lanes at the working tree on top of `c6a59e5` on macOS ARM64. **No actual CI run covers this yet**, because committing and pushing wait for the owner.
+Actual Quality gate [run 41462453632](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41462453632), job 125334691898, passed all 12 lanes at `4b9b826819d9b54cb8086a7305a8257bd7f66ab5`, from a clean checkout on the self-hosted runner `macbook-pro-m2-max-mingrammer` with Python 3.13.7. The 480 tests include none skipped, and the job has zero annotations. The wheel it built has the same SHA-256 as the local build, `1441a118...0f7f`. The full `scripts/quality_gate.py` also passed locally before the commit.
 
 | Lane | Tests | Work done |
 |---|---|---|
@@ -47,7 +47,7 @@ Sabotage checks confirmed the lanes do real work. Each change was made to the re
 | Huawei ECS given a generic native class | `catalog-license` failed: Huawei services must not use a substitute |
 | AWS subnet changed to regional | `provider-semantics` failed three cases |
 
-The real wrapper in `plugins/cloud-architecture-diagrams/bin/cloud-diagrams` ran from a fresh private environment that holds no `diagrams` package: capabilities, a filtered catalog search, a valid Huawei model with 16 `ASSET_RIGHTS_BLOCKED` warnings, and a model with Thai labels. The owner's installed plugin, S04 alpha.3, the Codex marketplace and the runner registrations were not changed.
+The real wrapper in `plugins/cloud-architecture-diagrams/bin/cloud-diagrams` ran from a fresh private environment that holds no `diagrams` package: capabilities, a filtered catalog search, a valid Huawei model with 16 `ASSET_RIGHTS_BLOCKED` warnings, and a model with Thai labels. The owner's installed plugin, S04 alpha.3, the Codex marketplace and the runner registrations were not changed, so the installed Claude plugin does not have this work yet.
 
 ## Catalog design
 
@@ -169,6 +169,5 @@ Self-checks in this session are not a review. **The Astra/High review M2 require
 ## Next steps
 
 1. Owner: inspect the on-premises symbols, decide the Huawei route under O-002, and decide whether the GCP evidence is enough under O-009.
-2. Owner: authorize a commit and push, so actual CI can run on the self-hosted runner.
-3. Arrange the Astra/High review of this diff, then close M2 or record its remaining blocker.
-4. S07 / M3 can proceed in parallel, with Huawei services kept visibly icon-less.
+2. Arrange the Astra/High review of `c6a59e5..4b9b826`, then close M2 or record its remaining blocker.
+3. S07 / M3 can proceed in parallel, with Huawei services kept visibly icon-less.

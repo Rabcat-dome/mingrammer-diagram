@@ -1,6 +1,6 @@
 # Milestones and Work Breakdown
 
-Updated: 2026-11-02 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 implemented and not closed. Huawei packaging rights remain a blocker, and M2's CI run and review are outstanding. M7 Claude Code preparation started early under D-015.
+Updated: 2026-11-02 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 implemented and not closed. Huawei packaging rights remain a blocker, and M2's review is outstanding. M7 Claude Code preparation started early under D-015.
 
 Source of scope: [requirements](../requirements/requirements.md). Model abbreviations and review rules: [model strategy](model-strategy.md). Quality check definitions: [quality gate](quality-gate.md).
 
@@ -49,7 +49,7 @@ Exit: valid JSON passes, malformed/dangling/cyclic input fails, diagnostic contr
 
 ## M2 — Provider semantics, catalogs and icon rights
 
-Status: Implemented in S06 and not closed. [Evidence](evidence/S06-provider-catalogs.md) records a full local gate pass. Open: Huawei rights under O-002, owner inspection, actual CI and the Astra/High review. Policy: Sol/Medium, Sol/High for placement rules, review Astra/High. Actual implementation: Claude Opus 5.5, the model of the owner's session.
+Status: Implemented in S06 and not closed. [Evidence](evidence/S06-provider-catalogs.md) records actual CI [run 41462453632](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41462453632) passing at `4b9b826`. Open: Huawei rights under O-002, owner inspection and the Astra/High review. Policy: Sol/Medium, Sol/High for placement rules, review Astra/High. Actual implementation: Claude Opus 5.5, the model of the owner's session.
 
 | Task | Work | Dependency / output |
 |---|---|---|
