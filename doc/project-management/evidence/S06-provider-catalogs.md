@@ -2,7 +2,7 @@
 
 Date: 2026-11-02 | Tasks: M2-01..06 | Branch: `codex/s06-provider-catalogs`, from `c6a59e5` | Updated for owner decisions D-016 and D-017
 
-**Result: the catalogs, semantic rules, on-premises assets and both new gate lanes are implemented, and actual CI passes at `4b9b826`. The owner's later decisions D-016 and D-017 are implemented on top and pass the full local gate, but they are uncommitted and have no CI. M2 cannot close yet:** Huawei rights are not cleared, seven required Huawei items have no icon, the required Astra/High review has not happened, and the owner has not yet inspected the Huawei icons.
+**Result: the catalogs, semantic rules, on-premises assets and both new gate lanes are implemented, along with the owner's decisions D-016 and D-017, and actual CI passes at `9d579f8`. M2 cannot close yet:** Huawei rights are not cleared, seven required Huawei items have no icon, the required Astra/High review has not happened, and the owner has not yet inspected the Huawei icons.
 
 ## Task status
 
@@ -27,9 +27,9 @@ Date: 2026-11-02 | Tasks: M2-01..06 | Branch: `codex/s06-provider-catalogs`, fro
 
 ## Validation
 
-Actual Quality gate [run 41462453632](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41462453632), job 125334691898, passed all 12 lanes at `4b9b826819d9b54cb8086a7305a8257bd7f66ab5`, from a clean checkout on the self-hosted runner `macbook-pro-m2-max-mingrammer` with Python 3.13.7. The 480 tests include none skipped, and the job has zero annotations. The wheel it built has the same SHA-256 as the local build, `1441a118...0f7f`.
+Actual Quality gate [run 41467781802](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41467781802), job 125353105539, passed all 12 lanes at `9d579f8f4e87a9d23cfef6762ce34527b15fce28`, from a clean checkout on the self-hosted runner `macbook-pro-m2-max-mingrammer` with Python 3.13.7. The 514 tests include none skipped, and the job has zero annotations. The repository-visibility guard read `private` from the run's event. The wheel it built has the same SHA-256 as the local build, `aa949821...47af`, and carries the upload-block classifier and the eight Huawei files. Before the owner's decisions, [run 41462453632](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41462453632) passed the same 12 lanes with 480 tests at `4b9b826`.
 
-The D-016 and D-017 work followed. On it, the full local `scripts/quality_gate.py` passes all 12 lanes with 514 tests, none skipped. **No actual CI covers this later work yet**, because it is uncommitted. The counts below are from that local run:
+The counts below are from run 41467781802:
 
 | Lane | Tests | Work done |
 |---|---|---|
@@ -153,7 +153,7 @@ Close candidates were left unmapped on purpose:
 **How the limits are enforced.** The `catalog-license` lane fails when any of these breaks:
 
 - The package lacks `Private :: Do Not Upload`, which PyPI rejects on upload. The `package-contents` lane checks the built wheel for it as well.
-- In Actions, the event reports the repository as public. Outside Actions this cannot be read, and the report says `not_checked_outside_actions`.
+- In Actions, the event reports the repository as public. CI run 41467781802 read `private`. Outside Actions this cannot be read, and the report says `not_checked_outside_actions`.
 - The private pack claims a license or redistribution evidence, loses its pinned hashes, or names a decision that does not say private personal use. A pack also cannot become `approved` on owner risk acceptance.
 - A source title does not name the service, so mapping OBS to `storage-55` fails.
 - `NOTICE.md` or the plugin README stops stating the limit.
@@ -217,6 +217,6 @@ Self-checks in this session are not a review. **The Astra/High review M2 require
 ## Next steps
 
 1. Owner: inspect the Huawei icon sheet, and decide O-010, including whether line art is acceptable.
-2. Owner: authorize a commit and push of D-016 and D-017, so actual CI covers them. Update the installed plugin only if asked.
-3. Arrange the Astra/High review of this work, then close M2 or record its remaining blocker.
+2. Arrange the Astra/High review of `c6a59e5..9d579f8`, then close M2 or record its remaining blocker.
+3. Update the owner's installed plugin only if asked. It remains on `917f46f`, so it has none of this work.
 4. S07 / M3 can proceed in parallel.

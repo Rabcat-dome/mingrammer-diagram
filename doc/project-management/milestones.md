@@ -49,7 +49,7 @@ Exit: valid JSON passes, malformed/dangling/cyclic input fails, diagnostic contr
 
 ## M2 — Provider semantics, catalogs and icon rights
 
-Status: Implemented in S06 and not closed. [Evidence](evidence/S06-provider-catalogs.md) records actual CI [run 41462453632](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41462453632) passing at `4b9b826`. D-016 and D-017 followed and are not yet in CI. Open: O-002 for public distribution, O-010 for seven items with no icon, owner inspection of the Huawei icons and the Astra/High review. Policy: Sol/Medium, Sol/High for placement rules, review Astra/High. Actual implementation: Claude Opus 5.5, the model of the owner's session.
+Status: Implemented in S06 and not closed. [Evidence](evidence/S06-provider-catalogs.md) records actual CI [run 41467781802](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41467781802) passing at `9d579f8`, including D-016 and D-017. Open: O-002 for public distribution, O-010 for seven items with no icon, owner inspection of the Huawei icons and the Astra/High review. Policy: Sol/Medium, Sol/High for placement rules, review Astra/High. Actual implementation: Claude Opus 5.5, the model of the owner's session.
 
 | Task | Work | Dependency / output |
 |---|---|---|

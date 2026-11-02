@@ -296,3 +296,8 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 
 - The owner, through the parent session, reviewed the eight symbols in `S06-onprem-contact-sheet.png` and accepted them. This completes the owner inspection for M2-04.
 - The acceptance covers that contact sheet only. Rendered visual acceptance stays with M4 and M6.
+
+## 2026-11-02 — S06 decisions committed and CI-tested
+
+- Confirmed the repository is private, then the owner authorized the commit and push of `9d579f8`. Actual Quality gate [run 41467781802](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41467781802) / job 125353105539 passed all 12 lanes with 514 tests, none skipped and zero annotations, from a clean checkout. The visibility guard read `private`, and the wheel matches the local build's SHA-256 and carries the upload block.
+- Not done: any update to the owner's plugin, which remains on `917f46f`, owner inspection of the Huawei icons, the O-010 decision, or the Astra/High review.
