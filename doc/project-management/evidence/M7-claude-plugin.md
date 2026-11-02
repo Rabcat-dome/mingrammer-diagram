@@ -1,8 +1,8 @@
 # M7 Claude Code Plugin Preparation
 
-Recorded: 2026-11-02 (Asia/Bangkok) | Base: `c5f74b4` | First tested code: `22fc85e` | Review fixes: the commit after `64aec62` | Branch: `codex/m7-claude-plugin` | Host: macOS ARM64, Claude Code 2.1.309.
+Recorded: 2026-11-02 (Asia/Bangkok) | Base: `c5f74b4` | First tested code: `22fc85e` | Review fixes: `0220e94` | Branch: `codex/m7-claude-plugin` | Host: macOS ARM64, Claude Code 2.1.309.
 
-**M7-01 and M7-02 are complete. M7-03 is verified on one Mac for local-path, GitHub and real-config installs; a second machine, interactive permission prompts and the update of an installed plugin remain. M7-04 has not started.** This is a preparation build under D-015. It authors and validates models; it cannot render diagrams, and it does not change the Work first-release target.
+**M7-01 and M7-02 are complete. M7-03 is verified on one Mac for local-path, GitHub and real-config installs and for updating an installed plugin; a second machine and interactive permission prompts remain. M7-04 has not started.** This is a preparation build under D-015. It authors and validates models; it cannot render diagrams, and it does not change the Work first-release target.
 
 Actual CI and the GitHub and real-config installs below ran against commit `22fc85e`, before the review fixes. See [Same-session review](#same-session-review) for what changed afterward and what has been rerun.
 
@@ -25,12 +25,14 @@ There is no MCP server. A Claude Code session already has Bash and Read, so a se
 | Check | Result |
 |---|---|
 | Actual CI: [run 41440133540](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41440133540), job 125259629499 | Passed all 10 lanes on `macbook-pro-m2-max-mingrammer` from a clean checkout of `22fc85e`, with 82 core tests and 14 plugin tests and none skipped. Read from the run's report artifact |
+| Review fixes in actual CI: [run 41443551856](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41443551856), job 125271024270 | Passed all 10 lanes at `0220e94`, with 86 core tests and 17 plugin tests, none skipped, and zero job annotations. Wheel SHA-256 `da0bd7af66be5fbb910f8d5c1539a26378432c2d985e326fa764b963ba81b4e1` matches the local build |
 | Node 24 action: [run 41441398887](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41441398887), job 125263877372 | Passed all 10 lanes at `359f1ea` with `actions/upload-artifact` v7.0.2 and zero job annotations, so the Node.js 20 warning is gone. The uploaded artifact downloaded and read back correctly |
 | Wheel | At `22fc85e`, local and CI SHA-256 `fc138b2236a30100a01d1d6a381fd96b6eb70913d3ccbd6832c6d142b1560e8a`, byte-identical to the S05 CI wheel, so packaging left the core unchanged. Core `0.2.0a2` later changes the wheel on purpose, for the usage exit code |
 | `claude plugin validate --strict` on marketplace and plugin | At `22fc85e`, passed. With the fixed version removed, non-strict validation passes and `--strict` fails only on the deliberate missing-version warning. The separate public-directory profile reports a missing license and icon; public submission is out of scope |
 | Install from the private GitHub repository in a throwaway `CLAUDE_CONFIG_DIR` | `Rabcat-dome/mingrammer-diagram#codex/m7-claude-plugin` cloned over HTTPS with the machine's credentials. Cache has 0 symlinks and is 148 KB; valid and invalid paths behaved. Uninstall and marketplace removal then left no entries |
 | Install from the local repository path and a fresh `git clone` in throwaway configs | Installed. Cache has 0 symlinks, and symlink and executable modes survive Git |
 | Install into the owner's real config, as the owner requested | `settings.json` gained only `extraKnownMarketplaces` and `enabledPlugins`, with no existing value changed. First use created the private environment and validated a fixture |
+| Update of the owner's install | `plugin marketplace update` and `plugin update` moved it from `0.2.0-alpha.1` to `0220e94300cb` with `settings.json` unchanged. On the updated copy, a `pydantic.py` in the working directory did not run, and exit codes 0, 2 and 64 behaved. A new headless session authored and validated a model with no permission denials. A running session keeps the old skill until restart, and the old cached version stays on disk under Claude Code's management |
 | New headless session with no `--plugin-dir` | Loaded the installed plugin and listed its skill |
 | Desktop Code tab | The skill appeared in the already running session after install. Invoking it resolved `${CLAUDE_PLUGIN_ROOT}` to the installed cache path, and `capabilities` ran from there. No model was authored in this check |
 | Clean-copy tests in the gate | Run the command from a dereferenced copy outside the checkout and prove the copy's own core is the one executing |
@@ -77,8 +79,6 @@ After the fixes, the full gate passed locally and live English and Thai runs sav
 - A second machine, any other operating system, and first-run setup with an empty uv cache.
 - Interactive permission prompts. Headless runs exercised `allowed-tools`, but the Code tab check ran under bypass permissions, so it did not.
 - Authoring a model from the Code tab.
-- Updating an installed plugin. The owner's install still holds the code from `22fc85e`, including the working-directory flaw, until the fixes are pushed and that install is updated.
-- Actual CI and a GitHub install of the review fixes, which need a push.
 - Independent review. Implementation and the review below both used Claude Opus 5.5 in one session, so no separate review pass has been performed.
 
 Prompts were run once each, so trigger rates are observations rather than measurements. Provider semantics are unchanged from M1: a passing result does not establish that a service type exists or that a placement is legal.
