@@ -12,7 +12,7 @@ The current private repository's rulesets/protection endpoints return 403 requir
 
 ## Implemented M1 gate and planned additions
 
-Implemented [quality-gate.yml](../../.github/workflows/quality-gate.yml) runs docs-contract, secrets, lint, format, types, workflow, schema-core and core package-build checks. [S05 evidence](evidence/S05-core-and-ci.md) records actual run 41426653007 at 785e1ee: eight lanes and 82 tests passed. The stable job name is quality-gate. Catalog/provider/render/visual/plugin checks below remain planned until their components arrive; no placeholder pass is emitted.
+Implemented [quality-gate.yml](../../.github/workflows/quality-gate.yml) runs docs-contract, secrets, lint, format, types, workflow, schema-core and core package-build checks. [S05 evidence](evidence/S05-core-and-ci.md) records actual run 41426653007 at 785e1ee: eight lanes and 82 tests passed. The stable job name is quality-gate. Catalog/provider/render/visual/plugin checks below remain planned until their components arrive; no placeholder pass is emitted. M7 preparation adds the `claude-plugin` and `package-contents` lanes, which pass locally and have not yet run in actual CI; see the [M7 evidence](evidence/M7-claude-plugin.md).
 
 | Check | Starts | Blocking result | Evidence |
 |---|---|---|---|
@@ -25,6 +25,8 @@ Implemented [quality-gate.yml](../../.github/workflows/quality-gate.yml) runs do
 | `render-smoke` | M3/M4 | Invalid/missing SVG/PNG or bundle metadata, icon loss, unreadable required labels | Model, diagnostics, images, normalized graph |
 | `visual-regression` | M4 | Unexpected structural/visual change lacking reviewed baseline update; unresolved provider-reference mismatch under FR-048/T-016 | Before/after/diff images, pinned official references and inspection/deviation notes |
 | `package-contract` | M5 | Broken manifests, missing packaged assets/skills, tool contract or clean-install failure | Package inventory and protocol smoke result |
+| `claude-plugin` | M7 | Broken Claude manifests or skill metadata, files outside the package allowlist, version drift from the core, stale skill capabilities, or a clean-copy runtime failure | Contract and clean-copy tests. Actual Claude Code acceptance stays manual; CI needs no Claude CLI or model call |
+| `package-contents` | M7 | Core wheel contents differ from `src`, including a build that exits 0 with no code | Wheel-to-source comparison |
 | `quality-gate` | M1 onward | Any applicable required check fails, is cancelled, or is unexpectedly skipped | Aggregate result at tested SHA |
 
 Activate catalog/renderer checks as mandatory before merging their implementation milestone. The gate's list of applicable checks is explicit and versioned; a component cannot disable its own failed checks through path filtering. Keep `quality-gate` as the stable status name, and make it a required check if repository-plan capabilities later permit rules. Apply the manual merge/release policy while enforcement is unavailable. Manual Work acceptance and second-machine reproduction remain release evidence in M6.

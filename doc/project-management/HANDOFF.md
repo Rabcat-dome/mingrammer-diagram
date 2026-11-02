@@ -1,12 +1,12 @@
 # Cross-Machine Handoff
 
-Updated: 2026-11-02 | S01-S05 complete. S06 / M2 catalogs and approved assets are next.
+Updated: 2026-11-02 | S01-S05 complete. S06 / M2 catalogs and approved assets are next. M7 Claude Code preparation started early under D-015.
 
 ## Goal and current source
 
-Personal ChatGPT Work-first plugin on mingrammer/diagrams + Graphviz for AWS/Azure/GCP/Huawei/on-premises, with detailed Kubernetes and provider-reference visuals. Claude Code is later. Keep English docs and one [requirements baseline v0.9](../requirements/requirements.md).
+Personal ChatGPT Work-first plugin on mingrammer/diagrams + Graphviz for AWS/Azure/GCP/Huawei/on-premises, with detailed Kubernetes and provider-reference visuals. Claude Code acceptance is later; D-015 started its preparation early. Keep English docs and one [requirements baseline v0.9](../requirements/requirements.md).
 
-Branch: `codex/s05-core-quality-gate`. M1 executable/workflow source reviewed and CI-tested at `785e1eecb646476691859f14dd4399ac564011ca`, milestone base `ff53a88944e981be2bbbab171e0ccf8cecdb4e41`. Later closure commits are docs/evidence only. Verify final HEAD/latest CI before resuming; main has not been merged.
+Branch: `codex/s05-core-quality-gate`. M1 executable/workflow source reviewed and CI-tested at `785e1eecb646476691859f14dd4399ac564011ca`, milestone base `ff53a88944e981be2bbbab171e0ccf8cecdb4e41`. Later closure commits are docs/evidence only. Verify final HEAD/latest CI before resuming; main has not been merged. M7 preparation is on `codex/m7-claude-plugin`, stacked on the S05 head; its prefix keeps the existing workflow trigger.
 
 D-013/D-014 select per-machine native Python/Graphviz in the separate ChatGPT Work page. Docker, central hosting, public renderer and renderer/model API keys are unnecessary. S04's installed alpha.3 three-node plugin remains separate from M1 core package 0.2.0a1; this activity did not upgrade that plugin/runtime.
 
@@ -26,6 +26,11 @@ D-013/D-014 select per-machine native Python/Graphviz in the separate ChatGPT Wo
 - Runner ID 2, macbook-pro-m2-max-mingrammer, label mingrammer-macos-arm64; native shell jobs. Existing seven registrations preserved. Current read-only API snapshot: owner is the only collaborator, private fork-PR workflows disabled, no fork write tokens/secrets. Actor checks supplement server-side access policy; keep external code off the personal host. Current private plan lacks required-check enforcement; manual review/merge remains necessary.
 - Huawei source availability is not redistribution/output permission. O-002 remains a packaging/release blocker; no Huawei pack is bundled. Eight draw.io-type generic on-premises concepts are selected; exact assets/conditions/hashes remain M2. Full provider/Kubernetes kind/API/rule inventory and assets are S06 work.
 - Existing S04 source/fonts/proofs remain available; no runtime cache, Docker resource, cloud service, account plugin, merge or release was changed by S05. Historical host paths are provenance text; reproducible doc links stay inside the repository.
+- [M7 Claude Code preparation](evidence/M7-claude-plugin.md): `plugins/cloud-architecture-diagrams` validates models through the core and cannot render. Local install and live English/Thai/edit invocations pass on one Mac. GitHub install, a second machine, actual CI and independent review remain open. The wheel is byte-identical to the S05 CI wheel.
+
+## Keeping the Claude plugin in step
+
+Core changes reach the plugin through symlinks, so no copy step exists. Three checks in the `claude-plugin` lane fail on purpose when the core moves: bump `plugin.json` with `__version__` (an installed plugin keeps its cache until the version changes), add new enumerated kinds to the skill's model guide, and rewrite the skill's stated capabilities when rendering arrives. New top-level runtime folders need a new symlink and an allowlist update.
 
 ## Next steps
 

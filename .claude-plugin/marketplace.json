@@ -1,0 +1,16 @@
+{
+  "name": "mingrammer-local",
+  "owner": {
+    "name": "Visarut"
+  },
+  "metadata": {
+    "description": "Personal cloud architecture diagram plugin for Claude Code."
+  },
+  "plugins": [
+    {
+      "name": "cloud-architecture-diagrams",
+      "source": "./plugins/cloud-architecture-diagrams",
+      "description": "Author and validate canonical AWS, Azure, GCP, Huawei Cloud, on-premises and Kubernetes architecture models. Rendering is not available yet."
+    }
+  ]
+}

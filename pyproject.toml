@@ -15,6 +15,12 @@ cloud-diagrams = "cloud_architecture_diagrams.cli:main"
 [tool.hatch.build.targets.wheel]
 packages = ["src/cloud_architecture_diagrams"]
 
+[tool.hatch.build.targets.sdist]
+# The Claude plugin links back to src, and hatchling walks each directory once. Entering that link
+# first would drop the real src from the sdist, so the walk must skip the plugin entirely.
+exclude = ["/plugins", "/.claude-plugin"]
+skip-excluded-dirs = true
+
 [tool.ruff]
 target-version = "py313"
 line-length = 100

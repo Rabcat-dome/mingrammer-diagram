@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import platform
+import shutil
 import subprocess
 import sys
 import time
@@ -23,9 +24,27 @@ def main() -> int:
         "format": [python, "-m", "ruff", "format", "--check", "src", "scripts", "tests"],
         "types": [python, "-m", "mypy"],
         "workflow": ["actionlint"],
-        "schema-core": [python, "-m", "pytest", "--junitxml=reports/tests.xml", "-q"],
+        "schema-core": [
+            python,
+            "-m",
+            "pytest",
+            "--ignore=tests/test_claude_plugin.py",
+            "--junitxml=reports/tests.xml",
+            "-q",
+        ],
+        "claude-plugin": [
+            python,
+            "-m",
+            "pytest",
+            "tests/test_claude_plugin.py",
+            "--junitxml=reports/claude-plugin-tests.xml",
+            "-q",
+        ],
         "package-build": [python, "-m", "build", "--no-isolation", "--outdir", "reports/dist"],
+        "package-contents": [python, "scripts/repository_checks.py", "package"],
     }
+    # A stale wheel must not stand in for a build that failed or changed version.
+    shutil.rmtree(REPORTS / "dist", ignore_errors=True)
     results = []
     for name, command in commands.items():
         started = time.monotonic()
@@ -47,7 +66,7 @@ def main() -> int:
     commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     dirty = bool(subprocess.check_output(["git", "status", "--porcelain"], cwd=ROOT))
     report = {
-        "scope": "M1 core foundation",
+        "scope": "M1 core foundation and M7 Claude plugin package contract",
         "passed": passed,
         "checks": results,
         "commit": commit,
@@ -56,7 +75,15 @@ def main() -> int:
         "lock_sha256": hashlib.sha256((ROOT / "uv.lock").read_bytes()).hexdigest(),
         "source_digests": {
             str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
-            for folder in ["src", "scripts", "tests", "schemas", ".github"]
+            for folder in [
+                "src",
+                "scripts",
+                "tests",
+                "schemas",
+                ".github",
+                ".claude-plugin",
+                "plugins",
+            ]
             for path in sorted((ROOT / folder).rglob("*"))
             if path.is_file() and path.suffix in {".py", ".json", ".yml", ".yaml"}
         },
@@ -72,6 +99,7 @@ def main() -> int:
             "render-smoke": "M3/M4",
             "visual-regression": "M4",
             "plugin-package": "M5",
+            "claude-host-acceptance": "M7 (recorded manually; no Claude CLI or model call in CI)",
         },
         "review": "Recorded separately; no paid model API call in CI",
     }

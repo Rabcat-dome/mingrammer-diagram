@@ -20,6 +20,7 @@ Updated: 2026-11-02 | Status: Joint-planning record; D-013 selects per-machine l
 | D-012 | Historical central-server direction, superseded by D-013 | Initial S04 owner selection on 2026-11-01; no hosting was provisioned |
 | D-013 | Install the renderer/runtime on each machine using the plugin; supersede D-012 central hosting and use the desktop/local execution route for the first proof | Explicit owner correction on 2026-11-01 replacing the assumption of a free public renderer with per-machine installation; no hosted renderer is required |
 | D-014 | The first-release target is the separate ChatGPT Work mode/page, not Codex in the app. Codex runtime tests do not replace actual Work invocation/preview/export evidence. | Explicit owner clarification on 2026-11-02; owner also confirmed the plugin is visible/selectable in Work |
+| D-015 | Prepare a Claude Code plugin package now, ahead of M7's "later" position, reusing the M1 core. The Work first-release target, M2-M6 order and P0 scope stay as they are. | Explicit owner request on 2026-11-02 after bringing Claude Code to read the project. The unchanged first-release priority is this session's reading of that request, not a separate owner statement; correct it here if the priority has moved |
 
 ## Recommendations and disposition
 
@@ -43,6 +44,7 @@ Updated: 2026-11-02 | Status: Joint-planning record; D-013 selects per-machine l
 | P-016 | Historical proposal to evaluate GCP Cloud Run | Retired by D-013. No cloud-hosting inputs, deployment, remote OAuth or public renderer are required for the selected route. |
 | P-017 | Native private Python environment + system Graphviz, with direct script and stdio interfaces | Introduced in alpha.2 and hardened in alpha.3 after the owner questioned Docker and requested continuation. No required Docker/server. Native checks and owner-reported Work feasibility pass; final Astra/High review passes for the pilot; production limits remain later work. |
 | P-018 | M1 core uses a strict closed Pydantic contract, generated JSON Schema, bounded reference/context validation and native deterministic CI | Implementation selection under existing M1 scope. Core results disclose pending catalog/provider/render layers. Python 3.13.7/uv 0.13.0, locked packages and hatchling 1.27.0 selected; no Docker/model API or S04 plugin upgrade required. |
+| P-019 | Claude Code adapter as `plugins/cloud-architecture-diagrams`: bundled skill plus a `bin/cloud-diagrams` wrapper over the existing CLI, symlinks into the repository for one copy of the core, and no MCP server | Implemented under D-015. A Claude Code session already has Bash and Read, so a second tool contract would add context cost without adding capability; rendering can arrive as a CLI subcommand with M3. [Evidence](evidence/M7-claude-plugin.md) |
 
 P-015 is historical. P-017 is the current native implementation default, not proof of every OS or final product limits. P-002's plugin structure remains; P-003's local route is selected by D-013. P-009/P-010 are resolved by D-007/D-008 with D-009's detailed-Kubernetes correction.
 
@@ -121,3 +123,5 @@ Platform sources read for planning:
 Provider evidence is linked next to semantic anchors in the requirements. Detailed service rules, Huawei documentation and icon terms must be verified during catalog implementation; the supplied draft is not a substitute for primary sources.
 
 S05/M1 result: [core and real CI evidence](evidence/S05-core-and-ci.md). The core 0.2.0a1 package, strict schema/reference/context checks and native quality gate pass 82 tests and actual runner checks at 785e1ee. Astra/High confirmed both initial P2 fixes with no additional actionable findings. This completes M1 foundation only; M2 catalogs/rights/provider semantics and later rendering/Work/two-machine acceptance remain open. No required Docker or model API call was added.
+
+M7 preparation result under D-015: [Claude Code plugin evidence](evidence/M7-claude-plugin.md). The requirements baseline is unchanged: the Claude Code adapter stays outside first-release P0, and its acceptance remains M7 work.

@@ -1,10 +1,11 @@
-"""Portable documentation/traceability and narrow credential-pattern checks."""
+"""Portable documentation/traceability, narrow credential-pattern and wheel-content checks."""
 
 import hashlib
 import json
 import re
 import subprocess
 import sys
+import zipfile
 from collections import Counter
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
@@ -121,6 +122,22 @@ def credentials() -> list[str]:
     return errors
 
 
+def package() -> list[str]:
+    # A build can exit 0 and still ship no code, so compare the wheel with its source tree.
+    source = ROOT / "src"
+    expected = {
+        str(path.relative_to(source))
+        for path in source.rglob("*")
+        if path.is_file() and "__pycache__" not in path.parts
+    }
+    wheels = sorted((ROOT / "reports/dist").glob("*.whl"))
+    if len(wheels) != 1:
+        return [f"reports/dist: expected one wheel, found {len(wheels)}"]
+    with zipfile.ZipFile(wheels[0]) as wheel:
+        shipped = {name for name in wheel.namelist() if ".dist-info/" not in name}
+    return [f"{wheels[0].name}: differs from src: {name}" for name in sorted(expected ^ shipped)]
+
+
 def main() -> int:
     check = sys.argv[1] if len(sys.argv) == 2 else "docs"
     errors = (
@@ -128,6 +145,8 @@ def main() -> int:
         if check == "docs"
         else credentials()
         if check == "secrets"
+        else package()
+        if check == "package"
         else ["Unknown check"]
     )
     for error in errors:

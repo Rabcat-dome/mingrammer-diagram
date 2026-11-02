@@ -51,7 +51,7 @@ S04 can begin with an approved generic icon fixture while Huawei rights are inve
 | S09 — Installable Work plugin | M5-01..04 | Implement selected adapter, required auth/artifact handling, bundled skill and versioned plugin; test actual Work install/invoke/edit/download | Participate in account-bound installation/Work checks when needed | Sol / High |
 | S10 — Two-machine acceptance and release | M6-01..04 | Verify the same plugin version on two machines, independently reproduce core setup, check all P0 evidence and prepare personal release/handoff | Use the second machine, inspect results and give owner acceptance | Sol / Medium; Astra / High final review |
 
-Model choices follow the existing [model strategy](model-strategy.md); they are not a claim that another session/model has already been selected. Claude Code is deferred to M7 after this first release.
+Model choices follow the existing [model strategy](model-strategy.md); they are not a claim that another session/model has already been selected. Claude Code acceptance is deferred to M7 after this first release; D-015 started its preparation early, outside sessions S01-S10.
 
 ## What each session records
 

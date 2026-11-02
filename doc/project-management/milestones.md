@@ -1,6 +1,6 @@
 # Milestones and Work Breakdown
 
-Updated: 2026-11-02 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 next. Huawei packaging rights remain unresolved.
+Updated: 2026-11-02 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 next. Huawei packaging rights remain unresolved. M7 Claude Code preparation started early under D-015.
 
 Source of scope: [requirements](../requirements/requirements.md). Model abbreviations and review rules: [model strategy](model-strategy.md). Quality check definitions: [quality gate](quality-gate.md).
 
@@ -15,7 +15,7 @@ M0 Scope + runtime/icon/runner feasibility
  -> M5 ChatGPT Work plugin
  -> M6 Reproduction + release acceptance
 
-Later: M7 Claude Code adapter and selected P1 work
+Later: M7 Claude Code adapter acceptance and selected P1 work
 ```
 
 M0 investigates the Work execution route before core development. M5 delivers the complete plugin; a CLI demonstration is not completion of the first release. Catalog review may proceed by provider, but no parallel agent execution is implied by this plan.
@@ -115,9 +115,21 @@ Status: Not started. Implementation: Sol/Medium; final review: Astra/High and ow
 
 Exit: all P0 pass; no unresolved Critical/High findings; justified Medium findings have owner disposition; actual Work plugin acceptance on two machines and clean-runtime reproduction evidence exist. No public directory submission is required.
 
-## M7 — Later work (not scheduled)
+## M7 — Claude Code adapter and later work
 
-- Claude Code adapter reusing the core, with independent installation/invocation/output tests. No Claude model version is selected yet.
+Status: Adapter preparation started under D-015; not complete and not a first-release requirement. See [M7 evidence](evidence/M7-claude-plugin.md). Implementation: Claude Opus 5.5, the model of the owner's session rather than a project selection; independent review not yet performed.
+
+| Task | Work | Dependency / output |
+|---|---|---|
+| M7-01 | Package the core as an installable Claude Code plugin with marketplace, bundled skill and command wrapper, reusing the core without a second copy | M1 + D-015 -> complete locally; `plugins/cloud-architecture-diagrams`, validate-only |
+| M7-02 | Add plugin package and wheel-content checks to the quality gate | M7-01 -> `claude-plugin` and `package-contents` lanes pass locally; actual CI runs after a push |
+| M7-03 | Verify actual Claude Code installation and invocation | M7-01 -> local-path install and session-loaded English/Thai/edit invocations verified on one Mac; GitHub install, interactive use and a second machine remain |
+| M7-04 | Expose catalog discovery and rendering through the plugin as M2/M3 arrive, then update the skill's stated capabilities and plugin version | M2 + M3 -> not started |
+
+Exit: the same plugin version installs from the private repository on two machines and produces validated models and, after M3, retrievable SVG/PNG in actual Claude Code sessions, with independent review recorded.
+
+Later work, not scheduled:
+
 - P1 view presets, YAML, aliases, enterprise packs, PDF/DOT, automatic splitting, 200/300 stress validation, and expanded catalog coverage.
 - Optional shared-team features, IaC import/discovery, or public publication only under a separate scope decision.
 

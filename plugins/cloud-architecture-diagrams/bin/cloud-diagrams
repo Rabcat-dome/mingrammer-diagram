@@ -1,0 +1,22 @@
+#!/bin/sh
+# Run the core CLI from this plugin's copy in a private hash-locked environment.
+# Exit 0: success. Exit 2: invalid model. Exit 3: the runtime could not be prepared.
+set -eu
+
+root=$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd -P)
+environment=${XDG_DATA_HOME:-$HOME/.local/share}/cloud-architecture-diagrams/claude-plugin/venv
+
+if ! command -v uv >/dev/null 2>&1; then
+  echo 'cloud-diagrams: uv is required. Install it (for example: brew install uv) and retry.' >&2
+  exit 3
+fi
+
+# stdin carries the model and stdout carries the JSON result, so setup may use neither.
+if ! UV_PROJECT_ENVIRONMENT=$environment uv sync --quiet --locked --no-dev --no-install-project \
+  --python 3.13.7 --project "$root" </dev/null >&2; then
+  echo 'cloud-diagrams: could not prepare the private Python 3.13.7 runtime; see the uv error above.' >&2
+  exit 3
+fi
+
+PYTHONPATH=$root/src exec "$environment/bin/python" -B -c \
+  'from cloud_architecture_diagrams.cli import main; raise SystemExit(main())' "$@"

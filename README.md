@@ -6,6 +6,8 @@ The deliverable is an installable plugin usable across machines. Its bundled ski
 
 **Status:** S01-S05 complete; S06 / M2 catalogs/assets are next. [M1 core/schema and Quality Gate](doc/project-management/evidence/S05-core-and-ci.md) pass 82 tests and actual native CI; Astra/High confirmed both review fixes with no additional actionable findings. Installed S04 alpha.3 remains a three-node Work feasibility plugin. Full catalogs/rendering/plugin/release acceptance remain later work; Huawei packaging rights are open.
 
+A preparation build of the [Claude Code plugin](plugins/cloud-architecture-diagrams/README.md) authors and validates models through the same core. It cannot render diagrams yet; see the [M7 evidence](doc/project-management/evidence/M7-claude-plugin.md). ChatGPT Work remains the first-release target.
+
 ## Read next
 
 | Document | Purpose |
