@@ -58,7 +58,7 @@ The plugin uses the user's selected Work host model to interpret requests and au
 
 No mandatory second LLM service or model API key is needed for validation/rendering. Do not assume a Work subscription grants API credits or automated review access. Provider choices come from catalogs and context, with uncertainty disclosed; a more capable model does not replace semantic validation.
 
-For Claude Code support, reuse tool/model contracts and select the Claude model when the adapter's acceptance phase begins, using then-current official documentation and actual account availability. M7 preparation under D-015 used Claude Opus 5.5 (`claude-opus-5-5`), the model of the owner's session rather than a project selection, with Sonnet 5.5 and Haiku 5.5 for headless checks. No independent review pass has been performed for that work.
+For Claude Code support, reuse tool/model contracts and select the Claude model when the adapter's acceptance phase begins, using then-current official documentation and actual account availability. M7 preparation under D-015 used Claude Opus 5.5 (`claude-opus-5-5`), the model of the owner's session rather than a project selection, with Sonnet 5.5 and Haiku 5.5 for headless checks. A same-session high-effort review with that model found 10 issues, all fixed; it is not an independent pass, and none has been performed for that work.
 
 ## Token and cost discipline
 

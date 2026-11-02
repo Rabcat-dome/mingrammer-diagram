@@ -262,6 +262,9 @@ def test_cli_exit_codes_and_discovery() -> None:
         ["cloud-diagrams", "validate", "--mode", "lenient"], input=b"{}", capture_output=True
     )
     assert bad.returncode == 2 and not json.loads(bad.stdout)["valid"] and not bad.stderr
+    # Exit 2 means an invalid model, so a command-usage error must not share it.
+    usage = subprocess.run(["cloud-diagrams", "validate", "--mode", "nope"], capture_output=True)
+    assert usage.returncode == 64 and not usage.stdout and usage.stderr
 
 
 @pytest.mark.parametrize("target_port", [0, 65536, True, "bad name"])

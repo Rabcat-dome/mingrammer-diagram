@@ -1,12 +1,12 @@
 ---
 name: architecture-model
 description: Author, edit and validate a canonical cloud architecture model as versioned JSON, with stable IDs, explicit assumptions and separate ownership, location, network, security and deployment dimensions. Use whenever the user wants to design, describe, review or change a solution architecture on AWS, Azure, GCP, Huawei Cloud, on-premises, hybrid or multi-cloud, or a detailed Kubernetes architecture (cluster, node pool, namespace, workload, Service, Ingress, storage), in English or Thai, even if they only say "architecture diagram". This version validates the model but cannot render SVG or PNG images yet; do not use it for flowcharts or other non-infrastructure diagrams.
-allowed-tools: Bash(${CLAUDE_PLUGIN_ROOT}/bin/cloud-diagrams *)
+allowed-tools: Bash("${CLAUDE_PLUGIN_ROOT}/bin/cloud-diagrams" *)
 ---
 
 # Architecture model
 
-Turn an architecture request into a reviewable JSON model and check it with this plugin's command, `${CLAUDE_PLUGIN_ROOT}/bin/cloud-diagrams`. Run it by that full path, because the plugin's `bin` folder is not reliably on the Bash path. The JSON is the source of truth: the future renderer draws from it, and later edits build on it, so a correct small model beats a complete-looking guess.
+Turn an architecture request into a reviewable JSON model and check it with this plugin's command, `"${CLAUDE_PLUGIN_ROOT}/bin/cloud-diagrams"`. Run it by that quoted full path, because the plugin's `bin` folder is not reliably on the Bash path, and run it on its own with nothing chained after it, because this skill pre-approves only this command. The JSON is the source of truth: the future renderer draws from it, and later edits build on it, so a correct small model beats a complete-looking guess.
 
 ## What this version can do
 
@@ -21,10 +21,10 @@ If the user asks for a picture, say this version cannot render one and offer the
 
 ## Workflow
 
-1. **Check the runtime.** Run `${CLAUDE_PLUGIN_ROOT}/bin/cloud-diagrams capabilities` once. The first run may download Python dependencies. Exit code 3 means the runtime could not be prepared: relay the stderr message rather than installing packages yourself.
+1. **Check the runtime.** Run `"${CLAUDE_PLUGIN_ROOT}/bin/cloud-diagrams" capabilities` once. The first run may download Python dependencies. Exit code 3 means the runtime could not be prepared: relay the stderr message rather than installing packages yourself. Exit code 64 means the command was used incorrectly, so check the usage message on stderr.
 2. **Understand the request.** Identify the providers and environment. Ask about uncertainty that changes the architecture's meaning, such as whether "ECS" means AWS or Huawei Cloud. Record smaller working choices in `metadata.assumptions`. Do not add resources, security controls or connectivity the user did not ask for; offer them as labeled suggestions and include them only once accepted.
 3. **Author the JSON.** Read [references/model-guide.md](references/model-guide.md) before writing a model, and use [examples/core-valid.json](examples/core-valid.json) or [examples/kubernetes-valid.json](examples/kubernetes-valid.json) as a shape to follow. Save the model with the Write tool where the user can keep it, for example `architecture/<metadata.id>.json`.
-4. **Validate.** Run `${CLAUDE_PLUGIN_ROOT}/bin/cloud-diagrams validate < architecture/model.json`, adding `--view <id>` to check a view other than the first. Run it on its own with nothing chained after it, since this skill pre-approves only this command and the `valid` field in the JSON already gives the outcome. Exit 0 means valid; exit 2 means invalid, with the diagnostics on stdout.
+4. **Validate.** Run `"${CLAUDE_PLUGIN_ROOT}/bin/cloud-diagrams" validate < architecture/model.json`, adding `--view <id>` to check a view other than the first. The `valid` field in the JSON gives the outcome. Exit 0 means valid; exit 2 means invalid, with the diagnostics on stdout.
 5. **Fix by diagnostic.** Each diagnostic gives a `code`, a `field` path and a `remedy`. Correct the model; do not delete a requested component or relationship to make validation pass. If a request cannot be expressed, tell the user. `--mode lenient` only marks a draft and bypasses no core error, so it is not a way past a failure.
 6. **Report.** State what was modeled, the assumptions, the validation result and the pending checks. Disclose every ID in `excluded_ids`, since a partial view must never silently drop a component. State that no image was produced.
 

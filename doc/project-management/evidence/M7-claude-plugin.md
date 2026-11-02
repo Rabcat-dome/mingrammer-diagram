@@ -1,22 +1,22 @@
 # M7 Claude Code Plugin Preparation
 
-Recorded: 2026-11-02 (Asia/Bangkok) | Base: `c5f74b4` | Tested code: `22fc85e` | Branch: `codex/m7-claude-plugin` | Host: macOS ARM64, Claude Code 2.1.309.
+Recorded: 2026-11-02 (Asia/Bangkok) | Base: `c5f74b4` | First tested code: `22fc85e` | Review fixes: the commit after `64aec62` | Branch: `codex/m7-claude-plugin` | Host: macOS ARM64, Claude Code 2.1.309.
 
-**M7-01 and M7-02 are complete. M7-03 is verified on one Mac for local-path, GitHub and real-config installs; a second machine and interactive permission prompts remain. M7-04 has not started.** This is a preparation build under D-015. It authors and validates models; it cannot render diagrams, and it does not change the Work first-release target.
+**M7-01 and M7-02 are complete. M7-03 is verified on one Mac for local-path, GitHub and real-config installs; a second machine, interactive permission prompts and the update of an installed plugin remain. M7-04 has not started.** This is a preparation build under D-015. It authors and validates models; it cannot render diagrams, and it does not change the Work first-release target.
 
-Actual CI and the GitHub and real-config installs ran against commit `22fc85e`. The other local checks and the session-loaded invocations ran on the working tree just before that commit; only documentation wording changed between them.
+Actual CI and the GitHub and real-config installs below ran against commit `22fc85e`, before the review fixes. See [Same-session review](#same-session-review) for what changed afterward and what has been rerun.
 
 ## Delivered
 
 | Item | Result |
 |---|---|
-| [Plugin](../../../plugins/cloud-architecture-diagrams/README.md) | `cloud-architecture-diagrams` version `0.2.0-alpha.1`, tracking core `0.2.0a1` |
+| [Plugin](../../../plugins/cloud-architecture-diagrams/README.md) | `cloud-architecture-diagrams`, versioned by Git commit, running core `0.2.0a2` |
 | [Marketplace](../../../.claude-plugin/marketplace.json) | `mingrammer-local`, with a relative source. The Codex marketplace and S04 plugin are unchanged |
 | Skill | `architecture-model`, with a model guide and the two valid core fixtures as examples |
 | Command | `bin/cloud-diagrams` runs the core in a private hash-locked environment. It installs dependencies only, so no build backend runs and no install writes into the plugin |
 | Gate | New `claude-plugin` and `package-contents` lanes |
 
-The plugin links `pyproject.toml`, `uv.lock`, `src` and the examples back into the repository, so there is one copy of the core. Claude Code [dereferences symlinks that stay inside the marketplace](https://code.claude.com/docs/en/plugins/host-marketplace.md#share-files-within-a-marketplace-with-symlinks) at install time. A test holds the package to an allowlisted tree, which keeps research records and uncleared assets out of the distribution.
+The plugin links `pyproject.toml`, `uv.lock`, `src` and the examples back into the repository, so there is one copy of the core. Claude Code [dereferences symlinks that stay inside the marketplace](https://code.claude.com/docs/en/plugins/host-marketplace.md#share-files-within-a-marketplace-with-symlinks) at install time. A test holds every path in the plugin to an allowlist, which keeps research records and uncleared assets out of the distribution. Files under `src` ship by design, so assets placed there rely on the M2 catalog-license lane.
 
 There is no MCP server. A Claude Code session already has Bash and Read, so a second tool contract would add context cost without adding capability. Rendering can arrive as a CLI subcommand with M3.
 
@@ -26,15 +26,15 @@ There is no MCP server. A Claude Code session already has Bash and Read, so a se
 |---|---|
 | Actual CI: [run 41440133540](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41440133540), job 125259629499 | Passed all 10 lanes on `macbook-pro-m2-max-mingrammer` from a clean checkout of `22fc85e`, with 82 core tests and 14 plugin tests and none skipped. Read from the run's report artifact |
 | Node 24 action: [run 41441398887](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41441398887), job 125263877372 | Passed all 10 lanes at `359f1ea` with `actions/upload-artifact` v7.0.2 and zero job annotations, so the Node.js 20 warning is gone. The uploaded artifact downloaded and read back correctly |
-| Wheel | Local and CI SHA-256 `fc138b2236a30100a01d1d6a381fd96b6eb70913d3ccbd6832c6d142b1560e8a`, byte-identical to the S05 CI wheel, so the core package is unchanged |
-| `claude plugin validate --strict` on marketplace and plugin | Passed. The separate public-directory profile reports a missing license and icon; public submission is out of scope |
+| Wheel | At `22fc85e`, local and CI SHA-256 `fc138b2236a30100a01d1d6a381fd96b6eb70913d3ccbd6832c6d142b1560e8a`, byte-identical to the S05 CI wheel, so packaging left the core unchanged. Core `0.2.0a2` later changes the wheel on purpose, for the usage exit code |
+| `claude plugin validate --strict` on marketplace and plugin | At `22fc85e`, passed. With the fixed version removed, non-strict validation passes and `--strict` fails only on the deliberate missing-version warning. The separate public-directory profile reports a missing license and icon; public submission is out of scope |
 | Install from the private GitHub repository in a throwaway `CLAUDE_CONFIG_DIR` | `Rabcat-dome/mingrammer-diagram#codex/m7-claude-plugin` cloned over HTTPS with the machine's credentials. Cache has 0 symlinks and is 148 KB; valid and invalid paths behaved. Uninstall and marketplace removal then left no entries |
 | Install from the local repository path and a fresh `git clone` in throwaway configs | Installed. Cache has 0 symlinks, and symlink and executable modes survive Git |
 | Install into the owner's real config, as the owner requested | `settings.json` gained only `extraKnownMarketplaces` and `enabledPlugins`, with no existing value changed. First use created the private environment and validated a fixture |
 | New headless session with no `--plugin-dir` | Loaded the installed plugin and listed its skill |
 | Desktop Code tab | The skill appeared in the already running session after install. Invoking it resolved `${CLAUDE_PLUGIN_ROOT}` to the installed cache path, and `capabilities` ran from there. No model was authored in this check |
 | Clean-copy tests in the gate | Run the command from a dereferenced copy outside the checkout and prove the copy's own core is the one executing |
-| Exit codes | 0 valid, 2 invalid with JSON on stdout, 3 for a missing uv or a failed setup with empty stdout |
+| Exit codes | 0 valid, 2 invalid with JSON on stdout, 3 for a missing uv or a failed setup with empty stdout, 64 for command misuse with empty stdout |
 
 Model-authoring invocations used `claude -p --plugin-dir` with the owner's existing login, Sonnet 5.5 and no session persistence. Only Skill, Read, Write and Edit were pre-approved, so each Bash call depended on the skill's own `allowed-tools`.
 
@@ -51,13 +51,34 @@ Model-authoring invocations used `claude -p --plugin-dir` with the owner's exist
 - **Empty wheel, now fixed and gated.** The `src` symlink made hatchling's once-per-directory walk enter the plugin first, which dropped the real `src` from the sdist. The wheel, built from that sdist, shipped no code while `package-build` still reported success. The sdist now skips the plugin directories. The `package-contents` lane compares the wheel with `src`; it failed on the empty wheel and passes after the fix.
 - **`bin/` was not on the Bash path.** The [documented behavior](https://code.claude.com/docs/en/plugins/components.md#executables) did not appear on 2.1.309, either with `--plugin-dir` or for the installed plugin in a new headless session: the bare command was not found in any probe. The skill therefore uses `${CLAUDE_PLUGIN_ROOT}/bin/cloud-diagrams`, and that path was both substituted and pre-approved in `allowed-tools`.
 - **Plugin data is unavailable to Bash.** `CLAUDE_PLUGIN_DATA` is not exported to Bash tool commands, so the environment lives under `~/.local/share` and uninstalling does not remove it. The plugin README documents the removal step.
-- **The owner's install is pinned to this branch.** The default branch does not contain the plugin yet, so the marketplace was added with a branch ref. Remove and add it again after a merge, and bump the plugin version for installed copies to pick up later changes.
+- **The owner's install is pinned to this branch.** The default branch does not contain the plugin yet, so the marketplace was added with a branch ref. Remove and add it again after a merge.
+
+## Same-session review
+
+A high-effort review of `c5f74b4..64aec62` ran with the Claude Code review skill in the same session that wrote the code. It is not an independent review. It reported 10 findings, and all are fixed:
+
+| Finding | Fix | Check |
+|---|---|---|
+| Files in the working directory could shadow modules and run through the pre-approved command | The wrapper runs Python with `-P` | Reproduced before the fix; new test passes |
+| A saved gate report failed the docs check, because digests followed symlinks that `git show` returns as link text | Digests skip symlinks | A report from `64aec62` failed the docs check; new test compares digests with `git show` |
+| Gate digests omitted the wrapper and `SKILL.md` | Digests cover every source file Git tracks or would add | New test |
+| Exit 2 also meant command misuse | The core CLI exits 64 on usage errors, as core `0.2.0a2` | Reproduced before the fix; new tests in both lanes |
+| Ignored files in `src`, such as `.DS_Store`, failed the wheel check | The check uses `files()` | New test, plus an empty-wheel negative |
+| The package allowlist checked only top-level names | It now checks every path | A stray nested file failed the test |
+| Content could change while the version stayed the same, leaving installed copies stale | The manifest omits `version`, so Claude Code uses the commit | A throwaway install reported the commit as its version |
+| The model guide's example failed validation | The example declares its resource | New test validates every guide example |
+| An unquoted command broke on a path with a space | The skill and its `allowed-tools` rule quote the path | A live run from a path with a space had no permission denials |
+| A test requested an unused fixture | Removed | Lint and type checks |
+
+After the fixes, the full gate passed locally and live English and Thai runs saved valid models with no permission denials. The Thai run loaded the plugin from a path containing a space.
 
 ## Not verified
 
 - A second machine, any other operating system, and first-run setup with an empty uv cache.
 - Interactive permission prompts. Headless runs exercised `allowed-tools`, but the Code tab check ran under bypass permissions, so it did not.
-- Authoring a model from the Code tab, and updating an installed plugin to a new version.
-- Independent review. Implementation used Claude Opus 5.5; no separate review pass has been performed.
+- Authoring a model from the Code tab.
+- Updating an installed plugin. The owner's install still holds the code from `22fc85e`, including the working-directory flaw, until the fixes are pushed and that install is updated.
+- Actual CI and a GitHub install of the review fixes, which need a push.
+- Independent review. Implementation and the review below both used Claude Opus 5.5 in one session, so no separate review pass has been performed.
 
 Prompts were run once each, so trigger rates are observations rather than measurements. Provider semantics are unchanged from M1: a passing result does not establish that a service type exists or that a placement is legal.

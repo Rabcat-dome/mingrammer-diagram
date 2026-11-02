@@ -239,3 +239,12 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - Owner asked to move off the deprecated Node.js 20 runtime. Commit `8bde7b8` pins `actions/upload-artifact` v7.0.2 at `cf430e030ddbb5b0abf93d22962f4752f3646cd9`. Upstream shows a verified commit with `using: node24` and every input this workflow uses; its minimum runner is 2.327.1 and the job log reports 2.338.2. Actionlint passes; an actual CI run of this change needs a push.
 - Owner authorized the push of `359f1ea`. Actual Quality gate run 41441398887 / job 125263877372 passed all 10 lanes with `actions/upload-artifact` v7.0.2. The job has zero annotations, so the Node.js 20 warning is gone, and the uploaded artifact downloaded and read back correctly.
 - Not done: no merge, release or independent review. See the [M7 evidence](evidence/M7-claude-plugin.md).
+
+
+## 2026-11-02 — M7 same-session review and fixes
+
+- Owner asked for a review of `c5f74b4..64aec62`. It ran with the Claude Code review skill at high effort in the same session that wrote the code, so it is not an independent review. It reported 10 findings; the owner asked for all of them to be fixed.
+- The most serious: files in the working directory could shadow Python modules and run through the skill's pre-approved command. Reproduced, then fixed with `python -P`. The owner's installed copy keeps this flaw until the fixes are pushed and the install is updated.
+- Other fixes: core `0.2.0a2` exits 64 on usage errors, gate digests skip symlinks and cover the wrapper and skill, the wheel check uses `files()`, the package allowlist covers every path, the model guide's example validates, and the skill and its rule quote the command path. The manifest now omits `version`, so Claude Code versions the plugin by commit.
+- New tests failed before the fixes and pass after them. The full local gate passes, and live English and Thai runs saved valid models with no permission denials, including from a path containing a space. See the [M7 evidence](evidence/M7-claude-plugin.md).
+- Not done: actual CI of the fixes, updating the owner's install, independent review, merge or release.

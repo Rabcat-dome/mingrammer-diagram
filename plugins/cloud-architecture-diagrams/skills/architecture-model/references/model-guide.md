@@ -10,7 +10,7 @@ A working summary of the contract. The plugin command's `schema` subcommand prin
   "metadata": {"id": "demo", "title": "Example", "environment": "production", "assumptions": []},
   "scopes": [],
   "boundaries": [],
-  "resources": [],
+  "resources": [{"id": "app", "name": "Application", "provider": "aws", "service_type": "aws.compute.ec2", "taxonomy": "compute.vm"}],
   "relationships": [],
   "views": [{"id": "overview", "title": "Overview", "entity_refs": ["app"]}]
 }

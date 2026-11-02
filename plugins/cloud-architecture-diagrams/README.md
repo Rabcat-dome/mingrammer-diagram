@@ -1,6 +1,6 @@
 # Cloud Architecture Diagrams for Claude Code
 
-Version: `0.2.0-alpha.1`. This is a preparation build. It reuses the project's core contract to author and validate canonical architecture models. **It cannot render SVG or PNG diagrams yet**, and provider catalogs and placement rules are not implemented. The installed ChatGPT Work pilot is a separate plugin.
+This is a preparation build, versioned by Git commit so that installed copies can pick up every change. It reuses the project's core contract to author and validate canonical architecture models. **It cannot render SVG or PNG diagrams yet**, and provider catalogs and placement rules are not implemented. The installed ChatGPT Work pilot is a separate plugin.
 
 ## Requirements
 
@@ -43,7 +43,19 @@ The skill runs `bin/cloud-diagrams` from the plugin root by its full path:
 | `schema` | Versioned JSON Schema |
 | `validate [--mode strict\|lenient] [--view ID] < model.json` | Validate a model from stdin |
 
-Exit codes: `0` success, `2` invalid model with JSON diagnostics on stdout, `3` the runtime could not be prepared.
+Exit codes: `0` success, `2` invalid model with JSON diagnostics on stdout, `3` the runtime could not be prepared, `64` the command was used incorrectly.
+
+## Update
+
+Marketplaces from other sources do not update automatically by default:
+
+```bash
+claude plugin marketplace update mingrammer-local
+```
+
+```bash
+claude plugin update cloud-architecture-diagrams@mingrammer-local
+```
 
 ## Remove
 

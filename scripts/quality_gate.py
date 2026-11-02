@@ -10,6 +10,8 @@ import sys
 import time
 from pathlib import Path
 
+from repository_checks import source_digests
+
 ROOT = Path(__file__).resolve().parents[1]
 REPORTS = ROOT / "reports"
 
@@ -73,20 +75,7 @@ def main() -> int:
         "working_tree_dirty": dirty,
         "source_ref": None if dirty else commit,
         "lock_sha256": hashlib.sha256((ROOT / "uv.lock").read_bytes()).hexdigest(),
-        "source_digests": {
-            str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
-            for folder in [
-                "src",
-                "scripts",
-                "tests",
-                "schemas",
-                ".github",
-                ".claude-plugin",
-                "plugins",
-            ]
-            for path in sorted((ROOT / folder).rglob("*"))
-            if path.is_file() and path.suffix in {".py", ".json", ".yml", ".yaml"}
-        },
+        "source_digests": source_digests(),
         "github_actions": os.environ.get("GITHUB_ACTIONS") == "true",
         "runner_name": os.environ.get("RUNNER_NAME"),
         "python": platform.python_version(),

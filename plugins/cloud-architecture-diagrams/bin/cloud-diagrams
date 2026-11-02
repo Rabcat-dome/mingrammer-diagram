@@ -1,6 +1,7 @@
 #!/bin/sh
 # Run the core CLI from this plugin's copy in a private hash-locked environment.
 # Exit 0: success. Exit 2: invalid model. Exit 3: the runtime could not be prepared.
+# Exit 64: the command was used incorrectly.
 set -eu
 
 root=$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd -P)
@@ -18,5 +19,6 @@ if ! UV_PROJECT_ENVIRONMENT=$environment uv sync --quiet --locked --no-dev --no-
   exit 3
 fi
 
-PYTHONPATH=$root/src exec "$environment/bin/python" -B -c \
+# -P keeps the working directory off sys.path, so a project's files cannot shadow any module.
+PYTHONPATH=$root/src exec "$environment/bin/python" -B -P -c \
   'from cloud_architecture_diagrams.cli import main; raise SystemExit(main())' "$@"

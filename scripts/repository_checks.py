@@ -11,6 +11,7 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
+SOURCE_FOLDERS = {"src", "scripts", "tests", "schemas", ".github", ".claude-plugin", "plugins"}
 
 
 def files() -> list[Path]:
@@ -18,6 +19,17 @@ def files() -> list[Path]:
         ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"], cwd=ROOT
     )
     return sorted({ROOT / path.decode() for path in output.split(b"\0") if path})
+
+
+def source_digests() -> dict[str, str]:
+    # A link's target is recorded under its own path, and Git stores only the link text.
+    return {
+        str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
+        for path in files()
+        if path.relative_to(ROOT).parts[0] in SOURCE_FOLDERS
+        and path.is_file()
+        and not path.is_symlink()
+    }
 
 
 def anchors(text: str) -> set[str]:
@@ -127,8 +139,8 @@ def package() -> list[str]:
     source = ROOT / "src"
     expected = {
         str(path.relative_to(source))
-        for path in source.rglob("*")
-        if path.is_file() and "__pycache__" not in path.parts
+        for path in files()
+        if path.is_relative_to(source) and path.is_file()
     }
     wheels = sorted((ROOT / "reports/dist").glob("*.whl"))
     if len(wheels) != 1:

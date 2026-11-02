@@ -3,10 +3,19 @@
 import argparse
 import json
 import sys
+from typing import NoReturn
 
 from . import __version__
 from .models import MAX_DEPTH, MAX_ENTITIES, MAX_INPUT_BYTES, Architecture
 from .validation import validate_json
+
+
+class Parser(argparse.ArgumentParser):
+    """Exit 2 means an invalid model, so usage errors take the conventional EX_USAGE instead."""
+
+    def error(self, message: str) -> NoReturn:
+        self.print_usage(sys.stderr)
+        self.exit(64, f"{self.prog}: error: {message}\n")
 
 
 def capabilities() -> dict[str, object]:
@@ -31,7 +40,7 @@ def capabilities() -> dict[str, object]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(prog="cloud-diagrams")
+    parser = Parser(prog="cloud-diagrams")
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("schema", help="Print the versioned JSON Schema")
     sub.add_parser("capabilities", help="Print implemented capabilities and pending layers")

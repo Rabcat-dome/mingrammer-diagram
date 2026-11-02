@@ -1,6 +1,6 @@
 # Core Contract v1.0.0
 
-S05 / M1 implementation guide, subordinate to the single [requirements](../requirements/requirements.md). Package `0.2.0a1` is a core development version; installed Work plugin `0.1.0-alpha.3` remains the independent S04 fixture. This change does not replace that plugin or claim full architecture rendering.
+S05 / M1 implementation guide, subordinate to the single [requirements](../requirements/requirements.md). Package `0.2.0a2` is a core development version; installed Work plugin `0.1.0-alpha.3` remains the independent S04 fixture. This change does not replace that plugin or claim full architecture rendering.
 
 ## Setup and discovery
 
@@ -15,7 +15,7 @@ uv run --locked cloud-diagrams validate --view detail < tests/fixtures/kubernete
 uv run --locked python scripts/quality_gate.py
 ```
 
-Exit 0 means the implemented **core** checks passed; exit 2 means invalid input. Results always identify `validation_scope: core_only` and pending catalog/provider/render layers. No render command is exposed. A structurally acceptable service type is not an approved/resolved catalog type. M2 adds catalog/provider validation; M3 adds final strict/lenient render behavior. Lenient mode already marks a draft but cannot bypass any core error; no recoverable fallback is implemented here.
+Exit 0 means the implemented **core** checks passed; exit 2 means invalid input; exit 64 means the command was used incorrectly. Results always identify `validation_scope: core_only` and pending catalog/provider/render layers. No render command is exposed. A structurally acceptable service type is not an approved/resolved catalog type. M2 adds catalog/provider validation; M3 adds final strict/lenient render behavior. Lenient mode already marks a draft but cannot bypass any core error; no recoverable fallback is implemented here.
 
 Discovery emits the [executable schema](../../schemas/architecture-v1.schema.json). The gate compares it with the Python model and checks valid fixtures with an independent JSON Schema validator. JSON Schema expresses structural checks; cross-field/reference semantics require the core validator too. [Pydantic strict mode](https://docs.pydantic.dev/latest/concepts/strict_mode/) supplies strict types and [schema generation](https://docs.pydantic.dev/latest/concepts/json_schema/) derives the machine contract from the same definitions.
 
