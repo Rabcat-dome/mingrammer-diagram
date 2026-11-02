@@ -39,4 +39,4 @@ Huawei rights remain uncleared. D-018 accepts private personal risk only, and O-
 
 ## Follow-up
 
-These changes were committed at `dc54b4d`, and actual CI [run 41488737943](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41488737943) passes there. The statement above that all five failures are fixed held for the reported cases. A later [independent review](S06-fable-review.md) under D-020 confirms F1-F4 and finds F5 only partly fixed, because self-managed EKS nodes in another VPC still pass.
+These changes were committed at `dc54b4d`, and actual CI [run 41488737943](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41488737943) passes there. The statement above that all five failures are fixed held for the reported cases. A later [independent review](S06-fable-review.md) under D-020 confirms F1-F4 and finds F5 only partly fixed, because self-managed EKS nodes in another VPC still pass. After that was fixed, the review approved `5f391eb`, and actual CI [run 41491565252](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41491565252) passes there.

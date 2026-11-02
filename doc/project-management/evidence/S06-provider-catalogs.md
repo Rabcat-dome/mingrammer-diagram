@@ -2,9 +2,9 @@
 
 Date: 2026-11-02 | Tasks: M2-01..06 | Branch: `codex/s06-provider-catalogs`, from `c6a59e5` | Updated for owner decisions D-016 to D-019
 
-**Status update after independent review:** Astra/High found five P2 issues at `5569459`; the owner then requested fixes. The fixes are at `dc54b4d`, which passes actual CI with 12 lanes / 637 tests; see [fix evidence](S06-review-fixes.md). Claude Fable 5.1 / High reviewed them under D-020 and requests one change ([fix review](S06-fable-review.md)), and D-019 closes the asset-rights exit item for the private personal release. The implementation results below are the record from before that review; the exit criteria and next steps are kept current.
+**Status update after independent review:** Astra/High found five P2 issues at `5569459`; the owner then requested fixes. After the [fixes](S06-review-fixes.md), Claude Fable 5.1 / High [reviewed them](S06-fable-review.md) under D-020 and approved `5f391eb`, which passes actual CI with 12 lanes / 652 tests. M2 closed on 2026-11-03, and D-019 closes the asset-rights exit item for the private personal release. The implementation results below are the record from before that review; the exit criteria and next steps are kept current.
 
-**Result: the catalogs, semantic rules, on-premises assets and both new gate lanes are implemented, along with the owner's decisions D-016, D-017 and D-018, and actual CI passes at `6929253`. M2 cannot close yet:** finding N1 from the [fix review](S06-fable-review.md) needs a fix and recheck, or the owner's explicit disposition.
+**Result: the catalogs, semantic rules, on-premises assets and both new gate lanes are implemented, along with the owner's decisions D-016, D-017 and D-018, and actual CI passes at `6929253`. M2 closed on 2026-11-03** for the private personal release, after the [fix review](S06-fable-review.md) approved `5f391eb`.
 
 ## Task status
 
@@ -25,7 +25,7 @@ Date: 2026-11-02 | Tasks: M2-01..06 | Branch: `codex/s06-provider-catalogs`, fro
 | Rules have evidence | **Met.** All 59 rules cite sources: provider or Kubernetes documentation for provider behavior, and the requirements for project-defined checks. All 132 source pages were fetched, and 79 specific claims matched, on 2026-11-02 |
 | Asset rights are established | **Settled by the owner for the private personal release (D-019).** As written it is not met for Huawei: D-018 accepts the risk for private personal use and establishes no rights. Requirements section 6.2 says that when rights cannot be established, a blocker is recorded and scope is discussed, and O-002 and D-018 do that. On 2026-11-03 the owner decided this satisfies the exit item, because the owner will not distribute publicly. The other packs are recorded below with their real strength of evidence |
 | No Huawei completion through unapproved icons or undisclosed generic replacements | **Met.** Tests reject both, Huawei is not marked complete, and icons appear only as the owner decided, with their limit disclosed |
-| Astra/High review | **Performed at `5569459`, with changes requested** ([review](S06-astra-review.md)). The fixes are at `dc54b4d` ([fix evidence](S06-review-fixes.md)). Claude Fable 5.1 / High reviewed them as a substitute under D-020 ([fix review](S06-fable-review.md)): **F1-F4 fixed, F5 partly fixed, N1 open** |
+| Astra/High review | **Performed at `5569459`, with changes requested** ([review](S06-astra-review.md)). The fixes are at `dc54b4d` ([fix evidence](S06-review-fixes.md)). Claude Fable 5.1 / High reviewed them as a substitute under D-020 ([fix review](S06-fable-review.md)) and **approved `5f391eb`** after F5 was found only partly fixed and N1 was fixed |
 | Owner inspection (session plan, not an exit item) | The eight on-premises symbols and the 15 Huawei icons are accepted on their sheets. **Kubernetes representations have not been shown to the owner.** No Kubernetes sheet exists yet, and rendered detail views come with M4-05 |
 
 ## Validation
@@ -214,11 +214,11 @@ Written consent from Huawei remains the only route to public distribution. Draft
 
 Implementation used **Claude Opus 5.5 (`claude-opus-5-5`)**, the model of the session the owner started, with a reasoning-effort setting of 100 and no named level shown. The project policy names Sol for implementation; this deviates from that and no setting was changed.
 
-Self-checks in this session are not a review. Astra/High later reviewed `5569459` and requested changes, and Fable reviewed the fixes under D-020. **N1 from that review is open**, and M2 should not close until it is settled. Review of the M7 Medium and Low fixes also remains outstanding from earlier work. It is not part of this task.
+Self-checks in this session are not a review. Astra/High later reviewed `5569459` and requested changes, and Fable reviewed the fixes under D-020 and approved `5f391eb`. Review of the M7 Medium and Low fixes also remains outstanding from earlier work. It is not part of this task.
 
 ## Next steps
 
-1. Fix and recheck N1 with CI at its commit, or record the owner's explicit disposition.
-2. Close M2 once that is recorded. The owner settled the asset-rights exit item under D-019.
+1. M2 is closed. N2-N4 remain deferred P3 findings; see the [fix review](S06-fable-review.md#follow-up-n1-fix-and-deferrals).
+2. The owner settled the asset-rights exit item under D-019.
 3. Update the owner's installed plugin only if asked. It remains on `917f46f`, so it has none of this work.
 4. S07 / M3 can proceed in parallel.

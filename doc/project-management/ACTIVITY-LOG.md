@@ -357,3 +357,11 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - Under D-020, Claude Fable 5.1 / High reviewed `5569459..dc54b4d` in a fresh agent. Changes requested: F1-F4 are fixed, and F5 is partly fixed because self-managed EKS nodes in another VPC still pass (N1, P2). Four P3 findings cover Fargate profiles, EKS clusters in two VPCs, NodePool edges against `node_ref`, and one test that does not pin its fix. See the [fix review](evidence/S06-fable-review.md).
 - Claude Opus 5.5, the session that started the review, reproduced N1-N5 with its own probes and read the AWS sentence behind N1 in the raw page.
 - The owner chose to fix N1 and recheck it. Claude Opus 5.5 fixed N1 and N5 and deferred N2-N4 with recorded reasons, as the owner accepted; see the [follow-up](evidence/S06-fable-review.md#follow-up-n1-fix-and-deferrals). M2 stays open for CI at the fix commit and Fable's recheck.
+
+
+## 2026-11-03 — M2 closed
+
+- Committed the N1 and N5 fixes at `5f391eb43bc4164175ae352aab69624451e4d2d0` and pushed. Actual CI [run 41491565252](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41491565252), job 125435621069, passed 12 lanes and 652 tests with none skipped, from a clean tree. The visibility guard read private, the wheel matches the local build, and the job has no annotations.
+- Claude Fable 5.1 / High rechecked `dc54b4d..5f391eb` under D-020 and approved it for closing the fix review, with no new findings. See the [recheck](evidence/S06-fable-review.md#recheck-at-5f391eb).
+- Closed M2 for the private personal release, as the owner's choice to fix and recheck N1 provided. Inventories and rule evidence are met, D-019 settles the asset-rights item, and D-020 records Fable as the substitute reviewer of the fixes.
+- Still true: Huawei rights are not cleared and O-002 blocks public distribution. N2-N4 are deferred P3 findings. Kubernetes representations have not been shown to the owner, the owner's plugin stays on `917f46f`, main is not merged, and review of the earlier M7 Medium/Low fixes is outstanding.

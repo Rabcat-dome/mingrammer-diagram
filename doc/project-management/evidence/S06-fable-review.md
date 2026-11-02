@@ -2,7 +2,9 @@
 
 Date: 2026-11-03 (Asia/Bangkok). Reviewer: Claude Fable 5.1 (`claude-fable-5-1`) / High, in a fresh agent with no prior project context, started from the owner's Claude Opus 5.5 session. Under [D-020](../decisions.md#confirmed-user-direction) this is a recorded substitute for Astra/High, not an Astra review. The fixes were written by GPT-6 Astra / High.
 
-**Disposition: changes requested, on one P2 finding.** F1, F2, F3 and F4 are fixed at their root. F5 is only partly fixed, which is finding N1. The other four findings are P3. There are no P0 or P1 findings. The reviewer states that if the owner explicitly dispositions N1 as out of scope for M2, the rest of this review supports approval.
+**Final disposition: approved at `5f391eb`** for closing M2's fix review; see the [recheck](#recheck-at-5f391eb). The sections before it are the record at `dc54b4d`.
+
+**Disposition at `dc54b4d`: changes requested, on one P2 finding.** F1, F2, F3 and F4 are fixed at their root. F5 is only partly fixed, which is finding N1. The other four findings are P3. There are no P0 or P1 findings. The reviewer states that if the owner explicitly dispositions N1 as out of scope for M2, the rest of this review supports approval.
 
 ## Identity and scope
 
@@ -98,4 +100,22 @@ The owner accepted this plan for the P3 findings:
 
 Not done: relation-only mismatch fixture cases for Azure, GCP and Huawei remain a coverage gap, though the code path is shared with the AWS case.
 
-M2 stays open until N1 is fixed and rechecked, or the owner explicitly dispositions it. The asset-rights exit item is closed for the private personal release under D-019.
+## Recheck at `5f391eb`
+
+The same reviewer rechecked `dc54b4d..5f391eb` on 2026-11-03. The tree was clean at the start and end, and the reviewer edited nothing in the repository. **Disposition: approve for closing M2's fix review, with no new findings.**
+
+- **N1, fixed.** A 25-case probe set in both modes rejects both pool types in another VPC, in both VPCs in either order, under an Auto Mode cluster, when declared before the cluster, and with the same VPC listed twice. Rerunning the earlier probe script changes only the self-managed outcome, so the F1-F4 results still hold.
+- **Regressions, none found.** A different subnet in the same VPC, either side unspecified, a generic `k8s.nodepool`, a generic `k8s.node`, a Fargate profile in another VPC and all six baselines stay valid in both modes.
+- **N5, fixed.** The test fails against the source at `5569459`, and against a copy of the head with only `subnet_region` reverted.
+- **New tests.** Against the source at `dc54b4d`, exactly the three self-managed cases fail and 439 pass. The two managed cases and the Fargate and generic control are coverage rather than checks of this change, and pass on both.
+- **N2-N4.** The remedy text, the core contract and the code agree on each deferral, and none should block M2.
+
+| Evidence | Result and attribution |
+|---|---|
+| Reviewer checks | Full `pytest` (652 passed), `ruff check`, `ruff format --check`, `mypy src`, the probes above and runs against four source copies |
+| Not run by the reviewer | The gate and catalog-check scripts, GitHub CI, the proof digest comparison, a fresh fetch of the AWS pages, and the documentation diff outside `doc/design` |
+| Actual CI | Root verified [run 41491565252](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41491565252), job 125435621069, at `5f391eb`: 12 lanes, 652 tests, none skipped, on `macbook-pro-m2-max-mingrammer` from a clean tree. The visibility guard read private, the wheel SHA-256 `be52ce7857afbee837f350894ecbf6a81bcf7ed17f86c8f0d7d0d2947ea705ab` matches the local build, and the job has no annotations |
+
+Limits: Claude Opus 5.5 wrote the N1 and N5 change, so that part of this approval shares a vendor with its reviewer, although the two shared no context. The reviewer's AWS readings came from a sub-agent's summaries.
+
+M2 closed on 2026-11-03 for the private personal release. This approval is the owner's recorded substitute for Astra/High under D-020, and the asset-rights exit item is settled under D-019.
