@@ -57,7 +57,7 @@ Model-authoring invocations used `claude -p --plugin-dir` with the owner's exist
 - **Empty wheel, now fixed and gated.** The `src` symlink made hatchling's once-per-directory walk enter the plugin first, which dropped the real `src` from the sdist. The wheel, built from that sdist, shipped no code while `package-build` still reported success. The sdist now skips the plugin directories. The `package-contents` lane compares the wheel with `src`; it failed on the empty wheel and passes after the fix.
 - **`bin/` was not on the Bash path.** The [documented behavior](https://code.claude.com/docs/en/plugins/components.md#executables) did not appear on 2.1.309, either with `--plugin-dir` or for the installed plugin in a new headless session: the bare command was not found in any probe. The skill therefore uses `${CLAUDE_PLUGIN_ROOT}/bin/cloud-diagrams`, and that path was both substituted and pre-approved in `allowed-tools`.
 - **Plugin data is unavailable to Bash.** `CLAUDE_PLUGIN_DATA` is not exported to Bash tool commands, so the environment lives under `~/.local/share` and uninstalling does not remove it. The plugin README documents the removal step.
-- **The owner's install is pinned to this branch.** The default branch does not contain the plugin yet, so the marketplace was added with a branch ref. Remove and add it again after a merge.
+- **The owner's install is pinned to this branch.** The default branch did not contain the plugin then, so the marketplace was added with a branch ref. The plugin reached `main` on 2026-11-03, so remove and add the marketplace again to follow it, and keep the branch until then.
 
 ## Same-session review
 

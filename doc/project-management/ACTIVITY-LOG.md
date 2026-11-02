@@ -365,3 +365,11 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - Claude Fable 5.1 / High rechecked `dc54b4d..5f391eb` under D-020 and approved it for closing the fix review, with no new findings. See the [recheck](evidence/S06-fable-review.md#recheck-at-5f391eb).
 - Closed M2 for the private personal release, as the owner's choice to fix and recheck N1 provided. Inventories and rule evidence are met, D-019 settles the asset-rights item, and D-020 records Fable as the substitute reviewer of the fixes.
 - Still true: Huawei rights are not cleared and O-002 blocks public distribution. N2-N4 are deferred P3 findings. Kubernetes representations have not been shown to the owner, the owner's plugin stays on `917f46f`, main is not merged, and review of the earlier M7 Medium/Low fixes is outstanding.
+
+
+## 2026-11-03 — Unmerged branches merged into main
+
+- At the owner's request, Claude Opus 5.5 merged the unmerged work into `main` in stages. The four branches form one linear stack, so each step was a fast-forward with no merge commit, and `main` holds the same SHAs that the CI and review records name.
+- `ff53a88` (S04) has no quality gate in its tree, so no CI ran. `c5f74b4` (S05) passed [run 41493541387](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41493541387), `c6a59e5` (M7) passed [run 41493655229](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41493655229) and `f3f0789` (S06) passed [run 41493822820](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41493822820), each on `main`.
+- M7 went in without being closed, because S06 is stacked on it. Its Astra/High review and a review of its Medium and Low fixes remain outstanding, and a second machine and interactive permission prompts remain unverified.
+- The plugin README now installs from the default branch. The owner's install stays pinned to `codex/m7-claude-plugin` at `917f46f`, and no branch was deleted. The repository stays private.
