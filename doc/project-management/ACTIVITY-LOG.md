@@ -204,3 +204,11 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - Owner requested the next activity. Created codex/s05-core-quality-gate from ff53a88 on the existing checkout; no worktree was created and main/S04 installed runtime/Docker resources were preserved.
 - Implemented the independent core package, strict schema/discovery/CLI, bounded data parser, IDs/typed refs/containment/view checks and Kubernetes cluster/namespace/placement/reference validation. Core-only/pending-layer disclosure prevents representing this as full catalog/provider/render validation.
 - Local schema/typing/lint/workflow/traceability checks and 65 tests passed. Verified a clean installed wheel outside the checkout and aggregate failure when actionlint was deliberately unavailable. Added native owner-only quality-gate workflow with pinned actions, locked dependencies, reports and cleanup; actual GitHub execution and independent Astra/High review remain pending.
+
+
+## 2026-11-02 — S05 initial CI/review and fixes
+
+- Core implementation committed/pushed at e645415801f4dcafae9f53f08f56b74adb4936af. Actual Quality gate run 41423620941 / job 125204824039 passed all eight lanes and 65 tests on a clean checkout, with matching source/lock hashes and local/CI wheel bytes. Per-run environment cleanup passed.
+- Owner explicitly authorized the existing Astra/High chat for S05 and all fix/re-review follow-ups. Review confirmed two P2 findings: alternate ownership edges bypassed Kubernetes context checks, and portable docs checks depended on five historical host-only artifact links. A suspected newline defect was independently disproved and is not counted as a finding.
+- Shared workload-owner validation across both encodings, kept administrative ownership separate, converted original paths to provenance text and required repository-contained portable links. Regression cases failed before fixes; the expanded 82 tests and full local gate now pass. Fix-head CI and Astra confirmation remain next; no M1 closure is claimed yet.
+- Read-only API snapshot found only the owner/admin collaborator and fork PR workflows disabled, with write tokens/secrets disabled. Workflow guards complement this access policy; an editable workflow alone is not a tamper-resistant boundary. No GitHub settings changed.

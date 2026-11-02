@@ -21,6 +21,7 @@ from .models import (
 )
 
 Mode = Literal["strict", "lenient"]
+WORKLOAD_OWNERS = {"Deployment", "ReplicaSet", "StatefulSet", "DaemonSet", "Job", "CronJob", "Pod"}
 
 
 class InputFailure(ValueError):
@@ -326,6 +327,16 @@ class Checker:
                 graphs["owner"].setdefault(relationship.target_ref, set()).add(
                     relationship.source_ref
                 )
+                dependent = self.entities.get(relationship.target_ref)
+                owner = self.entities.get(relationship.source_ref)
+                if isinstance(dependent, Resource) and dependent.kubernetes and owner is not None:
+                    path = f"/relationships/{i}/source_ref"
+                    if isinstance(owner, Scope):
+                        # Administrative scope is distinct from a Kubernetes controller owner.
+                        self.ref(owner.id, path, dependent.id, Scope)
+                    else:
+                        # Alternate controller-ownership encodings must use identical context rules.
+                        self.k8_ref(dependent, path, owner.id, WORKLOAD_OWNERS, True)
         for name, graph in graphs.items():
             if _cycles(graph):
                 self.error("CONTAINMENT_CYCLE", "/" + name)
@@ -379,15 +390,7 @@ class Checker:
                 ("node_ref", {"Node"}, False),
                 (
                     "owner_ref",
-                    {
-                        "Deployment",
-                        "ReplicaSet",
-                        "StatefulSet",
-                        "DaemonSet",
-                        "Job",
-                        "CronJob",
-                        "Pod",
-                    },
+                    WORKLOAD_OWNERS,
                     True,
                 ),
                 ("volume_ref", {"PersistentVolume"}, False),

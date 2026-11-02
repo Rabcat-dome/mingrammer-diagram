@@ -66,7 +66,9 @@ def documentation() -> list[str]:
             if target.scheme:
                 continue
             destination = (path.parent / unquote(target.path)).resolve() if target.path else path
-            if not destination.exists():
+            if Path(unquote(target.path)).is_absolute() or not destination.is_relative_to(ROOT):
+                errors.append(f"{name}: local documentation link must stay inside the repository")
+            elif not destination.exists():
                 errors.append(f"{name}: missing local link")
             elif target.fragment and (
                 destination.suffix != ".md"

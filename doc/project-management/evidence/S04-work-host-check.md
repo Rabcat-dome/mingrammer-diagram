@@ -67,7 +67,7 @@ All seven plugin calls returned `isError=false`; no plugin/tool runtime error oc
 
 Bundle directory: `/Users/visarut.pha/Documents/CloudArchitectureDiagrams/dd12797b1c044f7e33239cc9cf8b3752`.
 
-[PNG](/Users/visarut.pha/Documents/CloudArchitectureDiagrams/dd12797b1c044f7e33239cc9cf8b3752/diagram.png) · [SVG](/Users/visarut.pha/Documents/CloudArchitectureDiagrams/dd12797b1c044f7e33239cc9cf8b3752/diagram.svg) · [source JSON](/Users/visarut.pha/Documents/CloudArchitectureDiagrams/dd12797b1c044f7e33239cc9cf8b3752/source.json) · [DOT](/Users/visarut.pha/Documents/CloudArchitectureDiagrams/dd12797b1c044f7e33239cc9cf8b3752/source.dot) · [manifest](/Users/visarut.pha/Documents/CloudArchitectureDiagrams/dd12797b1c044f7e33239cc9cf8b3752/manifest.json)
+Historical host-only directory: `/Users/visarut.pha/Documents/CloudArchitectureDiagrams/dd12797b1c044f7e33239cc9cf8b3752/`. The original files were `diagram.png`, `diagram.svg`, `source.json`, `source.dot` and `manifest.json`. This path records provenance and is not a portable repository dependency; use the repository-relative PNG/SVG evidence copies below.
 
 | Artifact | Bytes | SHA-256 |
 |---|---:|---|

@@ -3,6 +3,7 @@
 import copy
 import json
 import subprocess
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -286,3 +287,119 @@ def test_foreign_provider_ownership_is_invalid() -> None:
 def test_explicit_empty_view_is_not_a_silent_default() -> None:
     result = validate_json(json.dumps(fixture()).encode(), view_id="")
     assert not result.valid and result.diagnostics[-1].code == "VIEW_NOT_FOUND"
+
+
+@pytest.mark.parametrize("mode", ["strict", "lenient"])
+@pytest.mark.parametrize("case", ["namespace", "cluster", "kind", "plain-resource", "valid"])
+def test_ownership_edges_use_the_same_context_rules_as_owner_ref(case: str, mode: Mode) -> None:
+    data = fixture("kubernetes-valid")
+    resources = {resource["id"]: resource for resource in data["resources"]}
+    resources["pod-a"]["kubernetes"].pop("owner_ref")
+    owner_id = "replicaset"
+    if case in {"namespace", "cluster"}:
+        namespace = copy.deepcopy(resources["namespace"])
+        namespace["id"] = "other-namespace"
+        data["resources"].append(namespace)
+        owner = resources["replicaset"]["kubernetes"]
+        owner.pop("owner_ref")
+        owner["namespace_ref"] = namespace["id"]
+        if case == "cluster":
+            cluster = copy.deepcopy(resources["cluster"])
+            cluster["id"] = "other-cluster"
+            data["resources"].append(cluster)
+            namespace["kubernetes"]["cluster_ref"] = "other-cluster"
+            owner["cluster_ref"] = "other-cluster"
+    elif case == "kind":
+        owner_id = "node-a"
+    elif case == "plain-resource":
+        owner_id = "plain-resource"
+        data["resources"].append(
+            {
+                "id": owner_id,
+                "name": "VM",
+                "provider": "gcp",
+                "service_type": "gcp.compute.vm",
+                "taxonomy": "compute.vm",
+            }
+        )
+    data["relationships"].append(
+        {
+            "id": "controller-owner",
+            "source_ref": owner_id,
+            "target_ref": "pod-a",
+            "kind": "ownership",
+        }
+    )
+    edge_result = validate_json(json.dumps(data).encode(), mode=mode)
+    data["relationships"].pop()
+    resources["pod-a"]["kubernetes"]["owner_ref"] = owner_id
+    ref_result = validate_json(json.dumps(data).encode(), mode=mode)
+    assert edge_result.valid == ref_result.valid == (case == "valid")
+    if case != "valid":
+        expected = {
+            "namespace": "K8S_NAMESPACE_MISMATCH",
+            "cluster": "K8S_CLUSTER_MISMATCH",
+            "kind": "K8S_REFERENCE_KIND_INVALID",
+            "plain-resource": "K8S_REFERENCE_KIND_INVALID",
+        }[case]
+        assert expected in {item.code for item in edge_result.diagnostics}
+        assert expected in {item.code for item in ref_result.diagnostics}
+
+
+@pytest.mark.parametrize("mode", ["strict", "lenient"])
+def test_mixed_controller_ownership_cycle_is_fatal(mode: Mode) -> None:
+    data = fixture("kubernetes-valid")
+    data["relationships"].append(
+        {"id": "cycle-edge", "source_ref": "pod-a", "target_ref": "replicaset", "kind": "ownership"}
+    )
+    assert "CONTAINMENT_CYCLE" in codes(data, mode)
+
+
+def test_docs_gate_requires_portable_links_not_existing_external_artifacts(tmp_path: Path) -> None:
+    root = tmp_path / "repo"
+    (root / "scripts").mkdir(parents=True)
+    subprocess.run(["git", "init", "-q", str(root)], check=True)
+    (root / "scripts/repository_checks.py").write_bytes(
+        Path("scripts/repository_checks.py").read_bytes()
+    )
+    documents = {
+        "doc/requirements/requirements.md": "| FR-001 | Rule |\n| T-001 Case |\n",
+        "doc/project-management/milestones.md": "| M1-01 | Task |\n",
+        "doc/project-management/decisions.md": "| D-001 | Decision |\n",
+        "README.md": "[Requirements](doc/requirements/requirements.md)\n",
+    }
+    for name, text in documents.items():
+        path = root / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+    command = [sys.executable, str(root / "scripts/repository_checks.py"), "docs"]
+    assert subprocess.run(command, cwd=root, capture_output=True).returncode == 0
+    artifact = tmp_path / "historical.png"
+    artifact.write_bytes(b"historical sentinel")
+    (root / "README.md").write_text(f"[Historical artifact]({artifact})\n")
+    rejected = subprocess.run(command, cwd=root, capture_output=True)
+    assert rejected.returncode == 1 and b"must stay inside the repository" in rejected.stdout
+    (root / "README.md").write_text(f"Historical provenance: `{artifact}`.\n")
+    artifact.unlink()
+    assert subprocess.run(command, cwd=root, capture_output=True).returncode == 0
+
+
+@pytest.mark.parametrize("mode", ["strict", "lenient"])
+@pytest.mark.parametrize("provider", ["gcp", "aws"])
+def test_administrative_cluster_owner_remains_separate(mode: Mode, provider: str) -> None:
+    data = fixture("kubernetes-valid")
+    data["scopes"] = [
+        {
+            "id": "admin",
+            "name": "Administrative owner",
+            "provider": provider,
+            "kind": "project" if provider == "gcp" else "account",
+        }
+    ]
+    data["relationships"].append(
+        {"id": "admin-owner", "source_ref": "admin", "target_ref": "cluster", "kind": "ownership"}
+    )
+    result = validate_json(json.dumps(data).encode(), mode=mode)
+    assert result.valid == (provider == "gcp")
+    if provider == "aws":
+        assert "SCOPE_PROVIDER_MISMATCH" in {item.code for item in result.diagnostics}

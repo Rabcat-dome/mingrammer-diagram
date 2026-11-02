@@ -1,0 +1,80 @@
+{
+  "scope": "M1 core foundation",
+  "passed": true,
+  "checks": [
+    {
+      "check": "docs-contract",
+      "status": "passed",
+      "seconds": 0.405
+    },
+    {
+      "check": "secrets",
+      "status": "passed",
+      "seconds": 0.078
+    },
+    {
+      "check": "lint",
+      "status": "passed",
+      "seconds": 0.406
+    },
+    {
+      "check": "format",
+      "status": "passed",
+      "seconds": 0.081
+    },
+    {
+      "check": "types",
+      "status": "passed",
+      "seconds": 2.632
+    },
+    {
+      "check": "workflow",
+      "status": "passed",
+      "seconds": 0.129
+    },
+    {
+      "check": "schema-core",
+      "status": "passed",
+      "seconds": 2.048
+    },
+    {
+      "check": "package-build",
+      "status": "passed",
+      "seconds": 0.725
+    }
+  ],
+  "commit": "e645415801f4dcafae9f53f08f56b74adb4936af",
+  "working_tree_dirty": false,
+  "source_ref": "e645415801f4dcafae9f53f08f56b74adb4936af",
+  "lock_sha256": "f9e096e2b2e22055c220ebb6a731da31abdcbccd7c395604559ef3c6dc6e3e99",
+  "source_digests": {
+    "src/cloud_architecture_diagrams/__init__.py": "bf37729b6ae76c1fe8a68c78da6dc217412b5692f8b8c3a0228bf541b5f99dd0",
+    "src/cloud_architecture_diagrams/cli.py": "7c6253e3dc4cfbd471abf363e2db5384f083bb868457e7cbe7d4e5e6d11a0478",
+    "src/cloud_architecture_diagrams/diagnostics.py": "ae4ac82b7ba24681a66c89cf24ccc85710b4acba3805f28090ad6d83690d4b5e",
+    "src/cloud_architecture_diagrams/models.py": "db3fa1fb030e5401533ddf68f2259af6936a7e7c1863b20b9d5d6afb25196271",
+    "src/cloud_architecture_diagrams/validation.py": "cda490c5e32506a32b1d6ad91d2f6073676b378433349f346e929479ee86b7dd",
+    "scripts/quality_gate.py": "a3d9d1bbe7da820c8ad7abe42541b61804aa84563b116e04f83326c8d6e1fa19",
+    "scripts/repository_checks.py": "188951d482d83b18efa7e158235e9c21ec1c6b7cc71b9ab6e35cdc59f62e559d",
+    "tests/fixtures/core-valid.json": "5f77c82ed278a3a44b4a7f5529a2f0d029d73933dadfd37ef39ac90668926752",
+    "tests/fixtures/kubernetes-valid.json": "4084ccb3df033071264acdf582ed85747fc9f7880235b1602bdff9d09bec04cc",
+    "tests/test_contract.py": "33d8a6e1fcce6a883bbd7fb94a74485655a4aa52b7b49e06d3ff5cf85c360584",
+    "schemas/architecture-v1.schema.json": "26e1f913ad44a3d6694fc5590001f024ba264ca931c944e6af55d1a6db3c474a",
+    ".github/actionlint.yaml": "3f94852e432dbbc2551c30a3d8b7d859a30f63b860ae1f92b43b3ce9622381c8",
+    ".github/workflows/quality-gate.yml": "0701b2a1694092e8cc66f0137086ba8cc5407b31e1048b700a16a4f52dc09067",
+    ".github/workflows/runner-preflight.yml": "08337c1a87c09d601c277c7db01592662e4c39619505f875f0cf8d6641798734"
+  },
+  "github_actions": true,
+  "runner_name": "macbook-pro-m2-max-mingrammer",
+  "python": "3.13.7",
+  "system": "Darwin",
+  "machine": "arm64",
+  "deferred": {
+    "catalog-license": "M2",
+    "provider-semantics": "M2",
+    "render-security": "M3",
+    "render-smoke": "M3/M4",
+    "visual-regression": "M4",
+    "plugin-package": "M5"
+  },
+  "review": "Recorded separately; no paid model API call in CI"
+}
