@@ -25,6 +25,7 @@ There is no MCP server. A Claude Code session already has Bash and Read, so a se
 | Check | Result |
 |---|---|
 | Actual CI: [run 41440133540](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41440133540), job 125259629499 | Passed all 10 lanes on `macbook-pro-m2-max-mingrammer` from a clean checkout of `22fc85e`, with 82 core tests and 14 plugin tests and none skipped. Read from the run's report artifact |
+| Node 24 action: [run 41441398887](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41441398887), job 125263877372 | Passed all 10 lanes at `359f1ea` with `actions/upload-artifact` v7.0.2 and zero job annotations, so the Node.js 20 warning is gone. The uploaded artifact downloaded and read back correctly |
 | Wheel | Local and CI SHA-256 `fc138b2236a30100a01d1d6a381fd96b6eb70913d3ccbd6832c6d142b1560e8a`, byte-identical to the S05 CI wheel, so the core package is unchanged |
 | `claude plugin validate --strict` on marketplace and plugin | Passed. The separate public-directory profile reports a missing license and icon; public submission is out of scope |
 | Install from the private GitHub repository in a throwaway `CLAUDE_CONFIG_DIR` | `Rabcat-dome/mingrammer-diagram#codex/m7-claude-plugin` cloned over HTTPS with the machine's credentials. Cache has 0 symlinks and is 148 KB; valid and invalid paths behaved. Uninstall and marketplace removal then left no entries |
@@ -57,7 +58,6 @@ Model-authoring invocations used `claude -p --plugin-dir` with the owner's exist
 - A second machine, any other operating system, and first-run setup with an empty uv cache.
 - Interactive permission prompts. Headless runs exercised `allowed-tools`, but the Code tab check ran under bypass permissions, so it did not.
 - Authoring a model from the Code tab, and updating an installed plugin to a new version.
-- Actual CI for moving `actions/upload-artifact` to Node 24. That workflow change comes after `22fc85e` and is checked only by actionlint until it is pushed.
 - Independent review. Implementation used Claude Opus 5.5; no separate review pass has been performed.
 
 Prompts were run once each, so trigger rates are observations rather than measurements. Provider semantics are unchanged from M1: a passing result does not establish that a service type exists or that a placement is legal.
