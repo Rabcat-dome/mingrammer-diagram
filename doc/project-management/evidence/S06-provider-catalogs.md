@@ -2,7 +2,7 @@
 
 Date: 2026-11-02 | Tasks: M2-01..06 | Branch: `codex/s06-provider-catalogs`, from `c6a59e5` | Updated for owner decisions D-016 and D-017
 
-**Result: the catalogs, semantic rules, on-premises assets and both new gate lanes are implemented, along with the owner's decisions D-016, D-017 and D-018, and actual CI passes at `6929253`. M2 cannot close yet:** Huawei rights are not cleared, the required Astra/High review has not happened, and the owner has not yet inspected the Huawei icons.
+**Result: the catalogs, semantic rules, on-premises assets and both new gate lanes are implemented, along with the owner's decisions D-016, D-017 and D-018, and actual CI passes at `6929253`. M2 cannot close yet:** the required Astra/High review has not happened, and because Huawei rights are not cleared, the exit item on asset rights needs the owner's disposition.
 
 ## Task status
 
@@ -10,7 +10,7 @@ Date: 2026-11-02 | Tasks: M2-01..06 | Branch: `codex/s06-provider-catalogs`, fro
 |---|---|---|
 | M2-01 | Complete | 26 frozen taxonomy IDs, 148 catalog records in catalog `2026.11.0`, and a machine-readable inventory of all 93 items named in requirements section 6 |
 | M2-02 | Complete | AWS, Azure and GCP native types, native IDs and documented placement rules, with fixtures |
-| M2-03 | Partial | Huawei types, native service codes, IAM and enterprise-project distinctions and per-service rules are complete. **All 15 items that need an icon have one, for private personal use only under D-018, with rights not cleared** |
+| M2-03 | Complete for private personal use only | Huawei types, native service codes, IAM and enterprise-project distinctions and per-service rules are complete. **All 15 items that need an icon have one, for private personal use only under D-018, with rights not cleared.** The owner accepted the icon sheet |
 | M2-04 | Complete, contact sheet accepted by the owner | Physical and logical on-premises types, plus the eight D-010 representations with exact source conditions, attribution and original and derived hashes |
 | M2-05 | Complete | The `catalog-license` lane runs real inventory, license, asset and evidence checks, and fails on missing rights or assets |
 | M2-06 | Complete | 22 Kubernetes kinds, 11 cluster modes with node-pool mappings, and rules applied on all five hosting environments |
@@ -21,9 +21,10 @@ Date: 2026-11-02 | Tasks: M2-01..06 | Branch: `codex/s06-provider-catalogs`, fro
 |---|---|
 | All five hosting inventories and the Kubernetes detail catalog meet minimum breadth | **Met.** A test parses the requirements table, so the inventory cannot drift from it |
 | Rules have evidence | **Met.** All 56 rules cite sources: provider or Kubernetes documentation for provider behavior, and the requirements for project-defined checks. All 130 source pages were fetched, and 77 specific claims matched, on 2026-11-02 |
-| Asset rights are established | **Not met for Huawei.** D-018 accepts the risk for private personal use and establishes no rights. The other packs are recorded below with their real strength of evidence |
+| Asset rights are established | **Not met as written for Huawei.** D-018 accepts the risk for private personal use and establishes no rights. Requirements section 6.2 says that when rights cannot be established, a blocker is recorded and scope is discussed, and O-002 and D-018 do that. Whether this satisfies the exit item for a private personal release is the owner's call at closure. The other packs are recorded below with their real strength of evidence |
 | No Huawei completion through unapproved icons or undisclosed generic replacements | **Met.** Tests reject both, Huawei is not marked complete, and icons appear only as the owner decided, with their limit disclosed |
 | Astra/High review | **Not performed.** See [model and review](#model-and-review) |
+| Owner inspection (session plan, not an exit item) | The eight on-premises symbols and the 15 Huawei icons are accepted on their sheets. **Kubernetes representations have not been shown to the owner.** No Kubernetes sheet exists yet, and rendered detail views come with M4-05 |
 
 ## Validation
 
@@ -157,11 +158,12 @@ Each SVG is byte-identical to its decoded entry. Each 256x256 PNG is rasterized 
 
 Sabotage checks confirmed three of these on the real repository under D-018: a reported-public repository, a removed classifier, and OBS given the title `storage-55` each failed the lane, and the files were restored. These guards catch mistakes in the repository. They cannot stop someone copying the files, and the lane only runs when a job does, so flipping the repository to public would be caught at the next run, after the fact.
 
+**Owner inspection:** on 2026-11-02 the owner reviewed this icon sheet and accepted it, as relayed through the parent session. The acceptance covers [this sheet](S06-huawei-icon-review.png) only, SHA-256 `959b8b22f6ff93e328a4dacc9d4f27971a55a431360ee25d7252224cc8f1d35e`. Rendered visual acceptance stays with M4 and M6. This is visual acceptance only, so it changes nothing about D-018 or O-002: rights are not cleared, and public distribution stays blocked.
+
 **What this leaves for the owner:**
 
-1. **Inspection:** the icon sheet above needs the owner's eye. The rendered look stays with M4 and M6.
-2. **Git history:** the JuanDiaz00 images are in this branch's history from `9d579f8`, and the LATAM images from `6929253`. Making the repository public would first require removing them from history.
-3. **Generated diagrams:** sharing an image that shows these icons outside private use is not covered by D-018.
+1. **Git history:** the JuanDiaz00 images are in this branch's history from `9d579f8`, and the LATAM images from `6929253`. Making the repository public would first require removing them from history.
+2. **Generated diagrams:** sharing an image that shows these icons outside private use is not covered by D-018.
 
 Written consent from Huawei remains the only route to public distribution. Draft request, not sent:
 
@@ -214,7 +216,7 @@ Self-checks in this session are not a review. **The Astra/High review M2 require
 
 ## Next steps
 
-1. Owner: inspect the Huawei icon sheet.
-2. Arrange the Astra/High review of `c6a59e5..6929253`, then close M2 or record its remaining blocker.
+1. Arrange the Astra/High review of `c6a59e5..6929253`.
+2. Owner: at closure, decide whether D-018 with O-002 recorded satisfies the asset-rights exit item for a private personal release, then close M2 or record its remaining blocker.
 3. Update the owner's installed plugin only if asked. It remains on `917f46f`, so it has none of this work.
 4. S07 / M3 can proceed in parallel.

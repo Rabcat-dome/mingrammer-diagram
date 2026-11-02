@@ -315,3 +315,11 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 
 - Confirmed the repository is private, then the owner authorized the commit and push of `6929253`. Actual Quality gate [run 41473877379](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41473877379) / job 125374227725 passed all 12 lanes with 520 tests, none skipped and zero annotations, from a clean checkout. The visibility guard read `private`, and the wheel matches the local build's SHA-256 and carries the upload block.
 - Not done: any update to the owner's plugin, which remains on `917f46f`, owner inspection of the Huawei icons, or the Astra/High review.
+
+
+## 2026-11-02 — S06 owner inspection of Huawei icons
+
+- The owner, through the parent session, reviewed `S06-huawei-icon-review.png`, SHA-256 `959b8b22f6ff93e328a4dacc9d4f27971a55a431360ee25d7252224cc8f1d35e`, and accepted it. This completes the owner inspection for M2-03.
+- The acceptance covers that sheet only. Rendered visual acceptance stays with M4 and M6, and rights status under D-018 and O-002 does not change.
+- Rereading M2's exit criteria found one item besides the Astra/High review: "asset rights are established" is not met as written for Huawei, so it needs the owner's disposition at closure. Kubernetes representations have also not been shown to the owner, which the session plan lists but the exit criteria do not require.
+- Not committed or pushed, and the owner's plugin is not updated.
