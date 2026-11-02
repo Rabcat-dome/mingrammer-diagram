@@ -1,7 +1,9 @@
 #!/bin/sh
 # Run the core CLI from this plugin's copy in a private hash-locked environment.
-# Exit 0: success. Exit 2: invalid model. Exit 64: the command was used incorrectly.
+# Exit 0: success. Exit 2: invalid model, or a view that cannot be drawn as asked.
 # Exit 3: the runtime could not be prepared or failed unexpectedly.
+# Exit 4: a render failed and published nothing, with JSON diagnostics on stdout.
+# Exit 64: the command was used incorrectly.
 set -eu
 
 root=$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd -P)
@@ -42,7 +44,7 @@ status=0
 
 # Any other status would otherwise read as a result of the command's documented contract.
 case $status in
-  0 | 2 | 64) exit "$status" ;;
+  0 | 2 | 4 | 64) exit "$status" ;;
   *)
     echo "cloud-diagrams: the runtime failed unexpectedly (exit $status)." >&2
     exit 3

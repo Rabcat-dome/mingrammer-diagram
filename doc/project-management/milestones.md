@@ -1,6 +1,6 @@
 # Milestones and Work Breakdown
 
-Updated: 2026-11-03 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 complete on 2026-11-03 for the private personal release. Huawei rights are not cleared: D-018 allows private personal use only, D-019 settles the asset-rights exit item for that use, and O-002 blocks public distribution. M7 Claude Code preparation started early under D-015.
+Updated: 2026-11-03 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 complete on 2026-11-03 for the private personal release. S07 / M3 is implemented locally and not closed. Huawei rights are not cleared: D-018 allows private personal use only, D-019 settles the asset-rights exit item for that use, and O-002 blocks public distribution. M7 Claude Code preparation started early under D-015.
 
 Source of scope: [requirements](../requirements/requirements.md). Model abbreviations and review rules: [model strategy](model-strategy.md). Quality check definitions: [quality gate](quality-gate.md).
 
@@ -64,7 +64,7 @@ Exit: all five hosting inventories and the shared Kubernetes detail catalog meet
 
 ## M3 — Controlled rendering vertical slice
 
-Status: Not started. Implementation: Sol/High; review: Astra/High.
+Status: Implemented on `codex/s07-controlled-rendering` and passing locally, not closed. See [S07 evidence](evidence/S07-controlled-rendering.md). Actual CI and the Astra/High review remain open, as does the owner's inspection of the first output. Planned implementation: Sol/High; actual implementation: Claude Opus 5.5 (`claude-opus-5-5`), the model of the session that ran S07. Review: Astra/High.
 
 | Task | Work | Dependency / output |
 |---|---|---|
@@ -124,7 +124,7 @@ Status: Adapter preparation started under D-015; not complete and not a first-re
 | M7-01 | Package the core as an installable Claude Code plugin with marketplace, bundled skill and command wrapper, reusing the core without a second copy | M1 + D-015 -> complete locally; `plugins/cloud-architecture-diagrams`, validate-only |
 | M7-02 | Add plugin package and wheel-content checks to the quality gate | M7-01 -> complete; `claude-plugin` and `package-contents` lanes passed actual CI, most recently run 41453874994 at `917f46f` |
 | M7-03 | Verify actual Claude Code installation and invocation | M7-01 -> local-path, private GitHub and real-config installs, plugin update, English/Thai/edit invocations and a Code tab runtime check verified on one Mac; interactive permission prompts, `allowed-tools` breadth and a second machine remain |
-| M7-04 | Expose catalog discovery and rendering through the plugin as M2/M3 arrive, then update the skill's stated capabilities and plugin version | M2 + M3 -> catalog discovery and semantic validation reach the plugin and its skill in S06; rendering and the plugin version remain |
+| M7-04 | Expose catalog discovery and rendering through the plugin as M2/M3 arrive, then update the skill's stated capabilities and plugin version | M2 + M3 -> catalog discovery and semantic validation reach the plugin and its skill in S06. S07 adds `render` to the skill and passes the clean-copy lane locally, not yet in actual CI or a live Claude Code session. The plugin stays versioned by commit, so no version bump applies |
 
 Exit: the same plugin version installs from the private repository on two machines and produces validated models and, after M3, retrievable SVG/PNG in actual Claude Code sessions, with independent review recorded.
 

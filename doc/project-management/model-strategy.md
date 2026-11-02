@@ -50,6 +50,8 @@ On the owner's subsequent instruction to fix the findings, the same GPT-6 Astra 
 
 Under D-020, Claude Fable 5.1 (`claude-fable-5-1`) / High reviewed `5569459..dc54b4d` in a fresh agent, as the owner's chosen substitute for Astra/High on this review only. It is not recorded as an Astra review. It found F1-F4 fixed and F5 partly fixed, with one new P2 and four new P3 findings. Claude Opus 5.5 then fixed the P2 and one P3, and the same reviewer approved `5f391eb`; see the [fix review](evidence/S06-fable-review.md). That last change shares a vendor with its reviewer. M3, M5 and the final M6 review keep the Astra/High policy.
 
+S07 / M3 used Claude Opus 5.5 (`claude-opus-5-5`), the model of the session that ran S07, rather than the planned Sol/High, with no model setting changed. This is a recorded substitution. D-020's use of Fable covered the M2 fix review only, so the M3 review stays Astra/High and has not happened; no reviewer has examined this code. See the [S07 evidence](evidence/S07-controlled-rendering.md#model-and-review).
+
 ## Pipeline policy
 
 Deterministic checks are the required automated gate. AI review starts as a required recorded review activity, performed manually in the development tool; it is not an API dependency for every CI run.

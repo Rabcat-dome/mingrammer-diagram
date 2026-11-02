@@ -10,7 +10,7 @@
     {
       "name": "cloud-architecture-diagrams",
       "source": "./plugins/cloud-architecture-diagrams",
-      "description": "Author and validate canonical AWS, Azure, GCP, Huawei Cloud, on-premises and Kubernetes architecture models. Rendering is not available yet."
+      "description": "Author and validate canonical AWS, Azure, GCP, Huawei Cloud, on-premises and Kubernetes architecture models, and render them to SVG and PNG with Graphviz."
     }
   ]
 }

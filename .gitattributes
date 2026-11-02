@@ -1,2 +1,5 @@
 # Preserve upstream font license notice bytes, including original whitespace.
 spikes/s04-local-plugin/assets/fonts/*-OFL.txt -whitespace
+
+# Preserve upstream font license notice bytes in the package too.
+src/cloud_architecture_diagrams/assets/fonts/*-OFL.txt -whitespace

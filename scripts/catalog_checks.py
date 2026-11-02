@@ -45,6 +45,7 @@ DOCUMENTS = {
     "decisions": "doc/project-management/decisions.md",
     "s02-additional": "doc/project-management/evidence/S02-additional-icon-sources.md",
 }
+REQUIRED_FONTS = {"Noto Sans", "Noto Sans Thai"}
 REQUIRED_CONCEPTS = {
     "Load balancer", "Hypervisor", "VM", "NAS", "SAN", "Identity service", "Backup system",
     "Monitoring",
@@ -393,6 +394,7 @@ def check_assets(
                 errors.append(f"{asset.id}: SVG does not reproduce from the audited source")
     if concepts != REQUIRED_CONCEPTS:
         errors.append(f"assets: D-010 concepts differ: {sorted(concepts ^ REQUIRED_CONCEPTS)}")
+    listed |= check_fonts(manifest, errors, package)
     if subset.exists():
         names = {shape.attrib["name"] for shape in ET.parse(subset).getroot()}
         if names != set(SHAPES):
@@ -416,6 +418,28 @@ def check_assets(
             errors.append("assets: NOTICE.md must disclose the private-use limit and O-002")
         if "D-018" not in text or "not cleared" not in text.lower():
             errors.append("assets: NOTICE.md must say the D-018 rights are not cleared")
+        if manifest.fonts and "SIL Open Font License" not in text:
+            errors.append("assets: NOTICE.md must name the license of the bundled fonts")
+    return listed
+
+
+def check_fonts(manifest: AssetManifest, errors: list[str], package: Path) -> dict[str, str]:
+    """The renderer bundles these so that layout and Thai glyphs do not depend on the host."""
+    if {font.family for font in manifest.fonts} != REQUIRED_FONTS:
+        errors.append(f"fonts: the manifest must list exactly {sorted(REQUIRED_FONTS)}")
+    listed: dict[str, str] = {}
+    for font in manifest.fonts:
+        listed[font.path] = font.sha256
+        path = package / font.path
+        if not path.is_file() or path.is_symlink():
+            errors.append(f"{font.family}: {font.path} is missing or a symbolic link")
+        elif sha256(path) != font.sha256:
+            errors.append(f"{font.family}: {font.path} does not match its recorded hash")
+        notice = package / font.license_path
+        if not font.source_url.startswith("https://") or not font.license:
+            errors.append(f"{font.family}: a font needs a source URL and a license")
+        if not notice.is_file() or "SIL OPEN FONT LICENSE" not in notice.read_text().upper():
+            errors.append(f"{font.family}: the font's license notice must ship with it")
     return listed
 
 

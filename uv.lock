@@ -89,16 +89,17 @@ wheels = [
 
 [[package]]
 name = "cloud-architecture-diagrams"
-version = "0.3.0a1"
+version = "0.4.0a1"
 source = { editable = "." }
 dependencies = [
+    { name = "diagrams" },
+    { name = "graphviz" },
     { name = "pydantic" },
 ]
 
 [package.dev-dependencies]
 dev = [
     { name = "build" },
-    { name = "diagrams" },
     { name = "hatchling" },
     { name = "jsonschema" },
     { name = "mypy" },
@@ -110,12 +111,15 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "pydantic", specifier = ">=2.12,<3" }]
+requires-dist = [
+    { name = "diagrams", specifier = "==0.25.1" },
+    { name = "graphviz", specifier = ">=0.20.3,<0.21" },
+    { name = "pydantic", specifier = ">=2.12,<3" },
+]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "build", specifier = ">=1.6.1" },
-    { name = "diagrams", specifier = "==0.25.1" },
     { name = "hatchling", specifier = "==1.27.0" },
     { name = "jsonschema", specifier = ">=4.26.0" },
     { name = "mypy", specifier = ">=2.4.1" },

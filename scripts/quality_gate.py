@@ -21,6 +21,8 @@ TEST_LANES = {
     "catalog-license": "catalog-license-tests.xml",
     "provider-semantics": "provider-semantics-tests.xml",
     "claude-plugin": "claude-plugin-tests.xml",
+    "render-security": "render-security-tests.xml",
+    "render-smoke": "render-smoke-tests.xml",
 }
 
 
@@ -31,6 +33,13 @@ def executed_tests(name: str) -> int | None:
     root = ET.parse(REPORTS / report).getroot()
     suites = [root] if root.tag == "testsuite" else list(root)
     return sum(int(suite.get("tests", 0)) - int(suite.get("skipped", 0)) for suite in suites)
+
+
+def graphviz_version() -> str | None:
+    dot = shutil.which("dot")
+    if dot is None:
+        return None
+    return subprocess.run([dot, "-V"], capture_output=True, text=True, check=False).stderr.strip()
 
 
 def main() -> int:
@@ -50,6 +59,8 @@ def main() -> int:
             "--ignore=tests/test_claude_plugin.py",
             "--ignore=tests/test_catalog_license.py",
             "--ignore=tests/test_provider_semantics.py",
+            "--ignore=tests/test_render_security.py",
+            "--ignore=tests/test_render_smoke.py",
             "--junitxml=reports/tests.xml",
             "-q",
         ],
@@ -60,6 +71,22 @@ def main() -> int:
             "pytest",
             "tests/test_provider_semantics.py",
             "--junitxml=reports/provider-semantics-tests.xml",
+            "-q",
+        ],
+        "render-security": [
+            python,
+            "-m",
+            "pytest",
+            "tests/test_render_security.py",
+            "--junitxml=reports/render-security-tests.xml",
+            "-q",
+        ],
+        "render-smoke": [
+            python,
+            "-m",
+            "pytest",
+            "tests/test_render_smoke.py",
+            "--junitxml=reports/render-smoke-tests.xml",
             "-q",
         ],
         "claude-plugin": [
@@ -75,6 +102,7 @@ def main() -> int:
     }
     # A stale wheel must not stand in for a build that failed or changed version.
     shutil.rmtree(REPORTS / "dist", ignore_errors=True)
+    shutil.rmtree(REPORTS / "render-smoke", ignore_errors=True)
     for stale in TEST_LANES.values():
         (REPORTS / stale).unlink(missing_ok=True)
     (REPORTS / "catalog-license.json").unlink(missing_ok=True)
@@ -113,7 +141,7 @@ def main() -> int:
     commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     dirty = bool(subprocess.check_output(["git", "status", "--porcelain"], cwd=ROOT))
     report = {
-        "scope": "M1 core, M2 catalogs and semantics, and M7 Claude plugin package contract",
+        "scope": "M1 core, M2 catalogs and semantics, M3 controlled rendering and M7 Claude plugin package contract",
         "passed": passed,
         "checks": results,
         # A passing gate does not clear these; they block packaging and release until resolved.
@@ -128,9 +156,8 @@ def main() -> int:
         "python": platform.python_version(),
         "system": platform.system(),
         "machine": platform.machine(),
+        "engine": graphviz_version(),
         "deferred": {
-            "render-security": "M3",
-            "render-smoke": "M3/M4",
             "visual-regression": "M4",
             "plugin-package": "M5",
             "claude-host-acceptance": "M7 (recorded manually; no Claude CLI or model call in CI)",

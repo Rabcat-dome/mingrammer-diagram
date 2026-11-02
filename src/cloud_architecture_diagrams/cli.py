@@ -2,13 +2,20 @@
 
 import argparse
 import json
+import signal
 import sys
+from types import FrameType
 from typing import NoReturn
 
 from . import __version__
 from .catalog import MAX_RESULTS, catalog
 from .models import MAX_DEPTH, MAX_ENTITIES, MAX_INPUT_BYTES, Architecture
-from .validation import validate_json
+from .render import BUNDLE_FILES, exit_status, render_model
+from .render.errors import RenderFailure
+from .render.execution import host_blockers
+from .render.limits import LIMITS
+from .render.paths import INTERRUPTS
+from .validation import Mode, validate_json
 
 
 class Parser(argparse.ArgumentParser):
@@ -20,15 +27,24 @@ class Parser(argparse.ArgumentParser):
 
 
 def capabilities() -> dict[str, object]:
+    blockers = host_blockers()
     return {
         "package_version": __version__,
         "schema_version": "1.0.0",
         "catalog_version": catalog().version,
-        "commands": ["schema", "capabilities", "validate", "catalog"],
+        "commands": ["schema", "capabilities", "validate", "catalog", "render"],
         "validation_scope": "core_catalog_provider",
-        "pending_checks": ["render"],
+        "pending_checks": [],
         "release_blockers": catalog().release_blockers(),
-        "render_available": False,
+        # This host's readiness rather than the code's: `render` fails closed without either.
+        "render_available": not blockers,
+        "render": {
+            "formats": ["svg", "png"],
+            "host_blockers": blockers,
+            "requires": {"graphviz": "dot on PATH", "isolation": "macOS sandbox-exec"},
+            "bundle": BUNDLE_FILES,
+            "limits": LIMITS.report(),
+        },
         "docker_required": False,
         "model_api_required": False,
         "limits": {
@@ -42,6 +58,25 @@ def capabilities() -> dict[str, object]:
     }
 
 
+def _interrupt(_signum: int, _frame: FrameType | None) -> None:
+    # The exception unwinds through the renderer's cleanup, which a second signal must not cut off.
+    for item in INTERRUPTS:
+        signal.signal(item, signal.SIG_IGN)
+    raise RenderFailure("RENDER_INTERRUPTED")
+
+
+def _render(output: str, mode: Mode, view: str | None) -> int:
+    payload = sys.stdin.buffer.read(MAX_INPUT_BYTES + 1)
+    previous = {item: signal.signal(item, _interrupt) for item in INTERRUPTS}
+    try:
+        result = render_model(payload, output, mode=mode, view_id=view)
+    finally:
+        for item, handler in previous.items():
+            signal.signal(item, handler)
+    sys.stdout.buffer.write(result.model_dump_json().encode() + b"\n")
+    return exit_status(result)
+
+
 def main() -> int:
     parser = Parser(prog="cloud-diagrams")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -50,6 +85,14 @@ def main() -> int:
     validate = sub.add_parser("validate", help="Validate bounded UTF-8 JSON from stdin")
     validate.add_argument("--mode", choices=["strict", "lenient"], default="strict")
     validate.add_argument("--view", default=None)
+    render = sub.add_parser(
+        "render", help="Validate JSON from stdin, then draw one view to a bundle"
+    )
+    render.add_argument(
+        "--output", required=True, help="Output root: a real, private directory, no symlinks"
+    )
+    render.add_argument("--mode", choices=["strict", "lenient"], default="strict")
+    render.add_argument("--view", default=None, help="View ID; the model's first view by default")
     types = sub.add_parser("catalog", help="Search provider and Kubernetes types (bounded)")
     types.add_argument(
         "--provider", choices=["aws", "azure", "gcp", "huawei", "onprem", "external"]
@@ -62,6 +105,8 @@ def main() -> int:
     types.add_argument("--taxonomy-list", action="store_true", help="List the taxonomy IDs instead")
     types.add_argument("--limit", type=int, default=50, help=f"At most {MAX_RESULTS}")
     args = parser.parse_args()
+    if args.command == "render":
+        return _render(args.output, args.mode, args.view)
     if args.command == "schema":
         report: object = Architecture.model_json_schema()
     elif args.command == "capabilities":

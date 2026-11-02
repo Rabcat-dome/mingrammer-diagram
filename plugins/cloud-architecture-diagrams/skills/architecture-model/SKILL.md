@@ -1,29 +1,30 @@
 ---
 name: architecture-model
-description: Author, edit and validate a canonical cloud architecture model as versioned JSON, with stable IDs, explicit assumptions and separate ownership, location, network, security and deployment dimensions. Use whenever the user wants to design, describe, review or change a solution architecture on AWS, Azure, GCP, Huawei Cloud, on-premises, hybrid or multi-cloud, or a detailed Kubernetes architecture (cluster, node pool, namespace, workload, Service, Ingress, storage), in English or Thai, even if they only say "architecture diagram". This version validates the model against provider catalogs and placement rules but cannot render SVG or PNG images yet; do not use it for flowcharts or other non-infrastructure diagrams.
+description: Author, edit and validate a canonical cloud architecture model as versioned JSON, with stable IDs, explicit assumptions and separate ownership, location, network, security and deployment dimensions. Use whenever the user wants to design, describe, review or change a solution architecture on AWS, Azure, GCP, Huawei Cloud, on-premises, hybrid or multi-cloud, or a detailed Kubernetes architecture (cluster, node pool, namespace, workload, Service, Ingress, storage), in English or Thai, even if they only say "architecture diagram". This version validates the model against provider catalogs and placement rules, and renders a validated view to SVG and PNG through a controlled Graphviz renderer; do not use it for flowcharts or other non-infrastructure diagrams.
 allowed-tools: Bash("${CLAUDE_PLUGIN_ROOT}/bin/cloud-diagrams" *)
 ---
 
 # Architecture model
 
-Turn an architecture request into a reviewable JSON model and check it with this plugin's command, `"${CLAUDE_PLUGIN_ROOT}/bin/cloud-diagrams"`. Run it by that quoted full path, because the plugin's `bin` folder is not reliably on the Bash path, and run it on its own with nothing chained after it, because this skill pre-approves only this command. The JSON is the source of truth: the future renderer draws from it, and later edits build on it, so a correct small model beats a complete-looking guess.
+Turn an architecture request into a reviewable JSON model and check it with this plugin's command, `"${CLAUDE_PLUGIN_ROOT}/bin/cloud-diagrams"`. Run it by that quoted full path, because the plugin's `bin` folder is not reliably on the Bash path, and run it on its own with nothing chained after it, because this skill pre-approves only this command. The JSON is the source of truth: the renderer draws from it, and later edits build on it, so a correct small model beats a complete-looking guess.
 
 ## What this version can do
 
 The `capabilities` subcommand is authoritative. At this version:
 
-- **Implemented:** schema and catalog discovery, plus strict structural, identity, reference, cycle, view, Kubernetes context, catalog, provider placement and Kubernetes semantic validation.
-- **Not implemented:** SVG/PNG rendering.
+- **Implemented:** schema and catalog discovery; strict structural, identity, reference, cycle, view, Kubernetes context, catalog, provider placement and Kubernetes semantic validation; and SVG/PNG rendering of one view at a time into a checked bundle.
+- **Host requirement:** rendering needs Graphviz and the macOS sandbox. `render_available` and `render.host_blockers` in `capabilities` say whether this host has them.
+- **Not implemented:** PDF or DOT export, automatic overview/detail generation, and the visual polish and official-reference comparison that a later milestone covers.
 
-A `"valid": true` result therefore means the model passed the core, catalog and documented provider rules (`validation_scope: core_catalog_provider`). It does not prove that anything is deployed, that traffic is reachable, that a policy is enforced or that a controller is available, and it does not render a picture. A rule fires only on what the model declares, so a missing zone or Pod placement stays unspecified. Say so whenever you report a result, because the user may otherwise treat it as architecture approval.
+A `"valid": true` result means the model passed the core, catalog and documented provider rules (`validation_scope: core_catalog_provider`). It does not prove that anything is deployed, that traffic is reachable, that a policy is enforced or that a controller is available, and it does not render a picture; `render` does that separately. A rule fires only on what the model declares, so a missing zone or Pod placement stays unspecified. Say so whenever you report a result, because the user may otherwise treat it as architecture approval.
 
-If the user asks for a picture, say this version cannot render one and offer the validated model. Do not fill the gap by writing `diagrams` Python, Graphviz DOT or other generated code to execute: the project accepts architecture input as data only, and an image made outside the controlled renderer would skip its checks and approved icons.
+If `render` is unavailable or fails, say so and offer the validated model. Do not fill the gap by writing `diagrams` Python, Graphviz DOT or other generated code to execute: the project accepts architecture input as data only, and an image made outside the controlled renderer would skip its checks and approved icons.
 
 ### Huawei Cloud icons
 
-Huawei Cloud service icons are accepted by the owner for private personal use only. Their rights are not cleared, so any model using them returns one `ASSET_PRIVATE_USE_ONLY` warning. Report it, and do not suggest publishing the output or sharing it outside private use.
+Huawei Cloud service icons are accepted by the owner for private personal use only. Their rights are not cleared, so any model using them returns one `ASSET_PRIVATE_USE_ONLY` warning. A rendered bundle that shows them states the same limit in its `rights` and in the image. Report it, and do not suggest publishing the output or sharing it outside private use.
 
-If a type returns `ICON_UNAVAILABLE`, it has no usable icon. Keep its native service name, and never propose a generic symbol or an icon pack found elsewhere as a stand-in.
+If a type returns `ICON_UNAVAILABLE`, it has no usable icon, and `render` refuses it in both modes with `RENDER_TYPE_BLOCKED`. Keep its native service name, and never propose a generic symbol or an icon pack found elsewhere as a stand-in.
 
 ## Workflow
 
@@ -33,7 +34,8 @@ If a type returns `ICON_UNAVAILABLE`, it has no usable icon. Keep its native ser
 4. **Author the JSON.** Read [references/model-guide.md](references/model-guide.md) before writing a model, and use [examples/core-valid.json](examples/core-valid.json) or [examples/kubernetes-valid.json](examples/kubernetes-valid.json) as a shape to follow. Save the model with the Write tool where the user can keep it, for example `architecture/<metadata.id>.json`.
 5. **Validate.** Run `"${CLAUDE_PLUGIN_ROOT}/bin/cloud-diagrams" validate < architecture/model.json`. One run checks every view and lists each view's excluded IDs in `view_exclusions`; `--view <id>` only chooses which view `selected_view` and `excluded_ids` describe. The `valid` field in the JSON gives the outcome. Exit 0 means valid; exit 2 means invalid, with the diagnostics on stdout.
 6. **Fix by diagnostic.** Each diagnostic gives a `code`, a `field` path and a `remedy`. Correct the model; do not delete a requested component or relationship to make validation pass. If a request cannot be expressed, tell the user. `--mode lenient` marks a draft and turns only an unknown `service_type` into a disclosed warning, keeping the provider, type and label. It bypasses every other error, so it is not a way past a failure.
-7. **Report.** State what was modeled, the assumptions, the validation result, any warnings and the pending checks. Disclose the IDs listed for every view in `view_exclusions`, since a partial view must never silently drop a component. State that no image was produced.
+7. **Render, when the user wants a picture.** Run `"${CLAUDE_PLUGIN_ROOT}/bin/cloud-diagrams" render --output architecture/rendered < architecture/model.json`, adding `--view <id>` to pick a view; the first view is the default. Each run validates again and draws one view, so run it once per view the user wants. The output root must be a real directory, with no symbolic link in its path and not writable by group or others. Read the `rendered` field: only `true` means a bundle exists, and `artifacts` lists each file's path and checksum. Show `diagram.png` with the Read tool and look at it before you report: check that labels are readable and that nothing requested is missing. Exit 2 means the model is invalid or the view cannot be drawn as asked, for example `RENDER_VIEW_TOO_LARGE`, whose remedy is to split the view. Exit 4 means this render failed and published nothing, so relay the diagnostic's remedy, for example installing Graphviz. In `--mode lenient` the image and manifest are marked DRAFT, and an unknown type is drawn with the approved generic symbol; never present that as a final diagram.
+8. **Report.** State what was modeled, the assumptions, the validation result, any warnings and the pending checks. Disclose the IDs listed for every view in `view_exclusions`, since a partial view must never silently drop a component. If you rendered, give the bundle path and relay `rights`, including any private-use limit and draft marking. Otherwise state that no image was produced.
 
 ## Editing an existing model
 

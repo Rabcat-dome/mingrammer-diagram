@@ -365,3 +365,14 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - Claude Fable 5.1 / High rechecked `dc54b4d..5f391eb` under D-020 and approved it for closing the fix review, with no new findings. See the [recheck](evidence/S06-fable-review.md#recheck-at-5f391eb).
 - Closed M2 for the private personal release, as the owner's choice to fix and recheck N1 provided. Inventories and rule evidence are met, D-019 settles the asset-rights item, and D-020 records Fable as the substitute reviewer of the fixes.
 - Still true: Huawei rights are not cleared and O-002 blocks public distribution. N2-N4 are deferred P3 findings. Kubernetes representations have not been shown to the owner, the owner's plugin stays on `917f46f`, main is not merged, and review of the earlier M7 Medium/Low fixes is outstanding.
+
+## 2026-11-03 — S07 / M3 controlled rendering implemented locally
+
+- Started from a parent session's brief. Verified `f3f0789` as the latest successful gate head and branched `codex/s07-controlled-rendering` from it. The brief left committing and pushing to the owner, who asked for both after this work was reported.
+- Implemented `cloud-diagrams render` under `src/cloud_architecture_diagrams/render`: view-to-graph mapping through catalog representations, DOT through controlled `diagrams` classes, `dot` alone under `sandbox-exec` and resource limits, SVG and PNG checks against the graph, and an atomic bundle with a manifest. Strict and lenient behavior follows T-007.
+- Moved `diagrams` to a runtime dependency, bumped the core to `0.4.0a1`, relocked, and bundled Noto Sans and Noto Sans Thai with their license notices under the rights checks.
+- Activated the `render-security` and `render-smoke` lanes, for 14 lanes. All pass locally with 959 tests and none skipped. 19 sabotage changes each failed their lane and were restored. **This is a local result, not actual CI.**
+- Found that Homebrew Graphviz on macOS ignores fontconfig and draws Helvetica unless Pango's backend is forced. Every render now verifies the fonts it used. The S04 native runtime has the same setting gap and stays frozen (P-027).
+- Rewrote the Claude plugin skill and README for rendering, and the wrapper now passes exit 4 through. S07 did not change the owner's installed plugin.
+- Recorded P-024 to P-027. Used Claude Opus 5.5 rather than the planned Sol/High, with no model setting changed.
+- Still open: actual CI, the Astra/High review, and the owner's inspection of the first output. M3 is not closed. S04 alpha.3 and the runner registrations are unchanged. No merge, release or plugin update happened. See the [S07 evidence](evidence/S07-controlled-rendering.md).

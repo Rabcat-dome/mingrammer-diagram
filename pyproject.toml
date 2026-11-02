@@ -4,12 +4,12 @@ build-backend = "hatchling.build"
 
 [project]
 name = "cloud-architecture-diagrams"
-version = "0.3.0a1"
-description = "Data-only architecture contracts, provider catalogs and deterministic validation"
+version = "0.4.0a1"
+description = "Data-only architecture contracts, provider catalogs, deterministic validation and controlled rendering"
 requires-python = ">=3.13,<3.14"
 # Bundled Huawei icons are for private personal use only (D-017), and PyPI rejects this classifier.
 classifiers = ["Private :: Do Not Upload"]
-dependencies = ["pydantic>=2.12,<3"]
+dependencies = ["diagrams==0.25.1", "graphviz>=0.20.3,<0.21", "pydantic>=2.12,<3"]
 
 [project.scripts]
 cloud-diagrams = "cloud_architecture_diagrams.cli:main"
@@ -37,6 +37,11 @@ python_version = "3.13"
 strict = true
 files = ["src", "scripts", "tests"]
 
+[[tool.mypy.overrides]]
+# Neither package ships type information, so the renderer treats both as untyped at this edge.
+module = ["diagrams.*", "graphviz.*"]
+ignore_missing_imports = true
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra"
@@ -44,7 +49,6 @@ addopts = "-ra"
 [dependency-groups]
 dev = [
     "build>=1.6.1",
-    "diagrams==0.25.1",
     "hatchling==1.27.0",
     "jsonschema>=4.26.0",
     "mypy>=2.4.1",

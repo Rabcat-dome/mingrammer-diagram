@@ -105,6 +105,12 @@ Removing or weakening any of 11 wrapper behaviors now fails a test: `--locked`, 
 
 The review also noted two M1 items outside this range: `field` echoes rejected key names, and `ID_DUPLICATE` does not name the duplicate ID.
 
+## S07 follow-up
+
+S07 / M3 adds `render` to the core, and the `claude-plugin` lane failed as designed until the skill changed. The skill now covers rendering, including the host requirement, the bundle, draft marking and the private-use limit, and it still forbids drawing outside the controlled renderer. The wrapper passes exit 4 through, because a failed render carries JSON diagnostics that exit 3 would misreport. New clean-copy tests render a bundle from a copy with its own locked environment and confirm that fonts and private-use terms come from that copy. Moving `diagrams` to runtime grows the plugin's private environment from its Pydantic set by `diagrams`, `graphviz`, `jinja2`, `pre-commit` and their dependencies, plus about 38 MB of icons. `pre-commit` is only an upstream dependency declaration, and nothing here runs it.
+
+These pass locally. Actual CI is pending, they have not run in a live Claude Code session, and S07 did not change the owner's installed plugin. See the [S07 evidence](S07-controlled-rendering.md).
+
 ## S06 follow-up
 
 S06 / M2 moved the core, and the checks built to catch that fired as intended. Five `claude-plugin` tests failed, and each was resolved by updating the skill, guide or expected contract, not by loosening a check. The caveat test now requires that `service_type` and `taxonomy` are rejected and no longer called unchecked. New tests cover catalog data in a clean copy, the Huawei warning, and the guide's type IDs and Kubernetes mappings. The plugin allowlist did not change, because catalogs and assets arrive through the `src` link, and the `catalog-license` lane covers them. The owner's installed plugin was not updated. See the [S06 evidence](S06-provider-catalogs.md).

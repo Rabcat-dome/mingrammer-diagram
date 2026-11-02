@@ -9,7 +9,8 @@ from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
 from .models import KubernetesKind, Provider
 
-DATA = Path(__file__).resolve().parent / "catalog_data"
+PACKAGE = Path(__file__).resolve().parent
+DATA = PACKAGE / "catalog_data"
 PROVIDER_FILES = ("aws", "azure", "gcp", "huawei", "onprem", "common", "kubernetes")
 MAX_RESULTS = 200
 TypeId = Annotated[
@@ -241,10 +242,23 @@ class Asset(CatalogModel):
     changes: str
 
 
+class Font(CatalogModel):
+    family: str
+    version: str
+    path: str
+    sha256: str
+    license: str
+    license_path: str
+    source_url: str
+    archive_member: str
+    archive_sha256: str
+
+
 class AssetManifest(CatalogModel):
     catalog_version: str
     packs: tuple[Pack, ...]
     assets: tuple[Asset, ...]
+    fonts: tuple[Font, ...] = ()
 
 
 class Catalog:

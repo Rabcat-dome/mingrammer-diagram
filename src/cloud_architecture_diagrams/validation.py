@@ -452,6 +452,13 @@ class Checker:
 def validate_json(
     payload: bytes, *, mode: Mode = "strict", view_id: str | None = None
 ) -> ValidationResult:
+    return validate_model(payload, mode=mode, view_id=view_id)[0]
+
+
+def validate_model(
+    payload: bytes, *, mode: Mode = "strict", view_id: str | None = None
+) -> tuple[ValidationResult, Architecture | None]:
+    """The renderer's only route to a model, so nothing it draws can skip these checks."""
     result = ValidationResult(valid=False, mode=mode, draft=mode == "lenient")
     try:
         if len(payload) > MAX_INPUT_BYTES:
@@ -469,7 +476,7 @@ def validate_json(
                 str(error), "/schema_version" if str(error) == "SCHEMA_VERSION_UNSUPPORTED" else "/"
             )
         ]
-        return result
+        return result, None
     except (UnicodeError, ValueError, RecursionError) as error:
         if isinstance(error, ValidationError):
             result.diagnostics = [
@@ -487,7 +494,7 @@ def validate_json(
             ]
         else:
             result.diagnostics = [_error("INPUT_JSON_INVALID", "/")]
-        return result
+        return result, None
     identifiers = (
         [item.id for item in model.scopes]
         + [item.id for item in model.boundaries]
@@ -498,10 +505,10 @@ def validate_json(
     counts = Counter(identifiers)
     if any(count > 1 for count in counts.values()):
         result.diagnostics = [_error("ID_DUPLICATE", "/")]
-        return result
+        return result, None
     if len(model.scopes) + len(model.boundaries) + len(model.resources) > MAX_ENTITIES:
         result.diagnostics = [_error("MODEL_ENTITY_LIMIT", "/")]
-        return result
+        return result, None
     checker = Checker(model)
     checker.general()
     checker.kubernetes()
@@ -545,4 +552,4 @@ def validate_json(
             for index, view in enumerate(model.views)
             if result.view_exclusions[view.id]
         )
-    return result
+    return result, model if result.valid else None

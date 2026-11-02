@@ -1,6 +1,6 @@
 # Cross-Machine Handoff
 
-Updated: 2026-11-03 | S01-S06 complete. M2 closed on 2026-11-03 for the private personal release, at `5f391eb` on `codex/s06-provider-catalogs`, which passes CI with 12 lanes and 652 tests. Claude Fable 5.1 / High approved the fixes under D-020 as a substitute for Astra/High, and D-019 settles the asset-rights exit item. The next session is S07 / M3. M7 Claude Code preparation started early under D-015.
+Updated: 2026-11-03 | S01-S06 complete. M2 closed on 2026-11-03 for the private personal release, at `5f391eb` on `codex/s06-provider-catalogs`, which passes CI with 12 lanes and 652 tests. Claude Fable 5.1 / High approved the fixes under D-020 as a substitute for Astra/High, and D-019 settles the asset-rights exit item. **S07 / M3 is implemented locally on `codex/s07-controlled-rendering`, branched from `f3f0789`. Actual CI is pending, it has no review, and M3 is not closed.** M7 Claude Code preparation started early under D-015.
 
 ## Goal and current source
 
@@ -12,7 +12,7 @@ D-013/D-014 select per-machine native Python/Graphviz in the separate ChatGPT Wo
 
 ## Read order
 
-1. This file, [milestones](milestones.md) and [S06 evidence](evidence/S06-provider-catalogs.md).
+1. This file, [milestones](milestones.md), [S07 evidence](evidence/S07-controlled-rendering.md) and [S06 evidence](evidence/S06-provider-catalogs.md).
 2. [Core contract/setup](../design/core-contract.md), relevant requirements and the S05 and S06 records.
 3. Relevant decision, quality-gate and model-policy sections.
 
@@ -29,30 +29,34 @@ D-013/D-014 select per-machine native Python/Graphviz in the separate ChatGPT Wo
 - Existing S04 source/fonts/proofs remain available; no runtime cache, Docker resource, cloud service, account plugin, merge or release was changed by S05. Historical host paths are provenance text; reproducible doc links stay inside the repository.
 - [M7 Claude Code preparation](evidence/M7-claude-plugin.md): `plugins/cloud-architecture-diagrams` validates models through the core and cannot render. Packaging at `22fc85e` left the wheel byte-identical to the S05 CI wheel; core `0.2.0a2` then added a usage exit code. GitHub and real-config installs, live English/Thai/edit invocations and a Code tab runtime check pass on one Mac. The owner's install is pinned to the branch, so re-add the marketplace after a merge. A same-session review found 10 issues, all fixed at `0220e94`, which passed actual CI run 41443551856. A separate Claude session then reviewed `c5f74b4..a94b47a` as a substitute, not Astra: no Critical or High issues, with all three Medium and six Low findings fixed by core `0.2.0a4`. Those fixes passed actual CI run 41453874994 at `917f46f`, and the owner's install holds that commit; no review pass has covered them. A second machine, interactive permission prompts and the Astra/High review remain open. Run 41441398887 at `359f1ea` confirms the move of `actions/upload-artifact` to Node 24, with no job annotations.
 
+- [S07 / M3](evidence/S07-controlled-rendering.md): `cloud-diagrams render` validates, maps one view through catalog representations, runs `dot` alone under `sandbox-exec` and resource limits, checks the finished SVG and PNG against the graph, and atomically publishes a bundle with a manifest. The gate now has 14 lanes and 959 tests, with `render-security` and `render-smoke` active. **These results are local to this Mac: actual CI is pending and nothing here has been reviewed.** Actual implementation used Claude Opus 5.5, not Sol. Building it found that Homebrew Graphviz on macOS ignores fontconfig unless Pango's backend is forced, so every render now verifies the fonts it used. P-025 to P-027 record the design choices. `diagrams` is now a runtime dependency, which grows the plugin's locked environment.
+
 ## Keeping the Claude plugin in step
 
-Core changes reach the plugin through symlinks, so no copy step exists, and Claude Code versions the plugin by commit, so no version bump is needed. Checks in the `claude-plugin` lane fail on purpose when the core moves: add new enumerated kinds and cluster modes to the skill's model guide, and rewrite the skill's stated capabilities when rendering arrives. Any new file or symlink in the plugin needs an allowlist update. Anything under `src` ships in the plugin, so the `catalog-license` lane fails on any visual asset there that the rights manifest does not list. When M3 moves `diagrams` to runtime, the plugin's locked environment changes with it.
+Core changes reach the plugin through symlinks, so no copy step exists, and Claude Code versions the plugin by commit, so no version bump is needed. Checks in the `claude-plugin` lane fail on purpose when the core moves: add new enumerated kinds and cluster modes to the skill's model guide, and rewrite the skill's stated capabilities when rendering arrives. Any new file or symlink in the plugin needs an allowlist update. Anything under `src` ships in the plugin, so the `catalog-license` lane fails on any visual asset there that the rights manifest does not list. S07 moved `diagrams` to runtime, so the plugin's locked environment now includes it and its icons, and the wrapper passes exit 4 through for a failed render.
 
 ## Next steps
 
 1. M2 is closed. Its deferred P3 findings, N2-N4, are in the [Fable review](evidence/S06-fable-review.md#follow-up-n1-fix-and-deferrals). Review of the earlier M7 Medium/Low fixes remains outstanding.
 2. Kubernetes representations have not been shown to the owner; the session plan lists that inspection, but it is not an exit item.
 3. Update the owner's installed plugin only if asked. It remains on `917f46f`, so it has none of the S06 work.
-4. S07 / M3 renderer: honor each record's `representation`, draw Azure icons unmodified, keep `required_label` on assets, never substitute for `blocked`, and carry the private-use limit into any bundle that uses Huawei icons. Later M4 references/visuals, M5 full Work plugin and M6 two-machine release acceptance remain open.
+4. S07 / M3: read actual CI for the pushed branch. Then run the Astra/High review on the committed head and dispose of its findings, and have the owner inspect representative output. M3 closes only after those. Later M4 references/visuals, M5 full Work plugin and M6 two-machine release acceptance remain open.
 
 ## Resume prompt
 
 ```text
-Continue from doc/project-management/HANDOFF.md and the S06 evidence. Verify git
+Continue from doc/project-management/HANDOFF.md and the S07 evidence. Verify git
 status and the latest successful GitHub quality-gate SHA first. M2 is closed for
 the private personal release: D-019 settles its asset-rights exit item, and D-018 allows Huawei icons for private personal use only;
 it does not clear their rights.
 
-For S07 / M3, read M3 in milestones.md, FR-040..048 and the core contract's
-catalog section. Keep the same checkout and a codex/ branch; keep docs English.
-Render only through each catalog record's representation. Huawei source
-availability is not redistribution permission: keep public distribution blocked
-under O-002, and draw no silent generic substitute for a type without an icon. Keep S04 alpha.3 and existing runner registrations unchanged. Record
-the model actually used. No Docker cleanup, cloud host, public release or
-automatic merge is part of this activity.
+S07 / M3 is implemented locally on codex/s07-controlled-rendering and is not
+closed. It still needs actual CI, the Astra/High review and the
+owner's inspection. Read M3 in milestones.md and the core contract's Controlled
+rendering section. Keep the same checkout and a codex/ branch; keep docs English.
+Huawei source availability is not redistribution permission: keep public
+distribution blocked under O-002, and draw no silent generic substitute for a
+type without an icon. Keep S04 alpha.3 and existing runner registrations
+unchanged. Record the model actually used. No Docker cleanup, cloud host, public
+release or automatic merge is part of this activity.
 ```

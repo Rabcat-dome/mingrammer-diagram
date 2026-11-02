@@ -10,6 +10,10 @@ The eight SVG and PNG pairs under `assets/onprem` are derived from Network 2018 
 
 **Restriction from the source's stencil license:** these icon sets and any derivatives may not be displayed within, distributed for use with, or incorporated into products distributed through the Atlassian marketplace or plugin ecosystem without explicit written permission from draw.io. This package is not distributed there.
 
+## Bundled: fonts
+
+`assets/fonts` holds Noto Sans 2.015 and Noto Sans Thai 2.002 from [Noto Fonts](https://github.com/notofonts), unmodified, under the SIL Open Font License 1.1. Each font's license notice sits beside it. The renderer loads only these fonts, so label layout does not depend on the host. `catalog_data/assets.json` records their digests and source archives.
+
 ## Not bundled: delivered by the `diagrams` dependency
 
 | Icons | Rights | Conditions |

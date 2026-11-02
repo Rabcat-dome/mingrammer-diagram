@@ -484,6 +484,31 @@ def test_asset_anywhere_under_src_fails(package: Path) -> None:
     assert errors == ["catalog_data/logo.svg: visual asset is not in the rights manifest"]
 
 
+def test_unlisted_font_under_src_fails(package: Path) -> None:
+    (package / "assets/fonts/Other.ttf").write_bytes(b"font")
+    errors = asset_errors(catalog().manifest, package)
+    assert any("Other.ttf" in error for error in errors), errors
+
+
+def test_tampered_font_fails_its_hash(package: Path) -> None:
+    font = catalog().manifest.fonts[0]
+    (package / font.path).write_bytes(b"not the font")
+    errors = asset_errors(catalog().manifest, package)
+    assert any("does not match its recorded hash" in error for error in errors), errors
+
+
+def test_font_without_its_license_notice_fails(package: Path) -> None:
+    (package / catalog().manifest.fonts[0].license_path).unlink()
+    errors = asset_errors(catalog().manifest, package)
+    assert any("license notice" in error for error in errors), errors
+
+
+def test_missing_font_record_fails(package: Path) -> None:
+    manifest = catalog().manifest.model_copy(update={"fonts": ()})
+    errors = asset_errors(manifest, package)
+    assert any("fonts: the manifest must list" in error for error in errors), errors
+
+
 def test_tampered_asset_fails_its_hash(package: Path) -> None:
     (package / "assets/onprem/nas.svg").write_text("<svg xmlns='http://www.w3.org/2000/svg'/>\n")
     (package / "assets/onprem/san.png").write_bytes(ONE_PIXEL_PNG)
@@ -647,4 +672,4 @@ def test_cli_catalog_and_capabilities_report_the_blocker(
     assert cli.main() == 0
     report = json.loads(capsys.readouterr().out)
     assert [item["id"] for item in report["release_blockers"]] == ["O-002"]
-    assert report["render_available"] is False
+    assert "render" in report["commands"]

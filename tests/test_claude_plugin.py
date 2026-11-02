@@ -144,7 +144,7 @@ def test_core_is_linked_not_copied(link: str, target: str) -> None:
     assert path.resolve() == ROOT / target
 
 
-def test_skill_discloses_the_missing_renderer() -> None:
+def test_skill_states_what_the_renderer_does() -> None:
     _, frontmatter, body = (SKILL / "SKILL.md").read_text().split("---\n", 2)
     metadata = yaml.safe_load(frontmatter)
     assert metadata["name"] == SKILL.name
@@ -153,12 +153,32 @@ def test_skill_discloses_the_missing_renderer() -> None:
     mentions = re.findall(r"`[^`]*bin/cloud-diagrams[^`]*`", body)
     assert mentions and all(mention.startswith(f"`{COMMAND}") for mention in mentions)
     # When capabilities move this fails, so the skill cannot keep describing old ones.
-    assert capabilities()["render_available"] is False
-    assert capabilities()["commands"] == ["schema", "capabilities", "validate", "catalog"]
-    assert capabilities()["pending_checks"] == ["render"]
-    assert "cannot render" in metadata["description"]
+    assert capabilities()["commands"] == ["schema", "capabilities", "validate", "catalog", "render"]
+    assert capabilities()["pending_checks"] == []
+    assert capabilities()["render"]["formats"] == ["svg", "png"]  # type: ignore[index]
+    assert "cannot render" not in metadata["description"]
+    assert "SVG" in metadata["description"] and "PNG" in metadata["description"]
     # The discovery command the skill relies on must stay in its workflow.
     assert f"{COMMAND} catalog" in body
+    assert f"{COMMAND} render --output" in body
+    # A bundle's limits and fallbacks must reach the user, so the skill must keep saying so.
+    for term in ("`rendered`", "`artifacts`", "`rights`", "DRAFT", "Graphviz", "exit 4"):
+        assert term.lower() in body.lower(), term
+
+
+def test_skill_still_forbids_drawing_outside_the_controlled_renderer() -> None:
+    body = (SKILL / "SKILL.md").read_text()
+    assert "Do not fill the gap" in body
+    for term in ("`diagrams` Python", "Graphviz DOT"):
+        assert term in body, term
+
+
+def test_plugin_manifests_stop_saying_rendering_is_unavailable() -> None:
+    for path in (PLUGIN / ".claude-plugin/plugin.json", ROOT / ".claude-plugin/marketplace.json"):
+        assert "Rendering is not available" not in path.read_text()
+    readme = (PLUGIN / "README.md").read_text()
+    assert "cannot render" not in readme.lower()
+    assert "Graphviz" in readme and "render --output" in readme
 
 
 @pytest.mark.parametrize(("pattern", "expected"), GUIDE_LISTS.values(), ids=GUIDE_LISTS.keys())
@@ -361,6 +381,50 @@ def test_copy_runs_its_own_core(installed: tuple[Path, dict[str, str]]) -> None:
     result = run(installed, "capabilities")
     assert result.returncode == 0, result.stderr
     assert json.loads(result.stdout)["package_version"] == "copy"
+
+
+def test_copy_renders_a_complete_bundle(
+    installed: tuple[Path, dict[str, str]], tmp_path: Path
+) -> None:
+    # A clean copy with its own locked environment, the way a real install renders.
+    output = tmp_path / "bundles"
+    payload = (FIXTURES / "core-valid.json").read_bytes()
+    result = run(installed, "render", "--output", str(output), payload=payload, cwd=tmp_path)
+    assert result.returncode == 0, result.stderr
+    report = json.loads(result.stdout)
+    assert report["rendered"] is True and report["bundle_path"].startswith(str(output))
+    names = {item["name"] for item in report["artifacts"]}
+    assert {"diagram.svg", "diagram.png", "manifest.json"} <= names
+    for item in report["artifacts"]:
+        assert Path(item["path"]).stat().st_size == item["bytes"]
+    manifest = next(item for item in report["artifacts"] if item["name"] == "manifest.json")
+    assert json.loads(Path(manifest["path"]).read_text())["status"] == "complete"
+
+
+def test_copy_serves_fonts_and_private_use_terms_from_its_own_tree(
+    installed: tuple[Path, dict[str, str]], tmp_path: Path
+) -> None:
+    payload = (FIXTURES / "providers/huawei.json").read_bytes()
+    result = run(installed, "render", "--output", str(tmp_path / "out"), payload=payload)
+    assert result.returncode == 0, result.stderr
+    report = json.loads(result.stdout)
+    assert report["rights"]["private_use_only"] is True
+    assert report["rights"]["blockers"] == ["O-002"]
+    assert (installed[0] / "src/cloud_architecture_diagrams/assets/fonts").is_dir()
+
+
+def test_failed_render_keeps_its_exit_status_and_report(
+    installed: tuple[Path, dict[str, str]], tmp_path: Path
+) -> None:
+    # Exit 4 carries JSON diagnostics, so the wrapper must not rewrite it into a runtime failure.
+    target = tmp_path / "a-file"
+    target.write_text("")
+    payload = (FIXTURES / "core-valid.json").read_bytes()
+    result = run(installed, "render", "--output", str(target), payload=payload)
+    assert result.returncode == 4 and not result.stderr
+    assert json.loads(result.stdout)["rendered"] is False
+    invalid = run(installed, "render", "--output", str(tmp_path / "out"), payload=b"{}")
+    assert invalid.returncode == 2 and json.loads(invalid.stdout)["rendered"] is False
 
 
 def test_copy_validates_models_from_stdin(installed: tuple[Path, dict[str, str]]) -> None:
