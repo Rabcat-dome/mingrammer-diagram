@@ -1,6 +1,6 @@
 # M7 Claude Code Plugin Preparation
 
-Recorded: 2026-11-02 (Asia/Bangkok) | Base: `c5f74b4` | First tested code: `22fc85e` | Review fixes: `0220e94` and the commit after `a94b47a` | Branch: `codex/m7-claude-plugin` | Host: macOS ARM64, Claude Code 2.1.309.
+Recorded: 2026-11-02 (Asia/Bangkok) | Base: `c5f74b4` | First tested code: `22fc85e` | Review fixes: `0220e94` and `87acce5` | Branch: `codex/m7-claude-plugin` | Host: macOS ARM64, Claude Code 2.1.309.
 
 **M7-01 and M7-02 are complete. M7-03 is verified on one Mac for local-path, GitHub and real-config installs and for updating an installed plugin; a second machine and interactive permission prompts remain. M7-04 has not started.** This is a preparation build under D-015. It authors and validates models; it cannot render diagrams, and it does not change the Work first-release target.
 
@@ -25,6 +25,7 @@ There is no MCP server. A Claude Code session already has Bash and Read, so a se
 | Check | Result |
 |---|---|
 | Actual CI: [run 41440133540](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41440133540), job 125259629499 | Passed all 10 lanes on `macbook-pro-m2-max-mingrammer` from a clean checkout of `22fc85e`, with 82 core tests and 14 plugin tests and none skipped. Read from the run's report artifact |
+| Medium fixes in actual CI: [run 41449921613](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41449921613), job 125292308226 | Passed all 10 lanes at `87acce5`, with 87 core tests and 24 plugin tests, none skipped, and zero job annotations. Wheel SHA-256 `6a1ab1b3eca6c4ed6978d842a691d4985f63d569c8e6fc35c7b288784dbff036` matches the local build |
 | Review fixes in actual CI: [run 41443551856](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41443551856), job 125271024270 | Passed all 10 lanes at `0220e94`, with 86 core tests and 17 plugin tests, none skipped, and zero job annotations. Wheel SHA-256 `da0bd7af66be5fbb910f8d5c1539a26378432c2d985e326fa764b963ba81b4e1` matches the local build |
 | Node 24 action: [run 41441398887](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41441398887), job 125263877372 | Passed all 10 lanes at `359f1ea` with `actions/upload-artifact` v7.0.2 and zero job annotations, so the Node.js 20 warning is gone. The uploaded artifact downloaded and read back correctly |
 | Wheel | At `22fc85e`, local and CI SHA-256 `fc138b2236a30100a01d1d6a381fd96b6eb70913d3ccbd6832c6d142b1560e8a`, byte-identical to the S05 CI wheel, so packaging left the core unchanged. Core `0.2.0a2` later changes the wheel on purpose, for the usage exit code |
@@ -33,6 +34,7 @@ There is no MCP server. A Claude Code session already has Bash and Read, so a se
 | Install from the local repository path and a fresh `git clone` in throwaway configs | Installed. Cache has 0 symlinks, and symlink and executable modes survive Git |
 | Install into the owner's real config, as the owner requested | `settings.json` gained only `extraKnownMarketplaces` and `enabledPlugins`, with no existing value changed. First use created the private environment and validated a fixture |
 | Update of the owner's install | `plugin marketplace update` and `plugin update` moved it from `0.2.0-alpha.1` to `0220e94300cb` with `settings.json` unchanged. On the updated copy, a `pydantic.py` in the working directory did not run, and exit codes 0, 2 and 64 behaved. A new headless session authored and validated a model with no permission denials. A running session keeps the old skill until restart, and the old cached version stays on disk under Claude Code's management |
+| Second update of the owner's install | Moved it from `0220e94300cb` to `87acce5fee50` with `settings.json` unchanged. On that copy, `view_exclusions` covered every view, a planted `pydantic.py` did not run, and exit codes 2 and 64 behaved. A new headless session with two views validated a model with no permission denials and reported the exclusions |
 | New headless session with no `--plugin-dir` | Loaded the installed plugin and listed its skill |
 | Desktop Code tab | The skill appeared in the already running session after install. Invoking it resolved `${CLAUDE_PLUGIN_ROOT}` to the installed cache path, and `capabilities` ran from there. No model was authored in this check |
 | Clean-copy tests in the gate | Run the command from a dereferenced copy outside the checkout and prove the copy's own core is the one executing |
@@ -101,8 +103,7 @@ The review also noted two M1 items outside this range: `field` echoes rejected k
 
 - A second machine, any other operating system, and first-run setup with an empty uv cache.
 - Interactive permission prompts, and how much `allowed-tools` admits at runtime, including whether a redirect such as `schema > file` prompts. Headless runs exercised `allowed-tools`, but the Code tab check ran under bypass permissions, so it did not.
-- Actual CI of the fixes after `a94b47a`. The owner's install holds `0220e94` until those fixes are pushed and it is updated; that copy lacks `view_exclusions` but has the working-directory fix.
 - Authoring a model from the Code tab.
-- The Astra/High review the model strategy names. Implementation and both reviews above used Claude Opus 5.5.
+- The Astra/High review the model strategy names. Implementation and both reviews above used Claude Opus 5.5, and the Medium fixes at `87acce5` have not been reviewed by any pass.
 
 Prompts were run once each, so trigger rates are observations rather than measurements. Provider semantics are unchanged from M1: a passing result does not establish that a service type exists or that a placement is legal.
