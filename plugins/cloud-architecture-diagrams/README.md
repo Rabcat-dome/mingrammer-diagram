@@ -1,6 +1,6 @@
 # Cloud Architecture Diagrams for Claude Code
 
-This is a preparation build, versioned by Git commit so that installed copies can pick up every change. It reuses the project's core contract and catalogs to author and validate canonical architecture models, including provider placement and Kubernetes rules. **It cannot render SVG or PNG diagrams yet**, and no Huawei Cloud service icon is approved. The installed ChatGPT Work pilot is a separate plugin.
+This is a preparation build, versioned by Git commit so that installed copies can pick up every change. It reuses the project's core contract and catalogs to author and validate canonical architecture models, including provider placement and Kubernetes rules. **It cannot render SVG or PNG diagrams yet.** It is for private personal use only: it includes Huawei Cloud icons whose rights are not cleared, so do not publish it or make its repository public. The installed ChatGPT Work pilot is a separate plugin.
 
 ## Requirements
 

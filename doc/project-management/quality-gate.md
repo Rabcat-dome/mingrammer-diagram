@@ -19,7 +19,7 @@ Implemented [quality-gate.yml](../../.github/workflows/quality-gate.yml) runs do
 | `docs-contract` | M1 | Broken local links, duplicate requirement IDs, invalid task/test references, malformed examples | Documentation/contract report |
 | `static` | M1 | Formatting/lint/type errors in implemented Python; invalid workflow syntax | Ruff/type checker/actionlint or selected equivalents |
 | `schema` | M1 | Valid fixtures rejected; invalid IDs/references/cycles accepted | Unit/contract report with requirement IDs |
-| `catalog-license` | M2, active | Missing required types/assets, invalid mappings, missing rights/notice evidence, any visual asset under `src` outside the manifest, unsafe SVG, a Huawei substitute | Inventory, asset digests and license report in `reports/catalog-license.json` |
+| `catalog-license` | M2, active | Missing required types/assets, invalid mappings, missing rights/notice evidence, any visual asset under `src` outside the manifest, unsafe SVG, a Huawei substitute or guessed mapping, a private-use pack that claims clearance, a public repository in Actions, or a missing upload block | Inventory, asset digests and license report in `reports/catalog-license.json` |
 | `provider-semantics` | M2, active | Provider/Kubernetes rules fail, wrong cluster/namespace scope, conflated ownership/placement, invalid Service/Ingress/storage references, or a rule or catalog type with no fixture | Rule fixtures and primary references; FR-018/029 and T-017 |
 | `render-security` | M3 | Code/path/URL/Graphviz/SVG injection, limits, cleanup or isolation regression | Negative cases and bounded-execution results |
 | `render-smoke` | M3/M4 | Invalid/missing SVG/PNG or bundle metadata, icon loss, unreadable required labels | Model, diagnostics, images, normalized graph |
@@ -84,7 +84,7 @@ Run the fast lane on ordinary changes. Run the full fixture set for core/schema/
 
 - All P0 requirements have check or manual acceptance evidence at the release SHA.
 - Every applicable automated check passes; no required check is silently skipped.
-- Required icons/notices have redistribution evidence, including Huawei assets.
+- Required icons/notices have redistribution evidence. D-017 allows Huawei assets in a private personal release only, without that evidence; any public distribution stays blocked by O-002.
 - Astra review completed on the final code; confirmed Critical/High findings resolved, Medium findings dispositioned.
 - Owner inspected T-001..006; the same plugin version completed the Work workflow on two supported machines (FR-066/T-010), and clean-runtime core reproduction passed. Record setup/authentication steps rather than assuming installation or credentials sync automatically.
 - Setup, supported host modes, limitations, package digest, rollback steps and handoff are current.

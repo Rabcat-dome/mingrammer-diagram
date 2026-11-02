@@ -21,7 +21,9 @@ If the user asks for a picture, say this version cannot render one and offer the
 
 ### Huawei Cloud icons
 
-No Huawei Cloud service icon is approved, because the rights are unresolved (open decision O-002). Huawei models validate fully, and each service type returns an `ASSET_RIGHTS_BLOCKED` warning. Report that warning. Keep the native service name, and never propose a generic symbol or an icon pack found elsewhere as a stand-in.
+Some Huawei Cloud services have icons that the owner accepted for private personal use only. Their rights are not cleared, so any model using them returns one `ASSET_PRIVATE_USE_ONLY` warning. Report it, and do not suggest publishing the output.
+
+Other Huawei services have no icon, because nothing in that pack clearly matches them, and each such type returns an `ICON_UNAVAILABLE` warning. Huawei models still validate fully. Keep the native service name, and never propose a generic symbol or an icon pack found elsewhere as a stand-in.
 
 ## Workflow
 

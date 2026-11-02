@@ -101,15 +101,20 @@
         {
           "url": "https://cloud.google.com/icons",
           "summary": "Google's official icon library offers the icons for diagrams and technical documentation. The page states no separate license text, so this is weaker evidence than the AWS and Microsoft statements."
+        },
+        {
+          "url": "https://diagrams.mingrammer.com/docs/nodes/gcp",
+          "summary": "The upstream node list the owner relied on when accepting the existing GCP icons as sufficient. It shows coverage, not a license."
         }
       ],
       "conditions": [
         "Use only in diagrams and technical documentation",
         "Do not extract into this repository; the icons arrive only through the pinned diagrams package",
-        "Recheck for an explicit license before any distribution beyond this personal plugin"
+        "The owner accepted these icons under D-016. That adds no license text, so recheck before any distribution beyond this personal plugin"
       ],
       "attribution": "Google Cloud icons, copyright Google, delivered by the diagrams package.",
-      "redistribution_evidence": "Not redistributed by this project; the pinned dependency supplies them."
+      "redistribution_evidence": "Not redistributed by this project; the pinned dependency supplies them.",
+      "owner_decision": "D-016"
     },
     {
       "id": "kubernetes-community-icons",
@@ -158,14 +163,55 @@
       "redistribution_evidence": "MIT permits redistribution; the pinned dependency supplies them."
     },
     {
+      "id": "huawei-juandiaz00-png",
+      "status": "private_use_only",
+      "distribution": "bundled",
+      "publisher": "JuanDiaz00 (community repack of a VeryIcon pack)",
+      "license": null,
+      "rights_basis": "owner_risk_acceptance",
+      "owner_decision": "D-017",
+      "source_url": "https://github.com/JuanDiaz00/Huawei-Cloud-draw.io-icons/blob/ea52d7356e172a85cde7538f293a663eb137611d/HuaweiCloud%20Icons.xml",
+      "source_version": "commit ea52d73, committed 2025-08-13",
+      "source_commit": "ea52d7356e172a85cde7538f293a663eb137611d",
+      "source_git_blob": "0bd260648d2525e86c87c671ea9f9deb8d825a14",
+      "source_sha256": "1afc1f2a0fda735c7b9eda88466725b720045493e61a04d392467596b8c976cd",
+      "retrieved": "2026-11-02",
+      "terms": [
+        {
+          "url": "https://github.com/JuanDiaz00/Huawei-Cloud-draw.io-icons/blob/ea52d7356e172a85cde7538f293a663eb137611d/README.md",
+          "sha256": "b6ba749a6830ee95e491dcd580cf41010caad034bebc6b0e0af8c692453a5467",
+          "summary": "Names VeryIcon as the source of the icons. The repository has no license file, and GitHub reports no license."
+        },
+        {
+          "url": "https://www.veryicon.com/icons/miscellaneous/huawei-cloud-service-icon/computing-ecs.html",
+          "summary": "Attributes the pack to AIyangyang and states it is free for personal and commercial purpose. This is the site's claim. It does not show authorization from Huawei or address redistribution in a plugin."
+        },
+        {
+          "url": "https://www.huaweicloud.com/intl/en-us/declaration-sg/sa_st.html",
+          "summary": "Huawei Cloud's site terms reserve its rights in its marks and logos. They govern Huawei's own site, and they show why no permission can be inferred for these icons."
+        }
+      ],
+      "conditions": [
+        "Private personal use by the owner only, under D-017. This is the owner's acceptance of the rights risk, not permission from any rights holder",
+        "Rights are not cleared and redistribution permission is not established",
+        "Do not make this repository public, publish this package or plugin, or share these files. Git history keeps them, so going public would first require removing them from history",
+        "Sharing generated diagrams that show these icons outside private use is not covered by D-017"
+      ],
+      "attribution": "Huawei Cloud service icons, repacked by JuanDiaz00 from the VeryIcon pack HUAWEI CLOUD Service Icon, which VeryIcon attributes to AIyangyang. Huawei Cloud names and marks belong to Huawei.",
+      "redistribution_evidence": null,
+      "blocker": "O-002",
+      "blocker_scope": "public_distribution",
+      "blocker_reason": "Public distribution of these icons stays blocked. D-017 accepts the rights risk for the owner's private personal use only, and no redistribution permission has been established."
+    },
+    {
       "id": "huawei-cloud-icons",
       "status": "blocked",
       "distribution": "none",
       "publisher": "Huawei Cloud",
       "license": null,
       "rights_basis": "none",
-      "blocker": "O-002",
-      "blocker_reason": "Huawei Cloud's site terms reserve all rights and require prior written consent to reproduce, modify or distribute site content, and express written permission to use its logos. No license or written consent covering its icons was found, so none may be bundled or substituted.",
+      "blocker": "O-010",
+      "blocker_reason": "No icon in the accepted private pack clearly matches these services. Huawei's official library and the LATAM library are not accepted: their rights are unresolved under O-002, and D-017 covers only the JuanDiaz00 pack. No generic icon is substituted.",
       "source_url": "https://open.huaweicloud.com/openplatform/icons",
       "source_version": "manifest.v1.json generated 2026-07-31",
       "retrieved": "2026-11-02",
@@ -195,11 +241,12 @@
         }
       ],
       "conditions": [
-        "Bundle nothing, and render no generic substitute, until written consent or a clear license covers extraction, local conversion, bundling and generated diagrams",
-        "Record the consent and its scope here, then clear the blocker"
+        "Bundle nothing from these sources, and render no generic substitute, unless the owner extends a decision to them or written consent covers extraction, local conversion, bundling and generated diagrams",
+        "Record any such decision or consent here, then clear O-010 for the affected services"
       ],
       "attribution": null,
-      "redistribution_evidence": null
+      "redistribution_evidence": null,
+      "blocker_scope": "icon_coverage"
     }
   ],
   "assets": [
@@ -215,7 +262,8 @@
       "original": [
         {
           "name": "Load Balancer",
-          "canonical_sha256": "d905027fde65347a5f216761f364daffde06ee713188602f7f96174ba66cc4bb"
+          "sha256": "d905027fde65347a5f216761f364daffde06ee713188602f7f96174ba66cc4bb",
+          "digest_of": "canonical_stencil_xml"
         }
       ],
       "derived": {
@@ -245,11 +293,13 @@
       "original": [
         {
           "name": "Server",
-          "canonical_sha256": "916b6bdd8c0bd7a73a564f4bfd7ff94be952a78628b6e07b29379076b68f22ef"
+          "sha256": "916b6bdd8c0bd7a73a564f4bfd7ff94be952a78628b6e07b29379076b68f22ef",
+          "digest_of": "canonical_stencil_xml"
         },
         {
           "name": "Virtual Server",
-          "canonical_sha256": "4a89dfa5bbec6ff883c07eb2c165391b75098d523611226138f74ad7b14a2220"
+          "sha256": "4a89dfa5bbec6ff883c07eb2c165391b75098d523611226138f74ad7b14a2220",
+          "digest_of": "canonical_stencil_xml"
         }
       ],
       "derived": {
@@ -278,7 +328,8 @@
       "original": [
         {
           "name": "Virtual Server",
-          "canonical_sha256": "4a89dfa5bbec6ff883c07eb2c165391b75098d523611226138f74ad7b14a2220"
+          "sha256": "4a89dfa5bbec6ff883c07eb2c165391b75098d523611226138f74ad7b14a2220",
+          "digest_of": "canonical_stencil_xml"
         }
       ],
       "derived": {
@@ -307,7 +358,8 @@
       "original": [
         {
           "name": "NAS Filer",
-          "canonical_sha256": "9535c44c77fa1d67bf8b2508dc5fc7f3c851495e901d06fcd131a5f970f3ed50"
+          "sha256": "9535c44c77fa1d67bf8b2508dc5fc7f3c851495e901d06fcd131a5f970f3ed50",
+          "digest_of": "canonical_stencil_xml"
         }
       ],
       "derived": {
@@ -336,7 +388,8 @@
       "original": [
         {
           "name": "Storage",
-          "canonical_sha256": "a3e4ac6e49f584592f69496cfd5a06e15e20c188f0c440e5c715197aa8f4b25a"
+          "sha256": "a3e4ac6e49f584592f69496cfd5a06e15e20c188f0c440e5c715197aa8f4b25a",
+          "digest_of": "canonical_stencil_xml"
         }
       ],
       "derived": {
@@ -366,11 +419,13 @@
       "original": [
         {
           "name": "Server",
-          "canonical_sha256": "916b6bdd8c0bd7a73a564f4bfd7ff94be952a78628b6e07b29379076b68f22ef"
+          "sha256": "916b6bdd8c0bd7a73a564f4bfd7ff94be952a78628b6e07b29379076b68f22ef",
+          "digest_of": "canonical_stencil_xml"
         },
         {
           "name": "Users",
-          "canonical_sha256": "ec3a62c210160ecdadb180293a3a3a002150fb41ee2013b0c888e339f0ea57c5"
+          "sha256": "ec3a62c210160ecdadb180293a3a3a002150fb41ee2013b0c888e339f0ea57c5",
+          "digest_of": "canonical_stencil_xml"
         }
       ],
       "derived": {
@@ -399,7 +454,8 @@
       "original": [
         {
           "name": "Server Storage",
-          "canonical_sha256": "fd00d17d864c24b83237da6b91f8f5d6f6ad1e00d4be66e8793e38b91eccfc5f"
+          "sha256": "fd00d17d864c24b83237da6b91f8f5d6f6ad1e00d4be66e8793e38b91eccfc5f",
+          "digest_of": "canonical_stencil_xml"
         }
       ],
       "derived": {
@@ -428,7 +484,8 @@
       "original": [
         {
           "name": "Server",
-          "canonical_sha256": "916b6bdd8c0bd7a73a564f4bfd7ff94be952a78628b6e07b29379076b68f22ef"
+          "sha256": "916b6bdd8c0bd7a73a564f4bfd7ff94be952a78628b6e07b29379076b68f22ef",
+          "digest_of": "canonical_stencil_xml"
         }
       ],
       "derived": {
@@ -444,6 +501,238 @@
         }
       },
       "changes": "Converted the stencil geometry to SVG, applied the palette's default colors, and rasterized to PNG"
+    },
+    {
+      "id": "huawei-vpc",
+      "pack": "huawei-juandiaz00-png",
+      "concept": "VPC",
+      "required_label": "VPC",
+      "composition": "direct",
+      "symbols": [
+        "network-vpc"
+      ],
+      "title_token": "vpc",
+      "original": [
+        {
+          "name": "network-vpc",
+          "sha256": "713b0f846ec8ad4d1ae1cda5b0ecb3048089b67628ede60c8b60c48a9b4e3969",
+          "digest_of": "decoded_png",
+          "entry_index": 104
+        }
+      ],
+      "derived": {
+        "svg": null,
+        "png": {
+          "path": "assets/huawei/vpc.png",
+          "sha256": "713b0f846ec8ad4d1ae1cda5b0ecb3048089b67628ede60c8b60c48a9b4e3969",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "None; the decoded PNG bytes are kept unchanged"
+    },
+    {
+      "id": "huawei-ecs",
+      "pack": "huawei-juandiaz00-png",
+      "concept": "Elastic Cloud Server",
+      "required_label": "Elastic Cloud Server",
+      "composition": "direct",
+      "symbols": [
+        "computing-ecs"
+      ],
+      "title_token": "ecs",
+      "original": [
+        {
+          "name": "computing-ecs",
+          "sha256": "87bbec446261566df8c893062f4f048493a62b2cde22f85cdf69ac1e45fc43c4",
+          "digest_of": "decoded_png",
+          "entry_index": 28
+        }
+      ],
+      "derived": {
+        "svg": null,
+        "png": {
+          "path": "assets/huawei/ecs.png",
+          "sha256": "87bbec446261566df8c893062f4f048493a62b2cde22f85cdf69ac1e45fc43c4",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "None; the decoded PNG bytes are kept unchanged"
+    },
+    {
+      "id": "huawei-elb",
+      "pack": "huawei-juandiaz00-png",
+      "concept": "Elastic Load Balance",
+      "required_label": "Elastic Load Balance",
+      "composition": "direct",
+      "symbols": [
+        "network-elb"
+      ],
+      "title_token": "elb",
+      "original": [
+        {
+          "name": "network-elb",
+          "sha256": "50579bef8a417ab01446c113d81eb1185fb478f092c0030c9c1bce8b1146a859",
+          "digest_of": "decoded_png",
+          "entry_index": 106
+        }
+      ],
+      "derived": {
+        "svg": null,
+        "png": {
+          "path": "assets/huawei/elb.png",
+          "sha256": "50579bef8a417ab01446c113d81eb1185fb478f092c0030c9c1bce8b1146a859",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "None; the decoded PNG bytes are kept unchanged"
+    },
+    {
+      "id": "huawei-eip",
+      "pack": "huawei-juandiaz00-png",
+      "concept": "Elastic IP",
+      "required_label": "Elastic IP",
+      "composition": "direct",
+      "symbols": [
+        "network-eip"
+      ],
+      "title_token": "eip",
+      "original": [
+        {
+          "name": "network-eip",
+          "sha256": "a1c530f64c7ae7f32c9d3e9147c7db124ea807f4de422e643e67024bc4a0ca79",
+          "digest_of": "decoded_png",
+          "entry_index": 100
+        }
+      ],
+      "derived": {
+        "svg": null,
+        "png": {
+          "path": "assets/huawei/eip.png",
+          "sha256": "a1c530f64c7ae7f32c9d3e9147c7db124ea807f4de422e643e67024bc4a0ca79",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "None; the decoded PNG bytes are kept unchanged"
+    },
+    {
+      "id": "huawei-rds",
+      "pack": "huawei-juandiaz00-png",
+      "concept": "Relational Database Service",
+      "required_label": "Relational Database Service",
+      "composition": "direct",
+      "symbols": [
+        "database-rds"
+      ],
+      "title_token": "rds",
+      "original": [
+        {
+          "name": "database-rds",
+          "sha256": "327e4775e8280d494a041816a9afa92feb5bfa548066586e06bf9ea2bd715162",
+          "digest_of": "decoded_png",
+          "entry_index": 51
+        }
+      ],
+      "derived": {
+        "svg": null,
+        "png": {
+          "path": "assets/huawei/rds.png",
+          "sha256": "327e4775e8280d494a041816a9afa92feb5bfa548066586e06bf9ea2bd715162",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "None; the decoded PNG bytes are kept unchanged"
+    },
+    {
+      "id": "huawei-iam",
+      "pack": "huawei-juandiaz00-png",
+      "concept": "Identity and Access Management",
+      "required_label": "Identity and Access Management",
+      "composition": "direct",
+      "symbols": [
+        "managementdeployment-iam"
+      ],
+      "title_token": "iam",
+      "original": [
+        {
+          "name": "managementdeployment-iam",
+          "sha256": "1131048a5328c45e70c9f0535a31ab0c7136735570f09c0c2cd960047a956c66",
+          "digest_of": "decoded_png",
+          "entry_index": 93
+        }
+      ],
+      "derived": {
+        "svg": null,
+        "png": {
+          "path": "assets/huawei/iam.png",
+          "sha256": "1131048a5328c45e70c9f0535a31ab0c7136735570f09c0c2cd960047a956c66",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "None; the decoded PNG bytes are kept unchanged"
+    },
+    {
+      "id": "huawei-vpn",
+      "pack": "huawei-juandiaz00-png",
+      "concept": "Virtual Private Network",
+      "required_label": "Virtual Private Network",
+      "composition": "direct",
+      "symbols": [
+        "network-vpn-2"
+      ],
+      "title_token": "vpn",
+      "original": [
+        {
+          "name": "network-vpn-2",
+          "sha256": "290c3066e13dc36a11de1fa961d933a00de6731a243d517df7df1d249fe711fe",
+          "digest_of": "decoded_png",
+          "entry_index": 113
+        }
+      ],
+      "derived": {
+        "svg": null,
+        "png": {
+          "path": "assets/huawei/vpn.png",
+          "sha256": "290c3066e13dc36a11de1fa961d933a00de6731a243d517df7df1d249fe711fe",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "None; the decoded PNG bytes are kept unchanged"
+    },
+    {
+      "id": "huawei-functiongraph",
+      "pack": "huawei-juandiaz00-png",
+      "concept": "FunctionGraph",
+      "required_label": "FunctionGraph",
+      "composition": "direct",
+      "symbols": [
+        "computing-fgs"
+      ],
+      "title_token": "fgs",
+      "original": [
+        {
+          "name": "computing-fgs",
+          "sha256": "e6aef02c8c5a885c01fefae1f6d469a0234b16062046781be7806fe4930119d3",
+          "digest_of": "decoded_png",
+          "entry_index": 26
+        }
+      ],
+      "derived": {
+        "svg": null,
+        "png": {
+          "path": "assets/huawei/functiongraph.png",
+          "sha256": "e6aef02c8c5a885c01fefae1f6d469a0234b16062046781be7806fe4930119d3",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "None; the decoded PNG bytes are kept unchanged"
     }
   ]
 }

@@ -3,9 +3,12 @@
 import hashlib
 import importlib
 import json
+import os
 import re
 import sys
+import tomllib
 import xml.etree.ElementTree as ET
+from collections.abc import Mapping
 from importlib.metadata import version
 from pathlib import Path
 from typing import get_args
@@ -19,6 +22,7 @@ from cloud_architecture_diagrams.catalog import (
     AssetManifest,
     Catalog,
     CatalogRecord,
+    Pack,
     ProviderFile,
     catalog,
 )
@@ -37,6 +41,7 @@ SVG_ATTRIBUTES = {
 }  # fmt: skip
 DOCUMENTS = {
     "requirements": "doc/requirements/requirements.md",
+    "decisions": "doc/project-management/decisions.md",
     "s02-additional": "doc/project-management/evidence/S02-additional-icon-sources.md",
 }
 REQUIRED_CONCEPTS = {
@@ -44,6 +49,9 @@ REQUIRED_CONCEPTS = {
     "Monitoring",
 }  # fmt: skip
 SOURCE_CHECKS = "doc/project-management/evidence/S06-source-checks.json"
+PACK_INVENTORY = "doc/project-management/evidence/S06-huawei-pack-inventory.json"
+PRIVATE_CLASSIFIER = "Private :: Do Not Upload"
+PRIVATE_PHRASE = "private personal use"
 
 
 def sha256(path: Path) -> str:
@@ -109,6 +117,8 @@ def check_records(data: Catalog, errors: list[str]) -> None:
 
 def check_representation(record: CatalogRecord, data: Catalog, errors: list[str]) -> None:
     item = record.representation
+    if item.kind == "labeled_boundary" and item.asset and item.asset not in data.assets:
+        errors.append(f"{record.id}: boundary icon {item.asset} is not in the manifest")
     if item.kind == "native_class":
         pack = data.packs.get(item.pack or "")
         if not item.class_path or pack is None:
@@ -131,17 +141,33 @@ def check_representation(record: CatalogRecord, data: Catalog, errors: list[str]
         errors.append(f"{record.id}: a labeled representation needs a label")
     if item.kind != "blocked" and record.status == "semantics_only":
         errors.append(f"{record.id}: semantics_only is reserved for blocked representations")
+    check_private_record(record, data, errors)
     # FR-013: a Huawei service never gets a generic stand-in or an unapproved icon.
     if "huawei" in record.providers and len(record.providers) == 1 and record.entity == "resource":
         if item.kind == "native_class":
             errors.append(f"{record.id}: Huawei services must not use a substitute native class")
-        if (
-            item.kind == "custom_asset"
-            and data.assets[item.asset or ""].pack != "huawei-cloud-icons"
-        ):
-            errors.append(f"{record.id}: Huawei services must not use another pack's asset")
+        if item.kind == "custom_asset" and item.asset in data.assets:
+            if not data.assets[item.asset].pack.startswith("huawei-"):
+                errors.append(f"{record.id}: Huawei services must not use another pack's asset")
         if item.kind == "labeled_node":
             errors.append(f"{record.id}: Huawei services must not use a generic labeled node")
+
+
+def check_private_record(record: CatalogRecord, data: Catalog, errors: list[str]) -> None:
+    asset = data.assets.get(record.representation.asset or "")
+    pack = data.packs.get(asset.pack) if asset else None
+    private_pack = pack is not None and pack.status == "private_use_only"
+    if private_pack != (record.status == "private_use_only"):
+        errors.append(f"{record.id}: private_use_only must match the icon's private-use pack")
+    if asset is None or not private_pack:
+        return
+    if record.providers != ("huawei",):
+        errors.append(f"{record.id}: a private-use pack serves only its own provider")
+    # D-017 forbids guessing: the source title must name this service, not merely resemble it.
+    names = {(record.native_id or "").lower(), *(alias.lower() for alias in record.native_aliases)}
+    tokens = {token for title in asset.symbols for token in title.lower().split("-")}
+    if asset.title_token not in tokens or asset.title_token not in names:
+        errors.append(f"{record.id}: source title {asset.symbols} does not name this service")
 
 
 def check_source(source: str, owner: str, errors: list[str], root: Path = ROOT) -> None:
@@ -213,25 +239,80 @@ def check_packs(data: Catalog, errors: list[str], root: Path = ROOT) -> None:
         if pack.status == "approved":
             if not (pack.attribution and pack.redistribution_evidence):
                 errors.append(f"{pack.id}: approval needs attribution and redistribution evidence")
-            if pack.rights_basis == "none":
-                errors.append(f"{pack.id}: approval needs a rights basis")
+            if pack.rights_basis in {"none", "owner_risk_acceptance"}:
+                errors.append(f"{pack.id}: approval needs a rights basis from a rights holder")
             if pack.blocker:
                 errors.append(f"{pack.id}: an approved pack cannot carry a blocker")
             if pack.distribution == "none":
                 errors.append(f"{pack.id}: an approved pack must say how it is delivered")
-        else:
+        elif pack.status == "blocked":
             if not (pack.blocker and pack.blocker_reason):
                 errors.append(f"{pack.id}: a blocked pack must name its blocker and reason")
             if pack.distribution != "none":
                 errors.append(f"{pack.id}: a blocked pack cannot be distributed")
-            decisions = (root / "doc/project-management/decisions.md").read_text()
-            if not re.search(rf"^\| {pack.blocker} \|", decisions, re.MULTILINE):
-                errors.append(f"{pack.id}: {pack.blocker} is not in the decision log")
+            check_decision(pack.id, pack.blocker, errors, root)
+        else:
+            check_private_pack(pack, errors, root)
         if pack.distribution == "bundled":
-            if pack.status != "approved" or not pack.license or not pack.source_commit:
+            licensed = pack.status == "approved" and bool(pack.license)
+            if not (licensed or pack.status == "private_use_only") or not pack.source_commit:
                 errors.append(f"{pack.id}: bundling needs an approved, licensed, pinned source")
             if not pack.source_sha256:
                 errors.append(f"{pack.id}: bundling needs the original source hash")
+
+
+def check_decision(owner: str, identifier: str | None, errors: list[str], root: Path) -> str | None:
+    decisions = (root / "doc/project-management/decisions.md").read_text()
+    match = re.search(rf"^\| {identifier} \|.*$", decisions, re.MULTILINE)
+    if identifier is None or match is None:
+        errors.append(f"{owner}: {identifier} is not in the decision log")
+        return None
+    return match.group(0)
+
+
+def check_private_pack(pack: Pack, errors: list[str], root: Path) -> None:
+    """Risk acceptance is not a license, so nothing here may read as cleared."""
+    if pack.rights_basis != "owner_risk_acceptance":
+        errors.append(f"{pack.id}: private use must rest on the owner's recorded risk acceptance")
+    if pack.license or pack.redistribution_evidence:
+        errors.append(f"{pack.id}: private use cannot claim a license or redistribution evidence")
+    if not pack.attribution or not pack.source_git_blob:
+        errors.append(f"{pack.id}: private use still needs attribution and a pinned source")
+    if pack.blocker_scope != "public_distribution" or not pack.blocker_reason:
+        errors.append(f"{pack.id}: public distribution must stay an explicit blocker")
+    check_decision(pack.id, pack.blocker, errors, root)
+    decision = check_decision(pack.id, pack.owner_decision, errors, root)
+    if decision and PRIVATE_PHRASE not in decision.lower():
+        errors.append(f"{pack.id}: {pack.owner_decision} does not limit use to {PRIVATE_PHRASE}")
+
+
+def check_private_use(
+    manifest: AssetManifest,
+    errors: list[str],
+    root: Path = ROOT,
+    environ: Mapping[str, str] = os.environ,
+) -> str:
+    """Keep private-use icons from leaving through a package upload or a public repository."""
+    if not any(pack.status == "private_use_only" for pack in manifest.packs):
+        return "no_private_use_assets"
+    project = tomllib.loads((root / "pyproject.toml").read_text())["project"]
+    if PRIVATE_CLASSIFIER not in project.get("classifiers", []):
+        errors.append(f"pyproject.toml: private-use assets require {PRIVATE_CLASSIFIER!r}")
+    readme = (root / "plugins/cloud-architecture-diagrams/README.md").read_text().lower()
+    if PRIVATE_PHRASE not in readme:
+        errors.append(f"plugin README must state that it is for {PRIVATE_PHRASE}")
+    path = environ.get("GITHUB_EVENT_PATH")
+    if environ.get("GITHUB_ACTIONS") != "true" or not path:
+        return "not_checked_outside_actions"
+    try:
+        private = json.loads(Path(path).read_text())["repository"]["private"]
+    except (OSError, ValueError, KeyError, TypeError):
+        errors.append("repository visibility could not be read from the Actions event")
+        return "unreadable"
+    if private is not True:
+        errors.append("this repository is public: private-use assets must not be published here")
+        return "public"
+    return "private"
 
 
 def svg_problems(path: Path) -> list[str]:
@@ -269,18 +350,21 @@ def check_assets(
     shapes = load_shapes(subset) if subset.exists() else {}
     for asset in manifest.assets:
         pack = packs.get(asset.pack)
-        if pack is None or pack.status != "approved" or pack.distribution != "bundled":
+        if pack is None or pack.status == "blocked" or pack.distribution != "bundled":
             errors.append(f"{asset.id}: its pack does not permit bundling")
-        concepts.add(asset.concept)
-        for file in (asset.derived.svg, asset.derived.png):
+        if asset.pack == "drawio-network-2018":
+            concepts.add(asset.concept)
+        elif any(item.sha256 != asset.derived.png.sha256 for item in asset.original):
+            errors.append(f"{asset.id}: recorded as unchanged, but its digests differ")
+        for file in filter(None, (asset.derived.svg, asset.derived.png)):
             listed[file.path] = file.sha256
             path = package / file.path
             if not path.is_file() or path.is_symlink():
                 errors.append(f"{asset.id}: {file.path} is missing or a symbolic link")
             elif sha256(path) != file.sha256:
                 errors.append(f"{asset.id}: {file.path} does not match its recorded hash")
-        svg = package / asset.derived.svg.path
-        if svg.is_file():
+        svg = package / asset.derived.svg.path if asset.derived.svg else None
+        if svg and svg.is_file():
             for problem in svg_problems(svg):
                 errors.append(f"{asset.id}: unsafe SVG: {problem}")
         png = package / asset.derived.png.path
@@ -289,10 +373,12 @@ def check_assets(
             if size is None or size != (asset.derived.png.width, asset.derived.png.height):
                 errors.append(f"{asset.id}: PNG header differs from its record")
         for original in asset.original:
+            if original.digest_of != "canonical_stencil_xml":
+                continue
             shape = shapes.get(original.name)
-            if shape is None or shape_digest(shape) != original.canonical_sha256:
+            if shape is None or shape_digest(shape) != original.sha256:
                 errors.append(f"{asset.id}: original shape {original.name} does not match")
-        if asset.id in CONCEPTS and shapes and svg.is_file():
+        if asset.id in CONCEPTS and shapes and svg and svg.is_file():
             if compose(asset.id, shapes)[0] != svg.read_text():
                 errors.append(f"{asset.id}: SVG does not reproduce from the audited source")
     if concepts != REQUIRED_CONCEPTS:
@@ -316,9 +402,45 @@ def check_assets(
         for pack in manifest.packs:
             if pack.distribution == "bundled" and "CC BY 4.0" not in text:
                 errors.append(f"{pack.id}: NOTICE.md lacks its license")
-        if "O-002" not in text:
-            errors.append("assets: NOTICE.md must disclose the Huawei blocker")
+        if "O-002" not in text or PRIVATE_PHRASE not in text.lower():
+            errors.append("assets: NOTICE.md must disclose the private-use limit and O-002")
+        if "D-017" not in text or "not cleared" not in text.lower():
+            errors.append("assets: NOTICE.md must say the D-017 rights are not cleared")
     return listed
+
+
+def check_pack_inventory(manifest: AssetManifest, errors: list[str], root: Path = ROOT) -> int:
+    """A private-use asset must be exactly the pinned pack's entry that its record names."""
+    inventory = json.loads((root / PACK_INVENTORY).read_text())
+    rows = {row["title"]: row for row in inventory["entries"]}
+    pack = next(item for item in manifest.packs if item.status == "private_use_only")
+    if inventory["commit"] != pack.source_commit or inventory["git_blob"] != pack.source_git_blob:
+        errors.append("pack inventory: its pin differs from the rights manifest")
+    for asset in manifest.assets:
+        if asset.pack != pack.id:
+            continue
+        for original in asset.original:
+            row = rows.get(original.name)
+            if row is None or (row["index"], row["sha256"]) != (
+                original.entry_index,
+                original.sha256,
+            ):
+                errors.append(f"{asset.id}: not the pinned entry named {original.name}")
+    return len(rows)
+
+
+def icon_coverage(data: Catalog) -> dict[str, list[str]]:
+    """Group each required Huawei item by its real icon state, with no partial credit."""
+    groups: dict[str, list[str]] = {"mapped": [], "labeled_boundary": [], "no_clear_match": []}
+    for item, types in data.inventory["huawei"].items():
+        records = [data.records[type_id] for type_id in types]
+        if any(record.representation.kind == "blocked" for record in records):
+            groups["no_clear_match"].append(item)
+        elif all(record.representation.asset for record in records):
+            groups["mapped"].append(item)
+        else:
+            groups["labeled_boundary"].append(item)
+    return groups
 
 
 def check_plugin(errors: list[str], root: Path = ROOT) -> None:
@@ -359,6 +481,8 @@ def run(root: Path = ROOT) -> tuple[list[str], dict[str, object]]:
     native = check_native_icons(data, errors)
     check_packs(data, errors, root)
     listed = check_assets(data.manifest, errors, root / "src/cloud_architecture_diagrams", root)
+    visibility = check_private_use(data.manifest, errors, root)
+    pack_entries = check_pack_inventory(data.manifest, errors, root)
     check_plugin(errors, root)
     urls = check_source_evidence(data, errors, root)
     report: dict[str, object] = {
@@ -380,6 +504,9 @@ def run(root: Path = ROOT) -> tuple[list[str], dict[str, object]]:
             for pack in data.manifest.packs
         },
         "release_blockers": data.release_blockers(),
+        "huawei_icon_coverage": icon_coverage(data),
+        "huawei_pack_entries": pack_entries,
+        "repository_visibility": visibility,
         "checked_source_urls": urls,
     }
     return errors, report

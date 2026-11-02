@@ -7,6 +7,8 @@ name = "cloud-architecture-diagrams"
 version = "0.3.0a1"
 description = "Data-only architecture contracts, provider catalogs and deterministic validation"
 requires-python = ">=3.13,<3.14"
+# Bundled Huawei icons are for private personal use only (D-017), and PyPI rejects this classifier.
+classifiers = ["Private :: Do Not Upload"]
 dependencies = ["pydantic>=2.12,<3"]
 
 [project.scripts]

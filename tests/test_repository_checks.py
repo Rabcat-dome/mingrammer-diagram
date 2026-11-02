@@ -35,6 +35,22 @@ def repository(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> ModuleType:
     return module
 
 
+def test_private_use_assets_need_the_upload_block(repository: ModuleType, tmp_path: Path) -> None:
+    data = tmp_path / "src/cloud_architecture_diagrams/catalog_data"
+    data.mkdir(parents=True)
+    (data / "assets.json").write_text('{"status": "private_use_only"}')
+    dist = tmp_path / "reports/dist"
+    dist.mkdir(parents=True)
+    with zipfile.ZipFile(dist / "demo.whl", "w") as wheel:
+        wheel.writestr("demo-1.dist-info/METADATA", "Name: demo\n")
+    assert any("upload-block marker" in error for error in repository.package())
+    with zipfile.ZipFile(dist / "demo.whl", "w") as wheel:
+        wheel.writestr(
+            "demo-1.dist-info/METADATA", "Name: demo\nClassifier: Private :: Do Not Upload\n"
+        )
+    assert not any("upload-block marker" in error for error in repository.package())
+
+
 def build_wheel(root: Path, *names: str) -> None:
     dist = root / "reports/dist"
     dist.mkdir(parents=True)

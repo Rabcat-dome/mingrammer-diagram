@@ -238,7 +238,12 @@ def build() -> list[dict[str, object]]:
                 "composition": concept["composition"],
                 "symbols": [SHAPES[name] for name in names],
                 "original": [
-                    {"name": name, "canonical_sha256": shape_digest(shapes[name])} for name in names
+                    {
+                        "name": name,
+                        "sha256": shape_digest(shapes[name]),
+                        "digest_of": "canonical_stencil_xml",
+                    }
+                    for name in names
                 ],
                 "derived": {
                     "svg": {
@@ -268,7 +273,8 @@ def main() -> int:
         refresh_subset(args.from_full)
     ASSETS.mkdir(parents=True, exist_ok=True)
     manifest = json.loads(MANIFEST.read_text())
-    manifest["assets"] = build()
+    others = [item for item in manifest["assets"] if item["pack"] != "drawio-network-2018"]
+    manifest["assets"] = build() + others
     MANIFEST.write_text(json.dumps(manifest, indent=2, ensure_ascii=True) + "\n")
     print(json.dumps([item["id"] for item in manifest["assets"]]))
     return 0

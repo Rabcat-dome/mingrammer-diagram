@@ -34,6 +34,19 @@
    ]
   },
   {
+   "url": "https://diagrams.mingrammer.com/docs/nodes/gcp",
+   "http_status": 200,
+   "text_sha256": "a3a55616f26d819ca9703d4b8c13cc42291db966382a7ea7053323a090dad646",
+   "characters": 5296,
+   "claims": [
+    {
+     "claim": "The upstream node list includes the mapped GCP classes",
+     "pattern": "diagrams.gcp.compute.ComputeEngine",
+     "matched": true
+    }
+   ]
+  },
+  {
    "url": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-eni.html",
    "http_status": 200,
    "text_sha256": "17fdaaa265e652e635d9c304f9048008e749b636c3e6a82eac9efec9dfb2cf3f",
@@ -493,6 +506,19 @@
     {
      "claim": "Subnets are regional",
      "pattern": "Subnets are regional resources",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://github.com/JuanDiaz00/Huawei-Cloud-draw.io-icons/blob/ea52d7356e172a85cde7538f293a663eb137611d/README.md",
+   "http_status": 200,
+   "text_sha256": "a8f4bc7b5e520ff19f053c4f87e601faf887a4e15b87941269f763ca53d99832",
+   "characters": 3153,
+   "claims": [
+    {
+     "claim": "The pack's README names VeryIcon as its source",
+     "pattern": "VeryIcon",
      "matched": true
     }
    ]
@@ -975,6 +1001,32 @@
    "characters": 7464
   },
   {
+   "url": "https://support.huaweicloud.com/eu/tr-aos/fgs-function.html",
+   "http_status": 200,
+   "text_sha256": "0177f57f534f3f0e2c3a22a75ae8a143ba64ba8c3163cb738f13c04282b9f32a",
+   "characters": 9925,
+   "claims": [
+    {
+     "claim": "HuaweiCloud.FGS.Function creates FunctionGraph functions",
+     "pattern": "HuaweiCloud.FGS.Function is used to create function resources for FunctionGraph",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/api-functiongraph/functiongraph_06_0144.html",
+   "http_status": 200,
+   "text_sha256": "8b0518e97c2c56d4917719b467e1cc5b7daf069fe5557c3414a768a182ea0b32",
+   "characters": 25418,
+   "claims": [
+    {
+     "claim": "FunctionGraph's API path uses fgs",
+     "pattern": "/fgs/functions",
+     "matched": true
+    }
+   ]
+  },
+  {
    "url": "https://support.huaweicloud.com/intl/en-us/iam_faq/iam_01_0101.html",
    "http_status": 200,
    "text_sha256": "d637697eced13bb8e41a5bb89771f7d55f235c7d1458cd6e622ff5b83db96611",
@@ -1212,6 +1264,24 @@
     {
      "claim": "Logos need express prior written permission",
      "pattern": "express prior written permission",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://www.veryicon.com/icons/miscellaneous/huawei-cloud-service-icon/computing-ecs.html",
+   "http_status": 200,
+   "text_sha256": "f429c696d59008863bcf68806b26513ad264976aa931fd140b3cd1b8b7966d7b",
+   "characters": 1960,
+   "claims": [
+    {
+     "claim": "VeryIcon attributes the pack to AIyangyang",
+     "pattern": "AIyangyang",
+     "matched": true
+    },
+    {
+     "claim": "VeryIcon states the pack is free for personal and commercial purpose",
+     "pattern": "Free for personal and commercial purpose",
      "matched": true
     }
    ]

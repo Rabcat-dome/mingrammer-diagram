@@ -1,6 +1,6 @@
 # Milestones and Work Breakdown
 
-Updated: 2026-11-02 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 implemented and not closed. Huawei packaging rights remain a blocker, and M2's review is outstanding. M7 Claude Code preparation started early under D-015.
+Updated: 2026-11-02 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 implemented and not closed. Huawei rights are not cleared, with D-017 allowing private personal use only, and M2's review is outstanding. M7 Claude Code preparation started early under D-015.
 
 Source of scope: [requirements](../requirements/requirements.md). Model abbreviations and review rules: [model strategy](model-strategy.md). Quality check definitions: [quality gate](quality-gate.md).
 
@@ -49,14 +49,14 @@ Exit: valid JSON passes, malformed/dangling/cyclic input fails, diagnostic contr
 
 ## M2 — Provider semantics, catalogs and icon rights
 
-Status: Implemented in S06 and not closed. [Evidence](evidence/S06-provider-catalogs.md) records actual CI [run 41462453632](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41462453632) passing at `4b9b826`. Open: Huawei rights under O-002, owner inspection and the Astra/High review. Policy: Sol/Medium, Sol/High for placement rules, review Astra/High. Actual implementation: Claude Opus 5.5, the model of the owner's session.
+Status: Implemented in S06 and not closed. [Evidence](evidence/S06-provider-catalogs.md) records actual CI [run 41462453632](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41462453632) passing at `4b9b826`. D-016 and D-017 followed and are not yet in CI. Open: O-002 for public distribution, O-010 for seven items with no icon, owner inspection of the Huawei icons and the Astra/High review. Policy: Sol/Medium, Sol/High for placement rules, review Astra/High. Actual implementation: Claude Opus 5.5, the model of the owner's session.
 
 | Task | Work | Dependency / output |
 |---|---|---|
 | M2-01 | Freeze taxonomy and exact cloud/platform minimum type inventory | M1-02 -> catalog schema and inventory covering requirements sections 6/6.1. **Complete** |
 | M2-02 | Map AWS/Azure/GCP native types and documented placement rules | M2-01 -> mapping records, primary-source links, positive/negative fixtures. **Complete** |
-| M2-03 | Add Huawei type/icon mappings, IAM/enterprise-project distinctions and per-service rules | M0-03 + M2-01 + actual rights evidence -> approved assets, SHA-256 manifest and rules; FR-013. S02's technical source candidate is not packaging clearance. **Partial:** types and rules complete; icons blocked by O-002 |
-| M2-04 | Map on-premises physical/logical components and prepare the eight draw.io-type generic representations | M2-01 + D-010/S02 follow-up -> exact approved symbols/compositions, source conditions/attribution, original/derived hashes and physical-vs-logical fixtures; FR-014. **Complete;** owner inspection pending |
+| M2-03 | Add Huawei type/icon mappings, IAM/enterprise-project distinctions and per-service rules | M0-03 + M2-01 + actual rights evidence -> approved assets, SHA-256 manifest and rules; FR-013. S02's technical source candidate is not packaging clearance. **Partial:** types and rules complete; eight items have private-use icons under D-017, and seven have none under O-010 |
+| M2-04 | Map on-premises physical/logical components and prepare the eight draw.io-type generic representations | M2-01 + D-010/S02 follow-up -> exact approved symbols/compositions, source conditions/attribution, original/derived hashes and physical-vs-logical fixtures; FR-014. **Complete;** the owner accepted the contact sheet, and rendered visual acceptance stays with M4 and M6 |
 | M2-05 | Implement catalog inventory and license/asset checks | M2-02..04 + M2-06 -> every required cloud/Kubernetes item resolves, missing rights/assets fail CI. **Complete;** the `catalog-license` lane is active |
 | M2-06 | Add shared Kubernetes detail catalog, provider node-pool/group mappings and semantic rules | M2-01 + M2-02..04 -> FR-018/029; positive/negative cluster/namespace, ownership, Service/Ingress and storage/config/security fixtures across the five hosting environments. **Complete;** the `provider-semantics` lane is active |
 

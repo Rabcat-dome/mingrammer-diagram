@@ -112,9 +112,10 @@ class CatalogRecord(CatalogModel):
     capabilities: tuple[Capability, ...] = Field(min_length=1)
     placement: PlacementRule = PlacementRule()
     representation: Representation
-    status: Literal["supported", "semantics_only"]
+    status: Literal["supported", "semantics_only", "private_use_only"]
     sources: tuple[str, ...] = Field(min_length=1)
     native_id: str | None = None
+    native_aliases: tuple[str, ...] = ()
     kubernetes_kinds: tuple[KubernetesKind, ...] = ()
     api_version: str | None = None
     namespaced: bool | None = None
@@ -177,11 +178,14 @@ class Candidate(CatalogModel):
 
 class Pack(CatalogModel):
     id: str
-    status: Literal["approved", "blocked"]
+    status: Literal["approved", "blocked", "private_use_only"]
     distribution: Literal["bundled", "dependency", "none"]
     publisher: str
     license: str | None
-    rights_basis: Literal["license", "publisher_permission", "publisher_invitation", "none"]
+    rights_basis: Literal[
+        "license", "publisher_permission", "publisher_invitation", "owner_risk_acceptance", "none"
+    ]
+    owner_decision: str | None = None
     source_url: str
     source_version: str
     retrieved: str
@@ -195,12 +199,15 @@ class Pack(CatalogModel):
     source_sha256: str | None = None
     blocker: str | None = None
     blocker_reason: str | None = None
+    blocker_scope: Literal["public_distribution", "icon_coverage"] | None = None
     candidates: tuple[Candidate, ...] = ()
 
 
 class AssetOriginal(CatalogModel):
     name: str
-    canonical_sha256: str
+    sha256: str
+    digest_of: Literal["canonical_stencil_xml", "decoded_png"]
+    entry_index: int | None = None
 
 
 class DerivedFile(CatalogModel):
@@ -211,7 +218,7 @@ class DerivedFile(CatalogModel):
 
 
 class AssetDerived(CatalogModel):
-    svg: DerivedFile
+    svg: DerivedFile | None
     png: DerivedFile
 
 
@@ -222,6 +229,7 @@ class Asset(CatalogModel):
     required_label: str
     composition: str
     symbols: tuple[str, ...] = Field(min_length=1)
+    title_token: str | None = None
     original: tuple[AssetOriginal, ...] = Field(min_length=1)
     derived: AssetDerived
     changes: str
@@ -275,17 +283,23 @@ class Catalog:
             {
                 "id": pack.blocker,
                 "pack": pack.id,
+                "scope": pack.blocker_scope,
                 "reason": pack.blocker_reason,
                 "affected_types": sorted(
                     record.id
                     for record in self.records.values()
-                    if record.representation.kind == "blocked"
-                    and record.representation.pack == pack.id
+                    if self._uses_pack(record, pack.id)
                 ),
             }
             for pack in self.manifest.packs
-            if pack.status == "blocked"
+            if pack.blocker
         ]
+
+    def _uses_pack(self, record: CatalogRecord, pack: str) -> bool:
+        item = record.representation
+        return item.pack == pack or (
+            item.asset in self.assets and self.assets[item.asset].pack == pack
+        )
 
     def search(
         self,

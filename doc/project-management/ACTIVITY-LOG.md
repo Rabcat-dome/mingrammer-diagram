@@ -282,3 +282,17 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - Activated the `catalog-license` and `provider-semantics` lanes. The local gate passes 12 lanes with 480 tests, and four deliberate sabotage changes each failed their lane. Updated the Claude skill, guide and tests, which failed on purpose when capabilities moved.
 - Owner authorized the commit and push of `4b9b826`. Actual Quality gate [run 41462453632](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41462453632) / job 125334691898 passed all 12 lanes with 480 tests, none skipped, zero annotations, from a clean checkout. Its wheel matches the local build's SHA-256.
 - Not done: owner inspection, the Astra/High review, the Huawei decision, or any update to the owner's plugin. See the [S06 evidence](evidence/S06-provider-catalogs.md).
+
+## 2026-11-02 — S06 owner decisions on GCP and Huawei icons
+
+- The owner, through the parent session, accepted the existing GCP icons (D-016, closing O-009). The owner also chose the `JuanDiaz00/Huawei-Cloud-draw.io-icons` pack for private personal use (D-017). D-017 records risk acceptance only: rights are not cleared, redistribution permission is not established, and O-002 keeps public distribution blocked.
+- Pinned the pack at `ea52d73`, with hashes matching S02, and inventoried all 155 entries. All are RGBA PNG, 256x256 apart from one 512x512. Measurement showed every image is black line art on transparent, not Huawei's color style.
+- Coverage of the 17 required items: eight mapped (VPC, ECS, ELB, EIP, RDS, IAM, VPN, FunctionGraph), two labeled boundaries (Subnet, Security Group), and seven with no clear match (NAT Gateway, CCE, OBS, API Gateway, Direct Connect, Cloud Eye, LTS), which stay without an icon under new O-010. FunctionGraph goes beyond P-013's seven through Huawei's documented `FGS` code. Tempting guesses such as OBS to `storage-55` now fail the lane.
+- Added `private_use_only` handling: the `Private :: Do Not Upload` classifier, a lane failure on a public repository in Actions, checks that a private pack cannot claim clearance, and two warnings, `ASSET_PRIVATE_USE_ONLY` and the renamed `ICON_UNAVAILABLE`. Requirements revision 0.11 records the scoped exception. Three new sabotage checks failed as intended, and the files were restored.
+- Not done: commit, push and CI for this work, any update to the owner's plugin, owner inspection of the Huawei icons, or the Astra/High review. See the [S06 evidence](evidence/S06-provider-catalogs.md#huawei-cloud-icons-under-d-017).
+
+
+## 2026-11-02 — S06 owner inspection of on-premises symbols
+
+- The owner, through the parent session, reviewed the eight symbols in `S06-onprem-contact-sheet.png` and accepted them. This completes the owner inspection for M2-04.
+- The acceptance covers that contact sheet only. Rendered visual acceptance stays with M4 and M6.

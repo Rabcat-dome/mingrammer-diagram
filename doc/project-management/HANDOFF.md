@@ -4,9 +4,9 @@ Updated: 2026-11-02 | S01-S05 complete. S06 / M2 is implemented and CI-tested on
 
 ## Goal and current source
 
-Personal ChatGPT Work-first plugin on mingrammer/diagrams + Graphviz for AWS/Azure/GCP/Huawei/on-premises, with detailed Kubernetes and provider-reference visuals. Claude Code acceptance is later; D-015 started its preparation early. Keep English docs and one [requirements baseline v0.10](../requirements/requirements.md).
+Personal ChatGPT Work-first plugin on mingrammer/diagrams + Graphviz for AWS/Azure/GCP/Huawei/on-premises, with detailed Kubernetes and provider-reference visuals. Claude Code acceptance is later; D-015 started its preparation early. Keep English docs and one [requirements baseline v0.11](../requirements/requirements.md).
 
-Branch: `codex/s05-core-quality-gate`. M1 executable/workflow source reviewed and CI-tested at `785e1eecb646476691859f14dd4399ac564011ca`, milestone base `ff53a88944e981be2bbbab171e0ccf8cecdb4e41`. Later closure commits are docs/evidence only. Verify final HEAD/latest CI before resuming; main has not been merged. M7 preparation is on `codex/m7-claude-plugin`, stacked on the S05 head; its prefix keeps the existing workflow trigger. S06 branched from `c6a59e5` on `codex/m7-claude-plugin`, so it inherits the S05 core and the gate, which now has 12 lanes. The S06 code head is `4b9b826`. Main has not been merged, so verify the final HEAD and latest CI before resuming.
+Branch: `codex/s05-core-quality-gate`. M1 executable/workflow source reviewed and CI-tested at `785e1eecb646476691859f14dd4399ac564011ca`, milestone base `ff53a88944e981be2bbbab171e0ccf8cecdb4e41`. Later closure commits are docs/evidence only. Verify final HEAD/latest CI before resuming; main has not been merged. M7 preparation is on `codex/m7-claude-plugin`, stacked on the S05 head; its prefix keeps the existing workflow trigger. S06 branched from `c6a59e5` on `codex/m7-claude-plugin`, so it inherits the S05 core and the gate, which now has 12 lanes. The last CI-tested S06 code head is `4b9b826`. The owner's D-016 and D-017 work sits on top and is uncommitted until the owner authorizes a commit, so verify `git status`, HEAD and the latest CI before resuming. Main has not been merged.
 
 D-013/D-014 select per-machine native Python/Graphviz in the separate ChatGPT Work page. Docker, central hosting, public renderer and renderer/model API keys are unnecessary. S04's installed alpha.3 three-node plugin remains separate from M1 core package 0.2.0a1; this activity did not upgrade that plugin/runtime.
 
@@ -24,8 +24,8 @@ D-013/D-014 select per-machine native Python/Graphviz in the separate ChatGPT Wo
 - Astra/High initially found two P2 issues: alternate ownership edges bypassed Kubernetes context rules; docs gate required historical output files outside the repo. Shared ownership validation and portable link policy fix them; re-review at 785e1ee confirms both with no additional actionable findings. Root separately verified fix-head CI. Actual implementation used inherited Sol/XHigh; no model setting changed.
 - Gate: docs/traceability/proof hashes, narrow credential patterns, Ruff lint/format, strict mypy, actionlint, schema/core tests and core package build. Catalog/license/provider/render/visual/plugin lanes must be activated as components arrive. No mandatory paid model API call. Do not call deferred checks passed.
 - Runner ID 2, macbook-pro-m2-max-mingrammer, label mingrammer-macos-arm64; native shell jobs. Existing seven registrations preserved. Current read-only API snapshot: owner is the only collaborator, private fork-PR workflows disabled, no fork write tokens/secrets. Actor checks supplement server-side access policy; keep external code off the personal host. Current private plan lacks required-check enforcement; manual review/merge remains necessary.
-- [S06 / M2](evidence/S06-provider-catalogs.md): catalog `2026.11.0` has 26 taxonomy IDs, 148 records and 55 sourced rules, and the eight on-premises assets are bundled with attribution and hashes. Actual CI [run 41462453632](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41462453632) at `4b9b826` passes 12 lanes with 480 tests and none skipped, and sabotage checks confirm the new lanes fail when they should. **No owner inspection or Astra/High review has covered it**, and the owner's installed plugin does not have it yet. Implementation used Claude Opus 5.5, not Sol.
-- Huawei source availability is not redistribution/output permission. O-002 remains a packaging/release blocker with stronger evidence: Huawei's own icon manifest has no license, and its site terms require prior written consent. No Huawei pack is bundled and no request was sent. Semantics work is complete, and every Huawei service is `semantics_only`.
+- [S06 / M2](evidence/S06-provider-catalogs.md): catalog `2026.11.0` has 26 taxonomy IDs, 148 records and 56 sourced rules, and the eight on-premises assets are bundled with attribution and hashes. Actual CI [run 41462453632](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41462453632) at `4b9b826` passes 12 lanes with 480 tests and none skipped, and sabotage checks confirm the new lanes fail when they should. The owner accepted the eight on-premises symbols on their contact sheet, and rendered visual acceptance stays with M4 and M6. **No Astra/High review has covered this work, and the owner has not yet inspected the Huawei icons**, and the owner's installed plugin does not have it yet. Implementation used Claude Opus 5.5, not Sol.
+- Huawei: source availability is not redistribution/output permission. [D-017](decisions.md#confirmed-user-direction) accepts the JuanDiaz00 pack for the owner's private personal use only, which is risk acceptance, not clearance. Eight required items have icons, unchanged from commit `ea52d73`, and seven have none under O-010: NAT Gateway, CCE, OBS, API Gateway, Direct Connect, Cloud Eye and LTS. The pack is black line art, not Huawei's color style. O-002 blocks public distribution, and the `catalog-license` lane fails on a public repository or a missing upload block. Keep this repository private; once committed, these files stay in its history. D-016 accepts the GCP icons.
 - Existing S04 source/fonts/proofs remain available; no runtime cache, Docker resource, cloud service, account plugin, merge or release was changed by S05. Historical host paths are provenance text; reproducible doc links stay inside the repository.
 - [M7 Claude Code preparation](evidence/M7-claude-plugin.md): `plugins/cloud-architecture-diagrams` validates models through the core and cannot render. Packaging at `22fc85e` left the wheel byte-identical to the S05 CI wheel; core `0.2.0a2` then added a usage exit code. GitHub and real-config installs, live English/Thai/edit invocations and a Code tab runtime check pass on one Mac. The owner's install is pinned to the branch, so re-add the marketplace after a merge. A same-session review found 10 issues, all fixed at `0220e94`, which passed actual CI run 41443551856. A separate Claude session then reviewed `c5f74b4..a94b47a` as a substitute, not Astra: no Critical or High issues, with all three Medium and six Low findings fixed by core `0.2.0a4`. Those fixes passed actual CI run 41453874994 at `917f46f`, and the owner's install holds that commit; no review pass has covered them. A second machine, interactive permission prompts and the Astra/High review remain open. Run 41441398887 at `359f1ea` confirms the move of `actions/upload-artifact` to Node 24, with no job annotations.
 
@@ -35,24 +35,25 @@ Core changes reach the plugin through symlinks, so no copy step exists, and Clau
 
 ## Next steps
 
-1. Owner: inspect the [on-premises symbols](evidence/S06-provider-catalogs.md#on-premises-representations), decide the Huawei route under O-002, and judge the GCP icon evidence under O-009.
-2. Arrange the Astra/High review of `c6a59e5..4b9b826`, then close M2 or record its remaining blocker. Review of the M7 Medium and Low fixes also remains outstanding.
-3. S07 / M3 renderer: honor each record's `representation`, draw Azure icons unmodified, keep `required_label` on assets, and never substitute for `blocked`. Later M4 references/visuals, M5 full Work plugin and M6 two-machine release acceptance remain open.
+1. Owner: inspect the [Huawei icon sheet](evidence/S06-provider-catalogs.md#huawei-cloud-icons-under-d-017), and decide O-010, including whether line art is acceptable.
+2. Owner: authorize a commit and push of the D-016 and D-017 work, so actual CI covers it. Update the installed plugin only if asked.
+3. Arrange the Astra/High review of this work from `c6a59e5`, then close M2 or record its remaining blocker. Review of the M7 Medium and Low fixes also remains outstanding.
+4. S07 / M3 renderer: honor each record's `representation`, draw Azure icons unmodified, keep `required_label` on assets, never substitute for `blocked`, draw black-on-transparent Huawei PNGs on a light background, and carry the private-use limit into any bundle that uses them. Later M4 references/visuals, M5 full Work plugin and M6 two-machine release acceptance remain open.
 
 ## Resume prompt
 
 ```text
 Continue from doc/project-management/HANDOFF.md and the S06 evidence. Verify git
 status and the latest successful GitHub quality-gate SHA first. M2 still needs
-the Astra/High review of c6a59e5..4b9b826 and the owner's decisions on O-002 and
-O-009.
+the Astra/High review, and the owner's inspection of the Huawei icons and
+decision on O-010. D-017
+allows Huawei icons for private personal use only; it does not clear their rights.
 
 For S07 / M3, read M3 in milestones.md, FR-040..048 and the core contract's
 catalog section. Keep the same checkout and a codex/ branch; keep docs English.
 Render only through each catalog record's representation. Huawei source
-availability is not redistribution permission: O-002 remains a blocker unless
-the owner supplies written consent, so draw no Huawei icon and no silent generic
-substitute. Keep S04 alpha.3 and existing runner registrations unchanged. Record
+availability is not redistribution permission: keep public distribution blocked
+under O-002, and draw no silent generic substitute for a type without an icon. Keep S04 alpha.3 and existing runner registrations unchanged. Record
 the model actually used. No Docker cleanup, cloud host, public release or
 automatic merge is part of this activity.
 ```

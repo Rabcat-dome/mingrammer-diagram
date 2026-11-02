@@ -165,26 +165,266 @@ def test_huawei_generic_substitution_fails() -> None:
         assert any("Huawei services must not" in error for error in errors), representation.kind
 
 
-def test_every_huawei_service_is_blocked_with_no_icon() -> None:
-    services = [
-        record
-        for record in catalog().records.values()
-        if record.providers == ("huawei",) and record.entity == "resource"
-    ]
-    assert len(services) >= 17
-    for record in services:
-        if "node_group" in record.capabilities:
-            continue
-        assert record.representation.kind == "blocked" and record.representation.blocker == "O-002"
-        assert record.status == "semantics_only"
+MAPPED = {
+    "huawei.network.vpc": "network-vpc",
+    "huawei.compute.ecs": "computing-ecs",
+    "huawei.network.elb": "network-elb",
+    "huawei.network.eip": "network-eip",
+    "huawei.database.rds": "database-rds",
+    "huawei.identity.iam": "managementdeployment-iam",
+    "huawei.network.vpn": "network-vpn-2",
+    "huawei.compute.functiongraph": "computing-fgs",
+}
+NO_CLEAR_MATCH = {
+    "huawei.network.nat_gateway",
+    "huawei.containers.cce_standard",
+    "huawei.containers.cce_turbo",
+    "huawei.containers.cce_autopilot",
+    "huawei.storage.obs",
+    "huawei.integration.api_gateway",
+    "huawei.network.direct_connect",
+    "huawei.observability.cloud_eye",
+    "huawei.observability.lts",
+}
 
 
-def test_huawei_blocker_is_reported_and_no_asset_is_bundled() -> None:
-    [blocker] = catalog().release_blockers()
-    assert blocker["id"] == "O-002" and "written" in str(blocker["reason"])
-    assert "huawei.compute.ecs" in blocker["affected_types"]  # type: ignore[operator]
-    assert not [asset for asset in catalog().manifest.assets if asset.pack == "huawei-cloud-icons"]
-    assert not list(PACKAGE.rglob("*huawei*.png")) and not list(PACKAGE.rglob("*huawei*.svg"))
+def test_huawei_icons_map_only_clear_matches() -> None:
+    # Changing either list is a mapping decision that the owner must be told about by name.
+    records = catalog().records
+    for type_id, title in MAPPED.items():
+        record = records[type_id]
+        asset = catalog().assets[str(record.representation.asset)]
+        assert asset.symbols == (title,) and record.status == "private_use_only"
+        assert asset.derived.svg is None and asset.original[0].sha256 == asset.derived.png.sha256
+    blocked = {
+        record.id
+        for record in records.values()
+        if record.providers == ("huawei",) and record.representation.kind == "blocked"
+    }
+    assert blocked == NO_CLEAR_MATCH
+    for type_id in NO_CLEAR_MATCH:
+        assert records[type_id].status == "semantics_only"
+        assert records[type_id].representation.blocker == "O-010"
+
+
+def test_required_huawei_items_are_reported_by_name() -> None:
+    coverage = catalog_checks.icon_coverage(catalog())
+    assert set(coverage["no_clear_match"]) == {
+        "NAT Gateway",
+        "CCE",
+        "OBS",
+        "API Gateway",
+        "Direct Connect",
+        "Cloud Eye",
+        "LTS",
+    }
+    assert {"subnet", "Security Group"} <= set(coverage["labeled_boundary"])
+    assert {"VPC", "ECS", "ELB", "EIP", "RDS", "IAM", "VPN", "FunctionGraph"} <= set(
+        coverage["mapped"]
+    )
+
+
+def test_blockers_separate_public_distribution_from_icon_coverage() -> None:
+    blockers = {str(item["id"]): item for item in catalog().release_blockers()}
+    assert set(blockers) == {"O-002", "O-010"}
+    assert blockers["O-002"]["scope"] == "public_distribution"
+    assert blockers["O-002"]["affected_types"] == sorted(MAPPED)
+    assert blockers["O-010"]["scope"] == "icon_coverage"
+    assert blockers["O-010"]["affected_types"] == sorted(NO_CLEAR_MATCH)
+    assert "no redistribution permission" in str(blockers["O-002"]["reason"])
+
+
+def private_record(type_id: str, **updates: Any) -> tuple[Any, Catalog]:
+    view = Catalog()
+    return view.records[type_id].model_copy(update=updates), view
+
+
+@pytest.mark.parametrize(
+    ("type_id", "title", "token"),
+    [
+        ("huawei.storage.obs", "storage-55", "storage"),
+        ("huawei.storage.obs", "storage-55", "obs"),
+        ("huawei.containers.cce_standard", "other-cluster-computing-platform-services", "cluster"),
+        ("huawei.observability.lts", "log-and-trace-consolele", "log"),
+        ("huawei.network.direct_connect", "cc-21", "cc"),
+    ],
+)
+def test_a_title_that_does_not_name_the_service_cannot_be_mapped(
+    type_id: str, title: str, token: str
+) -> None:
+    # These are the tempting guesses, so each must fail however it is written down.
+    view = Catalog()
+    asset = view.assets["huawei-ecs"].model_copy(
+        update={"id": "guess", "symbols": (title,), "title_token": token}
+    )
+    view.assets["guess"] = asset
+    record = view.records[type_id]
+    item = record.representation.model_copy(
+        update={"kind": "custom_asset", "asset": "guess", "pack": None, "blocker": None}
+    )
+    errors: list[str] = []
+    catalog_checks.check_private_record(
+        record.model_copy(update={"representation": item, "status": "private_use_only"}),
+        view,
+        errors,
+    )
+    assert any("does not name this service" in error for error in errors), errors
+
+
+def test_fgs_title_maps_only_through_the_documented_alias() -> None:
+    record, view = private_record("huawei.compute.functiongraph", native_aliases=())
+    errors: list[str] = []
+    catalog_checks.check_private_record(record, view, errors)
+    assert any("does not name this service" in error for error in errors)
+
+
+def test_private_pack_serves_only_its_provider() -> None:
+    view = Catalog()
+    record = view.records["onprem.storage.nas"]
+    item = record.representation.model_copy(update={"asset": "huawei-rds"})
+    errors: list[str] = []
+    catalog_checks.check_representation(
+        record.model_copy(update={"representation": item, "status": "private_use_only"}),
+        view,
+        errors,
+    )
+    assert any("serves only its own provider" in error for error in errors)
+
+
+def test_private_status_must_match_the_pack() -> None:
+    record, view = private_record("huawei.compute.ecs", status="supported")
+    errors: list[str] = []
+    catalog_checks.check_private_record(record, view, errors)
+    assert any("private_use_only must match" in error for error in errors)
+
+
+def private_pack_errors(mutate: Callable[[dict[str, Any]], None]) -> list[str]:
+    def wrapped(data: dict[str, Any]) -> None:
+        mutate(pack(data, "huawei-juandiaz00-png"))
+
+    return pack_errors(wrapped)
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "message"),
+    [
+        ("license", "MIT", "cannot claim a license"),
+        ("redistribution_evidence", "Seems fine", "cannot claim a license"),
+        ("rights_basis", "license", "recorded risk acceptance"),
+        ("attribution", None, "attribution and a pinned source"),
+        ("source_git_blob", None, "attribution and a pinned source"),
+        ("blocker_scope", "icon_coverage", "must stay an explicit blocker"),
+        ("blocker", "O-999", "not in the decision log"),
+        ("owner_decision", "D-999", "not in the decision log"),
+        ("owner_decision", "D-001", "does not limit use"),
+        ("source_commit", None, "pinned source"),
+    ],
+)
+def test_private_use_pack_cannot_read_as_cleared(field: str, value: Any, message: str) -> None:
+    errors = private_pack_errors(lambda item: item.update({field: value}))
+    assert any(message in error for error in errors), errors
+
+
+def test_owner_risk_acceptance_cannot_approve_a_pack() -> None:
+    def mutate(item: dict[str, Any]) -> None:
+        item.update({"status": "approved", "blocker": None, "redistribution_evidence": "Owner"})
+
+    errors = private_pack_errors(mutate)
+    assert any("from a rights holder" in error for error in errors), errors
+
+
+def visibility_root(tmp_path: Path, classifiers: str, readme: str) -> Path:
+    (tmp_path / "plugins/cloud-architecture-diagrams").mkdir(parents=True)
+    (tmp_path / "pyproject.toml").write_text(f"[project]\nclassifiers = [{classifiers}]\n")
+    (tmp_path / "plugins/cloud-architecture-diagrams/README.md").write_text(readme)
+    return tmp_path
+
+
+def test_private_use_requires_the_upload_block(tmp_path: Path) -> None:
+    root = visibility_root(tmp_path, "", "For private personal use only.")
+    errors: list[str] = []
+    catalog_checks.check_private_use(catalog().manifest, errors, root, {})
+    assert any("Do Not Upload" in error for error in errors)
+
+
+def test_private_use_requires_the_plugin_to_say_so(tmp_path: Path) -> None:
+    root = visibility_root(tmp_path, '"Private :: Do Not Upload"', "A plugin.")
+    errors: list[str] = []
+    catalog_checks.check_private_use(catalog().manifest, errors, root, {})
+    assert any("plugin README" in error for error in errors)
+
+
+@pytest.mark.parametrize(
+    ("event", "state", "fails"),
+    [
+        ('{"repository": {"private": true}}', "private", False),
+        ('{"repository": {"private": false}}', "public", True),
+        ('{"repository": {}}', "unreadable", True),
+        ("not json", "unreadable", True),
+    ],
+)
+def test_public_repository_fails_the_lane(
+    tmp_path: Path, event: str, state: str, fails: bool
+) -> None:
+    root = visibility_root(tmp_path, '"Private :: Do Not Upload"', "For private personal use only.")
+    path = tmp_path / "event.json"
+    path.write_text(event)
+    errors: list[str] = []
+    environ = {"GITHUB_ACTIONS": "true", "GITHUB_EVENT_PATH": str(path)}
+    assert catalog_checks.check_private_use(catalog().manifest, errors, root, environ) == state
+    assert bool(errors) == fails
+
+
+def test_repository_visibility_is_disclosed_as_unchecked_outside_actions() -> None:
+    errors: list[str] = []
+    state = catalog_checks.check_private_use(catalog().manifest, errors, ROOT, {})
+    assert state == "not_checked_outside_actions" and errors == []
+
+
+def test_tampered_private_asset_fails_its_hash(package: Path) -> None:
+    (package / "assets/huawei/ecs.png").write_bytes(ONE_PIXEL_PNG)
+    errors = asset_errors(catalog().manifest, package)
+    assert any("ecs.png does not match" in error for error in errors)
+
+
+def test_private_asset_recorded_as_changed_fails(package: Path) -> None:
+    data = manifest_data()
+    asset = next(item for item in data["assets"] if item["id"] == "huawei-ecs")
+    asset["original"][0]["sha256"] = "0" * 64
+    errors = asset_errors(rebuilt(data), package)
+    assert any("recorded as unchanged" in error for error in errors)
+
+
+def test_pack_inventory_detects_the_wrong_entry() -> None:
+    data = manifest_data()
+    asset = next(item for item in data["assets"] if item["id"] == "huawei-ecs")
+    asset["original"][0]["entry_index"] = 0
+    errors: list[str] = []
+    catalog_checks.check_pack_inventory(rebuilt(data), errors)
+    assert any("not the pinned entry" in error for error in errors)
+    pin = next(item for item in data["packs"] if item["id"] == "huawei-juandiaz00-png")
+    pin["source_commit"] = "0" * 40
+    errors = []
+    catalog_checks.check_pack_inventory(rebuilt(data), errors)
+    assert any("its pin differs" in error for error in errors)
+
+
+def test_pack_inventory_holds_no_artwork() -> None:
+    inventory = json.loads((ROOT / catalog_checks.PACK_INVENTORY).read_text())
+    assert len(inventory["entries"]) == 155
+    assert {tuple(sorted(row)) for row in inventory["entries"]} == {
+        ("bytes", "height", "index", "sha256", "title", "width")
+    }
+
+
+def test_notice_must_disclose_the_private_limit(package: Path) -> None:
+    notice = package / "assets/NOTICE.md"
+    notice.write_text(notice.read_text().replace("private personal use", "normal use"))
+    errors = asset_errors(catalog().manifest, package)
+    assert any("private-use limit" in error for error in errors)
+    notice.write_text("O-002 private personal use, CC BY 4.0, rights are cleared.")
+    errors = asset_errors(catalog().manifest, package)
+    assert any("not cleared" in error for error in errors)
 
 
 def test_approving_a_pack_without_evidence_fails() -> None:
@@ -287,9 +527,10 @@ def test_unsafe_svg_is_detected(content: str, tmp_path: Path) -> None:
 
 
 def test_bundled_svgs_are_safe_and_eight_concepts_stay_distinct() -> None:
-    assets = catalog().manifest.assets
+    assets = [item for item in catalog().manifest.assets if item.pack == "drawio-network-2018"]
     assert {asset.concept for asset in assets} == catalog_checks.REQUIRED_CONCEPTS
     for asset in assets:
+        assert asset.derived.svg is not None
         assert catalog_checks.svg_problems(PACKAGE / asset.derived.svg.path) == []
     by_id = {asset.id: asset for asset in assets}
     # The requirement's pairs must not collapse into one symbol.
@@ -377,16 +618,21 @@ def test_catalog_discovery_is_bounded_and_filterable() -> None:
 def test_cli_catalog_and_capabilities_report_the_blocker(
     capsys: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    monkeypatch.setattr(sys, "argv", ["cloud-diagrams", "catalog", "--type", "huawei.compute.ecs"])
+    monkeypatch.setattr(sys, "argv", ["cloud-diagrams", "catalog", "--type", "huawei.storage.obs"])
     assert cli.main() == 0
     record = json.loads(capsys.readouterr().out)["records"][0]
     assert record["representation"]["kind"] == "blocked"
     assert record["status"] == "semantics_only"
+    monkeypatch.setattr(sys, "argv", ["cloud-diagrams", "catalog", "--type", "huawei.compute.ecs"])
+    assert cli.main() == 0
+    record = json.loads(capsys.readouterr().out)["records"][0]
+    assert record["representation"]["asset"] == "huawei-ecs"
+    assert record["status"] == "private_use_only"
     monkeypatch.setattr(sys, "argv", ["cloud-diagrams", "catalog", "--taxonomy-list"])
     assert cli.main() == 0
     assert len(json.loads(capsys.readouterr().out)["taxonomy"]) == len(catalog().taxonomy_ids)
     monkeypatch.setattr(sys, "argv", ["cloud-diagrams", "capabilities"])
     assert cli.main() == 0
     report = json.loads(capsys.readouterr().out)
-    assert report["release_blockers"][0]["id"] == "O-002"
+    assert [item["id"] for item in report["release_blockers"]] == ["O-002", "O-010"]
     assert report["render_available"] is False

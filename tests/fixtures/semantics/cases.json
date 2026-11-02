@@ -2055,9 +2055,15 @@
  ],
  "warnings": [
   {
-   "id": "huawei-icon-rights",
+   "id": "huawei-icon-unavailable",
    "base": "providers/huawei",
-   "expect": "ASSET_RIGHTS_BLOCKED",
+   "expect": "ICON_UNAVAILABLE",
+   "ops": []
+  },
+  {
+   "id": "huawei-private-use",
+   "base": "providers/huawei",
+   "expect": "ASSET_PRIVATE_USE_ONLY",
    "ops": []
   },
   {

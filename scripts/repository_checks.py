@@ -162,11 +162,19 @@ def package() -> list[str]:
             for name in wheel.namelist()
             if ".dist-info/" not in name
         }
-    return [
+    errors = [
         f"{wheels[0].name}: differs from src: {name}"
         for name in sorted(expected.keys() | shipped.keys())
         if expected.get(name) != shipped.get(name)
     ]
+    # D-017: a package holding private-use icons must carry the marker that blocks a PyPI upload.
+    with zipfile.ZipFile(wheels[0]) as wheel:
+        metadata = [name for name in wheel.namelist() if name.endswith(".dist-info/METADATA")]
+        marked = bool(metadata) and b"Private :: Do Not Upload" in wheel.read(metadata[0])
+    manifest = source / "cloud_architecture_diagrams/catalog_data/assets.json"
+    if not marked and manifest.exists() and '"private_use_only"' in manifest.read_text():
+        errors.append(f"{wheels[0].name}: private-use assets need the upload-block marker")
+    return errors
 
 
 def main() -> int:

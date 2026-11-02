@@ -97,7 +97,8 @@ class Semantics:
             entity.id: entity for entity in [*model.scopes, *model.boundaries, *model.resources]
         }
         self.types: dict[str, CatalogRecord] = {}
-        self.blocked_reported: set[str] = set()
+        self.unavailable_reported: set[str] = set()
+        self.private_use_reported = False
         self.dedicated: dict[str, set[str]] = defaultdict(set)
         self.subnet_types: dict[str, set[str]] = defaultdict(set)
         self.attached: dict[str, set[str]] = defaultdict(set)
@@ -119,6 +120,12 @@ class Semantics:
                 remedy=rule.remedy,
             )
         )
+
+    def private_use(self, record: CatalogRecord, field: str, entity_id: str) -> None:
+        # Once per model, because the limit applies to the whole output rather than to each icon.
+        if record.status == "private_use_only" and not self.private_use_reported:
+            self.private_use_reported = True
+            self.emit("ASSET_PRIVATE_USE_ONLY", field, entity_id)
 
     def boundary(self, identifier: str | None) -> Boundary | None:
         found = self.entities.get(identifier) if identifier else None
@@ -202,6 +209,7 @@ class Semantics:
                 self.emit("PROVIDER_BOUNDARY_KIND_INVALID", path + "/kind", boundary.id)
                 continue
             self.types[boundary.id] = record
+            self.private_use(record, path + "/kind", boundary.id)
             self.scope_kinds(boundary.scope_refs, record, path + "/scope_refs", boundary.id)
             parent = self.boundary(boundary.parent_ref)
             if parent is not None:
@@ -287,9 +295,10 @@ class Semantics:
             self.emit("CATALOG_KUBERNETES_KIND_MISMATCH", path + "/service_type", resource.id)
             return
         self.types[resource.id] = record
-        if record.representation.kind == "blocked" and record.id not in self.blocked_reported:
-            self.blocked_reported.add(record.id)
-            self.emit("ASSET_RIGHTS_BLOCKED", path + "/service_type", resource.id)
+        if record.representation.kind == "blocked" and record.id not in self.unavailable_reported:
+            self.unavailable_reported.add(record.id)
+            self.emit("ICON_UNAVAILABLE", path + "/service_type", resource.id)
+        self.private_use(record, path + "/service_type", resource.id)
 
     def placement(self, index: int, resource: Resource, record: CatalogRecord) -> None:
         path = f"/resources/{index}/placement"
