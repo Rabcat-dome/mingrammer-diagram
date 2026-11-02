@@ -12,7 +12,7 @@ The current private repository's rulesets/protection endpoints return 403 requir
 
 ## Implemented M1 gate and planned additions
 
-Implemented [quality-gate.yml](../../.github/workflows/quality-gate.yml) runs docs-contract, secrets, lint, format, types, workflow, schema-core and core package-build checks. [S05 evidence](evidence/S05-core-and-ci.md) records actual run 41426653007 at 785e1ee: eight lanes and 82 tests passed. The stable job name is quality-gate. Catalog/provider/render/visual/plugin checks below remain planned until their components arrive; no placeholder pass is emitted. M7 preparation adds the `claude-plugin` and `package-contents` lanes, which passed actual CI, most recently run 41449921613 at `87acce5` with 10 lanes in total; see the [M7 evidence](evidence/M7-claude-plugin.md).
+Implemented [quality-gate.yml](../../.github/workflows/quality-gate.yml) runs docs-contract, secrets, lint, format, types, workflow, schema-core and core package-build checks. [S05 evidence](evidence/S05-core-and-ci.md) records actual run 41426653007 at 785e1ee: eight lanes and 82 tests passed. The stable job name is quality-gate. Catalog/provider/render/visual/plugin checks below remain planned until their components arrive; no placeholder pass is emitted. M7 preparation adds the `claude-plugin` and `package-contents` lanes, which passed actual CI, most recently run 41453874994 at `917f46f` with 10 lanes in total; see the [M7 evidence](evidence/M7-claude-plugin.md).
 
 | Check | Starts | Blocking result | Evidence |
 |---|---|---|---|

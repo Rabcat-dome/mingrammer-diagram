@@ -122,7 +122,7 @@ Status: Adapter preparation started under D-015; not complete and not a first-re
 | Task | Work | Dependency / output |
 |---|---|---|
 | M7-01 | Package the core as an installable Claude Code plugin with marketplace, bundled skill and command wrapper, reusing the core without a second copy | M1 + D-015 -> complete locally; `plugins/cloud-architecture-diagrams`, validate-only |
-| M7-02 | Add plugin package and wheel-content checks to the quality gate | M7-01 -> complete; `claude-plugin` and `package-contents` lanes passed actual CI, most recently run 41449921613 at `87acce5` |
+| M7-02 | Add plugin package and wheel-content checks to the quality gate | M7-01 -> complete; `claude-plugin` and `package-contents` lanes passed actual CI, most recently run 41453874994 at `917f46f` |
 | M7-03 | Verify actual Claude Code installation and invocation | M7-01 -> local-path, private GitHub and real-config installs, plugin update, English/Thai/edit invocations and a Code tab runtime check verified on one Mac; interactive permission prompts, `allowed-tools` breadth and a second machine remain |
 | M7-04 | Expose catalog discovery and rendering through the plugin as M2/M3 arrive, then update the skill's stated capabilities and plugin version | M2 + M3 -> not started |
 
