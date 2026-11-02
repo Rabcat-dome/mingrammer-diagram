@@ -309,3 +309,9 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - Pinned commit `52c33aa`, which is both `main` and tag v3.2, with blobs matching S02. All 15 required items that need an icon have an exact title. Subnet and Security Group have no SVG in any of the 15 color libraries, only group definitions. A scan of all 254 SVG entries found no scripts, links or external references. Each SVG is unchanged, and each PNG is derived from it. Subnet and Security Group stay labeled boundaries.
 - Requirements revision 0.12 moves the exception to D-018. The JuanDiaz00 files left `src`, and that pack's images stay in history from `9d579f8`.
 - Not done: commit, push and CI for this work, owner inspection of the Huawei icons, any update to the owner's plugin, or the Astra/High review. See the [S06 evidence](evidence/S06-provider-catalogs.md#huawei-cloud-icons-under-d-018).
+
+
+## 2026-11-02 — S06 LATAM icons committed and CI-tested
+
+- Confirmed the repository is private, then the owner authorized the commit and push of `6929253`. Actual Quality gate [run 41473877379](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41473877379) / job 125374227725 passed all 12 lanes with 520 tests, none skipped and zero annotations, from a clean checkout. The visibility guard read `private`, and the wheel matches the local build's SHA-256 and carries the upload block.
+- Not done: any update to the owner's plugin, which remains on `917f46f`, owner inspection of the Huawei icons, or the Astra/High review.

@@ -2,7 +2,7 @@
 
 Date: 2026-11-02 | Tasks: M2-01..06 | Branch: `codex/s06-provider-catalogs`, from `c6a59e5` | Updated for owner decisions D-016 and D-017
 
-**Result: the catalogs, semantic rules, on-premises assets and both new gate lanes are implemented, along with the owner's decisions D-016 and D-017, and actual CI passes at `9d579f8`. The owner's later D-018 is implemented on top and passes the full local gate, but it is uncommitted and has no CI. M2 cannot close yet:** Huawei rights are not cleared, the required Astra/High review has not happened, and the owner has not yet inspected the Huawei icons.
+**Result: the catalogs, semantic rules, on-premises assets and both new gate lanes are implemented, along with the owner's decisions D-016, D-017 and D-018, and actual CI passes at `6929253`. M2 cannot close yet:** Huawei rights are not cleared, the required Astra/High review has not happened, and the owner has not yet inspected the Huawei icons.
 
 ## Task status
 
@@ -27,9 +27,9 @@ Date: 2026-11-02 | Tasks: M2-01..06 | Branch: `codex/s06-provider-catalogs`, fro
 
 ## Validation
 
-Actual Quality gate [run 41467781802](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41467781802), job 125353105539, passed all 12 lanes at `9d579f8f4e87a9d23cfef6762ce34527b15fce28`, from a clean checkout on the self-hosted runner `macbook-pro-m2-max-mingrammer` with Python 3.13.7. The 514 tests include none skipped, and the job has zero annotations. The repository-visibility guard read `private` from the run's event. The wheel it built has the same SHA-256 as the local build, `aa949821...47af`, and carries the upload-block classifier and the eight Huawei files. Before the owner's decisions, [run 41462453632](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41462453632) passed the same 12 lanes with 480 tests at `4b9b826`.
+Actual Quality gate [run 41473877379](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41473877379), job 125374227725, passed all 12 lanes at `69292536c45c44ceffb3b5cf08fc8dbd9248b69a`, from a clean checkout on the self-hosted runner `macbook-pro-m2-max-mingrammer` with Python 3.13.7. The 520 tests include none skipped, and the job has zero annotations. The repository-visibility guard read `private` from the run's event. The wheel it built has the same SHA-256 as the local build, `cbf63432...3875`, and carries the upload-block classifier and the 30 Huawei files. Earlier stages also passed actual CI: [run 41462453632](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41462453632) with 480 tests at `4b9b826`, and [run 41467781802](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41467781802) with 514 tests at `9d579f8`.
 
-On the D-018 work that followed, the full local `scripts/quality_gate.py` passes all 12 lanes with 520 tests, none skipped. **No actual CI covers D-018 yet**, because it is uncommitted. The counts below are from that local run:
+The counts below are from run 41473877379:
 
 | Lane | Tests | Work done |
 |---|---|---|
@@ -149,7 +149,7 @@ Each SVG is byte-identical to its decoded entry. Each 256x256 PNG is rasterized 
 **How the limits are enforced.** The `catalog-license` lane fails when any of these breaks:
 
 - The package lacks `Private :: Do Not Upload`, which PyPI rejects on upload. The `package-contents` lane checks the built wheel for it as well.
-- In Actions, the event reports the repository as public. The classifier and this guard were proven at `9d579f8`, where CI read `private`. Outside Actions the visibility cannot be read, and the report says `not_checked_outside_actions`.
+- In Actions, the event reports the repository as public. CI run 41473877379 read `private`. Outside Actions the visibility cannot be read, and the report says `not_checked_outside_actions`.
 - The private pack claims a license or redistribution evidence, loses its pinned files, or names a decision that does not say private personal use. A pack also cannot become `approved` on owner risk acceptance.
 - A source title does not name the service, so mapping OBS to a generic storage icon fails.
 - A bundled icon is not used by any catalog type, which a test also requires.
@@ -160,7 +160,7 @@ Sabotage checks confirmed three of these on the real repository under D-018: a r
 **What this leaves for the owner:**
 
 1. **Inspection:** the icon sheet above needs the owner's eye. The rendered look stays with M4 and M6.
-2. **Git history:** the JuanDiaz00 images are in this branch's history from `9d579f8`, and the LATAM images join them once committed. Making the repository public would first require removing them from history.
+2. **Git history:** the JuanDiaz00 images are in this branch's history from `9d579f8`, and the LATAM images from `6929253`. Making the repository public would first require removing them from history.
 3. **Generated diagrams:** sharing an image that shows these icons outside private use is not covered by D-018.
 
 Written consent from Huawei remains the only route to public distribution. Draft request, not sent:
@@ -214,7 +214,7 @@ Self-checks in this session are not a review. **The Astra/High review M2 require
 
 ## Next steps
 
-1. Owner: inspect the Huawei icon sheet, and authorize a commit and push of D-018 so actual CI covers it.
-2. Arrange the Astra/High review of `c6a59e5..9d579f8`, then close M2 or record its remaining blocker.
+1. Owner: inspect the Huawei icon sheet.
+2. Arrange the Astra/High review of `c6a59e5..6929253`, then close M2 or record its remaining blocker.
 3. Update the owner's installed plugin only if asked. It remains on `917f46f`, so it has none of this work.
 4. S07 / M3 can proceed in parallel.
