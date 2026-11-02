@@ -1,0 +1,975 @@
+{
+  "$defs": {
+    "Boundary": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "region",
+            "zone",
+            "network",
+            "subnet",
+            "security_zone",
+            "site",
+            "data_center",
+            "room",
+            "rack",
+            "vlan",
+            "vrf",
+            "cluster",
+            "environment"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f]*$",
+          "title": "Name",
+          "type": "string"
+        },
+        "parent_ref": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Ref"
+        },
+        "provider": {
+          "enum": [
+            "aws",
+            "azure",
+            "gcp",
+            "huawei",
+            "onprem",
+            "external"
+          ],
+          "title": "Provider",
+          "type": "string"
+        },
+        "relations": {
+          "items": {
+            "$ref": "#/$defs/BoundaryRelation"
+          },
+          "maxItems": 64,
+          "title": "Relations",
+          "type": "array"
+        },
+        "scope_refs": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+            "type": "string"
+          },
+          "maxItems": 1000,
+          "title": "Scope Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "provider",
+        "kind"
+      ],
+      "title": "Boundary",
+      "type": "object"
+    },
+    "BoundaryRelation": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "located_in",
+            "network_member_of",
+            "security_member_of",
+            "deployment_member_of"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "target_ref": {
+          "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+          "title": "Target Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "target_ref"
+      ],
+      "title": "BoundaryRelation",
+      "type": "object"
+    },
+    "KubernetesContext": {
+      "additionalProperties": false,
+      "properties": {
+        "cluster_ref": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cluster Ref"
+        },
+        "config_refs": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+            "type": "string"
+          },
+          "maxItems": 1000,
+          "title": "Config Refs",
+          "type": "array"
+        },
+        "kind": {
+          "enum": [
+            "Cluster",
+            "ControlPlane",
+            "NodePool",
+            "Node",
+            "Namespace",
+            "Deployment",
+            "ReplicaSet",
+            "StatefulSet",
+            "DaemonSet",
+            "Job",
+            "CronJob",
+            "Pod",
+            "Service",
+            "Ingress",
+            "IngressController",
+            "PersistentVolumeClaim",
+            "PersistentVolume",
+            "StorageClass",
+            "ConfigMap",
+            "Secret",
+            "ServiceAccount",
+            "NetworkPolicy"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "namespace_ref": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Namespace Ref"
+        },
+        "node_pool_ref": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Node Pool Ref"
+        },
+        "node_ref": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Node Ref"
+        },
+        "owner_ref": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Owner Ref"
+        },
+        "secret_refs": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+            "type": "string"
+          },
+          "maxItems": 1000,
+          "title": "Secret Refs",
+          "type": "array"
+        },
+        "service_account_ref": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Service Account Ref"
+        },
+        "service_refs": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+            "type": "string"
+          },
+          "maxItems": 1000,
+          "title": "Service Refs",
+          "type": "array"
+        },
+        "storage_class_ref": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Storage Class Ref"
+        },
+        "target_refs": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+            "type": "string"
+          },
+          "maxItems": 1000,
+          "title": "Target Refs",
+          "type": "array"
+        },
+        "volume_claim_refs": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+            "type": "string"
+          },
+          "maxItems": 1000,
+          "title": "Volume Claim Refs",
+          "type": "array"
+        },
+        "volume_ref": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Volume Ref"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "KubernetesContext",
+      "type": "object"
+    },
+    "Location": {
+      "additionalProperties": false,
+      "properties": {
+        "rack_ref": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rack Ref"
+        },
+        "region_ref": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Region Ref"
+        },
+        "site_ref": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Site Ref"
+        },
+        "zone_ref": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Zone Ref"
+        }
+      },
+      "title": "Location",
+      "type": "object"
+    },
+    "Metadata": {
+      "additionalProperties": false,
+      "properties": {
+        "assumptions": {
+          "items": {
+            "maxLength": 256,
+            "minLength": 1,
+            "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f]*$",
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Assumptions",
+          "type": "array"
+        },
+        "description": {
+          "default": "",
+          "maxLength": 2048,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f]*$",
+          "title": "Description",
+          "type": "string"
+        },
+        "environment": {
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f]*$",
+          "title": "Environment",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f]*$",
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "environment"
+      ],
+      "title": "Metadata",
+      "type": "object"
+    },
+    "NetworkAttachment": {
+      "additionalProperties": false,
+      "properties": {
+        "network_ref": {
+          "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+          "title": "Network Ref",
+          "type": "string"
+        },
+        "subnet_refs": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+            "type": "string"
+          },
+          "maxItems": 1000,
+          "title": "Subnet Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "network_ref"
+      ],
+      "title": "NetworkAttachment",
+      "type": "object"
+    },
+    "Placement": {
+      "additionalProperties": false,
+      "properties": {
+        "deployment_context": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+            "type": "string"
+          },
+          "maxItems": 1000,
+          "title": "Deployment Context",
+          "type": "array"
+        },
+        "location": {
+          "$ref": "#/$defs/Location"
+        },
+        "network_attachments": {
+          "items": {
+            "$ref": "#/$defs/NetworkAttachment"
+          },
+          "maxItems": 32,
+          "title": "Network Attachments",
+          "type": "array"
+        },
+        "scope_refs": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+            "type": "string"
+          },
+          "maxItems": 1000,
+          "title": "Scope Refs",
+          "type": "array"
+        },
+        "security_boundaries": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+            "type": "string"
+          },
+          "maxItems": 1000,
+          "title": "Security Boundaries",
+          "type": "array"
+        }
+      },
+      "title": "Placement",
+      "type": "object"
+    },
+    "Port": {
+      "additionalProperties": false,
+      "properties": {
+        "port": {
+          "maximum": 65535,
+          "minimum": 1,
+          "title": "Port",
+          "type": "integer"
+        },
+        "protocol": {
+          "default": "TCP",
+          "enum": [
+            "TCP",
+            "UDP",
+            "SCTP"
+          ],
+          "title": "Protocol",
+          "type": "string"
+        },
+        "target_port": {
+          "anyOf": [
+            {
+              "maximum": 65535,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Port"
+        }
+      },
+      "required": [
+        "port"
+      ],
+      "title": "Port",
+      "type": "object"
+    },
+    "Properties": {
+      "additionalProperties": false,
+      "properties": {
+        "labels": {
+          "maxProperties": 64,
+          "patternProperties": {
+            "^[^\\x00-\\x1f\\x7f-\\x9f]*$": {
+              "maxLength": 256,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f]*$",
+              "type": "string"
+            }
+          },
+          "propertyNames": {
+            "maxLength": 256,
+            "minLength": 1
+          },
+          "title": "Labels",
+          "type": "object"
+        },
+        "ports": {
+          "items": {
+            "$ref": "#/$defs/Port"
+          },
+          "maxItems": 32,
+          "title": "Ports",
+          "type": "array"
+        },
+        "replicas": {
+          "anyOf": [
+            {
+              "maximum": 10000,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Replicas"
+        },
+        "service_type": {
+          "anyOf": [
+            {
+              "enum": [
+                "ClusterIP",
+                "NodePort",
+                "LoadBalancer",
+                "ExternalName"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Service Type"
+        }
+      },
+      "title": "Properties",
+      "type": "object"
+    },
+    "Relationship": {
+      "additionalProperties": false,
+      "properties": {
+        "direction": {
+          "default": "directed",
+          "enum": [
+            "directed",
+            "undirected"
+          ],
+          "title": "Direction",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "traffic",
+            "vpn",
+            "peering",
+            "replication",
+            "management",
+            "membership",
+            "scheduling",
+            "policy",
+            "storage",
+            "configuration",
+            "attachment",
+            "ownership",
+            "dependency",
+            "observability"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "label": {
+          "anyOf": [
+            {
+              "maxLength": 256,
+              "minLength": 1,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Label"
+        },
+        "protocol": {
+          "anyOf": [
+            {
+              "maxLength": 256,
+              "minLength": 1,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Protocol"
+        },
+        "purpose": {
+          "anyOf": [
+            {
+              "maxLength": 256,
+              "minLength": 1,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Purpose"
+        },
+        "security": {
+          "anyOf": [
+            {
+              "maxLength": 256,
+              "minLength": 1,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Security"
+        },
+        "source_ref": {
+          "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+          "title": "Source Ref",
+          "type": "string"
+        },
+        "target_ref": {
+          "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+          "title": "Target Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "source_ref",
+        "target_ref",
+        "kind"
+      ],
+      "title": "Relationship",
+      "type": "object"
+    },
+    "Resource": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kubernetes": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/KubernetesContext"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "name": {
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f]*$",
+          "title": "Name",
+          "type": "string"
+        },
+        "placement": {
+          "$ref": "#/$defs/Placement"
+        },
+        "properties": {
+          "$ref": "#/$defs/Properties"
+        },
+        "provider": {
+          "enum": [
+            "aws",
+            "azure",
+            "gcp",
+            "huawei",
+            "onprem",
+            "external"
+          ],
+          "title": "Provider",
+          "type": "string"
+        },
+        "service_type": {
+          "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+          "title": "Service Type",
+          "type": "string"
+        },
+        "taxonomy": {
+          "maxLength": 64,
+          "pattern": "^[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*$",
+          "title": "Taxonomy",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "provider",
+        "service_type",
+        "taxonomy"
+      ],
+      "title": "Resource",
+      "type": "object"
+    },
+    "Scope": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "account",
+            "tenant",
+            "subscription",
+            "resource_group",
+            "organization",
+            "folder",
+            "project",
+            "iam_project",
+            "enterprise_project",
+            "environment"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f]*$",
+          "title": "Name",
+          "type": "string"
+        },
+        "parent_ref": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Ref"
+        },
+        "provider": {
+          "enum": [
+            "aws",
+            "azure",
+            "gcp",
+            "huawei",
+            "onprem",
+            "external"
+          ],
+          "title": "Provider",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "provider",
+        "kind"
+      ],
+      "title": "Scope",
+      "type": "object"
+    },
+    "View": {
+      "additionalProperties": false,
+      "properties": {
+        "direction": {
+          "default": "LR",
+          "enum": [
+            "TB",
+            "LR"
+          ],
+          "title": "Direction",
+          "type": "string"
+        },
+        "entity_refs": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+            "type": "string"
+          },
+          "maxItems": 1000,
+          "minItems": 1,
+          "title": "Entity Refs",
+          "type": "array"
+        },
+        "grouping": {
+          "default": "provider",
+          "enum": [
+            "none",
+            "provider",
+            "scope",
+            "network",
+            "namespace",
+            "node",
+            "physical"
+          ],
+          "title": "Grouping",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "legend": {
+          "default": true,
+          "title": "Legend",
+          "type": "boolean"
+        },
+        "relationship_refs": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+            "type": "string"
+          },
+          "maxItems": 4000,
+          "title": "Relationship Refs",
+          "type": "array"
+        },
+        "style": {
+          "default": "provider",
+          "enum": [
+            "provider",
+            "neutral"
+          ],
+          "title": "Style",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f]*$",
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "entity_refs"
+      ],
+      "title": "View",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "boundaries": {
+      "items": {
+        "$ref": "#/$defs/Boundary"
+      },
+      "maxItems": 1000,
+      "title": "Boundaries",
+      "type": "array"
+    },
+    "metadata": {
+      "$ref": "#/$defs/Metadata"
+    },
+    "relationships": {
+      "items": {
+        "$ref": "#/$defs/Relationship"
+      },
+      "maxItems": 4000,
+      "title": "Relationships",
+      "type": "array"
+    },
+    "resources": {
+      "items": {
+        "$ref": "#/$defs/Resource"
+      },
+      "maxItems": 1000,
+      "title": "Resources",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "scopes": {
+      "items": {
+        "$ref": "#/$defs/Scope"
+      },
+      "maxItems": 1000,
+      "title": "Scopes",
+      "type": "array"
+    },
+    "views": {
+      "items": {
+        "$ref": "#/$defs/View"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "title": "Views",
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "metadata",
+    "views"
+  ],
+  "title": "Architecture",
+  "type": "object"
+}

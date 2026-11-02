@@ -1,6 +1,6 @@
 # Milestones and Work Breakdown
 
-Updated: 2026-11-02 | Status: S01-S04 / M0 feasibility complete; S05 / M1 next. Huawei packaging rights remain unresolved.
+Updated: 2026-11-02 | Status: S01-S04 / M0 feasibility complete; S05 / M1 in progress. Huawei packaging rights remain unresolved.
 
 Source of scope: [requirements](../requirements/requirements.md). Model abbreviations and review rules: [model strategy](model-strategy.md). Quality check definitions: [quality gate](quality-gate.md).
 
@@ -36,7 +36,7 @@ Exit: selected deployment route has real Work evidence; feasibility blockers and
 
 ## M1 — Core contract and CI foundation
 
-Status: Ready to start as S05; not implemented. Implementation: Sol/High; review: Astra/High.
+Status: S05 in progress; core/local checks implemented, actual CI and independent review pending. See [S05 evidence](evidence/S05-core-and-ci.md). Implementation: Sol/High; review: Astra/High.
 
 | Task | Work | Dependency / output |
 |---|---|---|

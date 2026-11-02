@@ -1,6 +1,6 @@
 # Cross-Machine Handoff
 
-Updated: 2026-11-02 | S01-S04 / M0 feasibility complete. S05 / M1 is ready; the full product is not implemented.
+Updated: 2026-11-02 | S05 / M1 in progress. Core/schema/local quality gate pass; actual runner execution and independent review are next. S04/M0 remains complete.
 
 ## Goal and direction
 
@@ -8,7 +8,7 @@ Build a personal Work-first plugin on mingrammer/diagrams and Graphviz for AWS/A
 
 D-013 selects runtime installation on each machine. Native Python + Graphviz is the default; direct scripts and optional local stdio MCP use the same controlled renderer. Docker, a central service, public renderer and renderer/model API keys are unnecessary. D-014 confirms the separate ChatGPT Work mode/page, not Codex, as the target.
 
-Branch: `codex/s04-runtime-proof`. Alpha.2 review: base `720831733bdb99061f62f7d509d95a65aa7f748b`, head `1fd2d72a22183b65d76ea0bea255702a769ae62f`. Final Astra/High review covered alpha.3 code head `2fc8047242dbbf337a8c44ba09979b2f181adb32`, base 1fd2d72. Later closure commits change only docs/evidence; verify final HEAD when resuming.
+Current branch: `codex/s05-core-quality-gate`, base `ff53a88944e981be2bbbab171e0ccf8cecdb4e41`. See [S05 implementation/evidence](evidence/S05-core-and-ci.md) and [core guide](../design/core-contract.md). Historical S04 branch: `codex/s04-runtime-proof`. Alpha.2 review: base `720831733bdb99061f62f7d509d95a65aa7f748b`, head `1fd2d72a22183b65d76ea0bea255702a769ae62f`. Final Astra/High review covered alpha.3 code head `2fc8047242dbbf337a8c44ba09979b2f181adb32`, base 1fd2d72. Later closure commits change only docs/evidence; verify final HEAD when resuming.
 
 ## Read order
 
@@ -31,28 +31,18 @@ Branch: `codex/s04-runtime-proof`. Alpha.2 review: base `720831733bdb99061f62f7d
 
 ## Next steps
 
-1. Start S05 / M1-01..04: core package/schema/diagnostics/reference validation and deterministic quality gate. Use native shell jobs on `mingrammer-macos-arm64`, owner-only trusted execution and a read-only repository token; keep Docker optional. Record actual CI results separately from local checks and prior preflight jobs.
-2. Review M1 using Astra/High on its final code. No merge/release is implied. Reuse this checkout and prefer a `codex/s05-core-quality-gate` branch; do not modify unrelated projects or existing runner registrations.
-3. M2 resolves catalogs/exact asset rights; M3 final renderer bounds; M4 reference diagrams; M5 polished install/upgrade/removal; M6 two independently prepared machines and full owner release acceptance. Huawei rights remain a packaging/release blocker, not an assumed permission.
+1. Complete S05 actual GitHub runner execution, record tested SHA/report and obtain independent Astra/High review of the frozen M1 diff. Core local checks and clean-wheel/missing-tool probes pass; this is not yet milestone closure.
+2. Apply confirmed review fixes and rerun affected local/CI checks. Keep provider/catalog/renderer/Work plugin and release acceptance separate; installed S04 alpha.3 source is unchanged.
+3. After M1 closure, S06/M2 freezes provider/Kubernetes catalogs and exact approved assets. Huawei rights remain unresolved; do not bundle uncleared assets. Later milestones are unchanged.
 
 ## Resume prompt
 
 ```text
-Start S05 / M1 from doc/project-management/HANDOFF.md and session-plan.md.
-Verify Git HEAD, M0 completion and the exact alpha.3 review record before edits.
-Use the existing checkout; create a codex/s05-core-quality-gate branch when ready.
-Read the single requirements v0.9 and M1-01..04; load other docs only as needed.
-Implement the core package/schema/diagnostics/reference checks and deterministic
-quality gate on the existing mingrammer-macos-arm64 runner using native shell
-steps. Keep owner-only trusted execution, read-only repository permissions and
-pinned dependencies/actions. AI review is recorded separately, without mandatory
-model API calls. Use Sol/High for contract/security work and Astra/High review.
-Preserve the S04 spike/evidence and keep the three-node feasibility fixture
-separate from the full provider/Kubernetes product. No required Docker or
-central server. Huawei rights remain unresolved; do not bundle uncleared assets.
-Validate meaningful negative schema/reference/Kubernetes scope cases, execute
-the actual trusted runner job when ready, and record local/CI/owner results
-separately. Do not merge/release or claim two-machine acceptance automatically.
-Keep all repository docs English; update handoff and activity log with exact
-commits, test evidence, remaining tasks and a concise resume prompt.
+Continue S05/M1 from doc/project-management/evidence/S05-core-and-ci.md on
+codex/s05-core-quality-gate. Read doc/design/core-contract.md, relevant
+requirements and M1-01..04. Verify Git HEAD, local/CI results and independent
+Astra review status. Finish actual runner evidence and review/fixes before
+closing S05. Keep English docs, core_only disclosure, native execution,
+owner-only self-hosted trust and separate local/CI/Work/release evidence.
+No merge, cloud service, Docker cleanup or product release is implied.
 ```

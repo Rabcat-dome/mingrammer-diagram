@@ -197,3 +197,10 @@ Native source/package checkpoint: `b5524a916d36256335ccfe6c1f1ecc3f2ed4e31d`, pu
 - Subsequent closure changes are documentation/evidence only; executable/package source remains identical to the reviewed head 2fc8047. The branch is published privately; main remains afbaccad87019d35bff12d335ec534166752f0bf.
 
 Final closure validation: 24 English Markdown files, 15 JSON files and 138 local links/anchors passed; 64 requirement, 17 acceptance-scenario, 32 task and 39 decision/proposal/question IDs remain unique. Current/historical source hashes, Python syntax, credential-pattern and Git whitespace checks passed. No executable/package-source change exists after the reviewed head 2fc8047; closure changes are documentation/evidence only.
+
+
+## 2026-11-02 — S05/M1 implementation started
+
+- Owner requested the next activity. Created codex/s05-core-quality-gate from ff53a88 on the existing checkout; no worktree was created and main/S04 installed runtime/Docker resources were preserved.
+- Implemented the independent core package, strict schema/discovery/CLI, bounded data parser, IDs/typed refs/containment/view checks and Kubernetes cluster/namespace/placement/reference validation. Core-only/pending-layer disclosure prevents representing this as full catalog/provider/render validation.
+- Local schema/typing/lint/workflow/traceability checks and 65 tests passed. Verified a clean installed wheel outside the checkout and aggregate failure when actionlint was deliberately unavailable. Added native owner-only quality-gate workflow with pinned actions, locked dependencies, reports and cleanup; actual GitHub execution and independent Astra/High review remain pending.

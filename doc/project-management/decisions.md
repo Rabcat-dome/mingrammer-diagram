@@ -42,6 +42,7 @@ Updated: 2026-11-02 | Status: Joint-planning record; D-013 selects per-machine l
 | P-015 | Historical Linux-container runtime candidate | Alpha.1 SDK/live Codex Desktop evidence is retained. Docker was an implementation choice, not a user requirement; P-017 is the new native default. |
 | P-016 | Historical proposal to evaluate GCP Cloud Run | Retired by D-013. No cloud-hosting inputs, deployment, remote OAuth or public renderer are required for the selected route. |
 | P-017 | Native private Python environment + system Graphviz, with direct script and stdio interfaces | Introduced in alpha.2 and hardened in alpha.3 after the owner questioned Docker and requested continuation. No required Docker/server. Native checks and owner-reported Work feasibility pass; final Astra/High review passes for the pilot; production limits remain later work. |
+| P-018 | M1 core uses a strict closed Pydantic contract, generated JSON Schema, bounded reference/context validation and native deterministic CI | Implementation selection under existing M1 scope. Core results disclose pending catalog/provider/render layers. Python 3.13.7/uv 0.13.0, locked packages and hatchling 1.27.0 selected; no Docker/model API or S04 plugin upgrade required. |
 
 P-015 is historical. P-017 is the current native implementation default, not proof of every OS or final product limits. P-002's plugin structure remains; P-003's local route is selected by D-013. P-009/P-010 are resolved by D-007/D-008 with D-009's detailed-Kubernetes correction.
 

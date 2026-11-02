@@ -1,0 +1,79 @@
+name: Quality gate
+
+on:
+  push:
+    branches: [main, 'codex/**']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mingrammer-quality-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  quality-gate:
+    # Only explicit owner actions in this repository may execute on the personal Mac.
+    if: >-
+      github.repository == 'Rabcat-dome/mingrammer-diagram' &&
+      github.actor == 'Rabcat-dome' && github.triggering_actor == 'Rabcat-dome' &&
+      (github.event_name != 'pull_request' ||
+       (github.event.pull_request.head.repo.full_name == github.repository &&
+        github.event.pull_request.user.login == 'Rabcat-dome')) &&
+      (github.event_name == 'pull_request' || github.ref == 'refs/heads/main' ||
+       startsWith(github.ref, 'refs/heads/codex/'))
+    runs-on: [self-hosted, macOS, ARM64, mingrammer-macos-arm64]
+    timeout-minutes: 12
+    defaults:
+      run:
+        shell: bash
+    env:
+      UV_SYSTEM_CERTS: 'true'
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install locked core development environment
+        run: |
+          python3 - <<'PYTHON'
+          import os
+          import subprocess
+          from pathlib import Path
+          assert subprocess.check_output(['uv', '--version'], text=True).split()[1] == '0.13.0'
+          root = Path(os.environ['RUNNER_TEMP']) / ('mingrammer-' + os.environ['GITHUB_RUN_ID'] + '-' + os.environ['GITHUB_RUN_ATTEMPT'])
+          with open(os.environ['GITHUB_ENV'], 'a') as output:
+              output.write('UV_PROJECT_ENVIRONMENT=' + str(root / 'venv') + '\n')
+          PYTHON
+          export UV_PROJECT_ENVIRONMENT="$RUNNER_TEMP/mingrammer-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT/venv"
+          uv sync --locked --python 3.13.7 --no-managed-python
+      - name: Run every implemented check
+        run: uv run --locked python scripts/quality_gate.py
+      - name: Upload synthetic reports and build outputs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: m1-quality-${{ github.run_id }}-${{ github.run_attempt }}
+          path: reports/
+          retention-days: 14
+          if-no-files-found: error
+      - name: Remove per-run Python environment
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import os
+          import shutil
+          from pathlib import Path
+          environment = Path(os.environ['UV_PROJECT_ENVIRONMENT'])
+          parent = environment.parent
+          expected = 'mingrammer-' + os.environ['GITHUB_RUN_ID'] + '-' + os.environ['GITHUB_RUN_ATTEMPT']
+          assert parent.name == expected
+          assert parent.parent.resolve() == Path(os.environ['RUNNER_TEMP']).resolve()
+          if parent.exists():
+              assert not parent.is_symlink()
+              shutil.rmtree(parent)
+          PY

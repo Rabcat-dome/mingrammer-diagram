@@ -1,5 +1,10 @@
 .DS_Store
 __pycache__/
 .venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+reports/
+dist/
 spikes/s04-runtime/output/
 spikes/s04-local-plugin/output/

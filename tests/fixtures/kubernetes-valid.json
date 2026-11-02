@@ -1,0 +1,279 @@
+{
+  "schema_version": "1.0.0",
+  "metadata": {
+    "id": "kubernetes-demo",
+    "title": "Kubernetes explicit context",
+    "environment": "development"
+  },
+  "scopes": [],
+  "boundaries": [],
+  "resources": [
+    {
+      "id": "cluster",
+      "name": "cluster",
+      "provider": "gcp",
+      "service_type": "k8s.cluster",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Cluster"
+      }
+    },
+    {
+      "id": "namespace",
+      "name": "namespace",
+      "provider": "gcp",
+      "service_type": "k8s.namespace",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Namespace",
+        "cluster_ref": "cluster"
+      }
+    },
+    {
+      "id": "pool",
+      "name": "pool",
+      "provider": "gcp",
+      "service_type": "k8s.nodepool",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "NodePool",
+        "cluster_ref": "cluster"
+      }
+    },
+    {
+      "id": "node-a",
+      "name": "node-a",
+      "provider": "gcp",
+      "service_type": "k8s.node",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Node",
+        "cluster_ref": "cluster",
+        "node_pool_ref": "pool"
+      }
+    },
+    {
+      "id": "node-b",
+      "name": "node-b",
+      "provider": "gcp",
+      "service_type": "k8s.node",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Node",
+        "cluster_ref": "cluster",
+        "node_pool_ref": "pool"
+      }
+    },
+    {
+      "id": "deployment",
+      "name": "deployment",
+      "provider": "gcp",
+      "service_type": "k8s.deployment",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Deployment",
+        "cluster_ref": "cluster",
+        "namespace_ref": "namespace"
+      }
+    },
+    {
+      "id": "replicaset",
+      "name": "replicaset",
+      "provider": "gcp",
+      "service_type": "k8s.replicaset",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "ReplicaSet",
+        "cluster_ref": "cluster",
+        "namespace_ref": "namespace",
+        "owner_ref": "deployment"
+      }
+    },
+    {
+      "id": "pod-a",
+      "name": "pod-a",
+      "provider": "gcp",
+      "service_type": "k8s.pod",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Pod",
+        "cluster_ref": "cluster",
+        "namespace_ref": "namespace",
+        "owner_ref": "replicaset",
+        "node_ref": "node-a",
+        "volume_claim_refs": [
+          "pvc"
+        ],
+        "config_refs": [
+          "config"
+        ],
+        "secret_refs": [
+          "secret"
+        ],
+        "service_account_ref": "account"
+      }
+    },
+    {
+      "id": "pod-b",
+      "name": "pod-b",
+      "provider": "gcp",
+      "service_type": "k8s.pod",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Pod",
+        "cluster_ref": "cluster",
+        "namespace_ref": "namespace",
+        "node_ref": "node-b"
+      }
+    },
+    {
+      "id": "service",
+      "name": "service",
+      "provider": "gcp",
+      "service_type": "k8s.service",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Service",
+        "cluster_ref": "cluster",
+        "namespace_ref": "namespace",
+        "target_refs": [
+          "pod-a",
+          "pod-b"
+        ]
+      }
+    },
+    {
+      "id": "ingress",
+      "name": "ingress",
+      "provider": "gcp",
+      "service_type": "k8s.ingress",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Ingress",
+        "cluster_ref": "cluster",
+        "namespace_ref": "namespace",
+        "service_refs": [
+          "service"
+        ]
+      }
+    },
+    {
+      "id": "pvc",
+      "name": "pvc",
+      "provider": "gcp",
+      "service_type": "k8s.persistentvolumeclaim",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "PersistentVolumeClaim",
+        "cluster_ref": "cluster",
+        "namespace_ref": "namespace",
+        "volume_ref": "pv",
+        "storage_class_ref": "storage"
+      }
+    },
+    {
+      "id": "pv",
+      "name": "pv",
+      "provider": "gcp",
+      "service_type": "k8s.persistentvolume",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "PersistentVolume",
+        "cluster_ref": "cluster",
+        "storage_class_ref": "storage"
+      }
+    },
+    {
+      "id": "storage",
+      "name": "storage",
+      "provider": "gcp",
+      "service_type": "k8s.storageclass",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "StorageClass",
+        "cluster_ref": "cluster"
+      }
+    },
+    {
+      "id": "config",
+      "name": "config",
+      "provider": "gcp",
+      "service_type": "k8s.configmap",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "ConfigMap",
+        "cluster_ref": "cluster",
+        "namespace_ref": "namespace"
+      }
+    },
+    {
+      "id": "secret",
+      "name": "secret",
+      "provider": "gcp",
+      "service_type": "k8s.secret",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Secret",
+        "cluster_ref": "cluster",
+        "namespace_ref": "namespace"
+      }
+    },
+    {
+      "id": "account",
+      "name": "account",
+      "provider": "gcp",
+      "service_type": "k8s.serviceaccount",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "ServiceAccount",
+        "cluster_ref": "cluster",
+        "namespace_ref": "namespace"
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "id": "traffic",
+      "source_ref": "ingress",
+      "target_ref": "service",
+      "kind": "traffic",
+      "label": "HTTPS"
+    }
+  ],
+  "views": [
+    {
+      "id": "detail",
+      "title": "Kubernetes detail",
+      "entity_refs": [
+        "cluster",
+        "namespace",
+        "pool",
+        "node-a",
+        "node-b",
+        "deployment",
+        "replicaset",
+        "pod-a",
+        "pod-b",
+        "service",
+        "ingress",
+        "pvc",
+        "pv",
+        "storage",
+        "config",
+        "secret",
+        "account"
+      ],
+      "relationship_refs": [
+        "traffic"
+      ],
+      "grouping": "namespace"
+    },
+    {
+      "id": "compact",
+      "title": "Cluster overview",
+      "entity_refs": [
+        "cluster"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0.0",
+  "metadata": {
+    "id": "demo",
+    "title": "Core contract example",
+    "environment": "development",
+    "assumptions": [
+      "Synthetic fixture; no deployed infrastructure implied."
+    ]
+  },
+  "scopes": [
+    {
+      "id": "project",
+      "name": "Application project",
+      "provider": "gcp",
+      "kind": "project"
+    }
+  ],
+  "boundaries": [
+    {
+      "id": "vpc",
+      "name": "Shared VPC",
+      "provider": "gcp",
+      "kind": "network",
+      "scope_refs": [
+        "project"
+      ]
+    },
+    {
+      "id": "subnet",
+      "name": "Application subnet",
+      "provider": "gcp",
+      "kind": "subnet",
+      "parent_ref": "vpc"
+    }
+  ],
+  "resources": [
+    {
+      "id": "app",
+      "name": "Application",
+      "provider": "gcp",
+      "service_type": "gcp.compute.vm",
+      "taxonomy": "compute.vm",
+      "placement": {
+        "scope_refs": [
+          "project"
+        ],
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "relationships": [],
+  "views": [
+    {
+      "id": "overview",
+      "title": "Application overview",
+      "entity_refs": [
+        "project",
+        "vpc",
+        "subnet",
+        "app"
+      ]
+    }
+  ]
+}
