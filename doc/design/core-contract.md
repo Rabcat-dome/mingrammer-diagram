@@ -1,6 +1,6 @@
 # Core Contract v1.0.0
 
-S05 / M1 implementation guide, subordinate to the single [requirements](../requirements/requirements.md). Package `0.2.0a3` is a core development version; installed Work plugin `0.1.0-alpha.3` remains the independent S04 fixture. This change does not replace that plugin or claim full architecture rendering.
+S05 / M1 implementation guide, subordinate to the single [requirements](../requirements/requirements.md). Package `0.2.0a4` is a core development version; installed Work plugin `0.1.0-alpha.3` remains the independent S04 fixture. This change does not replace that plugin or claim full architecture rendering.
 
 ## Setup and discovery
 

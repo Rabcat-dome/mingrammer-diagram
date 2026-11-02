@@ -43,7 +43,7 @@ The skill runs `bin/cloud-diagrams` from the plugin root by its full path:
 | `schema` | Versioned JSON Schema |
 | `validate [--mode strict\|lenient] [--view ID] < model.json` | Validate a model from stdin |
 
-Exit codes: `0` success, `2` invalid model with JSON diagnostics on stdout, `3` the runtime could not be prepared, `64` the command was used incorrectly.
+Exit codes: `0` success, `2` invalid model with JSON diagnostics on stdout, `3` the runtime could not be prepared or failed unexpectedly, `64` the command was used incorrectly.
 
 ## Update
 

@@ -1,11 +1,25 @@
 #!/bin/sh
 # Run the core CLI from this plugin's copy in a private hash-locked environment.
-# Exit 0: success. Exit 2: invalid model. Exit 3: the runtime could not be prepared.
-# Exit 64: the command was used incorrectly.
+# Exit 0: success. Exit 2: invalid model. Exit 64: the command was used incorrectly.
+# Exit 3: the runtime could not be prepared or failed unexpectedly.
 set -eu
 
 root=$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd -P)
-environment=${XDG_DATA_HOME:-$HOME/.local/share}/cloud-architecture-diagrams/claude-plugin/venv
+
+# A relative location would resolve inside the user's project, so only absolute paths count.
+case ${XDG_DATA_HOME:-} in
+  /*) data=$XDG_DATA_HOME ;;
+  *)
+    case ${HOME:-} in
+      /*) data=$HOME/.local/share ;;
+      *)
+        echo 'cloud-diagrams: set HOME or XDG_DATA_HOME to an absolute path and retry.' >&2
+        exit 3
+        ;;
+    esac
+    ;;
+esac
+environment=$data/cloud-architecture-diagrams/claude-plugin/venv
 
 if ! command -v uv >/dev/null 2>&1; then
   echo 'cloud-diagrams: uv is required. Install it (for example: brew install uv) and retry.' >&2
@@ -19,6 +33,18 @@ if ! UV_PROJECT_ENVIRONMENT=$environment uv sync --quiet --locked --no-dev --no-
   exit 3
 fi
 
-# -P keeps the working directory off sys.path, so a project's files cannot shadow any module.
-PYTHONPATH=$root/src exec "$environment/bin/python" -B -P -c \
-  'from cloud_architecture_diagrams.cli import main; raise SystemExit(main())' "$@"
+# -I keeps the working directory and Python's environment variables out of the import path,
+# and the explicit insert accepts a plugin path that PYTHONPATH would split at a colon.
+status=0
+"$environment/bin/python" -I -B -c \
+  'import sys; sys.path.insert(0, sys.argv.pop(1)); from cloud_architecture_diagrams.cli import main; raise SystemExit(main())' \
+  "$root/src" "$@" || status=$?
+
+# Any other status would otherwise read as a result of the command's documented contract.
+case $status in
+  0 | 2 | 64) exit "$status" ;;
+  *)
+    echo "cloud-diagrams: the runtime failed unexpectedly (exit $status)." >&2
+    exit 3
+    ;;
+esac

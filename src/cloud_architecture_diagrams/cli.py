@@ -56,7 +56,8 @@ def main() -> int:
         result = validate_json(
             sys.stdin.buffer.read(MAX_INPUT_BYTES + 1), mode=args.mode, view_id=args.view
         )
-        print(result.model_dump_json())
+        # A rejected key can be non-ASCII, and the host's locale must not be able to break JSON.
+        sys.stdout.buffer.write(result.model_dump_json().encode() + b"\n")
         return 0 if result.valid else 2
     print(json.dumps(report, ensure_ascii=True, indent=2, sort_keys=True))
     return 0

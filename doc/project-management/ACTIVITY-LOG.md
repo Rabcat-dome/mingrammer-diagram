@@ -260,3 +260,11 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - Owner authorized the commit and push of `87acce5`, plus updating their install. Actual Quality gate run 41449921613 / job 125292308226 passed all 10 lanes with 87 core and 24 plugin tests, none skipped, and zero annotations.
 - Updated the owner's plugin from `0220e94300cb` to `87acce5fee50` with `settings.json` unchanged. On the updated copy, `view_exclusions` covered every view, a planted `pydantic.py` did not run, and a new headless session with two views validated a model with no permission denials and reported the exclusions.
 - Not done: disposition of the six Low findings, review of these fixes, the Astra/High review, second-machine or interactive checks, merge or release.
+
+
+## 2026-11-02 — M7 Low fixes
+
+- The owner asked for the six Low findings from the separate-session review to be fixed, then said work can move to S06 / M2. Core `0.2.0a4` writes results as UTF-8. The wrapper maps unexpected failures to exit 3, accepts only absolute data locations and runs Python with `-I` and an explicit import path.
+- The wheel check now compares SHA-256 per file, digests include `pyproject.toml` and `uv.lock`, capabilities and package versions are pinned by tests, 13 guide lists must match the contract, and the gate doc no longer names a removed check.
+- New tests failed before the fixes and pass after them. Removing or weakening any of 11 wrapper behaviors fails a test. See the [M7 evidence](evidence/M7-claude-plugin.md#separate-session-review).
+- Not done: actual CI of these fixes, updating the owner's install, review of the Medium and Low fixes, the Astra/High review, second-machine or interactive checks, merge or release.

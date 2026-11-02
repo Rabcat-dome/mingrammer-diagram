@@ -49,6 +49,12 @@ def test_wheel_check_ignores_files_the_build_excludes(repository: ModuleType) ->
     assert repository.package() == []
 
 
+def test_wheel_check_compares_contents_not_only_names(repository: ModuleType) -> None:
+    (repository.ROOT / "src/demo/__init__.py").write_text("VALUE = 1\n")
+    build_wheel(repository.ROOT, "demo/__init__.py")
+    assert len(repository.package()) == 1
+
+
 def test_wheel_check_rejects_a_wheel_without_code(repository: ModuleType) -> None:
     build_wheel(repository.ROOT)
     assert len(repository.package()) == 1
@@ -78,3 +84,7 @@ def test_digests_cover_the_code_the_plugin_runs() -> None:
     digests = checks().source_digests()
     assert "plugins/cloud-architecture-diagrams/bin/cloud-diagrams" in digests
     assert "plugins/cloud-architecture-diagrams/skills/architecture-model/SKILL.md" in digests
+    for link in (ROOT / "plugins/cloud-architecture-diagrams").rglob("*"):
+        if link.is_symlink():
+            target = str(link.resolve().relative_to(ROOT))
+            assert target in digests or any(name.startswith(f"{target}/") for name in digests)

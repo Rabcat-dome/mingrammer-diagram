@@ -117,7 +117,7 @@ Exit: all P0 pass; no unresolved Critical/High findings; justified Medium findin
 
 ## M7 — Claude Code adapter and later work
 
-Status: Adapter preparation started under D-015; not complete and not a first-release requirement. See [M7 evidence](evidence/M7-claude-plugin.md). Implementation: Claude Opus 5.5, the model of the owner's session rather than a project selection. A same-session review and a separate-session Claude review ran; their Critical, High and Medium findings are fixed and six Low findings await disposition. The Astra/High review has not been performed.
+Status: Adapter preparation started under D-015; not complete and not a first-release requirement. See [M7 evidence](evidence/M7-claude-plugin.md). Implementation: Claude Opus 5.5, the model of the owner's session rather than a project selection. A same-session review and a separate-session Claude review ran; all their findings are fixed. The Astra/High review has not been performed.
 
 | Task | Work | Dependency / output |
 |---|---|---|

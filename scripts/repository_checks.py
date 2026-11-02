@@ -11,7 +11,17 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE_FOLDERS = {"src", "scripts", "tests", "schemas", ".github", ".claude-plugin", "plugins"}
+SOURCE_ROOTS = {
+    ".claude-plugin",
+    ".github",
+    "plugins",
+    "pyproject.toml",
+    "schemas",
+    "scripts",
+    "src",
+    "tests",
+    "uv.lock",
+}
 
 
 def files() -> list[Path]:
@@ -26,7 +36,7 @@ def source_digests() -> dict[str, str]:
     return {
         str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
         for path in files()
-        if path.relative_to(ROOT).parts[0] in SOURCE_FOLDERS
+        if path.relative_to(ROOT).parts[0] in SOURCE_ROOTS
         and path.is_file()
         and not path.is_symlink()
     }
@@ -138,7 +148,7 @@ def package() -> list[str]:
     # A build can exit 0 and still ship no code, so compare the wheel with its source tree.
     source = ROOT / "src"
     expected = {
-        str(path.relative_to(source))
+        str(path.relative_to(source)): hashlib.sha256(path.read_bytes()).hexdigest()
         for path in files()
         if path.is_relative_to(source) and path.is_file()
     }
@@ -146,8 +156,16 @@ def package() -> list[str]:
     if len(wheels) != 1:
         return [f"reports/dist: expected one wheel, found {len(wheels)}"]
     with zipfile.ZipFile(wheels[0]) as wheel:
-        shipped = {name for name in wheel.namelist() if ".dist-info/" not in name}
-    return [f"{wheels[0].name}: differs from src: {name}" for name in sorted(expected ^ shipped)]
+        shipped = {
+            name: hashlib.sha256(wheel.read(name)).hexdigest()
+            for name in wheel.namelist()
+            if ".dist-info/" not in name
+        }
+    return [
+        f"{wheels[0].name}: differs from src: {name}"
+        for name in sorted(expected.keys() | shipped.keys())
+        if expected.get(name) != shipped.get(name)
+    ]
 
 
 def main() -> int:

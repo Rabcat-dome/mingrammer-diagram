@@ -14,11 +14,16 @@ import yaml
 
 from cloud_architecture_diagrams.cli import capabilities
 from cloud_architecture_diagrams.models import (
+    CLUSTER_SCOPED,
     Boundary,
+    BoundaryRelation,
     KubernetesKind,
+    Port,
+    Properties,
     Provider,
     Relationship,
     Scope,
+    View,
 )
 from cloud_architecture_diagrams.validation import validate_json
 
@@ -42,6 +47,58 @@ LINKS = {
     "skills/architecture-model/examples/kubernetes-valid.json": (
         "tests/fixtures/kubernetes-valid.json"
     ),
+}
+
+
+def literals(annotation: Any) -> set[str]:
+    """Literal values, looking through `Literal[...] | None`."""
+    found: set[str] = set()
+    for item in get_args(annotation):
+        found |= literals(item) if get_args(item) else {item} if isinstance(item, str) else set()
+    return found
+
+
+GUIDE_LISTS = {
+    "provider": (r"\*\*Provider:\*\* (.*?)\. Use", literals(Provider)),
+    "scope": (
+        r"## Scopes.*?Kinds: (.*?)\. A parent",
+        literals(Scope.model_fields["kind"].annotation),
+    ),
+    "boundary": (
+        r"## Boundaries.*?Kinds: (.*?)\.\n",
+        literals(Boundary.model_fields["kind"].annotation),
+    ),
+    "boundary-relation": (
+        r"with kind (.*?)\. Containment",
+        literals(BoundaryRelation.model_fields["kind"].annotation),
+    ),
+    "service-type": (
+        r"Kubernetes Service type: (.*?)\)",
+        literals(Properties.model_fields["service_type"].annotation),
+    ),
+    "port-protocol": (
+        r"`protocol` one of (.*?)\)",
+        literals(Port.model_fields["protocol"].annotation),
+    ),
+    "relationship": (
+        r"## Relationships.*?Kinds: (.*?)\. `direction`",
+        literals(Relationship.model_fields["kind"].annotation),
+    ),
+    "relationship-direction": (
+        r"`direction` is (.*?)\.\n",
+        literals(Relationship.model_fields["direction"].annotation),
+    ),
+    "view-grouping": (
+        r"`grouping`: (.*?)\. `direction`",
+        literals(View.model_fields["grouping"].annotation),
+    ),
+    "view-direction": (
+        r"`direction`: (.*?)\. `style`",
+        literals(View.model_fields["direction"].annotation),
+    ),
+    "view-style": (r"`style`: (.*?)\.\n", literals(View.model_fields["style"].annotation)),
+    "kubernetes-kind": (r"\nKinds: (`Cluster`.*?)\.\n", literals(KubernetesKind)),
+    "cluster-scoped": (r"forbid `namespace_ref`: (.*?)\.\n", set(CLUSTER_SCOPED)),
 }
 
 
@@ -94,23 +151,19 @@ def test_skill_discloses_the_missing_renderer() -> None:
     # Quoted, so the pre-approved command also survives a plugin path containing a space.
     mentions = re.findall(r"`[^`]*bin/cloud-diagrams[^`]*`", body)
     assert mentions and all(mention.startswith(f"`{COMMAND}") for mention in mentions)
-    # When rendering arrives this fails, so the skill cannot keep describing an old capability.
+    # When capabilities move this fails, so the skill cannot keep describing old ones.
     assert capabilities()["render_available"] is False
+    assert capabilities()["commands"] == ["schema", "capabilities", "validate"]
+    assert capabilities()["pending_checks"] == ["catalog", "provider_rules", "render"]
     assert "cannot render" in metadata["description"]
 
 
-def test_model_guide_names_every_enumerated_kind() -> None:
+@pytest.mark.parametrize(("pattern", "expected"), GUIDE_LISTS.values(), ids=GUIDE_LISTS.keys())
+def test_model_guide_lists_match_the_contract(pattern: str, expected: set[str]) -> None:
     guide = (SKILL / "references/model-guide.md").read_text()
-    kinds = [
-        *get_args(KubernetesKind),
-        *get_args(Provider),
-        *(
-            value
-            for model in (Scope, Boundary, Relationship)
-            for value in get_args(model.model_fields["kind"].annotation)
-        ),
-    ]
-    assert [kind for kind in kinds if f"`{kind}`" not in guide] == []
+    match = re.search(pattern, guide, re.S)
+    assert match, pattern
+    assert set(re.findall(r"`([^`]+)`", match.group(1))) == expected
 
 
 def test_model_guide_taxonomy_matches_requirements() -> None:
@@ -290,6 +343,96 @@ def test_usage_error_is_not_reported_as_an_invalid_model(
 ) -> None:
     result = run(installed, "validate", "--mode", "nope")
     assert result.returncode == 64 and not result.stdout
+
+
+def test_unusual_install_paths_work(installed: tuple[Path, dict[str, str]], tmp_path: Path) -> None:
+    odd = tmp_path / "my plugins:v1" / PLUGIN.name
+    shutil.copytree(installed[0], odd)
+    (odd / "src/cloud_architecture_diagrams/__init__.py").write_text('__version__ = "odd"\n')
+    result = run((odd, installed[1]), "capabilities")
+    assert result.returncode == 0, result.stderr
+    assert json.loads(result.stdout)["package_version"] == "odd"
+
+
+def test_hostile_python_environment_is_ignored(
+    installed: tuple[Path, dict[str, str]], tmp_path: Path
+) -> None:
+    marker = tmp_path / "executed"
+    planted = tmp_path / "planted"
+    planted.mkdir()
+    (planted / "pydantic.py").write_text(f"open({str(marker)!r}, 'w').close()\n")
+    hostile = {
+        "PYTHONPATH": str(planted),
+        "PYTHONHOME": str(planted),
+        "VIRTUAL_ENV": str(planted),
+        "UV_PROJECT_ENVIRONMENT": str(tmp_path / "other"),
+    }
+    result = run((installed[0], installed[1] | hostile), "capabilities")
+    assert result.returncode == 0, result.stderr
+    assert not marker.exists() and not (tmp_path / "other").exists()
+
+
+def test_project_files_do_not_affect_setup(
+    installed: tuple[Path, dict[str, str]], tmp_path: Path
+) -> None:
+    for name in ["uv.toml", "pyproject.toml", "uv.lock"]:
+        (tmp_path / name).write_text("not [valid toml\n")
+    (tmp_path / ".python-version").write_text("2.7\n")
+    result = run(installed, "capabilities", cwd=tmp_path)
+    assert result.returncode == 0, result.stderr
+
+
+def test_relative_data_home_cannot_run_project_files(
+    installed: tuple[Path, dict[str, str]], tmp_path: Path
+) -> None:
+    # A relative location resolves inside the project, under the pre-approved command.
+    copy, environment = installed
+    assert run(installed, "capabilities").returncode == 0
+    share = tmp_path / "home/.local/share"
+    share.mkdir(parents=True)
+    (share / "cloud-architecture-diagrams").symlink_to(
+        Path(environment["XDG_DATA_HOME"]) / "cloud-architecture-diagrams"
+    )
+    marker = tmp_path / "executed"
+    project = tmp_path / "project"
+    python = project / "relative/cloud-architecture-diagrams/claude-plugin/venv/bin/python"
+    python.parent.mkdir(parents=True)
+    python.write_text(f"#!/bin/sh\ntouch {marker}\n")
+    python.chmod(0o755)
+    hostile = environment | {"XDG_DATA_HOME": "relative", "HOME": str(tmp_path / "home")}
+    result = run((copy, hostile), "capabilities", cwd=project)
+    assert result.returncode == 0, result.stderr
+    assert not marker.exists()
+
+
+@pytest.mark.parametrize("shell", ["/bin/sh", "/bin/dash"])
+def test_missing_home_is_a_setup_failure(
+    installed: tuple[Path, dict[str, str]], shell: str
+) -> None:
+    # dash exits 2 on an unset variable under set -u, which would read as an invalid model.
+    if not Path(shell).exists():
+        pytest.skip(f"{shell} is not available")
+    copy, environment = installed
+    bare = {k: v for k, v in environment.items() if k not in {"HOME", "XDG_DATA_HOME"}}
+    result = subprocess.run(
+        [shell, copy / "bin/cloud-diagrams", "capabilities"],
+        capture_output=True,
+        env=bare,
+        check=False,
+    )
+    assert result.returncode == 3 and not result.stdout
+    assert b"absolute path" in result.stderr
+
+
+def test_unexpected_runtime_failure_is_not_a_model_result(
+    installed: tuple[Path, dict[str, str]], tmp_path: Path
+) -> None:
+    broken = tmp_path / PLUGIN.name
+    shutil.copytree(installed[0], broken)
+    (broken / "src/cloud_architecture_diagrams/cli.py").unlink()
+    result = run((broken, installed[1]), "capabilities")
+    assert result.returncode == 3 and not result.stdout
+    assert b"failed unexpectedly" in result.stderr
 
 
 def test_missing_uv_is_a_setup_failure(installed: tuple[Path, dict[str, str]]) -> None:

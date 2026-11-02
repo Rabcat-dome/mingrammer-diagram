@@ -1,6 +1,6 @@
 # M7 Claude Code Plugin Preparation
 
-Recorded: 2026-11-02 (Asia/Bangkok) | Base: `c5f74b4` | First tested code: `22fc85e` | Review fixes: `0220e94` and `87acce5` | Branch: `codex/m7-claude-plugin` | Host: macOS ARM64, Claude Code 2.1.309.
+Recorded: 2026-11-02 (Asia/Bangkok) | Base: `c5f74b4` | First tested code: `22fc85e` | Review fixes: `0220e94`, `87acce5` and the commit after `07aef0c` | Branch: `codex/m7-claude-plugin` | Host: macOS ARM64, Claude Code 2.1.309.
 
 **M7-01 and M7-02 are complete. M7-03 is verified on one Mac for local-path, GitHub and real-config installs and for updating an installed plugin; a second machine and interactive permission prompts remain. M7-04 has not started.** This is a preparation build under D-015. It authors and validates models; it cannot render diagrams, and it does not change the Work first-release target.
 
@@ -10,7 +10,7 @@ Actual CI and the GitHub and real-config installs below ran against commit `22fc
 
 | Item | Result |
 |---|---|
-| [Plugin](../../../plugins/cloud-architecture-diagrams/README.md) | `cloud-architecture-diagrams`, versioned by Git commit, running core `0.2.0a3` |
+| [Plugin](../../../plugins/cloud-architecture-diagrams/README.md) | `cloud-architecture-diagrams`, versioned by Git commit, running core `0.2.0a4` |
 | [Marketplace](../../../.claude-plugin/marketplace.json) | `mingrammer-local`, with a relative source. The Codex marketplace and S04 plugin are unchanged |
 | Skill | `architecture-model`, with a model guide and the two valid core fixtures as examples |
 | Command | `bin/cloud-diagrams` runs the core in a private hash-locked environment. It installs dependencies only, so no build backend runs and no install writes into the plugin |
@@ -38,7 +38,7 @@ There is no MCP server. A Claude Code session already has Bash and Read, so a se
 | New headless session with no `--plugin-dir` | Loaded the installed plugin and listed its skill |
 | Desktop Code tab | The skill appeared in the already running session after install. Invoking it resolved `${CLAUDE_PLUGIN_ROOT}` to the installed cache path, and `capabilities` ran from there. No model was authored in this check |
 | Clean-copy tests in the gate | Run the command from a dereferenced copy outside the checkout and prove the copy's own core is the one executing |
-| Exit codes | 0 valid, 2 invalid with JSON on stdout, 3 for a missing uv or a failed setup with empty stdout, 64 for command misuse with empty stdout |
+| Exit codes | 0 valid, 2 invalid with JSON on stdout, 3 for a missing uv, a failed setup, an unusable `HOME` or an unexpected runtime failure with empty stdout, 64 for command misuse with empty stdout |
 
 Model-authoring invocations used `claude -p --plugin-dir` with the owner's existing login, Sonnet 5.5 and no session persistence. Only Skill, Read, Write and Edit were pre-approved, so each Bash call depended on the skill's own `allowed-tools`.
 
@@ -63,7 +63,7 @@ A high-effort review of `c5f74b4..64aec62` ran with the Claude Code review skill
 
 | Finding | Fix | Check |
 |---|---|---|
-| Files in the working directory could shadow modules and run through the pre-approved command | The wrapper runs Python with `-P` | Reproduced before the fix; new test passes |
+| Files in the working directory could shadow modules and run through the pre-approved command | The wrapper runs Python with `-P`, later replaced by `-I` | Reproduced before the fix; new test passes |
 | A saved gate report failed the docs check, because digests followed symlinks that `git show` returns as link text | Digests skip symlinks | A report from `64aec62` failed the docs check; new test compares digests with `git show` |
 | Gate digests omitted the wrapper and `SKILL.md` | Digests cover every source file Git tracks or would add | New test |
 | Exit 2 also meant command misuse | The core CLI exits 64 on usage errors, as core `0.2.0a2` | Reproduced before the fix; new tests in both lanes |
@@ -88,14 +88,18 @@ The owner asked for the three Medium findings to be fixed:
 | The guide called `taxonomy` a closed list and the `k8s.<kind>` rule firm, while the validator enforces neither | The guide and the skill's caveat now say so. Enforcement stays with M2 | Reproduced with `made.up`. A test fails when enforcement arrives, and another compares the guide's list with the requirements |
 | No test protected the wrapper's setup flags | New tests cover a stale lock, an unchanged plugin tree, the exact installed package set and a fake uv that drains stdin | Removing each of `--locked`, `--no-dev`, `--no-install-project`, `</dev/null`, `>&2`, `-P` and `-B` now fails a test. The `-B` case needed `PYTHONDONTWRITEBYTECODE` removed from the test environment, because that variable masked it, including in CI |
 
-Six Low findings remain open and need an owner disposition:
+The owner then asked for the six Low findings to be fixed too:
 
-- The exit-code contract omits exit 1 for a non-UTF-8 locale or a failed `exec`, and `/bin/dash` exits 2 when `HOME` and `XDG_DATA_HOME` are unset.
-- A relative `XDG_DATA_HOME`, or a colon in the plugin path, can run project files. This needs control of the environment or an unusual install path.
-- The `claude-plugin` row in the [quality gate](../quality-gate.md) still names a removed version check, and only `render_available` is pinned for stale capabilities.
-- `package-contents` compares file names, so a zero-byte module with the right name passes.
-- Gate digests omit `pyproject.toml`, which affects only dirty local runs.
-- Spaces in paths and hostile ambient variables work when probed but have no test. The guide's enumeration test runs one way only, and the guide omits the rule for `ownership` edges to Kubernetes resources.
+| Low finding | Fix | Check |
+|---|---|---|
+| The exit-code contract omitted exit 1 for a non-UTF-8 locale or a failed `exec`, and `/bin/dash` exited 2 when `HOME` and `XDG_DATA_HOME` were unset | Core `0.2.0a4` writes results as UTF-8. The wrapper maps any status other than 0, 2 and 64 to 3, and checks `HOME` explicitly | New tests under `/bin/sh` and `/bin/dash`, a missing core file and an ASCII output encoding |
+| A relative `XDG_DATA_HOME`, or a colon in the plugin path, could run project files | Only absolute locations count, and Python runs with `-I` and an explicit import path | New tests with a planted `bin/python`, hostile Python variables and a path containing a space and a colon |
+| The gate doc named a removed version check, and only `render_available` was pinned | The row is reworded, `commands` and `pending_checks` are pinned, and a test compares `pyproject.toml` with `__version__` | Tests |
+| `package-contents` compared file names only | It compares a SHA-256 for each file | New test with the right name and different content |
+| Gate digests omitted `pyproject.toml` | Digests include it and `uv.lock` | A test requires every plugin link target to be covered |
+| Spaces, hostile variables and project files had no test, the guide test ran one way, and the guide omitted the `ownership` rule | New tests cover these, 13 guide lists must now match the contract exactly, and the guide states the rule and adds the Service type and port protocol values | Tests |
+
+Removing or weakening any of 11 wrapper behaviors now fails a test: `--locked`, `--no-dev`, `--no-install-project`, `</dev/null`, `>&2`, `-I`, `-B`, the status mapping, the two absolute-path checks and the colon-safe import path. A relative `PATH` remains outside this protection, since control of the environment can already choose which programs run.
 
 The review also noted two M1 items outside this range: `field` echoes rejected key names, and `ID_DUPLICATE` does not name the duplicate ID.
 
@@ -104,6 +108,7 @@ The review also noted two M1 items outside this range: `field` echoes rejected k
 - A second machine, any other operating system, and first-run setup with an empty uv cache.
 - Interactive permission prompts, and how much `allowed-tools` admits at runtime, including whether a redirect such as `schema > file` prompts. Headless runs exercised `allowed-tools`, but the Code tab check ran under bypass permissions, so it did not.
 - Authoring a model from the Code tab.
-- The Astra/High review the model strategy names. Implementation and both reviews above used Claude Opus 5.5, and the Medium fixes at `87acce5` have not been reviewed by any pass.
+- Actual CI of the Low fixes. The owner's install holds `87acce5` until they are pushed and it is updated.
+- The Astra/High review the model strategy names. Implementation and both reviews above used Claude Opus 5.5, and the Medium and Low fixes have not been reviewed by any pass.
 
 Prompts were run once each, so trigger rates are observations rather than measurements. Provider semantics are unchanged from M1: a passing result does not establish that a service type exists or that a placement is legal.

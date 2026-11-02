@@ -2,14 +2,17 @@
 
 import copy
 import json
+import os
 import subprocess
 import sys
+import tomllib
 from pathlib import Path
 from typing import Any
 
 import pytest
 from jsonschema import Draft202012Validator
 
+from cloud_architecture_diagrams import __version__
 from cloud_architecture_diagrams.models import MAX_INPUT_BYTES, Architecture
 from cloud_architecture_diagrams.validation import Mode, validate_json
 
@@ -258,6 +261,25 @@ def test_every_partial_view_is_disclosed_whichever_view_is_selected() -> None:
     selected = validate_json((FIXTURES / "kubernetes-valid.json").read_bytes(), view_id="compact")
     assert selected.excluded_ids == result.view_exclusions["compact"]
     assert selected.view_exclusions == result.view_exclusions
+
+
+def test_package_versions_agree() -> None:
+    project = tomllib.loads(Path("pyproject.toml").read_text())["project"]
+    assert project["version"] == __version__
+
+
+def test_results_are_utf8_whatever_the_output_encoding() -> None:
+    # A rejected key is echoed in `field`, so results can carry non-ASCII text.
+    payload = '{"schema_version":"1.0.0","สถาปัตยกรรม":1}'.encode()
+    result = subprocess.run(
+        ["cloud-diagrams", "validate"],
+        input=payload,
+        capture_output=True,
+        env=os.environ | {"PYTHONIOENCODING": "ascii"},
+    )
+    assert result.returncode == 2 and not result.stderr
+    fields = [item["field"] for item in json.loads(result.stdout)["diagnostics"]]
+    assert any("สถาปัตยกรรม" in field for field in fields)
 
 
 def test_cli_exit_codes_and_discovery() -> None:

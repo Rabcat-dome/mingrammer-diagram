@@ -38,7 +38,7 @@ Unknown fields fail everywhere. At least one view is required. The input limit i
 
 - `service_type` uses the ID format, for example `aws.compute.ec2`. No catalog resolves these yet, so treat them as provisional and keep the provider's native service name in `name`.
 - `taxonomy`: use one of these IDs: `governance.scope`, `location.site`, `onprem.facility`, `network.boundary`, `network.subnet`, `network.routing`, `network.connectivity`, `network.load_balancing`, `edge.delivery`, `compute.vm`, `compute.physical`, `compute.containers`, `compute.serverless`, `application.platform`, `data.relational`, `data.nosql_cache`, `data.analytics_ai`, `storage.object`, `storage.block_file`, `integration.messaging`, `identity.access`, `security.control`, `security.secrets_keys`, `operations.observability`, `operations.backup_dr`. Until catalogs arrive, the validator checks only that an ID has two dot-separated parts, so it will not catch a wrong ID.
-- `properties` is closed: `replicas`, `labels`, `service_type` (Kubernetes Service type), `ports` (`{port, target_port?, protocol?}`).
+- `properties` is closed: `replicas`, `labels`, `service_type` (Kubernetes Service type: `ClusterIP`, `NodePort`, `LoadBalancer` or `ExternalName`), `ports` (`{port, target_port?, protocol?}`, with `protocol` one of `TCP`, `UDP` or `SCTP`).
 
 ### Placement keeps dimensions separate
 
@@ -90,5 +90,7 @@ Kinds: `Cluster`, `ControlPlane`, `NodePool`, `Node`, `Namespace`, `Deployment`,
 | `config_refs` | Any | `ConfigMap`, same namespace |
 | `secret_refs` | Any | `Secret`, same namespace |
 | `service_account_ref` | Any | `ServiceAccount`, same namespace |
+
+An `ownership` relationship pointing at a Kubernetes resource follows the same rule as `owner_ref`: its source must be a workload kind or `Pod` in the same cluster and namespace. A source that is an administrative scope must have the same provider.
 
 A namespace is logical grouping and does not place a Pod on a Node. Leave `node_ref` unset when placement was not supplied; missing placement is valid, while invented placement is not. Do not model hidden managed control-plane machines or node pools the user did not describe. `Secret` resources cannot carry `properties`.
