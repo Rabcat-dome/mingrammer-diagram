@@ -378,5 +378,35 @@
     "30/50: runs=[0.22, 0.2, 0.21] svg=40751 png=181890",
     "100/150: runs=[0.34, 0.34, 0.33] svg=127544 png=681081",
     "200/300: runs=[0.49, 0.49, 0.49] svg=253636 png=1283412"
-  ]
+  ],
+  "actual_ci": {
+    "run": 41539921034,
+    "job": 125601156090,
+    "url": "https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41539921034",
+    "commit": "cddb497d4ce1974f29874fe8ba5a9bc5d2726391",
+    "conclusion": "success",
+    "working_tree_dirty": false,
+    "runner_name": "macbook-pro-m2-max-mingrammer",
+    "same_machine_as_local_gate": true,
+    "python": "3.13.7",
+    "engine": "dot - graphviz version 16.1.0 (20260904.0139)",
+    "lanes_passed": 14,
+    "tests": {
+      "schema-core": 91,
+      "catalog-license": 76,
+      "provider-semantics": 442,
+      "render-security": 214,
+      "render-smoke": 84,
+      "claude-plugin": 52
+    },
+    "tests_total": 959,
+    "tests_skipped": 0,
+    "annotations": 0,
+    "repository_visibility": "private",
+    "wheel_sha256": "49824a56749115381006bb3bd9c27a17917d9022819b22d007e13455006a9f08",
+    "wheel_matches_local_build": true,
+    "lock_sha256": "5b05b86bbddd23219e5040a70b44447c030039409bb7df2f64ca9cef26724ec3",
+    "source_digests_match_local_gate": 124,
+    "read_from": "the run's reports folder in the runner workspace; the artifact was not downloaded"
+  }
 }

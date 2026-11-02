@@ -376,3 +376,11 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - Rewrote the Claude plugin skill and README for rendering, and the wrapper now passes exit 4 through. S07 did not change the owner's installed plugin.
 - Recorded P-024 to P-027. Used Claude Opus 5.5 rather than the planned Sol/High, with no model setting changed.
 - Still open: actual CI, the Astra/High review, and the owner's inspection of the first output. M3 is not closed. S04 alpha.3 and the runner registrations are unchanged. No merge, release or plugin update happened. See the [S07 evidence](evidence/S07-controlled-rendering.md).
+
+## 2026-11-03 — S07 committed and actual CI passed
+
+- The owner asked to commit and push. `cddb497` on `codex/s07-controlled-rendering` holds the S07 work, staged by explicit path after the local gate passed again.
+- Actual [run 41539921034](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41539921034) passed all 14 lanes with 959 tests and none skipped, from a clean checkout on the runner on this same Mac. The job has zero annotations, the visibility guard read `private`, and the wheel, the lock hash and all 124 source digests match the local gate. See the [S07 evidence](evidence/S07-controlled-rendering.md#actual-ci).
+- A local sdist also holds `.claude/settings.local.json`, which only a global Git ignore hides. The CI sdist and the wheel do not. S07 did not change the sdist settings, and this is left as a follow-up.
+- `main` moved to `f50e66d` with docs-only commits while this ran, and the owner's install now follows `main`. This branch still starts at `f3f0789`, so a later merge should expect small conflicts in this file and possibly in `HANDOFF.md` and the M7 evidence, and it is what would bring rendering to the owner's install at its next update.
+- M3 stays open for the Astra/High review and the owner's inspection of the output. No merge, release or plugin update happened.

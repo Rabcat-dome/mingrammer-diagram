@@ -1,32 +1,32 @@
 # S07 — Controlled Rendering Vertical Slice
 
-Date: 2026-11-03 | Tasks: M3-01..04 | Branch: `codex/s07-controlled-rendering`, from `f3f0789` | Package: `0.4.0a1`
+Date: 2026-11-03 | Tasks: M3-01..04 | Branch: `codex/s07-controlled-rendering`, from `f3f0789` | Package: `0.4.0a1` | Code head: `cddb497`
 
-**Result: the renderer is implemented and passes all 14 lanes and 959 tests locally. M3 is not closed.** Actual CI is pending at this commit. No reviewer has examined this code, and the owner has not inspected the output. The contract is in the [core contract](../../design/core-contract.md#controlled-rendering).
+**Result: the renderer is implemented and passes all 14 lanes and 959 tests locally and in [actual CI](#actual-ci) at `cddb497`. M3 is not closed.** No reviewer has examined this code, and the owner has not inspected the output. The contract is in the [core contract](../../design/core-contract.md#controlled-rendering).
 
 ## Task status
 
 | Task | Status | Result |
 |---|---|---|
-| M3-01 | Implemented locally | `render/graph.py` maps one view to a normalized graph, and `render/draw.py` turns that into DOT through controlled `diagrams` classes. Overview and detail are separate renders with stable IDs, and namespace and worker placement stay separate dimensions |
-| M3-02 | Implemented locally | SVG with embedded icons, PNG, `model.json`, `view.json`, `diagnostics.json` and `manifest.json`, published atomically after every output check passes |
-| M3-03 | Implemented locally | Strict rejects an unknown type and draws nothing. Lenient draws the approved generic symbol, keeps provider, type and name, and marks a draft in the image and the manifest |
-| M3-04 | Implemented locally | `dot` runs alone under a sandbox and resource limits, with descriptor-anchored output, an SVG allowlist and cleanup on failure, timeout and signal. Rendering downloads nothing |
+| M3-01 | Implemented | `render/graph.py` maps one view to a normalized graph, and `render/draw.py` turns that into DOT through controlled `diagrams` classes. Overview and detail are separate renders with stable IDs, and namespace and worker placement stay separate dimensions |
+| M3-02 | Implemented | SVG with embedded icons, PNG, `model.json`, `view.json`, `diagnostics.json` and `manifest.json`, published atomically after every output check passes |
+| M3-03 | Implemented | Strict rejects an unknown type and draws nothing. Lenient draws the approved generic symbol, keeps provider, type and name, and marks a draft in the image and the manifest |
+| M3-04 | Implemented | `dot` runs alone under a sandbox and resource limits, with descriptor-anchored output, an SVG allowlist and cleanup on failure, timeout and signal. Rendering downloads nothing |
 
 ## Exit criteria
 
 | Criterion | State | Evidence |
 |---|---|---|
-| Repeatable CLI render from a clean setup | Met locally; CI pending | A fresh environment from `uv.lock` and a clean wheel install outside the checkout both render; see [clean setup](#clean-setup). Two renders of one input produce identical SVG, PNG and graph bytes |
-| Invalid input cannot bypass validation | Met locally | `render_model` is the only entry point. 31 invalid and malformed inputs run in both modes, with every later render step replaced by a failing stub |
-| Usable SVG and PNG with a complete bundle | Met locally; owner inspection pending | All 19 views of the existing fixtures render, together reaching all 148 catalog types. Each output's content is checked against the graph. This session inspected samples; see [inspection](#inspection) |
-| Required security tests pass | Met locally | `render-security` covers path, symlink, isolation, timeout, code, Graphviz and SVG injection and resource limits; see [validation](#validation) |
+| Repeatable CLI render from a clean setup | Met | A fresh environment from `uv.lock` and a clean wheel install outside the checkout both render; see [clean setup](#clean-setup). Two renders of one input produce identical SVG, PNG and graph bytes |
+| Invalid input cannot bypass validation | Met | `render_model` is the only entry point. 31 invalid and malformed inputs run in both modes, with every later render step replaced by a failing stub |
+| Usable SVG and PNG with a complete bundle | Met in tests; owner inspection pending | All 19 views of the existing fixtures render, together reaching all 148 catalog types. Each output's content is checked against the graph. This session inspected samples; see [inspection](#inspection) |
+| Required security tests pass | Met | `render-security` covers path, symlink, isolation, timeout, code, Graphviz and SVG injection and resource limits; see [validation](#validation) |
 
-M3 also needs actual CI, the Astra/High review and the disposition of its findings. Those are open.
+M3 also needs the Astra/High review and the disposition of its findings. Those are open.
 
 ## Validation
 
-`uv run --locked python scripts/quality_gate.py` passed all 14 lanes on this Mac, from a dirty tree, with 959 tests and none skipped. Python 3.13.7, uv 0.13.0 and Graphviz 16.1.0. The [proof](S07-controlled-rendering-proof.json) holds the full gate report and source digests. **This is a local result, not CI.**
+`uv run --locked python scripts/quality_gate.py` passed all 14 lanes on this Mac, from a dirty tree, with 959 tests and none skipped. Python 3.13.7, uv 0.13.0 and Graphviz 16.1.0. The [proof](S07-controlled-rendering-proof.json) holds the full gate report and source digests. This is the local result, and [actual CI](#actual-ci) follows.
 
 | Lane | Tests | Work done |
 |---|---|---|
@@ -38,6 +38,14 @@ M3 also needs actual CI, the Astra/High review and the disposition of its findin
 | `claude-plugin` | 52 | Clean-copy renders in the plugin's own locked environment, and the rewritten skill |
 
 The new lanes call real Graphviz and the real sandbox. They contain no skip, so a host without either fails them. A test requires every render diagnostic code to appear in these test files.
+
+### Actual CI
+
+Actual Quality gate [run 41539921034](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41539921034), job 125601156090, passed all 14 lanes at `cddb497d4ce1974f29874fe8ba5a9bc5d2726391`, from a clean checkout on the self-hosted runner `macbook-pro-m2-max-mingrammer` with Python 3.13.7 and Graphviz 16.1.0. Every lane's test count matches the table above, for 959 tests with none skipped, and the job has zero annotations. `render-security` and `render-smoke` ran real Graphviz and the real sandbox under the runner service. The repository-visibility guard read `private`, and O-002 stays in the report's `release_blockers`.
+
+The wheel has the same SHA-256 as the local build, `49824a56749115381006bb3bd9c27a17917d9022819b22d007e13455006a9f08`, and all 124 source digests and the lock hash match the local gate. The job log names only the lanes, so these details come from the run's `reports` folder, read in place on the runner. That report names this commit and a clean tree. The artifact was not downloaded.
+
+The runner is this same Mac, so CI proves a clean checkout and the runner's environment, not a second machine. The two sdists differ by one file: the local one also holds `.claude/settings.local.json`, which only a global Git ignore hides, so hatchling did not skip it. The CI sdist does not have it, and the wheel is not affected. S07 did not change the sdist settings, and this stays open as a follow-up.
 
 ### Sabotage checks
 
@@ -93,6 +101,8 @@ Samples for the owner's inspection, regenerated from the final code: [AWS catalo
 
 ## Requirement coverage
 
+These states were written from the local gate, and the same tests then passed in [actual CI](#actual-ci).
+
 | ID | State | Where it is checked |
 |---|---|---|
 | FR-040 | Met locally | SVG and PNG for every fixture view, with embedded icons and an independent `rsvg-convert` read |
@@ -133,7 +143,7 @@ These would have shipped had the build trusted exit codes and upstream defaults.
 
 ## Limits and what this does not establish
 
-- **No CI and no review.** Local passes do not stand in for either.
+- **No review, and one machine.** Passing CI does not stand in for a review, and its runner is this same Mac.
 - **FR-048 and T-016 are only partly addressed.** Icons, native labels and grouping conventions exist, but comparison with official references is M4 work.
 - **Layout is an engineering slice.** Members with no edges stack in one long column, notes can be verbose, and a long single word can wrap awkwardly, as `PersistentVolumeClaim` does at the label width. These are presentation choices for M4 and the owner, not defects in the bundle.
 - **macOS only.** Without `sandbox-exec`, `render` fails closed. Apple marks that tool deprecated, so a future macOS may need another route.
@@ -159,7 +169,6 @@ The policy names Astra/High for M3's review, and D-020 does not extend to it. **
 
 ## Next steps
 
-1. Read actual CI for this branch and record it.
-2. Run the Astra/High review on the committed head, then dispose of its findings.
-3. The owner inspects representative output and settles the presentation choices above.
-4. Close M3 only after those. M4 then builds reference scenarios on this renderer.
+1. Run the Astra/High review on `f3f0789..cddb497`, then dispose of its findings.
+2. The owner inspects representative output and settles the presentation choices above.
+3. Close M3 only after those. M4 then builds reference scenarios on this renderer.

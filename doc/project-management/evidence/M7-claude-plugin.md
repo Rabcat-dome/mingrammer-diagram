@@ -109,7 +109,7 @@ The review also noted two M1 items outside this range: `field` echoes rejected k
 
 S07 / M3 adds `render` to the core, and the `claude-plugin` lane failed as designed until the skill changed. The skill now covers rendering, including the host requirement, the bundle, draft marking and the private-use limit, and it still forbids drawing outside the controlled renderer. The wrapper passes exit 4 through, because a failed render carries JSON diagnostics that exit 3 would misreport. New clean-copy tests render a bundle from a copy with its own locked environment and confirm that fonts and private-use terms come from that copy. Moving `diagrams` to runtime grows the plugin's private environment from its Pydantic set by `diagrams`, `graphviz`, `jinja2`, `pre-commit` and their dependencies, plus about 38 MB of icons. `pre-commit` is only an upstream dependency declaration, and nothing here runs it.
 
-These pass locally. Actual CI is pending, they have not run in a live Claude Code session, and S07 did not change the owner's installed plugin. See the [S07 evidence](S07-controlled-rendering.md).
+These passed actual CI [run 41539921034](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41539921034) at `cddb497`. They have not run in a live Claude Code session, and S07 did not change the owner's installed plugin. See the [S07 evidence](S07-controlled-rendering.md).
 
 ## S06 follow-up
 
