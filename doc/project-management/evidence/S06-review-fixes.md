@@ -35,4 +35,8 @@ Reproduce the regression suite with `uv run --frozen python -m pytest tests/test
 
 The original five findings are locally addressed, awaiting independent fix review. This chat's follow-up inspection and tests are same-session verification because the original reviewer also wrote the fixes. Actual CI run 41475449582 still identifies the old HEAD, not these uncommitted changes; CI must run against any later authorized fix commit. Earlier M7 Medium/Low fixes, rendered visuals, Work integration and two-machine acceptance are not newly reviewed here.
 
-Huawei rights remain uncleared. D-018 accepts private personal risk only, and O-002 still blocks public distribution. A passing local gate did not make the decision on the M2 asset-rights exit item; the owner made it later under D-019. M2 remains open for the fix review and fix-commit CI.
+Huawei rights remain uncleared. D-018 accepts private personal risk only, and O-002 still blocks public distribution. A passing local gate did not make the decision on the M2 asset-rights exit item; the owner made it later under D-019. M2 remains open.
+
+## Follow-up
+
+These changes were committed at `dc54b4d`, and actual CI [run 41488737943](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41488737943) passes there. The statement above that all five failures are fixed held for the reported cases. A later [independent review](S06-fable-review.md) under D-020 confirms F1-F4 and finds F5 only partly fixed, because self-managed EKS nodes in another VPC still pass.

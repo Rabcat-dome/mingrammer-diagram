@@ -280,7 +280,11 @@ def test_relation_only_subnet_still_checks_network_region(mode: Mode) -> None:
     region["id"] = "region-other"
     document["boundaries"].append(region)
     entity(document, "boundaries", "az-a")["parent_ref"] = "region-other"
-    assert "BOUNDARY_REGION_MISMATCH" in codes(document, mode)["error"]
+    result = validate_json(json.dumps(document).encode(), mode=mode)
+    mismatched = {
+        item.entity_id for item in result.diagnostics if item.code == "BOUNDARY_REGION_MISMATCH"
+    }
+    assert "app-a" in mismatched
 
 
 @pytest.mark.parametrize("mode", ["strict", "lenient"])
@@ -363,12 +367,15 @@ def test_concrete_pod_assignments_and_broader_scheduling(
 
 
 @pytest.mark.parametrize("mode", ["strict", "lenient"])
+@pytest.mark.parametrize("pool_id", ["mng", "self-managed"])
 @pytest.mark.parametrize(
     "scenario", ["different_subnet", "pool_unspecified", "cluster_unspecified"]
 )
-def test_eks_nodegroup_compatible_or_unspecified_networks(mode: Mode, scenario: str) -> None:
+def test_eks_nodegroup_compatible_or_unspecified_networks(
+    mode: Mode, pool_id: str, scenario: str
+) -> None:
     document = load("providers/aws")
-    pool = entity(document, "resources", "mng")
+    pool = entity(document, "resources", pool_id)
     if scenario == "different_subnet":
         pool["placement"]["network_attachments"] = [
             {"network_ref": "vpc", "subnet_refs": ["data-a"]}
@@ -377,6 +384,26 @@ def test_eks_nodegroup_compatible_or_unspecified_networks(mode: Mode, scenario: 
         pool["placement"].pop("network_attachments")
     else:
         entity(document, "resources", "eks")["placement"].pop("network_attachments")
+    assert not codes(document, mode)["error"]
+
+
+@pytest.mark.parametrize("mode", ["strict", "lenient"])
+@pytest.mark.parametrize("service_type", ["aws.containers.eks_fargate_profile", "k8s.nodepool"])
+def test_eks_vpc_rule_leaves_fargate_and_generic_pools_unchecked(
+    mode: Mode, service_type: str
+) -> None:
+    document = load("providers/aws")
+    network = copy.deepcopy(entity(document, "boundaries", "vpc"))
+    network["id"] = "vpc-other"
+    subnet = copy.deepcopy(entity(document, "boundaries", "app-a"))
+    subnet["id"] = "app-other"
+    subnet["parent_ref"] = "vpc-other"
+    document["boundaries"] += [network, subnet]
+    pool = entity(document, "resources", "self-managed")
+    pool["service_type"] = service_type
+    pool["placement"]["network_attachments"] = [
+        {"network_ref": "vpc-other", "subnet_refs": ["app-other"]}
+    ]
     assert not codes(document, mode)["error"]
 
 

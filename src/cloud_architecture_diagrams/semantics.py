@@ -58,6 +58,12 @@ NO_TRAFFIC = {
 }
 REPLICATED = {"Deployment", "ReplicaSet", "StatefulSet"}
 PORTED = POD_HOLDERS | {"Service", "Ingress", "IngressController"}
+# AWS exempts only hybrid nodes, which stay generic here. Its Fargate pages imply the cluster VPC
+# without stating it, so a Fargate profile stays out.
+EKS_CLUSTER_VPC_POOLS = {
+    "aws.containers.eks_managed_node_group",
+    "aws.containers.eks_self_managed_nodes",
+}
 QUALIFIED = re.compile(r"^[A-Za-z0-9]([A-Za-z0-9_.-]{0,61}[A-Za-z0-9])?$")
 SUBDOMAIN = re.compile(r"^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$")
 AZURE_FORBIDDEN = set("<>%&\\?/")
@@ -577,7 +583,7 @@ class Semantics:
             if kind == "NodePool" and mode and resource.service_type not in mode.node_pool_types:
                 self.emit("K8S_NODE_POOL_TYPE_INVALID", path + "/service_type", resource.id)
             if (
-                resource.service_type == "aws.containers.eks_managed_node_group"
+                resource.service_type in EKS_CLUSTER_VPC_POOLS
                 and cluster is not None
                 and cluster.service_type in {"aws.containers.eks", "aws.containers.eks_auto_mode"}
                 and self.attached[resource.id]

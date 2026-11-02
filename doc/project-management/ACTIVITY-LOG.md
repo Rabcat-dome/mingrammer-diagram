@@ -349,3 +349,11 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - The owner also stated that the Astra/High review is done and only awaits commit and push. The repository holds one such record, [S06-astra-review.md](evidence/S06-astra-review.md), which covers `5569459`, requests changes and predates the fixes, and no stash, branch or worktree holds a later one. These records therefore keep the fix review open until the owner points to a later review or explicitly disposes of the five Medium findings.
 - The owner then chose [D-020](decisions.md#confirmed-user-direction): commit the fixes and have Claude Fable 5.1 / High review them in a fresh pass, as a recorded substitute for Astra/High.
 - Brought the S06 exit table, rule and source counts, and next steps up to date. No commit, push, merge or plugin upgrade occurred. M2 remains open.
+
+
+## 2026-11-03 — S06 fixes committed, CI-tested and reviewed by Fable
+
+- Committed the F1-F5 fixes with D-019 and D-020 at `dc54b4dc5a74ffa8c8680da72e3bef4ff08893ef` and pushed the branch. Actual CI [run 41488737943](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41488737943), job 125425825434, passed 12 lanes and 637 tests with none skipped, from a clean tree. The visibility guard read private, the wheel matches the local build, and the job has no annotations.
+- Under D-020, Claude Fable 5.1 / High reviewed `5569459..dc54b4d` in a fresh agent. Changes requested: F1-F4 are fixed, and F5 is partly fixed because self-managed EKS nodes in another VPC still pass (N1, P2). Four P3 findings cover Fargate profiles, EKS clusters in two VPCs, NodePool edges against `node_ref`, and one test that does not pin its fix. See the [fix review](evidence/S06-fable-review.md).
+- Claude Opus 5.5, the session that started the review, reproduced N1-N5 with its own probes and read the AWS sentence behind N1 in the raw page.
+- The owner chose to fix N1 and recheck it. Claude Opus 5.5 fixed N1 and N5 and deferred N2-N4 with recorded reasons, as the owner accepted; see the [follow-up](evidence/S06-fable-review.md#follow-up-n1-fix-and-deferrals). M2 stays open for CI at the fix commit and Fable's recheck.

@@ -2278,6 +2278,276 @@
      ]
     }
    ]
+  },
+  {
+   "id": "review-n1-self-managed-nodes-vpc",
+   "base": "providers/aws",
+   "expect": "AWS_EKS_NODE_GROUP_NETWORK_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "vpc-other",
+      "name": "Workload VPC",
+      "provider": "aws",
+      "kind": "network",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "app-other",
+      "name": "App A",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "vpc-other",
+      "relations": [
+       {
+        "kind": "located_in",
+        "target_ref": "az-a"
+       }
+      ]
+     }
+    },
+    {
+     "set": "resources/id:self-managed/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc-other",
+       "subnet_refs": [
+        "app-other"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "review-n1-self-managed-nodes-both-vpcs",
+   "base": "providers/aws",
+   "expect": "AWS_EKS_NODE_GROUP_NETWORK_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "vpc-other",
+      "name": "Workload VPC",
+      "provider": "aws",
+      "kind": "network",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "app-other",
+      "name": "App A",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "vpc-other",
+      "relations": [
+       {
+        "kind": "located_in",
+        "target_ref": "az-a"
+       }
+      ]
+     }
+    },
+    {
+     "set": "resources/id:self-managed/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "app-a"
+       ]
+      },
+      {
+       "network_ref": "vpc-other",
+       "subnet_refs": [
+        "app-other"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "review-n1-managed-nodegroup-both-vpcs",
+   "base": "providers/aws",
+   "expect": "AWS_EKS_NODE_GROUP_NETWORK_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "vpc-other",
+      "name": "Workload VPC",
+      "provider": "aws",
+      "kind": "network",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "app-other",
+      "name": "App A",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "vpc-other",
+      "relations": [
+       {
+        "kind": "located_in",
+        "target_ref": "az-a"
+       }
+      ]
+     }
+    },
+    {
+     "set": "resources/id:mng/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "app-a"
+       ]
+      },
+      {
+       "network_ref": "vpc-other",
+       "subnet_refs": [
+        "app-other"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "review-n1-self-managed-nodes-auto-mode-cluster",
+   "base": "providers/aws",
+   "expect": "AWS_EKS_NODE_GROUP_NETWORK_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "vpc-other",
+      "name": "Workload VPC",
+      "provider": "aws",
+      "kind": "network",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "app-other",
+      "name": "App A",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "vpc-other",
+      "relations": [
+       {
+        "kind": "located_in",
+        "target_ref": "az-a"
+       }
+      ]
+     }
+    },
+    {
+     "set": "resources/id:self-managed/kubernetes/cluster_ref",
+     "value": "eks-auto"
+    },
+    {
+     "set": "resources/id:self-managed/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc-other",
+       "subnet_refs": [
+        "app-other"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "review-n1-managed-nodegroup-auto-mode-cluster",
+   "base": "providers/aws",
+   "expect": "AWS_EKS_NODE_GROUP_NETWORK_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "vpc-other",
+      "name": "Workload VPC",
+      "provider": "aws",
+      "kind": "network",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "app-other",
+      "name": "App A",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "vpc-other",
+      "relations": [
+       {
+        "kind": "located_in",
+        "target_ref": "az-a"
+       }
+      ]
+     }
+    },
+    {
+     "set": "resources/id:mng/kubernetes/cluster_ref",
+     "value": "eks-auto"
+    },
+    {
+     "set": "resources/id:mng/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc-other",
+       "subnet_refs": [
+        "app-other"
+       ]
+      }
+     ]
+    }
+   ]
   }
  ],
  "warnings": [

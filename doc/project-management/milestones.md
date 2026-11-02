@@ -1,6 +1,6 @@
 # Milestones and Work Breakdown
 
-Updated: 2026-11-03 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 implemented and not closed. Huawei rights are not cleared, with D-018 allowing private personal use only and D-019 closing the asset-rights exit item for that use. M2's independent fix review and CI at the fix commit remain outstanding. M7 Claude Code preparation started early under D-015.
+Updated: 2026-11-03 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 implemented and not closed. Huawei rights are not cleared, with D-018 allowing private personal use only and D-019 closing the asset-rights exit item for that use. Claude Fable 5.1 / High reviewed the fixes at `dc54b4d` under D-020 and requests one change, which keeps M2 open. M7 Claude Code preparation started early under D-015.
 
 Source of scope: [requirements](../requirements/requirements.md). Model abbreviations and review rules: [model strategy](model-strategy.md). Quality check definitions: [quality gate](quality-gate.md).
 
@@ -49,7 +49,7 @@ Exit: valid JSON passes, malformed/dangling/cyclic input fails, diagnostic contr
 
 ## M2 — Provider semantics, catalogs and icon rights
 
-Status: Implemented in S06 and not closed. [Evidence](evidence/S06-provider-catalogs.md) records actual CI [run 41473877379](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41473877379) passing at `6929253`, including D-016, D-017 and D-018. The owner accepted the on-premises and Huawei icon sheets. Astra/High reviewed `5569459` and found five P2 issues. All five are now fixed in the working tree with 12 local lanes / 637 tests passing; see [fix evidence](evidence/S06-review-fixes.md). Open: independent fix review and CI at any later fix commit. D-019 closes the asset-rights exit item for the private personal release; D-018 accepts the risk rather than establishing rights, and O-002 still blocks public distribution. Policy: Sol/Medium, Sol/High for placement rules, review Astra/High. Actual implementation: Claude Opus 5.5, the model of the owner's session.
+Status: Implemented in S06 and not closed. [Evidence](evidence/S06-provider-catalogs.md) records actual CI [run 41473877379](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41473877379) passing at `6929253`, including D-016, D-017 and D-018. The owner accepted the on-premises and Huawei icon sheets. Astra/High reviewed `5569459` and found five P2 issues. The fixes are committed at `dc54b4d`, and actual CI [run 41488737943](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41488737943) passes 12 lanes / 637 tests; see [fix evidence](evidence/S06-review-fixes.md). Under D-020, Claude Fable 5.1 / High [reviewed them](evidence/S06-fable-review.md): F1-F4 are fixed, F5 is partly fixed, and there is one new P2 (N1) and four new P3 findings. Open: fix and recheck N1 with CI at its commit, or the owner's explicit disposition. D-019 closes the asset-rights exit item for the private personal release; D-018 accepts the risk rather than establishing rights, and O-002 still blocks public distribution. Policy: Sol/Medium, Sol/High for placement rules, review Astra/High. Actual implementation: Claude Opus 5.5, the model of the owner's session.
 
 | Task | Work | Dependency / output |
 |---|---|---|
