@@ -9,7 +9,7 @@ Initial review: base `ff53a88944e981be2bbbab171e0ccf8cecdb4e41`, head `e64541580
 1. **P2 - alternate Kubernetes ownership bypass** (`validation.py:323-328` at the reviewed head). Generic ownership edges checked endpoints/cycles but omitted the kind/cluster/provider/namespace rules applied to `kubernetes.owner_ref`. An explicit ReplicaSet-to-Pod ownership edge across namespaces passed both modes; encoding the same owner with owner_ref failed. The fix shares the same supported workload-owner rules across both encodings, while preserving same-provider administrative Scope ownership as a separate dimension.
 2. **P2 - docs gate depends on historical files outside the repository** (`repository_checks.py:68-70`). Five absolute links in the historical S04 host report required the original user's output folder. With repository files intact but those artifacts unavailable, the mandatory lane failed. The fix records host paths as provenance text and retains actual repository-relative PNG/SVG evidence links. New portable link policy rejects absolute/outside-repository local links, even when those files happen to exist.
 
-Targeted regressions failed against the original implementation (six ownership cases and one portable-docs case), then passed after the fixes. The expanded suite passes 82 tests, including valid/invalid alternate owners, wrong namespace/cluster/kind, mixed ownership cycles, administrative Scope ownership and a temporary clean repository without historical host artifacts. Full local gate passes. Independent confirmation of these fixes is pending re-review of the committed fix head.
+Targeted regressions failed against the original implementation (six ownership cases and one portable-docs case), then passed after the fixes. The expanded suite passes 82 tests, including valid/invalid alternate owners, wrong namespace/cluster/kind, mixed ownership cycles, administrative Scope ownership and a temporary clean repository without historical host artifacts. Full local gate passes. Independent re-review confirmed both fixes at 785e1eecb646476691859f14dd4399ac564011ca; no additional actionable findings.
 
 ## Review checks and disposition
 
@@ -18,3 +18,14 @@ The reviewer ran the original 65 tests without environment sync/pytest cache, ch
 A suspected literal-backslash-n workflow defect was investigated and dismissed: byte inspection found actual LF (10), and job logs confirmed checks used the installed per-run environment. It is not a third finding.
 
 The editable actor conditions are supplementary to current private access and server-side fork policy. Root read-only API checks found only Rabcat-dome/admin and fork-PR workflows disabled; settings were not changed. Broader provider/catalog/render semantics, production isolation, actual full Work plugin and second-machine release acceptance are outside this M1 review.
+
+
+## Final re-review
+
+Incremental base: `e645415801f4dcafae9f53f08f56b74adb4936af`. Reviewed head: `785e1eecb646476691859f14dd4399ac564011ca`. Full milestone base remains ff53a88. GPT-6 Astra / High was confirmed by the reviewer from its session metadata.
+
+Result: **Both P2 findings fixed; no additional actionable findings in the reviewed S05 diff.** The reviewer independently repeated 82 tests without sync/cache, the original ownership bypass in both modes, the portable docs check with external artifacts unavailable, the incremental source/fixtures/docs review and whitespace checks. The original bypass now fails with K8S_NAMESPACE_MISMATCH at /relationships/1/source_ref. Administrative ownership remains provider-consistent.
+
+The reviewer did not inspect fix-head CI. The coordinating chat separately verified [run 41426653007](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41426653007), job 125214762630, all eight passing lanes/82 tests, clean checkout and matching source/lock hashes. Its CI wheel matches local bytes and passed clean-environment valid/invalid ownership CLI probes. See [final gate](S05-quality-gate-final.json) and [validation proof](S05-validation-proof.json).
+
+The frozen executable/package/workflow sources remain identical to 785e1ee after closure documentation changes. This is M1 review/acceptance evidence, not catalog/provider/render/full Work or two-machine release acceptance.

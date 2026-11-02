@@ -1,20 +1,22 @@
 # Session Plan and Starter Prompts
 
-Updated: 2026-11-02 | Status: S01-S04 / M0 feasibility complete; S05 / M1 in progress. Two authorized S04 chats completed; no new S05 chat has been created.
+Updated: 2026-11-02 | Status: S01-S05 complete; S06 / M2 ready. Two authorized S04 chats completed; no new S05 chat has been created.
 
 This is an execution index for the existing [milestones](milestones.md), not a second requirement baseline. Use the [requirements](../requirements/requirements.md) for product scope and the [decision log](decisions.md) for confirmed choices. The deliverable remains an installable cross-machine plugin with a bundled skill.
 
 ## Start here
 
-S01 has established release granularity and visual direction. S02 has completed source/rights research and recorded unresolved Huawei permission evidence. S03 installed the separate runner, published the initial tree and passed two actual jobs under D-011. S04 has completed native runtime checks, owner-reported actual Work feasibility and Astra/High final review under D-013/D-014. The [M0 closeout](evidence/S04-closeout.md) records completed exit evidence and later-stage gaps. S05 implementation is underway; see [current evidence](evidence/S05-core-and-ci.md).
+S01 has established release granularity and visual direction. S02 has completed source/rights research and recorded unresolved Huawei permission evidence. S03 installed the separate runner, published the initial tree and passed two actual jobs under D-011. S04 has completed native runtime checks, owner-reported actual Work feasibility and Astra/High final review under D-013/D-014. The [M0 closeout](evidence/S04-closeout.md) records completed exit evidence and later-stage gaps. S05 has completed core implementation, actual CI and final review; see [S05 evidence](evidence/S05-core-and-ci.md).
 
 S01 result: [scope and six reference briefs](evidence/S01-release-scope.md). The owner selected solution architecture overall, then corrected Kubernetes to detailed architecture (D-009), with visuals close to each provider's published examples. Actual rendered sample acceptance remains S08/S10.
 
 S02 result: [source/rights assessment and gaps](evidence/S02-icon-sources-and-rights.md). All 17 named Huawei items have technical source candidates; release redistribution evidence remains unresolved. On-premises neutral gaps and detailed Kubernetes candidates are recorded.
 
-S03 result: [repository/runner evidence](evidence/S03-repository-runner-preflight.md) and [actual job reports](evidence/S03-runner-job.json). Private/admin access, runner ID 2/service/labels and two successful dispatches are verified at initial commit `5c3859b4a865c3e65fc6ed80a389ec8f8a32182e`; M0-04 is complete. Graphviz was absent at S03; native 16.1.0 was installed and verified on the service in S04. A transient broker/offline observation is documented. Required-check enforcement is unavailable on the current private-repository plan. S04 is now complete; S05 has started; later sessions have not started.
+S03 result: [repository/runner evidence](evidence/S03-repository-runner-preflight.md) and [actual job reports](evidence/S03-runner-job.json). Private/admin access, runner ID 2/service/labels and two successful dispatches are verified at initial commit `5c3859b4a865c3e65fc6ed80a389ec8f8a32182e`; M0-04 is complete. Graphviz was absent at S03; native 16.1.0 was installed and verified on the service in S04. A transient broker/offline observation is documented. Required-check enforcement is unavailable on the current private-repository plan. S04 is now complete; S05 is complete; S06 and later sessions have not started.
 
 S04 result: [M0/S04 closeout](evidence/S04-closeout.md), [native proof](evidence/S04-native-runtime.md), [owner Work result](evidence/S04-Work-validation.md) and [Astra/High review](evidence/S04-native-alpha3-review.md). Alpha.3 uses native Python/Graphviz without required Docker or hosting. Owner reports separate Work alpha.3/Darwin, visible PNG and five files; local SDK hashes/Thai rendering and owner Work evidence remain distinct. Both prior P2 findings are fixed; no new confirmed actionable runtime finding. M0-02/M0-05 are complete for feasibility; full production and two-machine acceptance remain later work.
+
+S05 result: [core/CI evidence](evidence/S05-core-and-ci.md), [contract/setup](../design/core-contract.md) and [Astra review](evidence/S05-astra-review.md). M1-01..04 are complete at code head 785e1ee: 82 tests, eight real runner lanes, clean CI wheel and both initial P2 findings confirmed fixed. This is core-only validation; provider catalogs/rules/assets remain S06 and full rendering/Work/release acceptance remains later work.
 
 The [S02 user follow-up](evidence/S02-additional-icon-sources.md) assesses a 155-PNG Huawei alternative and maps all eight on-premises concepts to draw.io-type generic symbols/compositions under D-010. S06 implements the exact approved subset/export/attribution; symbol selection does not replace source-rights or rendered acceptance checks.
 

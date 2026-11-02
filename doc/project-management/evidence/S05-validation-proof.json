@@ -1,0 +1,132 @@
+{
+  "recorded_date": "2026-11-02",
+  "timezone": "Asia/Bangkok",
+  "head": "785e1eecb646476691859f14dd4399ac564011ca",
+  "ci": {
+    "conclusion": "success",
+    "headSha": "785e1eecb646476691859f14dd4399ac564011ca",
+    "jobs": [
+      {
+        "completedAt": "2026-11-02T10:11:18Z",
+        "conclusion": "success",
+        "databaseId": 125214762630,
+        "name": "quality-gate",
+        "startedAt": "2026-11-02T10:10:40Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-02T10:10:46Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-02T10:10:43Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T10:10:49Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+            "number": 2,
+            "startedAt": "2026-11-02T10:10:46Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T10:10:49Z",
+            "conclusion": "success",
+            "name": "Install locked core development environment",
+            "number": 3,
+            "startedAt": "2026-11-02T10:10:49Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T10:10:58Z",
+            "conclusion": "success",
+            "name": "Run every implemented check",
+            "number": 4,
+            "startedAt": "2026-11-02T10:10:49Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T10:11:04Z",
+            "conclusion": "success",
+            "name": "Upload synthetic reports and build outputs",
+            "number": 5,
+            "startedAt": "2026-11-02T10:10:58Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T10:11:04Z",
+            "conclusion": "success",
+            "name": "Remove per-run Python environment",
+            "number": 6,
+            "startedAt": "2026-11-02T10:11:04Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T10:11:04Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+            "number": 12,
+            "startedAt": "2026-11-02T10:11:04Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T10:11:04Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 13,
+            "startedAt": "2026-11-02T10:11:04Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41426653007/job/125214762630"
+      }
+    ],
+    "status": "completed",
+    "url": "https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41426653007"
+  },
+  "tests": {
+    "count": 82,
+    "failures": 0,
+    "errors": 0
+  },
+  "clean_ci_wheel": {
+    "sha256": "fc138b2236a30100a01d1d6a381fd96b6eb70913d3ccbd6832c6d142b1560e8a",
+    "install": "passed; hash-locked dependencies, separate temporary venv, outside checkout",
+    "valid_fixture": "passed",
+    "ownership_regression_strict_lenient": "rejected as expected",
+    "local_ci_wheel_bytes": "identical"
+  },
+  "implementation_model": {
+    "id": "gpt-6.1-sol",
+    "effort": "xhigh",
+    "source": "inherited current-chat setting; not changed by this work"
+  },
+  "review": {
+    "model": "gpt-6-astra",
+    "effort": "high",
+    "milestone_base": "ff53a88944e981be2bbbab171e0ccf8cecdb4e41",
+    "incremental_base": "e645415801f4dcafae9f53f08f56b74adb4936af",
+    "head": "785e1eecb646476691859f14dd4399ac564011ca",
+    "result": "Both initial P2 findings fixed; no additional actionable findings",
+    "ci_verification": "performed by coordinating chat; reviewer did not inspect fix-head CI"
+  },
+  "trust": {
+    "private_repository": true,
+    "only_collaborator": "Rabcat-dome/admin",
+    "fork_pull_request_workflows": false,
+    "write_tokens_to_forks": false,
+    "secrets_to_forks": false,
+    "settings_changed": false
+  },
+  "scope": "M1 core foundation only; M2/M3/M5/M6 acceptance remains separate",
+  "gate_evidence": "S05-quality-gate-final.json",
+  "initial_gate_evidence": "S05-quality-gate-initial.json",
+  "initial_fail_closed_probe": {
+    "source_ref": "e645415801f4dcafae9f53f08f56b74adb4936af",
+    "missing_tool": "actionlint",
+    "exit_code": 1,
+    "result": "only workflow lane failed; aggregate failed; other seven lanes passed",
+    "reviewer_verified": true
+  }
+}

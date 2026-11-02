@@ -119,3 +119,5 @@ Platform sources read for planning:
 | [GitHub secure use](https://docs.github.com/en/actions/reference/security/secure-use) | Least privilege, untrusted code and persistent runner considerations |
 
 Provider evidence is linked next to semantic anchors in the requirements. Detailed service rules, Huawei documentation and icon terms must be verified during catalog implementation; the supplied draft is not a substitute for primary sources.
+
+S05/M1 result: [core and real CI evidence](evidence/S05-core-and-ci.md). The core 0.2.0a1 package, strict schema/reference/context checks and native quality gate pass 82 tests and actual runner checks at 785e1ee. Astra/High confirmed both initial P2 fixes with no additional actionable findings. This completes M1 foundation only; M2 catalogs/rights/provider semantics and later rendering/Work/two-machine acceptance remain open. No required Docker or model API call was added.

@@ -4,12 +4,13 @@ Planning repository for a personal plugin built on `mingrammer/diagrams` and Gra
 
 The deliverable is an installable plugin usable across machines. Its bundled skill provides workflow instructions; it is one component inside the plugin. D-013 selects runtime installation on every machine using the plugin; the S04 native default uses a private Python environment and system Graphviz, without requiring Docker.
 
-**Status:** S01-S04 / M0 feasibility complete; S05 / M1 is in progress; [core contract/local checks](doc/project-management/evidence/S05-core-and-ci.md) are implemented, actual CI/review pending. Requirements are revision 0.9. Native alpha.3 local checks pass; the owner confirms actual Work alpha.3/Darwin, visible PNG and five files. Astra/High confirmed both prior fixes and found no new confirmed actionable runtime issue. See the [S04 closeout](doc/project-management/evidence/S04-closeout.md). Product quality gates start in M1; Huawei packaging rights remain open.
+**Status:** S01-S05 complete; S06 / M2 catalogs/assets are next. [M1 core/schema and Quality Gate](doc/project-management/evidence/S05-core-and-ci.md) pass 82 tests and actual native CI; Astra/High confirmed both review fixes with no additional actionable findings. Installed S04 alpha.3 remains a three-node Work feasibility plugin. Full catalogs/rendering/plugin/release acceptance remain later work; Huawei packaging rights are open.
 
 ## Read next
 
 | Document | Purpose |
 |---|---|
+| [Core contract/setup](doc/design/core-contract.md) | Implemented M1 schema, CLI, validation layers, bounds and local quality-gate commands |
 | [Requirements](doc/requirements/requirements.md) | Single product baseline, provider coverage, acceptance criteria |
 | [Milestones](doc/project-management/milestones.md) | Tasks, dependencies, exit evidence, delivery order |
 | [Session plan](doc/project-management/session-plan.md) | Ten work packages, collaboration points and copyable new-session/review prompts |

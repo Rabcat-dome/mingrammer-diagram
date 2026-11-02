@@ -1,6 +1,6 @@
 # Quality Gate and Self-Hosted Runner Plan
 
-Updated: 2026-11-02 | Status: S04/M0 feasibility complete; product quality gate is next in S05/M1. S03 runner/service setup and two actual manual preflight jobs passed; M0-04 complete.
+Updated: 2026-11-02 | Status: S05/M1 initial product quality gate implemented and passed on the real runner. S03 runner/service setup and two actual manual preflight jobs passed; M0-04 complete.
 
 ## Recommendation
 
@@ -10,9 +10,9 @@ The [S03 evidence](evidence/S03-repository-runner-preflight.md) verifies private
 
 The current private repository's rulesets/protection endpoints return 403 requiring an account-plan change. CI can run and report failures, but server-enforced required checks are unavailable at this snapshot. Until capability changes, use a manual policy: review the exact commit, require applicable CI results and record review before merge/release. Do not describe this as bypass-resistant enforcement. No plan purchase or visibility change is proposed as a prerequisite to continuing development.
 
-## Proposed workflow shape
+## Implemented M1 gate and planned additions
 
-Proposed file: `.github/workflows/quality-gate.yml`, to be implemented in M1. The path is a plan, not an existing file. Local scripts must exist and pass before workflow steps call them. Add later checks when their code arrives; never make a placeholder check report that unimplemented behavior passed.
+Implemented [quality-gate.yml](../../.github/workflows/quality-gate.yml) runs docs-contract, secrets, lint, format, types, workflow, schema-core and core package-build checks. [S05 evidence](evidence/S05-core-and-ci.md) records actual run 41426653007 at 785e1ee: eight lanes and 82 tests passed. The stable job name is quality-gate. Catalog/provider/render/visual/plugin checks below remain planned until their components arrive; no placeholder pass is emitted.
 
 | Check | Starts | Blocking result | Evidence |
 |---|---|---|---|
@@ -48,13 +48,13 @@ GitHub's [runner requirements](https://docs.github.com/en/actions/reference/runn
 4. [Published preflight workflow](../../.github/workflows/runner-preflight.yml) passed twice at `5c3859b4a865c3e65fc6ed80a389ec8f8a32182e`; [job metadata/reports](evidence/S03-runner-job.json) include tested SHA, workflow digest and actual runner identity. The reports explicitly state rendering/product checks were not executed.
 5. [Actionlint labels](../../.github/actionlint.yaml) match API and job evidence: `self-hosted`, `macOS`, `ARM64`, `mingrammer-macos-arm64`. S03 documents the transient availability observation and current-plan enforcement limitation.
 
-M0-04 is complete. Existing registrations/settings were preserved; S03 did not install renderer dependencies. S04 later added native Graphviz and a private renderer environment. The manual preflight uses no checkout or third-party actions and zero repository token permissions. M1 still must implement and execute the product quality gate; a preflight success is not evidence of schema, provider, asset, renderer or plugin correctness.
+M0-04 is complete. Existing registrations/settings were preserved; S03 did not install renderer dependencies. S04 later added native Graphviz and a private renderer environment. The manual preflight uses no checkout or third-party actions and zero repository token permissions. M1 has now implemented/executed the first core quality gate; a preflight success is not evidence of schema, provider, asset, renderer or plugin correctness.
 
 ## S04 completion before M1
 
-The [S04 evidence](evidence/S04-runtime-and-hosting.md) records synthetic render, English/Thai labels, installed local stdio plugin SDK checks, historical loopback HTTP/download research, negative cases and Docker resource configuration. That historical proof is not an Actions job or actual Work test. The [closeout](evidence/S04-closeout.md) adds owner-reported Work alpha.3/Darwin/preview/five files and completed Astra/High review; no product quality gate has run. Graphviz 16.1.0 is now installed natively; historical Linux-image evidence remains separate. [Native checks](evidence/S04-native-runtime.md) cover direct command, installed/relocated MCP, filesystem regression and sampled resource-watchdog behavior.
+The [S04 evidence](evidence/S04-runtime-and-hosting.md) records synthetic render, English/Thai labels, installed local stdio plugin SDK checks, historical loopback HTTP/download research, negative cases and Docker resource configuration. That historical proof is not an Actions job or actual Work test. The [closeout](evidence/S04-closeout.md) adds owner-reported Work alpha.3/Darwin/preview/five files and completed Astra/High review; the M1 core quality gate is separately recorded in S05. Graphviz 16.1.0 is now installed natively; historical Linux-image evidence remains separate. [Native checks](evidence/S04-native-runtime.md) cover direct command, installed/relocated MCP, filesystem regression and sampled resource-watchdog behavior.
 
-The new alpha.3 default uses native Python/Graphviz with no required Docker; use native shell steps and verify the runner service PATH/runtime. Historical Docker research can remain an optional CI route. This does not make GitHub `container:` or `services:` jobs supported on macOS. D-013 retires the central-host plan. An earlier amd64 smoke used emulation and does not prove another physical machine or OS. Preserve existing owner-only trust until the real product gate exists.
+The new alpha.3 default uses native Python/Graphviz with no required Docker; use native shell steps and verify the runner service PATH/runtime. Historical Docker research can remain an optional CI route. This does not make GitHub `container:` or `services:` jobs supported on macOS. D-013 retires the central-host plan. An earlier amd64 smoke used emulation and does not prove another physical machine or OS. Preserve existing owner-only trust as the product gate expands.
 
 ## Workflow controls
 
@@ -87,4 +87,4 @@ Run the fast lane on ordinary changes. Run the full fixture set for core/schema/
 - Owner inspected T-001..006; the same plugin version completed the Work workflow on two supported machines (FR-066/T-010), and clean-runtime core reproduction passed. Record setup/authentication steps rather than assuming installation or credentials sync automatically.
 - Setup, supported host modes, limitations, package digest, rollback steps and handoff are current.
 
-Suggested tooling (Ruff, a type checker, pytest, actionlint, dependency/secret scanners) is a proposal. Pin exact tools and commands during M1; this document does not claim they are installed or that any checks passed.
+M1 locks Ruff, mypy, pytest, JSON Schema validation and build tools; uv 0.13.0/Python 3.13.7/actionlint execute natively on the verified host. The implemented credential check uses narrow patterns, not a full history/entropy audit. Future dependency/security scanners remain unimplemented proposals. See the actual commands and trust limitations in the core contract guide and S05 report.

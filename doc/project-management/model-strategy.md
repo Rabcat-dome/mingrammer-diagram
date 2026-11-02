@@ -42,6 +42,8 @@ and a fix direction. State checks not run and review limitations. Do not edit co
 
 Astra/High reviewed alpha.1 (afbacca to 7208317) and found one P2 output-root symlink issue. The alpha.2 review (7208317 to 1fd2d72) confirmed that fix and found two P2 issues: helper shutdown cleanup and a deleted-file race. The [alpha.3 Astra/High review](evidence/S04-native-alpha3-review.md), base 1fd2d72 to 2fc8047, confirms both fixes with no new confirmed actionable runtime finding. See [initial review](evidence/S04-astra-review.md) and [native review](evidence/S04-native-alpha2-review.md). Local tests and an earlier review do not approve later code.
 
+S05 used GPT-6.1 Sol / XHigh inherited from the current app setting; the project recommendation remains High for this work and no model setting was changed. Separate GPT-6 Astra / High reviewed ff53a88 to e645415, found two P2 issues and confirmed both fixes at 785e1ee with no additional actionable findings. [Exact review/evidence](evidence/S05-astra-review.md) separates reviewer checks from root's actual fix-head CI verification.
+
 ## Pipeline policy
 
 Deterministic checks are the required automated gate. AI review starts as a required recorded review activity, performed manually in the development tool; it is not an API dependency for every CI run.

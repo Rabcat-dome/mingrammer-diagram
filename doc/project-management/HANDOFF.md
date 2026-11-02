@@ -1,48 +1,57 @@
 # Cross-Machine Handoff
 
-Updated: 2026-11-02 | S05 / M1 in progress. Core/schema/local quality gate pass; actual runner execution and independent review are next. S04/M0 remains complete.
+Updated: 2026-11-02 | S01-S05 complete. S06 / M2 catalogs and approved assets are next.
 
-## Goal and direction
+## Goal and current source
 
-Build a personal Work-first plugin on mingrammer/diagrams and Graphviz for AWS/Azure/GCP/Huawei/on-premises, with detailed Kubernetes and provider-reference visuals. Claude Code is later. Keep docs English and use the single [requirements v0.9](../requirements/requirements.md).
+Personal ChatGPT Work-first plugin on mingrammer/diagrams + Graphviz for AWS/Azure/GCP/Huawei/on-premises, with detailed Kubernetes and provider-reference visuals. Claude Code is later. Keep English docs and one [requirements baseline v0.9](../requirements/requirements.md).
 
-D-013 selects runtime installation on each machine. Native Python + Graphviz is the default; direct scripts and optional local stdio MCP use the same controlled renderer. Docker, a central service, public renderer and renderer/model API keys are unnecessary. D-014 confirms the separate ChatGPT Work mode/page, not Codex, as the target.
+Branch: `codex/s05-core-quality-gate`. M1 executable/workflow source reviewed and CI-tested at `785e1eecb646476691859f14dd4399ac564011ca`, milestone base `ff53a88944e981be2bbbab171e0ccf8cecdb4e41`. Later closure commits are docs/evidence only. Verify final HEAD/latest CI before resuming; main has not been merged.
 
-Current branch: `codex/s05-core-quality-gate`, base `ff53a88944e981be2bbbab171e0ccf8cecdb4e41`. See [S05 implementation/evidence](evidence/S05-core-and-ci.md) and [core guide](../design/core-contract.md). Historical S04 branch: `codex/s04-runtime-proof`. Alpha.2 review: base `720831733bdb99061f62f7d509d95a65aa7f748b`, head `1fd2d72a22183b65d76ea0bea255702a769ae62f`. Final Astra/High review covered alpha.3 code head `2fc8047242dbbf337a8c44ba09979b2f181adb32`, base 1fd2d72. Later closure commits change only docs/evidence; verify final HEAD when resuming.
+D-013/D-014 select per-machine native Python/Graphviz in the separate ChatGPT Work page. Docker, central hosting, public renderer and renderer/model API keys are unnecessary. S04's installed alpha.3 three-node plugin remains separate from M1 core package 0.2.0a1; this activity did not upgrade that plugin/runtime.
 
 ## Read order
 
-1. This file and [milestones](milestones.md).
-2. Relevant requirements, [current S04 evidence](evidence/S04-native-runtime.md), [Work result](evidence/S04-Work-validation.md) and [setup](../../spikes/s04-local-plugin/README.md).
-3. [Final native review](evidence/S04-native-alpha3-review.md), [decisions](decisions.md), [model strategy](model-strategy.md) and [quality gate](quality-gate.md) as needed.
+1. This file, [milestones](milestones.md) and [S05 evidence](evidence/S05-core-and-ci.md).
+2. [Core contract/setup](../design/core-contract.md), relevant requirements and [S05 final review](evidence/S05-astra-review.md).
+3. S02 icon/rights records and relevant decision/quality-gate/model-policy sections for S06.
 
 ## Verified state
 
-- S01/S02 scope and source research are complete. Huawei asset redistribution/output rights remain O-002; no Huawei pack is bundled. Eight draw.io-type on-premises mappings are selected; exact assets/terms remain M2 work.
-- S03 installed separate runner ID 2, `macbook-pro-m2-max-mingrammer`, label `mingrammer-macos-arm64`, preserving seven existing services. S04 preflight run 41328404188 passed and saw native dot 16.1.0/uv 0.13.0. This was the main-branch preflight, not native product CI. Required-check enforcement is unavailable on the current private plan; keep owner-only trust/manual merge discipline. Recheck availability before future jobs.
-- Installed identity: `cloud-architecture-diagrams@mingrammer-local`, version `0.1.0-alpha.3`. Source: `spikes/s04-local-plugin/`; package/ZIP are ignored output. Build, register/install with supported CLI and run setup on each Mac. Never edit cache source directly.
-- Tested macOS 27.0.1 ARM64, private Python 3.13.7, diagrams 0.25.1, Graphviz 16.1.0, pinned MCP 2.3.0 and bundled Noto Sans/Thai with OFL notices. Setup records source/binary/font hashes. Native dependencies were installed; no global pip/user-font installation occurred.
-- Direct script, installed MCP and relocated-ZIP tests pass, including all five artifact reads/hashes and inline PNG equality. Seven path, four resource and six signal/EOF shutdown regressions pass, plus deleted-intermediate and CLI/MCP 1 MiB input bounds. Cancelable nonblocking POSIX stdio uses a small private bridge to pinned MCP 2.3; revalidate it on SDK upgrades.
-- Descriptor-anchored artifacts reject symlink components/files and root replacement. Renderer networking is denied by tested macOS sandbox-exec. CPU/file/wall bounds apply; RSS/scratch controls are sampled and can overshoot. English/Thai PNG is readable; cross-machine SVG font appearance remains open.
-- The owner confirmed plugin visibility/selectability in the separate Work page, then reported alpha.3/Darwin, visible PNG and all five files after the supplied prompt. See [owner proof](evidence/S04-Work-owner-proof.json). No Work transcript/bundle hashes or independently confirmed MCP/direct-script route were supplied; local byte verification remains separate evidence. This is Work feasibility, not full product/two-machine acceptance.
-- Authorized existing chats: host check `01a1964a-784d-7751-bfe5-57e0bbb4cf39`, Astra/High review `01a1964a-7a2a-70e3-a577-84316bb691b0`. The Codex host chat retained alpha.1 and correctly stopped the native check. Computer Use refuses direct ChatGPT UI control; do not bypass or restart the app automatically.
-- Astra/High confirmed the alpha.1 symlink fix in alpha.2, then found two P2 issues: helper shutdown left a renderer alive; deleting DOT intermediates could race lstat. Alpha.3 fixes both with targeted/integration regressions. Astra/High confirmed both fixes at 2fc8047 with no new confirmed actionable runtime finding. S04/M0 feasibility is closed in the [closeout](evidence/S04-closeout.md).
-- Historical Docker/HTTP/emulated-amd64 research is retained separately. No cloud host, public endpoint, account plugin, merge or product release was created.
+- M0/S01-S04 feasibility complete: [closeout](evidence/S04-closeout.md). Native alpha.3 local tests pass; owner reported actual separate Work alpha.3/Darwin, PNG and five files. This is not full product/two-machine acceptance.
+- M1-01..04 complete: closed strict schema, CLI/discovery, bounded data parsing, IDs/refs/cycles, explicit views/exclusions and Kubernetes context. Results disclose core_only with pending catalog/provider/render layers; no product render command exists yet.
+- Actual fix-head [CI run 41426653007](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41426653007) / job 125214762630 passed all eight lanes and 82 tests at 785e1ee, clean checkout/source/lock hashes verified. CI wheel bytes match local and pass clean install plus ownership rejection outside the checkout. [Proof](evidence/S05-validation-proof.json).
+- Astra/High initially found two P2 issues: alternate ownership edges bypassed Kubernetes context rules; docs gate required historical output files outside the repo. Shared ownership validation and portable link policy fix them; re-review at 785e1ee confirms both with no additional actionable findings. Root separately verified fix-head CI. Actual implementation used inherited Sol/XHigh; no model setting changed.
+- Gate: docs/traceability/proof hashes, narrow credential patterns, Ruff lint/format, strict mypy, actionlint, schema/core tests and core package build. Catalog/license/provider/render/visual/plugin lanes must be activated as components arrive. No mandatory paid model API call. Do not call deferred checks passed.
+- Runner ID 2, macbook-pro-m2-max-mingrammer, label mingrammer-macos-arm64; native shell jobs. Existing seven registrations preserved. Current read-only API snapshot: owner is the only collaborator, private fork-PR workflows disabled, no fork write tokens/secrets. Actor checks supplement server-side access policy; keep external code off the personal host. Current private plan lacks required-check enforcement; manual review/merge remains necessary.
+- Huawei source availability is not redistribution/output permission. O-002 remains a packaging/release blocker; no Huawei pack is bundled. Eight draw.io-type generic on-premises concepts are selected; exact assets/conditions/hashes remain M2. Full provider/Kubernetes kind/API/rule inventory and assets are S06 work.
+- Existing S04 source/fonts/proofs remain available; no runtime cache, Docker resource, cloud service, account plugin, merge or release was changed by S05. Historical host paths are provenance text; reproducible doc links stay inside the repository.
 
 ## Next steps
 
-1. Complete S05 actual GitHub runner execution, record tested SHA/report and obtain independent Astra/High review of the frozen M1 diff. Core local checks and clean-wheel/missing-tool probes pass; this is not yet milestone closure.
-2. Apply confirmed review fixes and rerun affected local/CI checks. Keep provider/catalog/renderer/Work plugin and release acceptance separate; installed S04 alpha.3 source is unchanged.
-3. After M1 closure, S06/M2 freezes provider/Kubernetes catalogs and exact approved assets. Huawei rights remain unresolved; do not bundle uncleared assets. Later milestones are unchanged.
+1. Start S06 / M2-01..06: taxonomy, all five provider catalogs, detailed Kubernetes catalog/provider mappings, exact approved icons/terms/hashes and meaningful provider/asset rule checks in the existing gate.
+2. Preserve ownership/location/network/security/deployment as separate dimensions. Treat Secret resources as references, never payloads. Use current primary sources and retain provider-native identity; do not infer reachability/controller availability.
+3. Resolve Huawei rights with evidence or retain an explicit packaging/release blocker; no silent generic substitution. Later M3 renderer, M4 references/visuals, M5 full Work plugin and M6 two-machine release acceptance remain open.
 
 ## Resume prompt
 
 ```text
-Continue S05/M1 from doc/project-management/evidence/S05-core-and-ci.md on
-codex/s05-core-quality-gate. Read doc/design/core-contract.md, relevant
-requirements and M1-01..04. Verify Git HEAD, local/CI results and independent
-Astra review status. Finish actual runner evidence and review/fixes before
-closing S05. Keep English docs, core_only disclosure, native execution,
-owner-only self-hosted trust and separate local/CI/Work/release evidence.
-No merge, cloud service, Docker cleanup or product release is implied.
+Start S06 / M2 from doc/project-management/HANDOFF.md and milestones.md.
+Verify M1 final reviewed code and successful GitHub quality-gate SHA first.
+Use the same checkout and a codex/s06-provider-catalogs branch; keep docs English.
+Read requirements sections 6/6.1, M2-01..06 and the core contract guide. Freeze
+exact catalog/type IDs, provider/native identity, taxonomy, placement semantics,
+Kubernetes API/provider mappings and approved renderer/icon provenance. Use
+current primary sources. Preserve ownership/location/network/security/deployment
+as independent dimensions and keep Kubernetes as a platform, not a provider.
+Implement catalog/schema/license/rule checks with meaningful positive/negative
+fixtures and integrate mandatory lanes into the existing native quality gate.
+Huawei source availability is not redistribution permission: resolve O-002 with
+actual terms/evidence or retain an explicit packaging/release blocker. Do not
+bundle uncleared assets or silently substitute generic Huawei icons. Implement
+the eight approved draw.io-type on-premises mappings with exact rights/hashes.
+Use Sol for implementation and an independently authorized Astra/High review.
+Keep S04 native plugin alpha.3 and existing runner registrations unchanged unless
+a concrete M2 requirement requires a documented versioned change. No Docker
+cleanup, cloud host, public release or automatic merge is part of this activity.
 ```

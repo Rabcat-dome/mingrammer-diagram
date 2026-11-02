@@ -140,7 +140,7 @@ The plugin is the installable product; its skill supplies instructions/reference
 
 ## 5. Canonical model and taxonomy
 
-The following is a contract outline; executable JSON Schema will be delivered in M1. Choose consistent field names there rather than copying incompatible illustrative fields from the attachment.
+The following is the product contract outline. M1 implements the [executable core JSON Schema](../../schemas/architecture-v1.schema.json) and [field/validation guide](../design/core-contract.md). The core result discloses pending catalog/provider/render checks; those later layers remain required. Product scope and requirement IDs are unchanged.
 
 | Entity | Required meaning |
 |---|---|

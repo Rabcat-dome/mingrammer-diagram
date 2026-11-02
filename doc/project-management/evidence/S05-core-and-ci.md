@@ -1,24 +1,37 @@
-# S05 Core Contract and First Quality Gate
+# S05 / M1 Core Contract and Quality Gate Complete
 
-Started: 2026-11-02 | Branch: `codex/s05-core-quality-gate` | Base: `ff53a88944e981be2bbbab171e0ccf8cecdb4e41` | Status: Local implementation/checks passed; initial CI passed; two P2 review findings fixed locally; fix CI and independent re-review pending.
+Completed: 2026-11-02 (Asia/Bangkok) | Branch: `codex/s05-core-quality-gate`.
+Milestone base: `ff53a88944e981be2bbbab171e0ccf8cecdb4e41`.
+Final reviewed/tested executable source: `785e1eecb646476691859f14dd4399ac564011ca`.
 
-## Implemented scope
+**M1-01..04 / S05 are complete. S06 / M2 is ready.** This delivers the core foundation and first actual deterministic quality gate, not full architecture rendering or the product plugin.
 
-- M1-01: core package `0.2.0a1`, Python 3.13.7, locked Pydantic/development dependencies, CLI and core wheel/sdist build. Existing S04 plugin/runtime remains alpha.3 and is unchanged.
-- M1-02: strict versioned [schema](../../../schemas/architecture-v1.schema.json), metadata/scopes/boundaries/resources/placement/relationships/views, structured bounded diagnostics, strict/lenient core behavior and Kubernetes context. See [contract guide](../../design/core-contract.md).
-- M1-03: global IDs, typed/dangling refs, same-provider administrative scope, containment/ownership cycles, explicit views/exclusions and Kubernetes cluster/namespace/owner/node/storage/config references. Ordinary traffic cycles remain valid.
-- M1-04: [workflow](../../../.github/workflows/quality-gate.yml) and same local aggregate command run docs/traceability/frozen-proof checks, narrow credential patterns, lint/format/types, actionlint, schema/core tests and core package build. All lanes are mandatory; future provider/catalog/render/plugin checks are explicitly deferred.
+## Delivered and verified
 
-Core validation results disclose `core_only` and pending catalog/provider/render checks. No new Work rendering, catalog/license clearance, production renderer or two-machine acceptance is claimed. English/Thai data is supported; documentation is English. No Docker resource, runtime cache, existing runner registration or main branch was changed.
+| Task | Implementation / exit evidence |
+|---|---|
+| M1-01 | Package 0.2.0a1, Python 3.13.7, hash-locked runtime/development dependencies, CLI/discovery and wheel/sdist. Clean installation of the actual CI wheel outside the checkout validated the fixture and rejected the ownership bypass in both modes |
+| M1-02 | Closed strict [schema](../../../schemas/architecture-v1.schema.json), model/views/context, parser bounds and stable structured diagnostics. Positive fixtures pass independent JSON Schema and core checks; structural/security errors remain fatal in strict/lenient modes |
+| M1-03 | Stable/global IDs, typed/dangling refs, scope ownership, cycles, explicit views/exclusions, independent Kubernetes cluster/namespace/owner/node/storage/config references. Both ownership encodings now share context validation; full suite 82 tests |
+| M1-04 | Native [workflow](../../../.github/workflows/quality-gate.yml), same local aggregate command, reports and cleanup. Actual fix-head CI passed all eight lanes/82 tests on the project runner; independent Astra/High review confirmed both initial P2 fixes |
 
-## Local evidence
+Use the [contract/setup guide](../../design/core-contract.md). Core validation always discloses `core_only` and pending catalog/provider/render checks. No render command is exposed. Existing S04 Work plugin/runtime stays alpha.3; this core development package is separate. Huawei assets/rights, provider semantics, production rendering, full Work integration and second-machine release acceptance remain their existing milestones.
 
-The original 65 tests passed; review-driven regressions expand the current passing suite to 82. Positive fixtures pass both independent JSON Schema and core validation. Negative tests cover malformed/duplicate/oversize/deep/nonstandard JSON, unknown versions/fields/providers, strict field types/port bounds, IDs/references/cycles, missing views/endpoints, Kubernetes wrong kind/cluster/namespace/role, Secret payloads and independent namespace/node dimensions. Diagnostics do not echo rejected payload values.
+## Evidence
 
-Local aggregate lanes passed. Clean wheel installation used a separate temporary Python environment, hash-locked runtime requirements and a working directory outside the checkout; imported package came from that environment's site-packages and validated the Kubernetes fixture. A controlled PATH without actionlint produced aggregate failure while all other lanes passed; missing required checks cannot silently pass. These are local checks, not GitHub job evidence.
+- Initial [run 41423620941](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41423620941), job 125204824039, passed eight lanes/65 tests at e645415; [historical gate](S05-quality-gate-initial.json). That result did not cover later fixes.
+- Final code [run 41426653007](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41426653007), job 125214762630, passed eight lanes/82 tests at 785e1ee; [final gate](S05-quality-gate-final.json). Clean checkout, exact source/lock hashes and cleanup were verified.
+- [Validation proof](S05-validation-proof.json) records the actual CI job, clean-wheel install, identical local/CI wheel checksum, strict/lenient ownership rejection, initial missing-actionlint failure probe, model settings and read-only trust snapshot.
+- [Astra review](S05-astra-review.md): initial two P2 issues were independently reproduced, fixed with failing-then-passing regressions and confirmed at the final source head. No additional actionable findings. A suspected newline defect was disproved; it is not a third finding.
 
-## CI and review
+Actual implementation model: GPT-6.1 Sol / XHigh, inherited from the current app setting; no model setting was changed. Independent review: GPT-6 Astra / High. No paid model API call was added to CI or core validation.
 
-Initial [run 41423620941](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41423620941), job 125204824039, passed all eight lanes and 65 tests at e645415801f4dcafae9f53f08f56b74adb4936af. The checkout was clean and source/lock hashes matched; see [initial report](S05-quality-gate-initial.json). Astra/High found two P2 issues; see [review/fix record](S05-astra-review.md). Both are fixed with 82 local tests and a passing aggregate; final fix-head CI/re-review remains pending. The project runner was rechecked online/idle before implementation. The workflow executes only explicit owner actions in the private repository; it does not enable external/fork PR code on the personal host. Read-only token, pinned actions, no persisted checkout credentials, per-run environment cleanup and 14-day synthetic artifact retention are configured.
+## Gate scope and constraints
 
-M1/S05 remains in progress until actual runner evidence and required independent review are recorded. No merge or release is implied.
+Active lanes: docs-contract, secrets, lint, format, types, workflow, schema-core and package-build. Future catalog/license/provider/render/visual/plugin checks are deferred explicitly, never reported passed. Credential matching is narrow, not a full history/entropy audit. Static checks cover implemented core/scripts/tests; historical S04 spike source remains separately frozen/reviewed.
+
+Only explicit owner actions in the private repository schedule this personal runner. API checks found only Rabcat-dome/admin and fork-PR workflows disabled, with fork write tokens/secrets disabled. Actor guards supplement those server-side access settings; editable workflow conditions alone are not a tamper-resistant boundary. Settings/registrations were preserved. The current repository plan still lacks server-enforced required checks; retain manual review/merge discipline.
+
+Core parsing bounds are 1 MiB, 64 JSON levels, 1000 combined entities, 4000 relationships, 32 views and 100 error diagnostics. These are not final renderer-size or kernel resource guarantees. Full T-017/provider/visual/Work acceptance remains M2/M4/M5/M6. No new Work test or two-machine claim is made by this milestone.
+
+Source after 785e1ee is unchanged by closure documentation. The final documentation commit also runs the gate through the existing owner-push trigger; verify its latest job when resuming. Main is unchanged; no merge, cloud deployment, Docker cleanup, account-plugin upload or product release occurred.

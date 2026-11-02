@@ -1,6 +1,6 @@
 # Milestones and Work Breakdown
 
-Updated: 2026-11-02 | Status: S01-S04 / M0 feasibility complete; S05 / M1 in progress. Huawei packaging rights remain unresolved.
+Updated: 2026-11-02 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 next. Huawei packaging rights remain unresolved.
 
 Source of scope: [requirements](../requirements/requirements.md). Model abbreviations and review rules: [model strategy](model-strategy.md). Quality check definitions: [quality gate](quality-gate.md).
 
@@ -36,7 +36,7 @@ Exit: selected deployment route has real Work evidence; feasibility blockers and
 
 ## M1 — Core contract and CI foundation
 
-Status: S05 in progress; core/local checks implemented, actual CI and independent review pending. See [S05 evidence](evidence/S05-core-and-ci.md). Implementation: Sol/High; review: Astra/High.
+Status: Complete on 2026-11-02. [S05 evidence](evidence/S05-core-and-ci.md) records 82 tests, actual fix-head CI/clean-wheel checks and final Astra/High review at 785e1ee. Implementation: Sol/High; review: Astra/High.
 
 | Task | Work | Dependency / output |
 |---|---|---|
@@ -49,7 +49,7 @@ Exit: valid JSON passes, malformed/dangling/cyclic input fails, diagnostic contr
 
 ## M2 — Provider semantics, catalogs and icon rights
 
-Status: Not started. Implementation: Sol/Medium; Sol/High for placement rules; review: Astra/High.
+Status: Ready for S06; not implemented. Implementation: Sol/Medium; Sol/High for placement rules; review: Astra/High.
 
 | Task | Work | Dependency / output |
 |---|---|---|
