@@ -323,3 +323,29 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - The acceptance covers that sheet only. Rendered visual acceptance stays with M4 and M6, and rights status under D-018 and O-002 does not change.
 - Rereading M2's exit criteria found one item besides the Astra/High review: "asset rights are established" is not met as written for Huawei, so it needs the owner's disposition at closure. Kubernetes representations have also not been shown to the owner, which the session plan lists but the exit criteria do not require.
 - Not committed or pushed, and the owner's plugin is not updated.
+
+
+## 2026-11-02 — S06 independent Astra/High review
+
+- GPT-6 Astra (`gpt-6-astra`) / High reviewed `c6a59e52a2e5f2824b4c08062041c15dca8c9bbd..556945952fef1461c03451ba76ed3f652909edde` in a separate review chat. Verified the clean starting tree and branch, and that implementation source matches `6929253`. No model settings changed or parallel agents were used.
+- Changes requested: five P2 findings covering ALB single-VPC placement, alternate subnet membership, contradictory scope ancestry, Pod scheduling consistency, and EKS managed-node-group/cluster networking. All five bad-model probes pass in strict and lenient modes; swapping Azure scope refs changes the result. Positive controls preserve allowed declarations. Primary provider/Kubernetes sources were checked.
+- Independently ran 382 catalog/semantic tests (all passed, none skipped), the real catalog/asset checks, CLI discovery and 26 API probe validations plus two CLI probes. The previous clean-head 12-lane/520-test local report matches current source digests. Actual CI run 41475449582 success was verified by the initiating Sol/High session, not re-queried by this reviewer.
+- Recorded [review, line references, fix directions, executable probes, exit criteria and limitations](evidence/S06-astra-review.md). Updated HANDOFF and model-strategy. Implementation was not modified, and no commit, push, merge, plugin upgrade, external message or provisioning occurred. The earlier M7 Medium/Low fixes remain outside this pass.
+- M2 stays open: findings need resolution or explicit disposition and fix-head review; the owner must still decide the asset-rights exit item. D-018 is private personal risk acceptance, not rights clearance. O-002 continues to block public distribution.
+
+
+## 2026-11-02 — S06 review findings fixed locally
+
+- The owner asked to make the reviewed work pass. The same GPT-6 Astra / High chat implemented F1-F5, keeping all existing review evidence and recording no independent fix approval.
+- Added ALB single-VPC limits; normalized subnet containment/membership and cloud-subnet cardinality; resolved consistent scope ancestry without reference-order precedence; reconciled concrete Pod assignments; checked EKS managed-node-group VPC compatibility with its cluster. Preserved unspecified placement, valid same-VPC/different-subnet node groups, multi-network EC2, on-premises overlaps, and Huawei IAM/enterprise-project separation.
+- Added 117 collected regression cases, bringing the local gate to 637 tests with none skipped; all 12 lanes pass. All 22 negative CLI probes return `valid=false`, the expected diagnostic and validation exit code 2 in strict/lenient modes. Added two freshly fetched primary-source evidence entries and three diagnostics (59 rules total).
+- [Fix evidence](evidence/S06-review-fixes.md) and [proof with source digests](evidence/S06-review-fixes-proof.json) identify the uncommitted source above `5569459`. No commit, push, merge, plugin upgrade or cloud action occurred. Old CI is not fix evidence. M2 remains open for independent fix review, CI at any later fix commit and the owner's asset-rights exit disposition; D-018/O-002 are unchanged.
+
+
+## 2026-11-03 — M2 status check and the owner's asset-rights decision
+
+- At the owner's request, Claude Opus 5.5 (the model of the owner's session) checked M2 against its exit criteria. The local gate reran with 12 lanes and 637 tests passing, all 107 proof digests match the checkout, and the five bad models from the review are now rejected in both modes while their controls pass. This confirms the fixes against the reported cases. It is not an independent review.
+- The owner decided [D-019](decisions.md#confirmed-user-direction): D-018 with O-002 recorded satisfies M2's asset-rights exit item for the private personal release, because the owner will not distribute publicly. Huawei rights stay uncleared, and the O-002 block, the `catalog-license` checks and the notices are unchanged.
+- The owner also stated that the Astra/High review is done and only awaits commit and push. The repository holds one such record, [S06-astra-review.md](evidence/S06-astra-review.md), which covers `5569459`, requests changes and predates the fixes, and no stash, branch or worktree holds a later one. These records therefore keep the fix review open until the owner points to a later review or explicitly disposes of the five Medium findings.
+- The owner then chose [D-020](decisions.md#confirmed-user-direction): commit the fixes and have Claude Fable 5.1 / High review them in a fresh pass, as a recorded substitute for Astra/High.
+- Brought the S06 exit table, rule and source counts, and next steps up to date. No commit, push, merge or plugin upgrade occurred. M2 remains open.

@@ -2051,6 +2051,233 @@
      "value": "cluster-2"
     }
    ]
+  },
+  {
+   "id": "review-f1-alb-multiple-vpcs",
+   "base": "providers/aws",
+   "expect": "PLACEMENT_NETWORK_COUNT_INVALID",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "vpc-other",
+      "name": "Workload VPC",
+      "provider": "aws",
+      "kind": "network",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "public-other",
+      "name": "Public B",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "vpc-other",
+      "relations": [
+       {
+        "kind": "located_in",
+        "target_ref": "az-b"
+       }
+      ]
+     }
+    },
+    {
+     "set": "resources/id:alb/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "public-a"
+       ]
+      },
+      {
+       "network_ref": "vpc-other",
+       "subnet_refs": [
+        "public-other"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "review-f2-subnet-relation-mismatch",
+   "base": "providers/aws",
+   "expect": "PLACEMENT_SUBNET_NETWORK_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "vpc-other",
+      "name": "Workload VPC",
+      "provider": "aws",
+      "kind": "network",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "region"
+     }
+    },
+    {
+     "del": "boundaries/id:app-a/parent_ref"
+    },
+    {
+     "add": "boundaries/id:app-a/relations",
+     "value": {
+      "kind": "network_member_of",
+      "target_ref": "vpc-other"
+     }
+    }
+   ]
+  },
+  {
+   "id": "review-f2-subnet-conflicting-membership",
+   "base": "providers/aws",
+   "expect": "BOUNDARY_NETWORK_COUNT_INVALID",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "vpc-other",
+      "name": "Workload VPC",
+      "provider": "aws",
+      "kind": "network",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "region"
+     }
+    },
+    {
+     "add": "boundaries/id:app-a/relations",
+     "value": {
+      "kind": "network_member_of",
+      "target_ref": "vpc-other"
+     }
+    }
+   ]
+  },
+  {
+   "id": "review-f3-scope-group-first",
+   "base": "providers/azure",
+   "expect": "PLACEMENT_SCOPE_CARDINALITY",
+   "ops": [
+    {
+     "add": "scopes",
+     "value": {
+      "id": "sub-other",
+      "provider": "azure",
+      "kind": "subscription",
+      "name": "Other subscription",
+      "parent_ref": "tenant"
+     }
+    },
+    {
+     "set": "resources/id:vm/placement/scope_refs",
+     "value": [
+      "rg-app",
+      "sub-other"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "review-f3-scope-subscription-first",
+   "base": "providers/azure",
+   "expect": "PLACEMENT_SCOPE_CARDINALITY",
+   "ops": [
+    {
+     "add": "scopes",
+     "value": {
+      "id": "sub-other",
+      "provider": "azure",
+      "kind": "subscription",
+      "name": "Other subscription",
+      "parent_ref": "tenant"
+     }
+    },
+    {
+     "set": "resources/id:vm/placement/scope_refs",
+     "value": [
+      "sub-other",
+      "rg-app"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "review-f4-pod-conflicting-node",
+   "base": "kubernetes/*",
+   "expect": "K8S_NODE_ASSIGNMENT_CONFLICT",
+   "ops": [
+    {
+     "add": "relationships",
+     "value": {
+      "id": "schedule-extra",
+      "source_ref": "pod-a",
+      "target_ref": "node-b",
+      "kind": "scheduling"
+     }
+    }
+   ]
+  },
+  {
+   "id": "review-f5-managed-nodegroup-vpc",
+   "base": "providers/aws",
+   "expect": "AWS_EKS_NODE_GROUP_NETWORK_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "vpc-other",
+      "name": "Workload VPC",
+      "provider": "aws",
+      "kind": "network",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "app-other",
+      "name": "App A",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "vpc-other",
+      "relations": [
+       {
+        "kind": "located_in",
+        "target_ref": "az-a"
+       }
+      ]
+     }
+    },
+    {
+     "set": "resources/id:mng/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc-other",
+       "subnet_refs": [
+        "app-other"
+       ]
+      }
+     ]
+    }
+   ]
   }
  ],
  "warnings": [

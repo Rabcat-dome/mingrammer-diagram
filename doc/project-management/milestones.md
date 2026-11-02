@@ -1,6 +1,6 @@
 # Milestones and Work Breakdown
 
-Updated: 2026-11-02 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 implemented and not closed. Huawei rights are not cleared, with D-018 allowing private personal use only, and M2's review is outstanding. M7 Claude Code preparation started early under D-015.
+Updated: 2026-11-03 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 implemented and not closed. Huawei rights are not cleared, with D-018 allowing private personal use only and D-019 closing the asset-rights exit item for that use. M2's independent fix review and CI at the fix commit remain outstanding. M7 Claude Code preparation started early under D-015.
 
 Source of scope: [requirements](../requirements/requirements.md). Model abbreviations and review rules: [model strategy](model-strategy.md). Quality check definitions: [quality gate](quality-gate.md).
 
@@ -49,7 +49,7 @@ Exit: valid JSON passes, malformed/dangling/cyclic input fails, diagnostic contr
 
 ## M2 — Provider semantics, catalogs and icon rights
 
-Status: Implemented in S06 and not closed. [Evidence](evidence/S06-provider-catalogs.md) records actual CI [run 41473877379](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41473877379) passing at `6929253`, including D-016, D-017 and D-018. The owner accepted the on-premises and Huawei icon sheets. Open: the Astra/High review, and the owner's disposition of the asset-rights exit item, because D-018 accepts the risk rather than establishing rights. O-002 still blocks public distribution. Policy: Sol/Medium, Sol/High for placement rules, review Astra/High. Actual implementation: Claude Opus 5.5, the model of the owner's session.
+Status: Implemented in S06 and not closed. [Evidence](evidence/S06-provider-catalogs.md) records actual CI [run 41473877379](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41473877379) passing at `6929253`, including D-016, D-017 and D-018. The owner accepted the on-premises and Huawei icon sheets. Astra/High reviewed `5569459` and found five P2 issues. All five are now fixed in the working tree with 12 local lanes / 637 tests passing; see [fix evidence](evidence/S06-review-fixes.md). Open: independent fix review and CI at any later fix commit. D-019 closes the asset-rights exit item for the private personal release; D-018 accepts the risk rather than establishing rights, and O-002 still blocks public distribution. Policy: Sol/Medium, Sol/High for placement rules, review Astra/High. Actual implementation: Claude Opus 5.5, the model of the owner's session.
 
 | Task | Work | Dependency / output |
 |---|---|---|
@@ -60,7 +60,7 @@ Status: Implemented in S06 and not closed. [Evidence](evidence/S06-provider-cata
 | M2-05 | Implement catalog inventory and license/asset checks | M2-02..04 + M2-06 -> every required cloud/Kubernetes item resolves, missing rights/assets fail CI. **Complete;** the `catalog-license` lane is active |
 | M2-06 | Add shared Kubernetes detail catalog, provider node-pool/group mappings and semantic rules | M2-01 + M2-02..04 -> FR-018/029; positive/negative cluster/namespace, ownership, Service/Ingress and storage/config/security fixtures across the five hosting environments. **Complete;** the `provider-semantics` lane is active |
 
-Exit: all five hosting inventories and the shared Kubernetes detail catalog meet minimum breadth; rules have evidence; asset rights are established. Do not mark Huawei complete using unapproved icons or undisclosed generic replacements.
+Exit: all five hosting inventories and the shared Kubernetes detail catalog meet minimum breadth; rules have evidence; asset rights are established. Do not mark Huawei complete using unapproved icons or undisclosed generic replacements. D-019 settles the asset-rights item for Huawei in the private personal release only.
 
 ## M3 — Controlled rendering vertical slice
 

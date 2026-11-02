@@ -1,6 +1,6 @@
 # Model Strategy and Code Review
 
-Model guidance verified: 2026-10-31 | Review state updated: 2026-11-02 | Status: Recommended policy, not an account configuration change.
+Model guidance verified: 2026-10-31 | Review state updated: 2026-11-03 | Status: Recommended policy, not an account configuration change.
 
 ## Selection
 
@@ -44,7 +44,9 @@ Astra/High reviewed alpha.1 (afbacca to 7208317) and found one P2 output-root sy
 
 S05 used GPT-6.1 Sol / XHigh inherited from the current app setting; the project recommendation remains High for this work and no model setting was changed. Separate GPT-6 Astra / High reviewed ff53a88 to e645415, found two P2 issues and confirmed both fixes at 785e1ee with no additional actionable findings. [Exact review/evidence](evidence/S05-astra-review.md) separates reviewer checks from root's actual fix-head CI verification.
 
-S06 used Claude Opus 5.5 (`claude-opus-5-5`), the model of the session the owner started, rather than Sol, with no model setting changed. The Astra/High review M2 requires has not been performed, and self-checks in that session are not a review. See the [S06 evidence](evidence/S06-provider-catalogs.md#model-and-review).
+S06 used Claude Opus 5.5 (`claude-opus-5-5`), the model of the session the owner started, rather than Sol, with no model setting changed. A separate GPT-6 Astra (`gpt-6-astra`) / High review now covers `c6a59e52a2e5f2824b4c08062041c15dca8c9bbd..556945952fef1461c03451ba76ed3f652909edde`, with implementation source equal to `6929253`. It requests changes for five P2 semantic findings, independently reproduced in both validation modes despite 382 passing catalog/semantic tests. No model setting changed and no parallel agents were used. M2 remains open for finding resolution/disposition, fix-head re-review and the owner's asset-rights exit decision. The earlier M7 Medium/Low fixes were not reviewed in this pass. See the [independent review](evidence/S06-astra-review.md) and [implementation evidence](evidence/S06-provider-catalogs.md#model-and-review).
+
+On the owner's subsequent instruction to fix the findings, the same GPT-6 Astra / High chat implemented F1-F5. The local gate passes 12 lanes and 637 tests, with 22 CLI rejection probes. This is implementation and same-session verification, not an independent fix review. The source remains uncommitted above `5569459`; [fix evidence and source digests](evidence/S06-review-fixes.md) identify the tested working tree. Independent review and fix-commit CI remain open.
 
 ## Pipeline policy
 

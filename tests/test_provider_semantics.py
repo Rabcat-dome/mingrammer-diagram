@@ -242,3 +242,159 @@ def test_kubernetes_catalog_covers_every_kind_with_its_namespace_scope() -> None
         if kind != "IngressController":
             assert bool(record.namespaced) == (kind not in CLUSTER_SCOPED), kind
     assert set(OWNERS) <= set(records)
+
+
+def entity(document: dict[str, Any], collection: str, identifier: str) -> dict[str, Any]:
+    return next(item for item in document[collection] if item["id"] == identifier)
+
+
+@pytest.mark.parametrize("mode", ["strict", "lenient"])
+@pytest.mark.parametrize("provider", ["aws", "azure", "gcp", "huawei"])
+@pytest.mark.parametrize("encoding", ["relation", "agreeing", "conflicting"])
+def test_subnet_membership_encodings(mode: Mode, provider: str, encoding: str) -> None:
+    document = load(f"providers/{provider}")
+    subnet = next(item for item in document["boundaries"] if item["kind"] == "subnet")
+    network = subnet["parent_ref"]
+    if encoding == "relation":
+        del subnet["parent_ref"]
+    if encoding == "conflicting":
+        other = copy.deepcopy(entity(document, "boundaries", network))
+        other["id"] = "network-other"
+        document["boundaries"].append(other)
+        network = other["id"]
+    subnet.setdefault("relations", []).append({"kind": "network_member_of", "target_ref": network})
+    errors = codes(document, mode)["error"]
+    if encoding == "conflicting":
+        assert "BOUNDARY_NETWORK_COUNT_INVALID" in errors
+    else:
+        assert not errors, errors
+
+
+@pytest.mark.parametrize("mode", ["strict", "lenient"])
+def test_relation_only_subnet_still_checks_network_region(mode: Mode) -> None:
+    document = load("providers/aws")
+    subnet = entity(document, "boundaries", "app-a")
+    del subnet["parent_ref"]
+    subnet["relations"].append({"kind": "network_member_of", "target_ref": "vpc"})
+    region = copy.deepcopy(entity(document, "boundaries", "region"))
+    region["id"] = "region-other"
+    document["boundaries"].append(region)
+    entity(document, "boundaries", "az-a")["parent_ref"] = "region-other"
+    assert "BOUNDARY_REGION_MISMATCH" in codes(document, mode)["error"]
+
+
+@pytest.mark.parametrize("mode", ["strict", "lenient"])
+def test_multi_vpc_ec2_remains_valid(mode: Mode) -> None:
+    document = load("providers/aws")
+    network = copy.deepcopy(entity(document, "boundaries", "vpc"))
+    network["id"] = "network-other"
+    subnet = copy.deepcopy(entity(document, "boundaries", "app-a"))
+    subnet.update(id="subnet-other", parent_ref="network-other")
+    document["boundaries"].extend([network, subnet])
+    entity(document, "resources", "web")["placement"]["network_attachments"].append(
+        {"network_ref": "network-other", "subnet_refs": ["subnet-other"]}
+    )
+    assert not codes(document, mode)["error"]
+
+
+@pytest.mark.parametrize("mode", ["strict", "lenient"])
+@pytest.mark.parametrize("reverse", [False, True])
+@pytest.mark.parametrize("conflict", [False, True])
+@pytest.mark.parametrize("collection,identifier", [("resources", "vm"), ("boundaries", "vnet")])
+def test_azure_scope_lineage_is_order_independent(
+    mode: Mode, reverse: bool, conflict: bool, collection: str, identifier: str
+) -> None:
+    document = load("providers/azure")
+    other = copy.deepcopy(entity(document, "scopes", "sub"))
+    other["id"] = "sub-other"
+    document["scopes"].append(other)
+    target = entity(document, collection, identifier)
+    placement = target["placement"] if collection == "resources" else target
+    refs = [placement["scope_refs"][0], "sub-other" if conflict else "sub"]
+    placement["scope_refs"] = list(reversed(refs)) if reverse else refs
+    errors = codes(document, mode)["error"]
+    assert ("PLACEMENT_SCOPE_CARDINALITY" in errors) is conflict
+    if not conflict:
+        assert not errors, errors
+
+
+@pytest.mark.parametrize("mode", ["strict", "lenient"])
+@pytest.mark.parametrize("host", HOSTS)
+@pytest.mark.parametrize(
+    "scenario", ["conflicting_edges", "matching", "unspecified", "workload", "pool"]
+)
+def test_concrete_pod_assignments_and_broader_scheduling(
+    mode: Mode, host: str, scenario: str
+) -> None:
+    document = load(f"kubernetes/{host}")
+    pod = entity(document, "resources", "pod-a")
+    document["relationships"] = [
+        edge
+        for edge in document["relationships"]
+        if not (edge["source_ref"] == "pod-a" and edge["kind"] == "scheduling")
+    ]
+    if scenario in {"conflicting_edges", "unspecified"}:
+        pod["kubernetes"].pop("node_ref")
+    targets = {
+        "conflicting_edges": ["node-a", "node-b"],
+        "matching": ["node-a", "node-a"],
+        "unspecified": [],
+        "workload": ["node-a", "node-b"],
+        "pool": ["pool"],
+    }[scenario]
+    for number, target in enumerate(targets):
+        document["relationships"].append(
+            {
+                "id": f"schedule-extra-{number}",
+                "kind": "scheduling",
+                "source_ref": "deploy" if scenario == "workload" else "pod-a",
+                "target_ref": target,
+            }
+        )
+    # Edge-only models need updated view selections after removing their original edge.
+    ids = {edge["id"] for edge in document["relationships"]}
+    for view in document["views"]:
+        view["relationship_refs"] = [ref for ref in view["relationship_refs"] if ref in ids]
+    errors = codes(document, mode)["error"]
+    if scenario == "conflicting_edges":
+        assert "K8S_NODE_ASSIGNMENT_CONFLICT" in errors
+    else:
+        assert not errors, errors
+
+
+@pytest.mark.parametrize("mode", ["strict", "lenient"])
+@pytest.mark.parametrize(
+    "scenario", ["different_subnet", "pool_unspecified", "cluster_unspecified"]
+)
+def test_eks_nodegroup_compatible_or_unspecified_networks(mode: Mode, scenario: str) -> None:
+    document = load("providers/aws")
+    pool = entity(document, "resources", "mng")
+    if scenario == "different_subnet":
+        pool["placement"]["network_attachments"] = [
+            {"network_ref": "vpc", "subnet_refs": ["data-a"]}
+        ]
+    elif scenario == "pool_unspecified":
+        pool["placement"].pop("network_attachments")
+    else:
+        entity(document, "resources", "eks")["placement"].pop("network_attachments")
+    assert not codes(document, mode)["error"]
+
+
+@pytest.mark.parametrize("mode", ["strict", "lenient"])
+@pytest.mark.parametrize("refs", [["sub", "proj", "ep"], ["ep", "proj", "sub"]])
+def test_huawei_iam_lineage_and_enterprise_scope_stay_separate(mode: Mode, refs: list[str]) -> None:
+    document = load("providers/huawei")
+    entity(document, "resources", "ecs")["placement"]["scope_refs"] = refs
+    assert not codes(document, mode)["error"]
+
+
+@pytest.mark.parametrize("mode", ["strict", "lenient"])
+def test_onprem_overlapping_logical_memberships_remain_valid(mode: Mode) -> None:
+    document = load("providers/onprem")
+    network = copy.deepcopy(entity(document, "boundaries", "net"))
+    network["id"] = "network-other"
+    document["boundaries"].append(network)
+    entity(document, "boundaries", "subnet")["relations"].append(
+        {"kind": "network_member_of", "target_ref": "network-other"}
+    )
+    assert not codes(document, mode)["error"]

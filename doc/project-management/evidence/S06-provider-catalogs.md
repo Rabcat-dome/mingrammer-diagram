@@ -1,8 +1,10 @@
 # S06 — Provider Semantics, Catalogs and Icon Rights
 
-Date: 2026-11-02 | Tasks: M2-01..06 | Branch: `codex/s06-provider-catalogs`, from `c6a59e5` | Updated for owner decisions D-016 and D-017
+Date: 2026-11-02 | Tasks: M2-01..06 | Branch: `codex/s06-provider-catalogs`, from `c6a59e5` | Updated for owner decisions D-016 to D-019
 
-**Result: the catalogs, semantic rules, on-premises assets and both new gate lanes are implemented, along with the owner's decisions D-016, D-017 and D-018, and actual CI passes at `6929253`. M2 cannot close yet:** the required Astra/High review has not happened, and because Huawei rights are not cleared, the exit item on asset rights needs the owner's disposition.
+**Status update after independent review:** Astra/High found five P2 issues at `5569459`; the owner then requested fixes. All five are locally addressed with 12 passing lanes / 637 tests. See [fix evidence](S06-review-fixes.md). Independent fix review and fix-commit CI remain open, and D-019 closes the asset-rights exit item for the private personal release. The implementation results below are the record from before that review; the exit criteria and next steps are kept current.
+
+**Result: the catalogs, semantic rules, on-premises assets and both new gate lanes are implemented, along with the owner's decisions D-016, D-017 and D-018, and actual CI passes at `6929253`. M2 cannot close yet:** the five findings from the Astra/High review need an independent fix review and CI at the fix commit.
 
 ## Task status
 
@@ -20,10 +22,10 @@ Date: 2026-11-02 | Tasks: M2-01..06 | Branch: `codex/s06-provider-catalogs`, fro
 | Criterion | State |
 |---|---|
 | All five hosting inventories and the Kubernetes detail catalog meet minimum breadth | **Met.** A test parses the requirements table, so the inventory cannot drift from it |
-| Rules have evidence | **Met.** All 56 rules cite sources: provider or Kubernetes documentation for provider behavior, and the requirements for project-defined checks. All 130 source pages were fetched, and 77 specific claims matched, on 2026-11-02 |
-| Asset rights are established | **Not met as written for Huawei.** D-018 accepts the risk for private personal use and establishes no rights. Requirements section 6.2 says that when rights cannot be established, a blocker is recorded and scope is discussed, and O-002 and D-018 do that. Whether this satisfies the exit item for a private personal release is the owner's call at closure. The other packs are recorded below with their real strength of evidence |
+| Rules have evidence | **Met.** All 59 rules cite sources: provider or Kubernetes documentation for provider behavior, and the requirements for project-defined checks. All 132 source pages were fetched, and 79 specific claims matched, on 2026-11-02 |
+| Asset rights are established | **Settled by the owner for the private personal release (D-019).** As written it is not met for Huawei: D-018 accepts the risk for private personal use and establishes no rights. Requirements section 6.2 says that when rights cannot be established, a blocker is recorded and scope is discussed, and O-002 and D-018 do that. On 2026-11-03 the owner decided this satisfies the exit item, because the owner will not distribute publicly. The other packs are recorded below with their real strength of evidence |
 | No Huawei completion through unapproved icons or undisclosed generic replacements | **Met.** Tests reject both, Huawei is not marked complete, and icons appear only as the owner decided, with their limit disclosed |
-| Astra/High review | **Not performed.** See [model and review](#model-and-review) |
+| Astra/High review | **Performed at `5569459`, with changes requested** ([review](S06-astra-review.md)). All five findings are fixed in the working tree ([fix evidence](S06-review-fixes.md)). **Those fixes have no independent review yet,** because the reviewing chat also wrote them |
 | Owner inspection (session plan, not an exit item) | The eight on-premises symbols and the 15 Huawei icons are accepted on their sheets. **Kubernetes representations have not been shown to the owner.** No Kubernetes sheet exists yet, and rendered detail views come with M4-05 |
 
 ## Validation
@@ -212,11 +214,11 @@ Written consent from Huawei remains the only route to public distribution. Draft
 
 Implementation used **Claude Opus 5.5 (`claude-opus-5-5`)**, the model of the session the owner started, with a reasoning-effort setting of 100 and no named level shown. The project policy names Sol for implementation; this deviates from that and no setting was changed.
 
-Self-checks in this session are not a review. **The Astra/High review M2 requires has not been performed**, and M2 should not close until it has. Review of the M7 Medium and Low fixes also remains outstanding from earlier work. It is not part of this task.
+Self-checks in this session are not a review. Astra/High later reviewed `5569459` and requested changes, so **the fixes still need an independent review**, and M2 should not close until they have it. Review of the M7 Medium and Low fixes also remains outstanding from earlier work. It is not part of this task.
 
 ## Next steps
 
-1. Arrange the Astra/High review of `c6a59e5..6929253`.
-2. Owner: at closure, decide whether D-018 with O-002 recorded satisfies the asset-rights exit item for a private personal release, then close M2 or record its remaining blocker.
+1. Obtain an independent review of the F1-F5 fixes, and CI at the fix commit.
+2. Close M2 once those are recorded. The owner settled the asset-rights exit item under D-019.
 3. Update the owner's installed plugin only if asked. It remains on `917f46f`, so it has none of this work.
 4. S07 / M3 can proceed in parallel.

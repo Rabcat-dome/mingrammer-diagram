@@ -1,0 +1,428 @@
+{
+  "date": "2026-11-02",
+  "implementation": "GPT-6 Astra / High; same chat as original reviewer; not an independent fix review",
+  "base_head": "556945952fef1461c03451ba76ed3f652909edde",
+  "quality_gate": {
+    "scope": "M1 core, M2 catalogs and semantics, and M7 Claude plugin package contract",
+    "passed": true,
+    "checks": [
+      {
+        "check": "docs-contract",
+        "status": "passed",
+        "seconds": 0.96
+      },
+      {
+        "check": "secrets",
+        "status": "passed",
+        "seconds": 0.128
+      },
+      {
+        "check": "lint",
+        "status": "passed",
+        "seconds": 0.074
+      },
+      {
+        "check": "format",
+        "status": "passed",
+        "seconds": 0.038
+      },
+      {
+        "check": "types",
+        "status": "passed",
+        "seconds": 0.184
+      },
+      {
+        "check": "workflow",
+        "status": "passed",
+        "seconds": 0.126
+      },
+      {
+        "check": "schema-core",
+        "status": "passed",
+        "seconds": 1.67,
+        "tests": 91
+      },
+      {
+        "check": "catalog-license",
+        "status": "passed",
+        "seconds": 0.831,
+        "tests": 72
+      },
+      {
+        "check": "provider-semantics",
+        "status": "passed",
+        "seconds": 1.583,
+        "tests": 427
+      },
+      {
+        "check": "claude-plugin",
+        "status": "passed",
+        "seconds": 6.106,
+        "tests": 47
+      },
+      {
+        "check": "package-build",
+        "status": "passed",
+        "seconds": 0.661
+      },
+      {
+        "check": "package-contents",
+        "status": "passed",
+        "seconds": 0.077
+      }
+    ],
+    "release_blockers": [
+      {
+        "id": "O-002",
+        "pack": "huawei-latam-color",
+        "scope": "public_distribution",
+        "reason": "Public distribution of these icons stays blocked. D-018 accepts the rights risk for the owner's private personal use only, and no redistribution permission has been established.",
+        "affected_types": [
+          "huawei.compute.ecs",
+          "huawei.compute.functiongraph",
+          "huawei.containers.cce_autopilot",
+          "huawei.containers.cce_standard",
+          "huawei.containers.cce_turbo",
+          "huawei.database.rds",
+          "huawei.identity.iam",
+          "huawei.integration.api_gateway",
+          "huawei.network.direct_connect",
+          "huawei.network.eip",
+          "huawei.network.elb",
+          "huawei.network.nat_gateway",
+          "huawei.network.vpc",
+          "huawei.network.vpn",
+          "huawei.observability.cloud_eye",
+          "huawei.observability.lts",
+          "huawei.storage.obs"
+        ]
+      }
+    ],
+    "commit": "556945952fef1461c03451ba76ed3f652909edde",
+    "working_tree_dirty": true,
+    "source_ref": null,
+    "lock_sha256": "de68573ae07d8dc998210160cc938f2bc65c22a80da697717c20faf5bb16e595",
+    "source_digests": {
+      ".claude-plugin/marketplace.json": "b9c89971bf1818364fb60f887f272390b9e7bb116f5ec74b6150cc4d6eadf9c3",
+      ".github/actionlint.yaml": "3f94852e432dbbc2551c30a3d8b7d859a30f63b860ae1f92b43b3ce9622381c8",
+      ".github/workflows/quality-gate.yml": "6c27d5913408a42530e8d81820eed1cf010a57346d1dd86e5d8a41c1625ec59d",
+      ".github/workflows/runner-preflight.yml": "08337c1a87c09d601c277c7db01592662e4c39619505f875f0cf8d6641798734",
+      "assets-source/drawio/STENCIL-LICENSE.txt": "64d853e2f1d170ec6b19846848a4047175ad0bfdca5e7f207076fc542dba80d3",
+      "assets-source/drawio/networks-subset.xml": "6b4c56a5a050297f2f057882ad3e55fe5fd9c58a29ece22ad8e277b62ee12d22",
+      "plugins/cloud-architecture-diagrams/.claude-plugin/plugin.json": "3ed77e0b08b2ee987cfd79be6b8e8bf0a37f4a0c617a8d14dc057f186c4d6bfb",
+      "plugins/cloud-architecture-diagrams/README.md": "8fdb82b462a28980a2fc55be1732c972b3f1a9556ca616677664da818bb6406c",
+      "plugins/cloud-architecture-diagrams/bin/cloud-diagrams": "d221734b89b0c69ebe4e7021b27d1c2b181266265c991f3e912bc325fb043363",
+      "plugins/cloud-architecture-diagrams/skills/architecture-model/SKILL.md": "dfb72000b72be41ad3ba109d32c890da52e0a375cef884148272c4fdd29c9400",
+      "plugins/cloud-architecture-diagrams/skills/architecture-model/references/model-guide.md": "1650d9c826d5a3a791ef7864d0604f2b6caae32cbee655961681974bf3bd3696",
+      "pyproject.toml": "74d9fd029748623e56c45407d7e0d8b5911ae23ffc1815db403d7808b9593597",
+      "schemas/architecture-v1.schema.json": "d1e11e89cb0ab5bf6833d14a132ba5539974cf31fdafb48ec80992170a667192",
+      "schemas/catalog-v1.schema.json": "37b9418bb3901c1ed1e0a6e914d35ad0987251716de5c44a538c66b6d13ee9d7",
+      "scripts/build_huawei_assets.py": "ba70f30bce9d6784b8aa251c9194cfcfc0b5a44e73d7453b02c780481d2e1438",
+      "scripts/build_native_icon_lock.py": "9787cc6e719098c28f3eb530cc811572f3dff6a28f4a631240b7df3e2f1dde15",
+      "scripts/build_onprem_assets.py": "cb8daad19a6b80f7552a860252dc02c86a4ecef2f93e0b4718af330eff654f38",
+      "scripts/catalog_checks.py": "9a1948d35bcdbcfb885f94a386cff376685d7cbf8d9385f5405dda5a914f73e9",
+      "scripts/quality_gate.py": "eda0784b09a5ae3953f29fce53ef037a0b393811d89c0d824c4aab05cc92bf9b",
+      "scripts/repository_checks.py": "e06e39dd8905b5decfe189167963add96a48b57570cf9edfc1723fc9e7ea2c54",
+      "src/cloud_architecture_diagrams/__init__.py": "2ec83d49b0a834de3450031375d05287e2ab1050ef29da3d20cc0d95ee145fed",
+      "src/cloud_architecture_diagrams/assets/NOTICE.md": "06a3c3a935ef92f253d87e2df8e18e5437b435a4bff0f93ca981fc8afe386cd6",
+      "src/cloud_architecture_diagrams/assets/huawei/apig.png": "5ac680a46e4676917af555cb0f122bb87cc8790f120e5c4d16bab5984abb7012",
+      "src/cloud_architecture_diagrams/assets/huawei/apig.svg": "a806a28d437fa542a09fa6abde91acc0b9ee20bb3f637a17b80bf7c9dd3f1fa2",
+      "src/cloud_architecture_diagrams/assets/huawei/cce.png": "9ea3b411ce85329ed96cc036de33b2190f015ce5b1e3b5f1c8e5ba9179bca11a",
+      "src/cloud_architecture_diagrams/assets/huawei/cce.svg": "ff6521cffa73d2ada6b51b656f12ca4d30083f6cbcc25547074c3150fc44bc53",
+      "src/cloud_architecture_diagrams/assets/huawei/ces.png": "a1812fbd3b0fd068eca7be25ed008e9f225b12b23b3fc6aa389aa96c52ac9c9c",
+      "src/cloud_architecture_diagrams/assets/huawei/ces.svg": "73ec91ded2cde30db9dfa19c5e660e73059d9eb6cf6febd24ccbc4033e81d5e5",
+      "src/cloud_architecture_diagrams/assets/huawei/dc.png": "8fd384184d0127c307f8ae22bd1f132c7185f93953eb30b70d44c795f74cf833",
+      "src/cloud_architecture_diagrams/assets/huawei/dc.svg": "ffcd8716399121261a4cbd6b8bc3741a3bbadefcae891b652d1229d02463ac20",
+      "src/cloud_architecture_diagrams/assets/huawei/ecs.png": "f2be74e41ecf6ec4e83004524b1f97fe78748d8c624e5ad441ae7c02c742b35a",
+      "src/cloud_architecture_diagrams/assets/huawei/ecs.svg": "11ebbba5e6aba84c1102b6be136266bbcbb2fb92e53954a194bfe7b10cf52efb",
+      "src/cloud_architecture_diagrams/assets/huawei/eip.png": "b3b19bed65666b0c97436ef6ab9507ae343cf3c1f6ebe2e6e42f7c950eb19b13",
+      "src/cloud_architecture_diagrams/assets/huawei/eip.svg": "5bb69ff63a6d5f8b8681958e9e9288945ee2e9f597dadae30a0f7c27a03352a0",
+      "src/cloud_architecture_diagrams/assets/huawei/elb.png": "b7a80f7fc943e254d5725a19664befb978dd0671b1f96e1e4165453398a98298",
+      "src/cloud_architecture_diagrams/assets/huawei/elb.svg": "fd089e729c40abd39a664eb3d9e2f9bbadc31adf34aff5d02c715656052bc1fc",
+      "src/cloud_architecture_diagrams/assets/huawei/functiongraph.png": "97032067dcc14eee982e0f379992a81fc4b252883a97ea2c633f6c6b7efb7c7c",
+      "src/cloud_architecture_diagrams/assets/huawei/functiongraph.svg": "306ce3121b8577130c60f53e99df94297d22d06ad3acec913fe050d920439f2c",
+      "src/cloud_architecture_diagrams/assets/huawei/iam.png": "9e12a0f915371f7aeaafc303a0f6a604fe028b6fb10fde026f88b1872368dae6",
+      "src/cloud_architecture_diagrams/assets/huawei/iam.svg": "2e91b263b45f4044f98eeb2daeb2eef2417019e60d752dded0afc9e2c7041ea4",
+      "src/cloud_architecture_diagrams/assets/huawei/lts.png": "c1b28d1ce363aecc239dfc344fade46fe0ae8e2f171b6ba6debcc53129c2266f",
+      "src/cloud_architecture_diagrams/assets/huawei/lts.svg": "afd33ca8523f64b4f267f7c7e05248d1a06e864544fa1d795497d6b0b77531fd",
+      "src/cloud_architecture_diagrams/assets/huawei/nat.png": "c7acc9f376a2c61698b0ae12eeb7437d96ef7ae430d525dbe2590e776860d425",
+      "src/cloud_architecture_diagrams/assets/huawei/nat.svg": "f5449bbd8819513486fd071f8ebea05581e76e20578e4727733a473d296880c4",
+      "src/cloud_architecture_diagrams/assets/huawei/obs.png": "2e3b16c085927c2b804a223979acb4061994638affeb21979d322bd4fdfd9948",
+      "src/cloud_architecture_diagrams/assets/huawei/obs.svg": "28beb75a926486422a764edbf5c2ab97860ce382425b76e165b1e22f3ecdd66d",
+      "src/cloud_architecture_diagrams/assets/huawei/rds.png": "da8c9d9879ced52b310de0fe008a8c9368345e0c0db5d5d75c3b1726e9bf7bb7",
+      "src/cloud_architecture_diagrams/assets/huawei/rds.svg": "e74a0745f6222da16500f46177981fd7a9e1f1cb7467decfbe3dc6f78e412007",
+      "src/cloud_architecture_diagrams/assets/huawei/vpc.png": "2c609d88aa1acef8d945c01cf97fcd2033e86c8a670c371c7e4d633d25fde564",
+      "src/cloud_architecture_diagrams/assets/huawei/vpc.svg": "6f94098372d59aea4150307f8bcf6c5962bd6c761a5c15b14e7637e47e524332",
+      "src/cloud_architecture_diagrams/assets/huawei/vpn.png": "4fabd519d2c566d74d698bef9a16c6868ef23cdd258215f0a3085f1b1683b88b",
+      "src/cloud_architecture_diagrams/assets/huawei/vpn.svg": "cc62355267a4d884e1109e8a618c8081f2587fd4aa3657ea122aaa54201f59ed",
+      "src/cloud_architecture_diagrams/assets/onprem/backup-system.png": "231b442173f39f04aa2a34c3ad49f4f5e47102f55b08b2a29b385a7fa1904d0d",
+      "src/cloud_architecture_diagrams/assets/onprem/backup-system.svg": "97905471d8061544639ad76781f678825e1274c03178a2fb3f1771c4b2fdc187",
+      "src/cloud_architecture_diagrams/assets/onprem/hypervisor.png": "49bb6f58f99f4a2117dd56e8906b917510ed8e5180e3a03d45ff3437b93cf82b",
+      "src/cloud_architecture_diagrams/assets/onprem/hypervisor.svg": "313e9e0850e08de1a82c53b8865b0c8a68833410b2a1be199488070e33d332e8",
+      "src/cloud_architecture_diagrams/assets/onprem/identity-service.png": "ec136f7f221b9d9c2ce4a87ea6e179173270cc969a6dc897e8da9044c1e68a0b",
+      "src/cloud_architecture_diagrams/assets/onprem/identity-service.svg": "b7daeef23203b0d4eb557c2de12f1bcbc315be9d1d4a65de940ca300fead7358",
+      "src/cloud_architecture_diagrams/assets/onprem/load-balancer.png": "0c66c75dffea48da587dc9f4025ef9a7c367597f4aba123edb751ead1728728a",
+      "src/cloud_architecture_diagrams/assets/onprem/load-balancer.svg": "4c4643e3e62786844a625bbce9cc2b376b6823aaf9ed029cf1165c46bbe5a633",
+      "src/cloud_architecture_diagrams/assets/onprem/monitoring.png": "cf55264a8dfe6b5ea92e25b69d7e3faac7fdf10372c32c1325dd005942ee01b5",
+      "src/cloud_architecture_diagrams/assets/onprem/monitoring.svg": "7ba8255b5926877f7dbe6bac4895b20c0eab81dd2ebc433c9549c2d1f39b9a86",
+      "src/cloud_architecture_diagrams/assets/onprem/nas.png": "2591168b936e9b05fe06b25ba6e043eadf6584aa2a011c0028bdf31561d23dc9",
+      "src/cloud_architecture_diagrams/assets/onprem/nas.svg": "9539ad8c08a8ac7381da47dd1bea9e68c4368088a2ddd4f9b24f6abd2eb3f6ec",
+      "src/cloud_architecture_diagrams/assets/onprem/san.png": "348fe688ef2fc78224f474fd6bdc428fc16bccf5074dcc9a4f6f916a2f53fd07",
+      "src/cloud_architecture_diagrams/assets/onprem/san.svg": "24c61b143c6ca6508a9b88284fea7f64d26b336bef8925e20d5afa8a09ca6fe2",
+      "src/cloud_architecture_diagrams/assets/onprem/vm.png": "f78e73eb4230413cb89bb48a0f35135960307ee0c43d39ebf0aedc6ce1fcf54a",
+      "src/cloud_architecture_diagrams/assets/onprem/vm.svg": "becab47cea345193e8d594d1cee1fb399997092eedc1f7890fc204c5bc332ea4",
+      "src/cloud_architecture_diagrams/catalog.py": "768271eb0c402c076907aee0a5a65d4dfb89e085766155208640068e0fdf2b53",
+      "src/cloud_architecture_diagrams/catalog_data/assets.json": "ce3def04a6a539b8038a102fe75962ce4c9441695713be9420add649779c2375",
+      "src/cloud_architecture_diagrams/catalog_data/aws.json": "239fab9cd7cb5097f9d2bafeda651074b3cb1aeddbfe5ef1b83a9ef459abacc4",
+      "src/cloud_architecture_diagrams/catalog_data/azure.json": "c5ed8b5033238ec9922becafc50782b6c49f096afd92a6fc3f586f584f2139b6",
+      "src/cloud_architecture_diagrams/catalog_data/common.json": "983af2aca9b5015b0e4ddc1b6f55604286622da1bb3d25aaffc704e384eb9f56",
+      "src/cloud_architecture_diagrams/catalog_data/gcp.json": "41ae1c2f7f097d9b7f88581948ea1f1444dc59eb5f6a11d99b707ef1ff6a0e27",
+      "src/cloud_architecture_diagrams/catalog_data/huawei.json": "a73c5ccb09455f2fd275e6fc71e91b08e0f9457e7bfd4e24974f279849d49ee6",
+      "src/cloud_architecture_diagrams/catalog_data/inventory.json": "62b9bf769b4513e1be2c300a6be9fe9f1c68dfd4ff85b390689079c65212bec2",
+      "src/cloud_architecture_diagrams/catalog_data/kubernetes.json": "d16391543387c4b6ff7ea2f8889d1d76517b21fd75dd60e49b9fc6c2fe401f4f",
+      "src/cloud_architecture_diagrams/catalog_data/native_icons.json": "5b89e49b96c5a8f92b7a71a2d5c97fd161b4ab615824044d57d83a8935166f45",
+      "src/cloud_architecture_diagrams/catalog_data/onprem.json": "bd42a853eabddc662cb18e898f10b2cda44357500f7ae5c4b65effec38d6be92",
+      "src/cloud_architecture_diagrams/catalog_data/rules.json": "691cd1b99b66219c2198d1465ece5ff3552f675531886213dc1c828d39933ec0",
+      "src/cloud_architecture_diagrams/catalog_data/taxonomy.json": "e54faef7d4c3cfdf86b3947e870ac4d3a1f5f687760475911f9aacb40fd05abe",
+      "src/cloud_architecture_diagrams/cli.py": "d0f6b2aea1f3462531fd4cf08c532a3dba2fe32e67a68ea1753c91f11bd60fd9",
+      "src/cloud_architecture_diagrams/diagnostics.py": "7f6e43151011d6486cbee56b4da6d7e04dcd7502be21d441f564444760a7a4f1",
+      "src/cloud_architecture_diagrams/models.py": "a7a651b11c336570dbeb8355ac9d878b103c8775613046ef7f2aaf1aceb67430",
+      "src/cloud_architecture_diagrams/py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/cloud_architecture_diagrams/semantics.py": "1a510102ba0a9222ba952a3a77dc780040968fa51977d4bcb0882cfe0b76ff30",
+      "src/cloud_architecture_diagrams/validation.py": "1d918d80c8f5c3685bda4cba92bcb120b9e24e66ce326493d4348aa244b8bcfd",
+      "tests/fixtures/core-valid.json": "ee89b7397c039a237b0e4e703c2769f46e74708d32c032fa418421cd4715ce54",
+      "tests/fixtures/kubernetes/aks.json": "8510374183880899fc1fdaa51bdf40df690c0359bbe31f590196ccf3dd046a59",
+      "tests/fixtures/kubernetes/cce.json": "d8d7bd23e20c705dbdfab190b3bd4629ca1891726cdb6891022b31cecb7664b8",
+      "tests/fixtures/kubernetes/eks.json": "15ba044bebb363b9cc62cba22c78b5e3d0a88f48faf076c24dd6a866ca22bd5b",
+      "tests/fixtures/kubernetes/gke.json": "3b4fbd6fd33d6de64e91f368afa0c6f3159c0ecfd845e3af19379fcf1912b218",
+      "tests/fixtures/kubernetes/onprem.json": "5d6c662ccaaba7625b5773eae76f9a866dcdc398f826d250b9755d672b7d038a",
+      "tests/fixtures/kubernetes-valid.json": "02533a719428c258d702bbe4ad2eb6340c04ef108dc87b03cdee12475720b3ca",
+      "tests/fixtures/providers/aws.json": "01b6042b9e38953ebf4527dc445c9557ad30f0884cf99e148e3140cf499f9969",
+      "tests/fixtures/providers/azure.json": "9e6938b5e01b5e6017b4ff9229a4d7f60d9baa4cd607c42c336a22283bc44b2e",
+      "tests/fixtures/providers/gcp.json": "595abbc70196a4ef3f611b3f50b273e91d480304f75c69aace7c207ae529da70",
+      "tests/fixtures/providers/huawei.json": "fe9b45672a7a51ae1663a977c88a5a5f73a5c9b3b1105bbd55f70e6ed138ddc6",
+      "tests/fixtures/providers/hybrid.json": "422675faa7682de1d280c8e153ecd5e8fa4bec2428e59b2be6e350b70e097a8b",
+      "tests/fixtures/providers/onprem.json": "1bc95136ad25c923570727a6199e25b0795b936c4fb7138bdbef0b4d0c6d8796",
+      "tests/fixtures/semantics/cases.json": "49148a4b5c824e45ddf2f3386c4fa87923cb072e9613db8e2428efcd49660bb9",
+      "tests/test_catalog_license.py": "bc49ac6e827245b911b2d79eea77e2de3482272dc29bd64cb4a9bf457f1c964a",
+      "tests/test_claude_plugin.py": "58375ee1a8d7376d04a35418cb90559eeff42eeb5a6c919b55c127fbf3f601cd",
+      "tests/test_contract.py": "c629856d42e35555bc4c932d2e3b5cf28565478d0cd8088225a832653613891b",
+      "tests/test_provider_semantics.py": "2edaa2a2bfe01fd8be0b2efadc161e46cc4360c0faf17f37bbffa81c508cc5f8",
+      "tests/test_repository_checks.py": "c9acd4e34d6a106c6af79eb3c85f4be4e03e59d7d1230f9ea73788a6e53a99aa",
+      "uv.lock": "de68573ae07d8dc998210160cc938f2bc65c22a80da697717c20faf5bb16e595"
+    },
+    "github_actions": false,
+    "runner_name": null,
+    "python": "3.13.7",
+    "system": "Darwin",
+    "machine": "arm64",
+    "deferred": {
+      "render-security": "M3",
+      "render-smoke": "M3/M4",
+      "visual-regression": "M4",
+      "plugin-package": "M5",
+      "claude-host-acceptance": "M7 (recorded manually; no Claude CLI or model call in CI)"
+    },
+    "review": "Recorded separately; no paid model API call in CI"
+  },
+  "cli_probes": [
+    {
+      "case": "review-f1-alb-multiple-vpcs[providers/aws]",
+      "mode": "strict",
+      "exit_code": 2,
+      "valid": false,
+      "errors": [
+        "PLACEMENT_NETWORK_COUNT_INVALID"
+      ]
+    },
+    {
+      "case": "review-f1-alb-multiple-vpcs[providers/aws]",
+      "mode": "lenient",
+      "exit_code": 2,
+      "valid": false,
+      "errors": [
+        "PLACEMENT_NETWORK_COUNT_INVALID"
+      ]
+    },
+    {
+      "case": "review-f2-subnet-relation-mismatch[providers/aws]",
+      "mode": "strict",
+      "exit_code": 2,
+      "valid": false,
+      "errors": [
+        "PLACEMENT_SUBNET_NETWORK_MISMATCH"
+      ]
+    },
+    {
+      "case": "review-f2-subnet-relation-mismatch[providers/aws]",
+      "mode": "lenient",
+      "exit_code": 2,
+      "valid": false,
+      "errors": [
+        "PLACEMENT_SUBNET_NETWORK_MISMATCH"
+      ]
+    },
+    {
+      "case": "review-f2-subnet-conflicting-membership[providers/aws]",
+      "mode": "strict",
+      "exit_code": 2,
+      "valid": false,
+      "errors": [
+        "BOUNDARY_NETWORK_COUNT_INVALID"
+      ]
+    },
+    {
+      "case": "review-f2-subnet-conflicting-membership[providers/aws]",
+      "mode": "lenient",
+      "exit_code": 2,
+      "valid": false,
+      "errors": [
+        "BOUNDARY_NETWORK_COUNT_INVALID"
+      ]
+    },
+    {
+      "case": "review-f3-scope-group-first[providers/azure]",
+      "mode": "strict",
+      "exit_code": 2,
+      "valid": false,
+      "errors": [
+        "PLACEMENT_SCOPE_CARDINALITY"
+      ]
+    },
+    {
+      "case": "review-f3-scope-group-first[providers/azure]",
+      "mode": "lenient",
+      "exit_code": 2,
+      "valid": false,
+      "errors": [
+        "PLACEMENT_SCOPE_CARDINALITY"
+      ]
+    },
+    {
+      "case": "review-f3-scope-subscription-first[providers/azure]",
+      "mode": "strict",
+      "exit_code": 2,
+      "valid": false,
+      "errors": [
+        "PLACEMENT_SCOPE_CARDINALITY"
+      ]
+    },
+    {
+      "case": "review-f3-scope-subscription-first[providers/azure]",
+      "mode": "lenient",
+      "exit_code": 2,
+      "valid": false,
+      "errors": [
+        "PLACEMENT_SCOPE_CARDINALITY"
+      ]
+    },
+    {
+      "case": "review-f4-pod-conflicting-node[kubernetes/eks]",
+      "mode": "strict",
+      "exit_code": 2,
+      "valid": false,
+      "errors": [
+        "K8S_NODE_ASSIGNMENT_CONFLICT"
+      ]
+    },
+    {
+      "case": "review-f4-pod-conflicting-node[kubernetes/eks]",
+      "mode": "lenient",
+      "exit_code": 2,
+      "valid": false,
+      "errors": [
+        "K8S_NODE_ASSIGNMENT_CONFLICT"
+      ]
+    },
+    {
+      "case": "review-f4-pod-conflicting-node[kubernetes/aks]",
+      "mode": "strict",
+      "exit_code": 2,
+      "valid": false,
+      "errors": [
+        "K8S_NODE_ASSIGNMENT_CONFLICT"
+      ]
+    },
+    {
+      "case": "review-f4-pod-conflicting-node[kubernetes/aks]",
+      "mode": "lenient",
+      "exit_code": 2,
+      "valid": false,
+      "errors": [
+        "K8S_NODE_ASSIGNMENT_CONFLICT"
+      ]
+    },
+    {
+      "case": "review-f4-pod-conflicting-node[kubernetes/gke]",
+      "mode": "strict",
+      "exit_code": 2,
+      "valid": false,
+      "errors": [
+        "K8S_NODE_ASSIGNMENT_CONFLICT"
+      ]
+    },
+    {
+      "case": "review-f4-pod-conflicting-node[kubernetes/gke]",
+      "mode": "lenient",
+      "exit_code": 2,
+      "valid": false,
+      "errors": [
+        "K8S_NODE_ASSIGNMENT_CONFLICT"
+      ]
+    },
+    {
+      "case": "review-f4-pod-conflicting-node[kubernetes/cce]",
+      "mode": "strict",
+      "exit_code": 2,
+      "valid": false,
+      "errors": [
+        "K8S_NODE_ASSIGNMENT_CONFLICT"
+      ]
+    },
+    {
+      "case": "review-f4-pod-conflicting-node[kubernetes/cce]",
+      "mode": "lenient",
+      "exit_code": 2,
+      "valid": false,
+      "errors": [
+        "K8S_NODE_ASSIGNMENT_CONFLICT"
+      ]
+    },
+    {
+      "case": "review-f4-pod-conflicting-node[kubernetes/onprem]",
+      "mode": "strict",
+      "exit_code": 2,
+      "valid": false,
+      "errors": [
+        "K8S_NODE_ASSIGNMENT_CONFLICT"
+      ]
+    },
+    {
+      "case": "review-f4-pod-conflicting-node[kubernetes/onprem]",
+      "mode": "lenient",
+      "exit_code": 2,
+      "valid": false,
+      "errors": [
+        "K8S_NODE_ASSIGNMENT_CONFLICT"
+      ]
+    },
+    {
+      "case": "review-f5-managed-nodegroup-vpc[providers/aws]",
+      "mode": "strict",
+      "exit_code": 2,
+      "valid": false,
+      "errors": [
+        "AWS_EKS_NODE_GROUP_NETWORK_MISMATCH"
+      ]
+    },
+    {
+      "case": "review-f5-managed-nodegroup-vpc[providers/aws]",
+      "mode": "lenient",
+      "exit_code": 2,
+      "valid": false,
+      "errors": [
+        "AWS_EKS_NODE_GROUP_NETWORK_MISMATCH"
+      ]
+    }
+  ]
+}

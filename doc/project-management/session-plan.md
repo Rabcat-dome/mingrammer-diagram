@@ -1,6 +1,6 @@
 # Session Plan and Starter Prompts
 
-Updated: 2026-11-02 | Status: S01-S05 complete; S06 / M2 implemented and not closed. Two authorized S04 chats completed; no new S05 chat has been created.
+Updated: 2026-11-03 | Status: S01-S05 complete; S06 / M2 implemented and not closed. Two authorized S04 chats completed; no new S05 chat has been created.
 
 This is an execution index for the existing [milestones](milestones.md), not a second requirement baseline. Use the [requirements](../requirements/requirements.md) for product scope and the [decision log](decisions.md) for confirmed choices. The deliverable remains an installable cross-machine plugin with a bundled skill.
 
@@ -18,7 +18,7 @@ S04 result: [M0/S04 closeout](evidence/S04-closeout.md), [native proof](evidence
 
 S05 result: [core/CI evidence](evidence/S05-core-and-ci.md), [contract/setup](../design/core-contract.md) and [Astra review](evidence/S05-astra-review.md). M1-01..04 are complete at code head 785e1ee: 82 tests, eight real runner lanes, clean CI wheel and both initial P2 findings confirmed fixed. This is core-only validation; provider catalogs/rules/assets remain S06 and full rendering/Work/release acceptance remains later work.
 
-S06 result: [catalogs, rules and rights](evidence/S06-provider-catalogs.md). M2-01, 02, 04, 05 and 06 are complete, with catalogs, rules, on-premises assets and two gate lanes passing actual CI at `6929253`. Under the owner's D-018, all 15 Huawei items that need an icon have one, for private personal use only. The owner accepted the on-premises and Huawei icon sheets. The Astra/High review and the owner's disposition of the asset-rights exit item remain.
+S06 result: [catalogs, rules and rights](evidence/S06-provider-catalogs.md). M2-01, 02, 04, 05 and 06 are complete, with catalogs, rules, on-premises assets and two gate lanes passing actual CI at `6929253`. Under the owner's D-018, all 15 Huawei items that need an icon have one, for private personal use only. The owner accepted the on-premises and Huawei icon sheets. Astra/High reviewed `5569459` and requested changes; its five findings are fixed in the working tree and await independent fix review and CI at the fix commit. D-019 closes the asset-rights exit item for the private personal release.
 
 The [S02 user follow-up](evidence/S02-additional-icon-sources.md) assesses a 155-PNG Huawei alternative and maps all eight on-premises concepts to draw.io-type generic symbols/compositions under D-010. S06 implements the exact approved subset/export/attribution; symbol selection does not replace source-rights or rendered acceptance checks.
 

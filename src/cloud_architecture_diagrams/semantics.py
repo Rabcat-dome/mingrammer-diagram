@@ -6,7 +6,7 @@ reachability, controller availability or a deployed resource.
 """
 
 import re
-from collections import Counter, defaultdict
+from collections import defaultdict
 from typing import Literal
 
 from .catalog import Catalog, CatalogRecord, catalog
@@ -160,16 +160,41 @@ class Semantics:
     def zone_of(self, boundary: Boundary | None) -> Boundary | None:
         return self._ancestor(boundary, {"zone"})
 
-    def scope_ancestor(self, refs: list[str], kind: str) -> Scope | None:
+    def scope_ancestors(self, refs: list[str], kind: str) -> dict[str, Scope]:
+        """Resolve each lineage, retaining its most specific scope of the requested kind."""
+        found: dict[str, Scope] = {}
+        superseded: set[str] = set()
         for identifier in refs:
             current = self.entities.get(identifier)
             seen: set[str] = set()
+            matched = False
             while isinstance(current, Scope) and current.id not in seen:
                 if current.kind == kind:
-                    return current
+                    found[current.id] = current
+                    if matched:
+                        superseded.add(current.id)
+                    matched = True
                 seen.add(current.id)
                 current = self.entities.get(current.parent_ref) if current.parent_ref else None
-        return None
+        return {
+            identifier: scope for identifier, scope in found.items() if identifier not in superseded
+        }
+
+    def scope_ancestor(self, refs: list[str], kind: str) -> Scope | None:
+        candidates = self.scope_ancestors(refs, kind)
+        return next(iter(candidates.values())) if len(candidates) == 1 else None
+
+    def subnet_networks(self, subnet: Boundary) -> set[str]:
+        targets = [subnet.parent_ref] + [
+            relation.target_ref
+            for relation in subnet.relations
+            if relation.kind == "network_member_of"
+        ]
+        return {
+            target.id
+            for identifier in targets
+            if (target := self.boundary(identifier)) is not None and target.kind == "network"
+        }
 
     def run(self) -> list[Diagnostic]:
         self.scopes()
@@ -241,34 +266,35 @@ class Semantics:
             if record.placement.location == "zonal" and len(located) > 1:
                 self.emit("BOUNDARY_LOCATION_MULTIPLE", path + "/relations", boundary.id)
             if boundary.kind == "subnet":
+                limit = record.placement.max_networks
+                if limit is not None and len(self.subnet_networks(boundary)) > limit:
+                    self.emit("BOUNDARY_NETWORK_COUNT_INVALID", path, boundary.id)
                 self.subnet_region(path, boundary)
 
     def subnet_region(self, path: str, subnet: Boundary) -> None:
-        network = self.boundary(subnet.parent_ref)
         own = self.region_of(subnet)
-        expected = self.region_of(network)
-        for relation in subnet.relations:
-            if relation.kind == "located_in":
-                located = self.region_of(self.boundary(relation.target_ref))
-                if located and expected and located.id != expected.id:
-                    self.emit("BOUNDARY_REGION_MISMATCH", path + "/relations", subnet.id)
-        if own and expected and own.id != expected.id:
-            self.emit("BOUNDARY_REGION_MISMATCH", path + "/parent_ref", subnet.id)
+        for identifier in sorted(self.subnet_networks(subnet)):
+            expected = self.region_of(self.boundary(identifier))
+            for relation in subnet.relations:
+                if relation.kind == "located_in":
+                    located = self.region_of(self.boundary(relation.target_ref))
+                    if located and expected and located.id != expected.id:
+                        self.emit("BOUNDARY_REGION_MISMATCH", path + "/relations", subnet.id)
+            if own and expected and own.id != expected.id:
+                self.emit("BOUNDARY_REGION_MISMATCH", path, subnet.id)
 
     def scope_kinds(
         self, refs: list[str], record: CatalogRecord, field: str, entity_id: str
     ) -> None:
         allowed = record.placement.scope_kinds
-        kinds: Counter[str] = Counter()
         for identifier in refs:
             scope = self.entities.get(identifier)
             if isinstance(scope, Scope):
-                kinds[scope.kind] += 1
                 if allowed is not None and scope.kind not in allowed:
                     self.emit("PLACEMENT_SCOPE_KIND_INVALID", field, entity_id)
         provider = self.catalog.provider_file(self.entities[entity_id].provider)
         for kind in provider.single_scope_kinds if provider else ():
-            if kinds[kind] > 1:
+            if len(self.scope_ancestors(refs, kind)) > 1:
                 self.emit("PLACEMENT_SCOPE_CARDINALITY", field, entity_id)
 
     def resource_type(self, index: int, resource: Resource) -> None:
@@ -378,7 +404,8 @@ class Semantics:
                 if rule.dedicated_subnet:
                     self.dedicated[subnet.id].add(record.id)
                 sub_field = f"{field}/{number}/subnet_refs/{count}"
-                if subnet.parent_ref and subnet.parent_ref != network.id:
+                homes = self.subnet_networks(subnet)
+                if homes and network.id not in homes:
                     self.emit("PLACEMENT_SUBNET_NETWORK_MISMATCH", sub_field, resource.id)
                 if subnet.provider != resource.provider:
                     self.emit("BOUNDARY_PROVIDER_MISMATCH", sub_field, resource.id)
@@ -549,6 +576,19 @@ class Semantics:
             )
             if kind == "NodePool" and mode and resource.service_type not in mode.node_pool_types:
                 self.emit("K8S_NODE_POOL_TYPE_INVALID", path + "/service_type", resource.id)
+            if (
+                resource.service_type == "aws.containers.eks_managed_node_group"
+                and cluster is not None
+                and cluster.service_type in {"aws.containers.eks", "aws.containers.eks_auto_mode"}
+                and self.attached[resource.id]
+                and self.attached[cluster.id]
+                and self.attached[resource.id] != self.attached[cluster.id]
+            ):
+                self.emit(
+                    "AWS_EKS_NODE_GROUP_NETWORK_MISMATCH",
+                    path + "/placement/network_attachments",
+                    resource.id,
+                )
             if kind == "Node" and mode and mode.abstracted_nodes:
                 self.emit("K8S_ABSTRACTED_NODE_DECLARED", field, resource.id)
             if (
@@ -591,6 +631,29 @@ class Semantics:
                     )
 
     def relationships(self) -> None:
+        assignments: dict[str, set[str]] = defaultdict(set)
+        for resource in self.model.resources:
+            context = resource.kubernetes
+            if context and context.kind == "Pod" and context.node_ref:
+                assignments[resource.id].add(context.node_ref)
+        # Collect before checking so edge order cannot choose a winning assignment.
+        for edge in self.model.relationships:
+            source, target = self.resource(edge.source_ref), self.resource(edge.target_ref)
+            if (
+                edge.kind == "scheduling"
+                and source
+                and source.kubernetes
+                and source.kubernetes.kind == "Pod"
+                and target
+                and target.kubernetes
+                and target.kubernetes.kind == "Node"
+            ):
+                assignments[source.id].add(target.id)
+        for index, resource in enumerate(self.model.resources):
+            if len(assignments[resource.id]) > 1:
+                self.emit(
+                    "K8S_NODE_ASSIGNMENT_CONFLICT", f"/resources/{index}/kubernetes", resource.id
+                )
         for index, edge in enumerate(self.model.relationships):
             field = f"/relationships/{index}"
             source = self.resource(edge.source_ref)

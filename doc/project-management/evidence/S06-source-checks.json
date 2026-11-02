@@ -1298,6 +1298,34 @@
      "matched": true
     }
    ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/eks/latest/userguide/eks-compute.html",
+   "http_status": 200,
+   "text_sha256": "7a972b5edd08fcf9cb3f6711ef1442a27055c64016c27835bf519d9078844caf",
+   "characters": 7213,
+   "claims": [
+    {
+     "claim": "Non-hybrid EKS nodes must share the cluster VPC, but need not use the same subnets",
+     "pattern": "nodes must be in the same VPC",
+     "matched": true
+    }
+   ],
+   "review_followup": "2026-11-02; curl HTTPS fetch; HTMLParser text nodes joined and whitespace normalized"
+  },
+  {
+   "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/",
+   "http_status": 200,
+   "text_sha256": "2a77c4e21b53a90eff3954a16aebe5fbb23558cc32bd6138856035adc98522f9",
+   "characters": 58081,
+   "claims": [
+    {
+     "claim": "A Pod nodeName selects a specific node",
+     "pattern": "The above Pod will only run on the node",
+     "matched": true
+    }
+   ],
+   "review_followup": "2026-11-02; curl HTTPS fetch; HTMLParser text nodes joined and whitespace normalized"
   }
  ]
 }
