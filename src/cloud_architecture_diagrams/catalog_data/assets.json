@@ -163,45 +163,71 @@
       "redistribution_evidence": "MIT permits redistribution; the pinned dependency supplies them."
     },
     {
-      "id": "huawei-juandiaz00-png",
+      "id": "huawei-latam-color",
       "status": "private_use_only",
       "distribution": "bundled",
-      "publisher": "JuanDiaz00 (community repack of a VeryIcon pack)",
+      "publisher": "huaweicloud-latam on GitHub, an unverified organization named HUAWEI CLOUD LATAM that links to Huawei Cloud. Corporate authorization is not established",
       "license": null,
       "rights_basis": "owner_risk_acceptance",
-      "owner_decision": "D-017",
-      "source_url": "https://github.com/JuanDiaz00/Huawei-Cloud-draw.io-icons/blob/ea52d7356e172a85cde7538f293a663eb137611d/HuaweiCloud%20Icons.xml",
-      "source_version": "commit ea52d73, committed 2025-08-13",
-      "source_commit": "ea52d7356e172a85cde7538f293a663eb137611d",
-      "source_git_blob": "0bd260648d2525e86c87c671ea9f9deb8d825a14",
-      "source_sha256": "1afc1f2a0fda735c7b9eda88466725b720045493e61a04d392467596b8c976cd",
+      "owner_decision": "D-018",
+      "source_url": "https://github.com/huaweicloud-latam/drawio-libraries/tree/52c33aa12fb816a5de403da85067e1c0f039b5be/color",
+      "source_version": "Commit 52c33aa, the head for release v3.2",
+      "source_commit": "52c33aa12fb816a5de403da85067e1c0f039b5be",
+      "source_files": [
+        {
+          "path": "color/HWC Compute and Containers (color).xml",
+          "git_blob": "25f09928318db73046cccc67240df66b5f4f44ab",
+          "sha256": "7db11f19ad3ad95753b8a57ebb0e3b9b17a3d15728b2cee2b4263893e2b00f16"
+        },
+        {
+          "path": "color/HWC Databases (color).xml",
+          "git_blob": "e122b11e7cb424ade604e84872029dd93aaaac29",
+          "sha256": "dbaa9684c7e2ddf66daea7c56cda0c32be7da2efc75704e4d40e3d1e9d60e08b"
+        },
+        {
+          "path": "color/HWC Management and Governance (color).xml",
+          "git_blob": "5d4c80d517b8776a57a481529613d05f183c8ff7",
+          "sha256": "45a3d76cad0ff924320b90f748a597b2374b5992bb16c54947a73a898eef80e2"
+        },
+        {
+          "path": "color/HWC Middleware (color).xml",
+          "git_blob": "f656575ff0321fe6660d8545da14509140190cbc",
+          "sha256": "f9b4397983cb60ca5b083e13dfc198e4642cfc34f6933d7c51e901ed4e5bf32a"
+        },
+        {
+          "path": "color/HWC Networking (color).xml",
+          "git_blob": "c065b741f88758a986b978946962690508d0dd7c",
+          "sha256": "fb53d316edabdce8a7c211283747b16899734d0b92e17aa474641258170bcbda"
+        },
+        {
+          "path": "color/HWC Storage (color).xml",
+          "git_blob": "5b2e0af9a4067a3cf87e28593e0fab498f8570e1",
+          "sha256": "22d9927592d46af044485b84103feb5bae2e2d0657ff62d67d96e9ca196d4893"
+        }
+      ],
       "retrieved": "2026-11-02",
       "terms": [
         {
-          "url": "https://github.com/JuanDiaz00/Huawei-Cloud-draw.io-icons/blob/ea52d7356e172a85cde7538f293a663eb137611d/README.md",
-          "sha256": "b6ba749a6830ee95e491dcd580cf41010caad034bebc6b0e0af8c692453a5467",
-          "summary": "Names VeryIcon as the source of the icons. The repository has no license file, and GitHub reports no license."
-        },
-        {
-          "url": "https://www.veryicon.com/icons/miscellaneous/huawei-cloud-service-icon/computing-ecs.html",
-          "summary": "Attributes the pack to AIyangyang and states it is free for personal and commercial purpose. This is the site's claim. It does not show authorization from Huawei or address redistribution in a plugin."
+          "url": "https://github.com/huaweicloud-latam/drawio-libraries/blob/52c33aa12fb816a5de403da85067e1c0f039b5be/README.md",
+          "sha256": "b160c526e3669e3636b89be95910d801670fecbb786dafdd1c87c7084df6b9a0",
+          "summary": "Says the color group holds the icons seen in the console and product pages. It grants no license, the repository has no license file, and GitHub reports none."
         },
         {
           "url": "https://www.huaweicloud.com/intl/en-us/declaration-sg/sa_st.html",
-          "summary": "Huawei Cloud's site terms reserve its rights in its marks and logos. They govern Huawei's own site, and they show why no permission can be inferred for these icons."
+          "summary": "Huawei Cloud's site terms reserve its rights in its content, marks and logos. They govern Huawei's own site, and they show why no permission can be inferred for these icons."
         }
       ],
       "conditions": [
-        "Private personal use by the owner only, under D-017. This is the owner's acceptance of the rights risk, not permission from any rights holder",
+        "Private personal use by the owner only, under D-018. This is the owner's acceptance of the rights risk, not permission from any rights holder",
         "Rights are not cleared and redistribution permission is not established",
         "Do not make this repository public, publish this package or plugin, or share these files. Git history keeps them, so going public would first require removing them from history",
-        "Sharing generated diagrams that show these icons outside private use is not covered by D-017"
+        "Sharing generated diagrams that show these icons outside private use is not covered by D-018"
       ],
-      "attribution": "Huawei Cloud service icons, repacked by JuanDiaz00 from the VeryIcon pack HUAWEI CLOUD Service Icon, which VeryIcon attributes to AIyangyang. Huawei Cloud names and marks belong to Huawei.",
+      "attribution": "Huawei Cloud service icons from the color group of huaweicloud-latam/drawio-libraries at commit 52c33aa. Huawei Cloud names and marks belong to Huawei.",
       "redistribution_evidence": null,
       "blocker": "O-002",
       "blocker_scope": "public_distribution",
-      "blocker_reason": "Public distribution of these icons stays blocked. D-017 accepts the rights risk for the owner's private personal use only, and no redistribution permission has been established."
+      "blocker_reason": "Public distribution of these icons stays blocked. D-018 accepts the rights risk for the owner's private personal use only, and no redistribution permission has been established."
     },
     {
       "id": "huawei-cloud-icons",
@@ -210,8 +236,8 @@
       "publisher": "Huawei Cloud",
       "license": null,
       "rights_basis": "none",
-      "blocker": "O-010",
-      "blocker_reason": "No icon in the accepted private pack clearly matches these services. Huawei's official library and the LATAM library are not accepted: their rights are unresolved under O-002, and D-017 covers only the JuanDiaz00 pack. No generic icon is substituted.",
+      "blocker": "O-002",
+      "blocker_reason": "Not used by any catalog type. Huawei's official library and the JuanDiaz00 repack are not bundled, their rights are unresolved, and the owner's decisions do not extend to them.",
       "source_url": "https://open.huaweicloud.com/openplatform/icons",
       "source_version": "manifest.v1.json generated 2026-07-31",
       "retrieved": "2026-11-02",
@@ -232,21 +258,16 @@
           "note": "Huawei-operated manifest of 196 logos; every architecture icon is marked planned; no license field. It covers 15 of the 17 named items; Subnet and Security Group have no entry and stay labeled boundaries."
         },
         {
-          "url": "https://github.com/huaweicloud-latam/drawio-libraries/tree/52c33aa12fb816a5de403da85067e1c0f039b5be",
-          "note": "Regional publisher account with SVG libraries; no license file and null GitHub license metadata."
-        },
-        {
           "url": "https://github.com/JuanDiaz00/Huawei-Cloud-draw.io-icons/tree/ea52d7356e172a85cde7538f293a663eb137611d",
-          "note": "Community repack of a third-party site's PNGs; no license file."
+          "note": "Community repack of a third-party site's black line-art PNGs; no license file. D-017 chose it first, and D-018 replaced it. Inventory: S06-juandiaz-pack-inventory.json."
         }
       ],
       "conditions": [
-        "Bundle nothing from these sources, and render no generic substitute, unless the owner extends a decision to them or written consent covers extraction, local conversion, bundling and generated diagrams",
-        "Record any such decision or consent here, then clear O-010 for the affected services"
+        "Bundle nothing from these sources unless the owner decides so or written consent covers extraction, local conversion, bundling and generated diagrams"
       ],
       "attribution": null,
       "redistribution_evidence": null,
-      "blocker_scope": "icon_coverage"
+      "blocker_scope": "public_distribution"
     }
   ],
   "assets": [
@@ -504,235 +525,483 @@
     },
     {
       "id": "huawei-vpc",
-      "pack": "huawei-juandiaz00-png",
+      "pack": "huawei-latam-color",
       "concept": "VPC",
       "required_label": "VPC",
       "composition": "direct",
       "symbols": [
-        "network-vpc"
+        "Virtual Private Cloud (VPC)"
       ],
-      "title_token": "vpc",
       "original": [
         {
-          "name": "network-vpc",
-          "sha256": "713b0f846ec8ad4d1ae1cda5b0ecb3048089b67628ede60c8b60c48a9b4e3969",
-          "digest_of": "decoded_png",
-          "entry_index": 104
+          "name": "Virtual Private Cloud (VPC)",
+          "sha256": "6f94098372d59aea4150307f8bcf6c5962bd6c761a5c15b14e7637e47e524332",
+          "digest_of": "decoded_svg",
+          "entry_index": 9,
+          "source_path": "color/HWC Networking (color).xml"
         }
       ],
       "derived": {
-        "svg": null,
+        "svg": {
+          "path": "assets/huawei/vpc.svg",
+          "sha256": "6f94098372d59aea4150307f8bcf6c5962bd6c761a5c15b14e7637e47e524332"
+        },
         "png": {
           "path": "assets/huawei/vpc.png",
-          "sha256": "713b0f846ec8ad4d1ae1cda5b0ecb3048089b67628ede60c8b60c48a9b4e3969",
+          "sha256": "2c609d88aa1acef8d945c01cf97fcd2033e86c8a670c371c7e4d633d25fde564",
           "width": 256,
           "height": 256
         }
       },
-      "changes": "None; the decoded PNG bytes are kept unchanged"
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
     },
     {
       "id": "huawei-ecs",
-      "pack": "huawei-juandiaz00-png",
+      "pack": "huawei-latam-color",
       "concept": "Elastic Cloud Server",
       "required_label": "Elastic Cloud Server",
       "composition": "direct",
       "symbols": [
-        "computing-ecs"
+        "Elastic Cloud Server (ECS)"
       ],
-      "title_token": "ecs",
       "original": [
         {
-          "name": "computing-ecs",
-          "sha256": "87bbec446261566df8c893062f4f048493a62b2cde22f85cdf69ac1e45fc43c4",
-          "digest_of": "decoded_png",
-          "entry_index": 28
+          "name": "Elastic Cloud Server (ECS)",
+          "sha256": "11ebbba5e6aba84c1102b6be136266bbcbb2fb92e53954a194bfe7b10cf52efb",
+          "digest_of": "decoded_svg",
+          "entry_index": 6,
+          "source_path": "color/HWC Compute and Containers (color).xml"
         }
       ],
       "derived": {
-        "svg": null,
+        "svg": {
+          "path": "assets/huawei/ecs.svg",
+          "sha256": "11ebbba5e6aba84c1102b6be136266bbcbb2fb92e53954a194bfe7b10cf52efb"
+        },
         "png": {
           "path": "assets/huawei/ecs.png",
-          "sha256": "87bbec446261566df8c893062f4f048493a62b2cde22f85cdf69ac1e45fc43c4",
+          "sha256": "f2be74e41ecf6ec4e83004524b1f97fe78748d8c624e5ad441ae7c02c742b35a",
           "width": 256,
           "height": 256
         }
       },
-      "changes": "None; the decoded PNG bytes are kept unchanged"
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
     },
     {
       "id": "huawei-elb",
-      "pack": "huawei-juandiaz00-png",
+      "pack": "huawei-latam-color",
       "concept": "Elastic Load Balance",
       "required_label": "Elastic Load Balance",
       "composition": "direct",
       "symbols": [
-        "network-elb"
+        "Elastic Load Balance (ELB)"
       ],
-      "title_token": "elb",
       "original": [
         {
-          "name": "network-elb",
-          "sha256": "50579bef8a417ab01446c113d81eb1185fb478f092c0030c9c1bce8b1146a859",
-          "digest_of": "decoded_png",
-          "entry_index": 106
+          "name": "Elastic Load Balance (ELB)",
+          "sha256": "fd089e729c40abd39a664eb3d9e2f9bbadc31adf34aff5d02c715656052bc1fc",
+          "digest_of": "decoded_svg",
+          "entry_index": 3,
+          "source_path": "color/HWC Networking (color).xml"
         }
       ],
       "derived": {
-        "svg": null,
+        "svg": {
+          "path": "assets/huawei/elb.svg",
+          "sha256": "fd089e729c40abd39a664eb3d9e2f9bbadc31adf34aff5d02c715656052bc1fc"
+        },
         "png": {
           "path": "assets/huawei/elb.png",
-          "sha256": "50579bef8a417ab01446c113d81eb1185fb478f092c0030c9c1bce8b1146a859",
+          "sha256": "b7a80f7fc943e254d5725a19664befb978dd0671b1f96e1e4165453398a98298",
           "width": 256,
           "height": 256
         }
       },
-      "changes": "None; the decoded PNG bytes are kept unchanged"
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
     },
     {
       "id": "huawei-eip",
-      "pack": "huawei-juandiaz00-png",
+      "pack": "huawei-latam-color",
       "concept": "Elastic IP",
       "required_label": "Elastic IP",
       "composition": "direct",
       "symbols": [
-        "network-eip"
+        "Elastic IP (EIP)"
       ],
-      "title_token": "eip",
       "original": [
         {
-          "name": "network-eip",
-          "sha256": "a1c530f64c7ae7f32c9d3e9147c7db124ea807f4de422e643e67024bc4a0ca79",
-          "digest_of": "decoded_png",
-          "entry_index": 100
+          "name": "Elastic IP (EIP)",
+          "sha256": "5bb69ff63a6d5f8b8681958e9e9288945ee2e9f597dadae30a0f7c27a03352a0",
+          "digest_of": "decoded_svg",
+          "entry_index": 2,
+          "source_path": "color/HWC Networking (color).xml"
         }
       ],
       "derived": {
-        "svg": null,
+        "svg": {
+          "path": "assets/huawei/eip.svg",
+          "sha256": "5bb69ff63a6d5f8b8681958e9e9288945ee2e9f597dadae30a0f7c27a03352a0"
+        },
         "png": {
           "path": "assets/huawei/eip.png",
-          "sha256": "a1c530f64c7ae7f32c9d3e9147c7db124ea807f4de422e643e67024bc4a0ca79",
+          "sha256": "b3b19bed65666b0c97436ef6ab9507ae343cf3c1f6ebe2e6e42f7c950eb19b13",
           "width": 256,
           "height": 256
         }
       },
-      "changes": "None; the decoded PNG bytes are kept unchanged"
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
+    },
+    {
+      "id": "huawei-nat",
+      "pack": "huawei-latam-color",
+      "concept": "NAT Gateway",
+      "required_label": "NAT Gateway",
+      "composition": "direct",
+      "symbols": [
+        "NAT Gateway"
+      ],
+      "original": [
+        {
+          "name": "NAT Gateway",
+          "sha256": "f5449bbd8819513486fd071f8ebea05581e76e20578e4727733a473d296880c4",
+          "digest_of": "decoded_svg",
+          "entry_index": 8,
+          "source_path": "color/HWC Networking (color).xml"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/huawei/nat.svg",
+          "sha256": "f5449bbd8819513486fd071f8ebea05581e76e20578e4727733a473d296880c4"
+        },
+        "png": {
+          "path": "assets/huawei/nat.png",
+          "sha256": "c7acc9f376a2c61698b0ae12eeb7437d96ef7ae430d525dbe2590e776860d425",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
+    },
+    {
+      "id": "huawei-cce",
+      "pack": "huawei-latam-color",
+      "concept": "CCE",
+      "required_label": "CCE",
+      "composition": "direct",
+      "symbols": [
+        "Cloud Container Engine (CCE)"
+      ],
+      "original": [
+        {
+          "name": "Cloud Container Engine (CCE)",
+          "sha256": "ff6521cffa73d2ada6b51b656f12ca4d30083f6cbcc25547074c3150fc44bc53",
+          "digest_of": "decoded_svg",
+          "entry_index": 12,
+          "source_path": "color/HWC Compute and Containers (color).xml"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/huawei/cce.svg",
+          "sha256": "ff6521cffa73d2ada6b51b656f12ca4d30083f6cbcc25547074c3150fc44bc53"
+        },
+        "png": {
+          "path": "assets/huawei/cce.png",
+          "sha256": "9ea3b411ce85329ed96cc036de33b2190f015ce5b1e3b5f1c8e5ba9179bca11a",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
     },
     {
       "id": "huawei-rds",
-      "pack": "huawei-juandiaz00-png",
+      "pack": "huawei-latam-color",
       "concept": "Relational Database Service",
       "required_label": "Relational Database Service",
       "composition": "direct",
       "symbols": [
-        "database-rds"
+        "Relational Database Service (RDS)"
       ],
-      "title_token": "rds",
       "original": [
         {
-          "name": "database-rds",
-          "sha256": "327e4775e8280d494a041816a9afa92feb5bfa548066586e06bf9ea2bd715162",
-          "digest_of": "decoded_png",
-          "entry_index": 51
+          "name": "Relational Database Service (RDS)",
+          "sha256": "e74a0745f6222da16500f46177981fd7a9e1f1cb7467decfbe3dc6f78e412007",
+          "digest_of": "decoded_svg",
+          "entry_index": 15,
+          "source_path": "color/HWC Databases (color).xml"
         }
       ],
       "derived": {
-        "svg": null,
+        "svg": {
+          "path": "assets/huawei/rds.svg",
+          "sha256": "e74a0745f6222da16500f46177981fd7a9e1f1cb7467decfbe3dc6f78e412007"
+        },
         "png": {
           "path": "assets/huawei/rds.png",
-          "sha256": "327e4775e8280d494a041816a9afa92feb5bfa548066586e06bf9ea2bd715162",
+          "sha256": "da8c9d9879ced52b310de0fe008a8c9368345e0c0db5d5d75c3b1726e9bf7bb7",
           "width": 256,
           "height": 256
         }
       },
-      "changes": "None; the decoded PNG bytes are kept unchanged"
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
+    },
+    {
+      "id": "huawei-obs",
+      "pack": "huawei-latam-color",
+      "concept": "Object Storage Service",
+      "required_label": "Object Storage Service",
+      "composition": "direct",
+      "symbols": [
+        "Object Storage Service (OBS)"
+      ],
+      "original": [
+        {
+          "name": "Object Storage Service (OBS)",
+          "sha256": "28beb75a926486422a764edbf5c2ab97860ce382425b76e165b1e22f3ecdd66d",
+          "digest_of": "decoded_svg",
+          "entry_index": 8,
+          "source_path": "color/HWC Storage (color).xml"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/huawei/obs.svg",
+          "sha256": "28beb75a926486422a764edbf5c2ab97860ce382425b76e165b1e22f3ecdd66d"
+        },
+        "png": {
+          "path": "assets/huawei/obs.png",
+          "sha256": "2e3b16c085927c2b804a223979acb4061994638affeb21979d322bd4fdfd9948",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
     },
     {
       "id": "huawei-iam",
-      "pack": "huawei-juandiaz00-png",
+      "pack": "huawei-latam-color",
       "concept": "Identity and Access Management",
       "required_label": "Identity and Access Management",
       "composition": "direct",
       "symbols": [
-        "managementdeployment-iam"
+        "Identity and Access Management (IAM)"
       ],
-      "title_token": "iam",
       "original": [
         {
-          "name": "managementdeployment-iam",
-          "sha256": "1131048a5328c45e70c9f0535a31ab0c7136735570f09c0c2cd960047a956c66",
-          "digest_of": "decoded_png",
-          "entry_index": 93
+          "name": "Identity and Access Management (IAM)",
+          "sha256": "2e91b263b45f4044f98eeb2daeb2eef2417019e60d752dded0afc9e2c7041ea4",
+          "digest_of": "decoded_svg",
+          "entry_index": 7,
+          "source_path": "color/HWC Management and Governance (color).xml"
         }
       ],
       "derived": {
-        "svg": null,
+        "svg": {
+          "path": "assets/huawei/iam.svg",
+          "sha256": "2e91b263b45f4044f98eeb2daeb2eef2417019e60d752dded0afc9e2c7041ea4"
+        },
         "png": {
           "path": "assets/huawei/iam.png",
-          "sha256": "1131048a5328c45e70c9f0535a31ab0c7136735570f09c0c2cd960047a956c66",
+          "sha256": "9e12a0f915371f7aeaafc303a0f6a604fe028b6fb10fde026f88b1872368dae6",
           "width": 256,
           "height": 256
         }
       },
-      "changes": "None; the decoded PNG bytes are kept unchanged"
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
     },
     {
-      "id": "huawei-vpn",
-      "pack": "huawei-juandiaz00-png",
-      "concept": "Virtual Private Network",
-      "required_label": "Virtual Private Network",
+      "id": "huawei-apig",
+      "pack": "huawei-latam-color",
+      "concept": "API Gateway",
+      "required_label": "API Gateway",
       "composition": "direct",
       "symbols": [
-        "network-vpn-2"
+        "API Gateway (APIG)"
       ],
-      "title_token": "vpn",
       "original": [
         {
-          "name": "network-vpn-2",
-          "sha256": "290c3066e13dc36a11de1fa961d933a00de6731a243d517df7df1d249fe711fe",
-          "digest_of": "decoded_png",
-          "entry_index": 113
+          "name": "API Gateway (APIG)",
+          "sha256": "a806a28d437fa542a09fa6abde91acc0b9ee20bb3f637a17b80bf7c9dd3f1fa2",
+          "digest_of": "decoded_svg",
+          "entry_index": 4,
+          "source_path": "color/HWC Middleware (color).xml"
         }
       ],
       "derived": {
-        "svg": null,
+        "svg": {
+          "path": "assets/huawei/apig.svg",
+          "sha256": "a806a28d437fa542a09fa6abde91acc0b9ee20bb3f637a17b80bf7c9dd3f1fa2"
+        },
         "png": {
-          "path": "assets/huawei/vpn.png",
-          "sha256": "290c3066e13dc36a11de1fa961d933a00de6731a243d517df7df1d249fe711fe",
+          "path": "assets/huawei/apig.png",
+          "sha256": "5ac680a46e4676917af555cb0f122bb87cc8790f120e5c4d16bab5984abb7012",
           "width": 256,
           "height": 256
         }
       },
-      "changes": "None; the decoded PNG bytes are kept unchanged"
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
     },
     {
       "id": "huawei-functiongraph",
-      "pack": "huawei-juandiaz00-png",
+      "pack": "huawei-latam-color",
       "concept": "FunctionGraph",
       "required_label": "FunctionGraph",
       "composition": "direct",
       "symbols": [
-        "computing-fgs"
+        "FunctionGraph"
       ],
-      "title_token": "fgs",
       "original": [
         {
-          "name": "computing-fgs",
-          "sha256": "e6aef02c8c5a885c01fefae1f6d469a0234b16062046781be7806fe4930119d3",
-          "digest_of": "decoded_png",
-          "entry_index": 26
+          "name": "FunctionGraph",
+          "sha256": "306ce3121b8577130c60f53e99df94297d22d06ad3acec913fe050d920439f2c",
+          "digest_of": "decoded_svg",
+          "entry_index": 8,
+          "source_path": "color/HWC Compute and Containers (color).xml"
         }
       ],
       "derived": {
-        "svg": null,
+        "svg": {
+          "path": "assets/huawei/functiongraph.svg",
+          "sha256": "306ce3121b8577130c60f53e99df94297d22d06ad3acec913fe050d920439f2c"
+        },
         "png": {
           "path": "assets/huawei/functiongraph.png",
-          "sha256": "e6aef02c8c5a885c01fefae1f6d469a0234b16062046781be7806fe4930119d3",
+          "sha256": "97032067dcc14eee982e0f379992a81fc4b252883a97ea2c633f6c6b7efb7c7c",
           "width": 256,
           "height": 256
         }
       },
-      "changes": "None; the decoded PNG bytes are kept unchanged"
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
+    },
+    {
+      "id": "huawei-vpn",
+      "pack": "huawei-latam-color",
+      "concept": "Virtual Private Network",
+      "required_label": "Virtual Private Network",
+      "composition": "direct",
+      "symbols": [
+        "Virtual Private Network (VPN)"
+      ],
+      "original": [
+        {
+          "name": "Virtual Private Network (VPN)",
+          "sha256": "cc62355267a4d884e1109e8a618c8081f2587fd4aa3657ea122aaa54201f59ed",
+          "digest_of": "decoded_svg",
+          "entry_index": 10,
+          "source_path": "color/HWC Networking (color).xml"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/huawei/vpn.svg",
+          "sha256": "cc62355267a4d884e1109e8a618c8081f2587fd4aa3657ea122aaa54201f59ed"
+        },
+        "png": {
+          "path": "assets/huawei/vpn.png",
+          "sha256": "4fabd519d2c566d74d698bef9a16c6868ef23cdd258215f0a3085f1b1683b88b",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
+    },
+    {
+      "id": "huawei-dc",
+      "pack": "huawei-latam-color",
+      "concept": "Direct Connect",
+      "required_label": "Direct Connect",
+      "composition": "direct",
+      "symbols": [
+        "Direct Connect"
+      ],
+      "original": [
+        {
+          "name": "Direct Connect",
+          "sha256": "ffcd8716399121261a4cbd6b8bc3741a3bbadefcae891b652d1229d02463ac20",
+          "digest_of": "decoded_svg",
+          "entry_index": 1,
+          "source_path": "color/HWC Networking (color).xml"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/huawei/dc.svg",
+          "sha256": "ffcd8716399121261a4cbd6b8bc3741a3bbadefcae891b652d1229d02463ac20"
+        },
+        "png": {
+          "path": "assets/huawei/dc.png",
+          "sha256": "8fd384184d0127c307f8ae22bd1f132c7185f93953eb30b70d44c795f74cf833",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
+    },
+    {
+      "id": "huawei-ces",
+      "pack": "huawei-latam-color",
+      "concept": "Cloud Eye",
+      "required_label": "Cloud Eye",
+      "composition": "direct",
+      "symbols": [
+        "Cloud Eye Service (CES)"
+      ],
+      "original": [
+        {
+          "name": "Cloud Eye Service (CES)",
+          "sha256": "73ec91ded2cde30db9dfa19c5e660e73059d9eb6cf6febd24ccbc4033e81d5e5",
+          "digest_of": "decoded_svg",
+          "entry_index": 2,
+          "source_path": "color/HWC Management and Governance (color).xml"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/huawei/ces.svg",
+          "sha256": "73ec91ded2cde30db9dfa19c5e660e73059d9eb6cf6febd24ccbc4033e81d5e5"
+        },
+        "png": {
+          "path": "assets/huawei/ces.png",
+          "sha256": "a1812fbd3b0fd068eca7be25ed008e9f225b12b23b3fc6aa389aa96c52ac9c9c",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
+    },
+    {
+      "id": "huawei-lts",
+      "pack": "huawei-latam-color",
+      "concept": "Log Tank Service",
+      "required_label": "Log Tank Service",
+      "composition": "direct",
+      "symbols": [
+        "Log Tank Servce (LTS)"
+      ],
+      "original": [
+        {
+          "name": "Log Tank Servce (LTS)",
+          "sha256": "afd33ca8523f64b4f267f7c7e05248d1a06e864544fa1d795497d6b0b77531fd",
+          "digest_of": "decoded_svg",
+          "entry_index": 8,
+          "source_path": "color/HWC Management and Governance (color).xml"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/huawei/lts.svg",
+          "sha256": "afd33ca8523f64b4f267f7c7e05248d1a06e864544fa1d795497d6b0b77531fd"
+        },
+        "png": {
+          "path": "assets/huawei/lts.png",
+          "sha256": "c1b28d1ce363aecc239dfc344fade46fe0ae8e2f171b6ba6debcc53129c2266f",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
     }
   ]
 }

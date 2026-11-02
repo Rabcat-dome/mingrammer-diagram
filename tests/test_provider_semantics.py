@@ -9,7 +9,8 @@ from typing import Any
 import pytest
 from jsonschema import Draft202012Validator
 
-from cloud_architecture_diagrams.catalog import catalog
+from cloud_architecture_diagrams import semantics
+from cloud_architecture_diagrams.catalog import Catalog, Representation, catalog
 from cloud_architecture_diagrams.models import Architecture, KubernetesKind
 from cloud_architecture_diagrams.semantics import OWNERS
 from cloud_architecture_diagrams.validation import Mode, validate_json
@@ -129,7 +130,8 @@ def test_warning_case_is_disclosed_without_failing(case: dict[str, Any]) -> None
 
 def test_every_rule_has_a_negative_case_and_every_emitted_code_is_declared() -> None:
     rules = catalog().rules
-    expected = {case["expect"] for group in CASES.values() for case in group}
+    # No catalog type is blocked today, so a direct test below exercises this warning instead.
+    expected = {case["expect"] for group in CASES.values() for case in group} | {"ICON_UNAVAILABLE"}
     assert set(rules) <= expected, set(rules) - expected
     source = (ROOT / "src/cloud_architecture_diagrams/semantics.py").read_text()
     emitted = set(re.findall(r'"([A-Z][A-Z0-9_]{3,})"', source))
@@ -154,6 +156,20 @@ def test_every_catalog_type_appears_in_a_passing_fixture() -> None:
             assert any(
                 (provider, record.entity, record.kind) in groups for provider in record.providers
             ), record.id
+
+
+def test_a_blocked_type_warns_and_validates_without_a_substitute(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    view = Catalog()
+    record = view.records["huawei.storage.obs"]
+    item = Representation(kind="blocked", pack="huawei-cloud-icons", blocker="O-002")
+    view.records[record.id] = record.model_copy(
+        update={"representation": item, "status": "semantics_only"}
+    )
+    monkeypatch.setattr(semantics, "catalog", lambda: view)
+    found = codes(load("providers/huawei"))
+    assert "ICON_UNAVAILABLE" in found["warning"] and not found["error"]
 
 
 def test_core_and_guide_examples_stay_valid() -> None:

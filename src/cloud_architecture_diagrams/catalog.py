@@ -115,7 +115,6 @@ class CatalogRecord(CatalogModel):
     status: Literal["supported", "semantics_only", "private_use_only"]
     sources: tuple[str, ...] = Field(min_length=1)
     native_id: str | None = None
-    native_aliases: tuple[str, ...] = ()
     kubernetes_kinds: tuple[KubernetesKind, ...] = ()
     api_version: str | None = None
     namespaced: bool | None = None
@@ -176,6 +175,12 @@ class Candidate(CatalogModel):
     sha256: str | None = None
 
 
+class SourceFile(CatalogModel):
+    path: str
+    git_blob: str
+    sha256: str
+
+
 class Pack(CatalogModel):
     id: str
     status: Literal["approved", "blocked", "private_use_only"]
@@ -197,6 +202,7 @@ class Pack(CatalogModel):
     source_tag_object: str | None = None
     source_git_blob: str | None = None
     source_sha256: str | None = None
+    source_files: tuple[SourceFile, ...] = ()
     blocker: str | None = None
     blocker_reason: str | None = None
     blocker_scope: Literal["public_distribution", "icon_coverage"] | None = None
@@ -206,8 +212,9 @@ class Pack(CatalogModel):
 class AssetOriginal(CatalogModel):
     name: str
     sha256: str
-    digest_of: Literal["canonical_stencil_xml", "decoded_png"]
+    digest_of: Literal["canonical_stencil_xml", "decoded_svg"]
     entry_index: int | None = None
+    source_path: str | None = None
 
 
 class DerivedFile(CatalogModel):
@@ -229,7 +236,6 @@ class Asset(CatalogModel):
     required_label: str
     composition: str
     symbols: tuple[str, ...] = Field(min_length=1)
-    title_token: str | None = None
     original: tuple[AssetOriginal, ...] = Field(min_length=1)
     derived: AssetDerived
     changes: str
@@ -279,7 +285,8 @@ class Catalog:
         return self.files.get(provider)
 
     def release_blockers(self) -> list[dict[str, object]]:
-        return [
+        # A blocker that no catalog type depends on does not limit what is shipped.
+        found: list[dict[str, object]] = [
             {
                 "id": pack.blocker,
                 "pack": pack.id,
@@ -294,6 +301,7 @@ class Catalog:
             for pack in self.manifest.packs
             if pack.blocker
         ]
+        return [item for item in found if item["affected_types"]]
 
     def _uses_pack(self, record: CatalogRecord, pack: str) -> bool:
         item = record.representation

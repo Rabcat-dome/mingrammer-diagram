@@ -24,12 +24,12 @@ The product names and icons above belong to their owners, and no endorsement is 
 
 ## Bundled for private personal use only: Huawei Cloud icons
 
-**These rights are not cleared.** The eight PNG files under `assets/huawei` are included only because the owner of this private plugin accepted the rights risk for their own private personal use under decision D-017. No rights holder has granted permission, and no redistribution permission has been established. Do not publish this package, this plugin or these files, and do not make its repository public. O-002 keeps public distribution blocked.
+**These rights are not cleared.** The 15 SVG and PNG pairs under `assets/huawei` are included only because the owner of this private plugin accepted the rights risk for their own private personal use under decision D-018. No rights holder has granted permission, and no redistribution permission has been established. Do not publish this package, this plugin or these files, and do not make its repository public. O-002 keeps public distribution blocked.
 
-**Source:** repacked by JuanDiaz00 at [commit ea52d73](https://github.com/JuanDiaz00/Huawei-Cloud-draw.io-icons/tree/ea52d7356e172a85cde7538f293a663eb137611d) from the VeryIcon pack "HUAWEI CLOUD Service Icon". VeryIcon attributes that pack to AIyangyang and states it is free for personal and commercial purpose; that is the site's claim, and it shows no authorization from Huawei. Huawei Cloud names and marks belong to Huawei.
+**Source:** the color group of [huaweicloud-latam/drawio-libraries at commit 52c33aa](https://github.com/huaweicloud-latam/drawio-libraries/tree/52c33aa12fb816a5de403da85067e1c0f039b5be/color). That account is named HUAWEI CLOUD LATAM and links to Huawei Cloud, but it is not a verified organization, its repository has no license, and its corporate authorization is not established. Huawei Cloud names and marks belong to Huawei.
 
-**Changes:** none. Each file holds the bytes decoded from its pack entry.
+**Changes:** each SVG holds the bytes decoded from its library entry, and each PNG is rasterized from that SVG.
 
-## Not available: other Huawei Cloud icons
+## Not available
 
-The other Huawei services have no icon, because nothing in that pack clearly matches them. O-010 tracks this. Catalog entries keep their native names and semantic rules, with no generic substitute. Huawei's official library and other packs are not included, and Huawei Cloud's site terms require prior written consent to reproduce or distribute site content and express written permission to use its logos.
+Huawei's official icon library and other Huawei icon packs are not included. Huawei Cloud's site terms require prior written consent to reproduce or distribute site content and express written permission to use its logos.

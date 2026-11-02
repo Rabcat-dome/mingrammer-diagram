@@ -1,0 +1,669 @@
+{
+ "repository": "https://github.com/huaweicloud-latam/drawio-libraries",
+ "commit": "52c33aa12fb816a5de403da85067e1c0f039b5be",
+ "note": "Metadata only; this file holds no artwork. Listing an entry maps nothing.",
+ "files": [
+  {
+   "path": "color/HWC Compute and Containers (color).xml",
+   "git_blob": "25f09928318db73046cccc67240df66b5f4f44ab",
+   "sha256": "7db11f19ad3ad95753b8a57ebb0e3b9b17a3d15728b2cee2b4263893e2b00f16"
+  },
+  {
+   "path": "color/HWC Databases (color).xml",
+   "git_blob": "e122b11e7cb424ade604e84872029dd93aaaac29",
+   "sha256": "dbaa9684c7e2ddf66daea7c56cda0c32be7da2efc75704e4d40e3d1e9d60e08b"
+  },
+  {
+   "path": "color/HWC Management and Governance (color).xml",
+   "git_blob": "5d4c80d517b8776a57a481529613d05f183c8ff7",
+   "sha256": "45a3d76cad0ff924320b90f748a597b2374b5992bb16c54947a73a898eef80e2"
+  },
+  {
+   "path": "color/HWC Middleware (color).xml",
+   "git_blob": "f656575ff0321fe6660d8545da14509140190cbc",
+   "sha256": "f9b4397983cb60ca5b083e13dfc198e4642cfc34f6933d7c51e901ed4e5bf32a"
+  },
+  {
+   "path": "color/HWC Networking (color).xml",
+   "git_blob": "c065b741f88758a986b978946962690508d0dd7c",
+   "sha256": "fb53d316edabdce8a7c211283747b16899734d0b92e17aa474641258170bcbda"
+  },
+  {
+   "path": "color/HWC Storage (color).xml",
+   "git_blob": "5b2e0af9a4067a3cf87e28593e0fab498f8570e1",
+   "sha256": "22d9927592d46af044485b84103feb5bae2e2d0657ff62d67d96e9ca196d4893"
+  }
+ ],
+ "entries": [
+  {
+   "file": "color/HWC Compute and Containers (color).xml",
+   "index": 0,
+   "title": "Huawei Cloud Stack (HCS)",
+   "bytes": 3039,
+   "sha256": "9e8c7c2d01c787147e1a00ded70b5cdc6588e15eeaa490a406717dcd524e7d4e"
+  },
+  {
+   "file": "color/HWC Compute and Containers (color).xml",
+   "index": 1,
+   "title": "Auto Scaling (AS)",
+   "bytes": 6606,
+   "sha256": "1fdacc17b67d53d0d1f97be16342a36c0f7001324bc3ebbf6f41ee0396c84e73"
+  },
+  {
+   "file": "color/HWC Compute and Containers (color).xml",
+   "index": 2,
+   "title": "Bare Metal Server (BMS)",
+   "bytes": 969,
+   "sha256": "6c73f2f871e222f12256c98434f4ac8739ef53c23cf39f63197531b6f062cfaa"
+  },
+  {
+   "file": "color/HWC Compute and Containers (color).xml",
+   "index": 3,
+   "title": "Cloud Phone (CPH)",
+   "bytes": 1011,
+   "sha256": "eefd2ca43c8b89c47cf5576a54d7b7f0e36fb78c06ed062b0d8fe06e103c9819"
+  },
+  {
+   "file": "color/HWC Compute and Containers (color).xml",
+   "index": 4,
+   "title": "Dedicated Computing Cluster (DCC)",
+   "bytes": 2246,
+   "sha256": "5a3e4185b1a677a4e60ea3d8acc512938e131afc412652af963532dd23021c65"
+  },
+  {
+   "file": "color/HWC Compute and Containers (color).xml",
+   "index": 5,
+   "title": "Dedicated Host (DeH)",
+   "bytes": 726,
+   "sha256": "2308cf3b9986d7488aef8526517bb1029898a8d067638310251112f4b8510baf"
+  },
+  {
+   "file": "color/HWC Compute and Containers (color).xml",
+   "index": 6,
+   "title": "Elastic Cloud Server (ECS)",
+   "bytes": 976,
+   "sha256": "11ebbba5e6aba84c1102b6be136266bbcbb2fb92e53954a194bfe7b10cf52efb"
+  },
+  {
+   "file": "color/HWC Compute and Containers (color).xml",
+   "index": 7,
+   "title": "FGPA Accelerated Cloud Server (FACS)",
+   "bytes": 1382,
+   "sha256": "f44f4f3096deec082ce431182ed619250f34f4c3aab861cba59ae25ab668e6c3"
+  },
+  {
+   "file": "color/HWC Compute and Containers (color).xml",
+   "index": 8,
+   "title": "FunctionGraph",
+   "bytes": 1188,
+   "sha256": "306ce3121b8577130c60f53e99df94297d22d06ad3acec913fe050d920439f2c"
+  },
+  {
+   "file": "color/HWC Compute and Containers (color).xml",
+   "index": 9,
+   "title": "GPU Accelerated Cloud Server (GACS)",
+   "bytes": 1232,
+   "sha256": "392aef9935c9f80548e14343c8e442483d148fa37d35af00a8da7cc5b502ac40"
+  },
+  {
+   "file": "color/HWC Compute and Containers (color).xml",
+   "index": 10,
+   "title": "Huawei Cloud EulerOS",
+   "bytes": 627,
+   "sha256": "8c4526b0e2015739b134a1a3afa750e505af8bafb381770b95238d9947d02a47"
+  },
+  {
+   "file": "color/HWC Compute and Containers (color).xml",
+   "index": 11,
+   "title": "Image Management Service (IMS)",
+   "bytes": 1006,
+   "sha256": "0f5a25047eec40fe86def63817cd40bb662b7895ba894c3f63c1e889c638d437"
+  },
+  {
+   "file": "color/HWC Compute and Containers (color).xml",
+   "index": 12,
+   "title": "Cloud Container Engine (CCE)",
+   "bytes": 1429,
+   "sha256": "ff6521cffa73d2ada6b51b656f12ca4d30083f6cbcc25547074c3150fc44bc53"
+  },
+  {
+   "file": "color/HWC Compute and Containers (color).xml",
+   "index": 13,
+   "title": "Cloud Container Instance (CCI)",
+   "bytes": 1851,
+   "sha256": "279faa79e8b519a88dc7719c7838c894abce7919261e8fe5098ea1600c0b823b"
+  },
+  {
+   "file": "color/HWC Compute and Containers (color).xml",
+   "index": 14,
+   "title": "Intelligent EdgeFabric (IEF)",
+   "bytes": 2447,
+   "sha256": "6b73aeb23a61eb42e704f3e4651fe3f62c7df1ff081d2cb556346ca8978513d1"
+  },
+  {
+   "file": "color/HWC Compute and Containers (color).xml",
+   "index": 15,
+   "title": "SoftWare Repository for Container (SWR)",
+   "bytes": 2169,
+   "sha256": "b7f59fb2881c27088fa632973743c1321191418f7dd42d7fb06eefc81b9cfd8e"
+  },
+  {
+   "file": "color/HWC Compute and Containers (color).xml",
+   "index": 16,
+   "title": "Ubiquitous Cloud Native Service (UCS)",
+   "bytes": 2575,
+   "sha256": "c7dfd38fe5748f63a4e0ee255f64c387326c5481f9572d465b121f2ab02fcb82"
+  },
+  {
+   "file": "color/HWC Databases (color).xml",
+   "index": 0,
+   "title": "Data Admin Service (DAS)",
+   "bytes": 887,
+   "sha256": "8098a24dfd6e9fbaf97e993c92a6c5deca74a69e24b80d7ec27b7158c048a862"
+  },
+  {
+   "file": "color/HWC Databases (color).xml",
+   "index": 1,
+   "title": "Data Replication Service (DRS)",
+   "bytes": 1091,
+   "sha256": "e9aa5bfdb32a41a6c8b04d77643c698cf34ef0e876bf99822249713f85e82692"
+  },
+  {
+   "file": "color/HWC Databases (color).xml",
+   "index": 2,
+   "title": "Database and Application Migration (UGO)",
+   "bytes": 1538,
+   "sha256": "97a992f1c5f3c65277ee89958924bfe31f2995d3337c4685751714c252b6c7ca"
+  },
+  {
+   "file": "color/HWC Databases (color).xml",
+   "index": 3,
+   "title": "Distributed Database Middleware (DDM)",
+   "bytes": 2253,
+   "sha256": "3f582bc8967ce09db5a420828ca3fc60b67b5b2e594ff7bb8717c43d47e69aa6"
+  },
+  {
+   "file": "color/HWC Databases (color).xml",
+   "index": 4,
+   "title": "Document Database Service (DDS)",
+   "bytes": 1148,
+   "sha256": "bc46ebe4cc5c586925622557462638e5fa0847f61631a110cf24d26a43c0b084"
+  },
+  {
+   "file": "color/HWC Databases (color).xml",
+   "index": 5,
+   "title": "GaussDB",
+   "bytes": 3884,
+   "sha256": "9a136efd7f555c2e36ee220b8d9f8810e89627ecdbf80871c1fda26ea4506e1f"
+  },
+  {
+   "file": "color/HWC Databases (color).xml",
+   "index": 6,
+   "title": "GeminiDB",
+   "bytes": 4109,
+   "sha256": "a0d258e632513f3fa9bf1f75bfde02da24708a1d098ab51b5c456446d4fadd75"
+  },
+  {
+   "file": "color/HWC Databases (color).xml",
+   "index": 7,
+   "title": "GeminiDB for Cassandra",
+   "bytes": 5408,
+   "sha256": "e9930c55acda2804449ccd16403fad7a36d8f03e6e3afb1407eddff0dbf1e182"
+  },
+  {
+   "file": "color/HWC Databases (color).xml",
+   "index": 8,
+   "title": "GeminiDB for Influx",
+   "bytes": 2368,
+   "sha256": "3a1c2a8defee9945512d63f0ac2516bbef31fdcf6f0b8389cbf41ec5c6c9d83a"
+  },
+  {
+   "file": "color/HWC Databases (color).xml",
+   "index": 9,
+   "title": "GeminiDB for Mongo",
+   "bytes": 3453,
+   "sha256": "3c997bd4e4f725441b4f144545ea3ca43b952ef2f388af88010618b48087445f"
+  },
+  {
+   "file": "color/HWC Databases (color).xml",
+   "index": 10,
+   "title": "GeminiDB for Redis",
+   "bytes": 2606,
+   "sha256": "109c1ddbf92cb360d2077ab920900cd5d3fa031dc706c8bb753e469479537b1d"
+  },
+  {
+   "file": "color/HWC Databases (color).xml",
+   "index": 11,
+   "title": "RDS for MariaDB",
+   "bytes": 2952,
+   "sha256": "71fe9977600defb30ab0e579128e78e71277ea0d3e8c270763de00f4efd6a924"
+  },
+  {
+   "file": "color/HWC Databases (color).xml",
+   "index": 12,
+   "title": "RDS for MySQL",
+   "bytes": 1698,
+   "sha256": "f7c647fb18d6f3af6a817465025cc6bf9359a6f5e8819e6a8ad5e795bb8798f9"
+  },
+  {
+   "file": "color/HWC Databases (color).xml",
+   "index": 13,
+   "title": "RDS for PostgreSQL",
+   "bytes": 2124,
+   "sha256": "96df8a8a64b4132978af2065c9ef8c985750fc5470cc8b09d09986ac977601e3"
+  },
+  {
+   "file": "color/HWC Databases (color).xml",
+   "index": 14,
+   "title": "RDS for SQL Server",
+   "bytes": 3194,
+   "sha256": "cbdc10fc0af0a75216bf19c761b7c68629b08938b041946f815d04d841bcbbc2"
+  },
+  {
+   "file": "color/HWC Databases (color).xml",
+   "index": 15,
+   "title": "Relational Database Service (RDS)",
+   "bytes": 1131,
+   "sha256": "e74a0745f6222da16500f46177981fd7a9e1f1cb7467decfbe3dc6f78e412007"
+  },
+  {
+   "file": "color/HWC Databases (color).xml",
+   "index": 16,
+   "title": "TaurusDB",
+   "bytes": 1428,
+   "sha256": "3ee35c4ff9a622248b450a13bbd887deadf233f0a640271e869ad36cb606650d"
+  },
+  {
+   "file": "color/HWC Management and Governance (color).xml",
+   "index": 0,
+   "title": "Application Operation Management (AOM)",
+   "bytes": 2282,
+   "sha256": "3da2dcf4473990edb14ddd58d56c4368a243d7f06bfe709dd194c1108bef4f48"
+  },
+  {
+   "file": "color/HWC Management and Governance (color).xml",
+   "index": 1,
+   "title": "Application Performance Management (APM)",
+   "bytes": 2016,
+   "sha256": "c7c378318c36b783d1eced8f010150abac7ddb59c2e3bf9ede7088d321db16a7"
+  },
+  {
+   "file": "color/HWC Management and Governance (color).xml",
+   "index": 2,
+   "title": "Cloud Eye Service (CES)",
+   "bytes": 882,
+   "sha256": "73ec91ded2cde30db9dfa19c5e660e73059d9eb6cf6febd24ccbc4033e81d5e5"
+  },
+  {
+   "file": "color/HWC Management and Governance (color).xml",
+   "index": 3,
+   "title": "Cloud Operations Center (COC)",
+   "bytes": 2823,
+   "sha256": "f82e97cb1828b0fc515c9bfe481cda86db8cf3ba23d8f9aade06677f799d3585"
+  },
+  {
+   "file": "color/HWC Management and Governance (color).xml",
+   "index": 4,
+   "title": "Cloud Trace Service (CTS)",
+   "bytes": 951,
+   "sha256": "49ed3dcffe850539aa74f957cd5ff91920bf660cd5b41b75178c89bea2e830e9"
+  },
+  {
+   "file": "color/HWC Management and Governance (color).xml",
+   "index": 5,
+   "title": "Config (RMS)",
+   "bytes": 1551,
+   "sha256": "a48db5e726d42e8e6273dd08c1fc47ecf992e1b47f4011ea53e05ea6fa595a73"
+  },
+  {
+   "file": "color/HWC Management and Governance (color).xml",
+   "index": 6,
+   "title": "IAM Identity Center",
+   "bytes": 7336,
+   "sha256": "ccf8a462f94a6d06acd150e22cdc244962a275e6a45427751ca9d2ef6691a997"
+  },
+  {
+   "file": "color/HWC Management and Governance (color).xml",
+   "index": 7,
+   "title": "Identity and Access Management (IAM)",
+   "bytes": 1176,
+   "sha256": "2e91b263b45f4044f98eeb2daeb2eef2417019e60d752dded0afc9e2c7041ea4"
+  },
+  {
+   "file": "color/HWC Management and Governance (color).xml",
+   "index": 8,
+   "title": "Log Tank Servce (LTS)",
+   "bytes": 1171,
+   "sha256": "afd33ca8523f64b4f267f7c7e05248d1a06e864544fa1d795497d6b0b77531fd"
+  },
+  {
+   "file": "color/HWC Management and Governance (color).xml",
+   "index": 9,
+   "title": "OneAccess",
+   "bytes": 4086,
+   "sha256": "c815972501d305ae588a4742dee380c53d104572d792eca609fb72dc6dde1c79"
+  },
+  {
+   "file": "color/HWC Management and Governance (color).xml",
+   "index": 10,
+   "title": "Optimization Advisor (OA)",
+   "bytes": 3956,
+   "sha256": "dae4660700968dbef90c5683651e9b8b177e11790c109515692e61fa8deed00a"
+  },
+  {
+   "file": "color/HWC Management and Governance (color).xml",
+   "index": 11,
+   "title": "Organizations",
+   "bytes": 934,
+   "sha256": "8e2c772a1755951453d743326f2e17ea8307204a2200c1ac774f266fed44b3d3"
+  },
+  {
+   "file": "color/HWC Management and Governance (color).xml",
+   "index": 12,
+   "title": "Resource Access Manager (RAM)",
+   "bytes": 1947,
+   "sha256": "d9a47617485813e57c58ade268821d79f883fc64fd1cbd4db38bd0c804ca9be2"
+  },
+  {
+   "file": "color/HWC Management and Governance (color).xml",
+   "index": 13,
+   "title": "Resource Formation Service (RFS)",
+   "bytes": 2191,
+   "sha256": "214036968cf32bdde8fc92c08d9baf63f5adf5c68ea515fa3328b4bfbb990807"
+  },
+  {
+   "file": "color/HWC Management and Governance (color).xml",
+   "index": 14,
+   "title": "Resource Governance Center (RGC)",
+   "bytes": 18794,
+   "sha256": "27448c41ba476680b3d254e0670ab281ad08aad7b4e47fa37e3622d80f561a76"
+  },
+  {
+   "file": "color/HWC Management and Governance (color).xml",
+   "index": 15,
+   "title": "Simple Message Notification (SMN)",
+   "bytes": 797,
+   "sha256": "aa0d2195c6de786ab33ad3530986b33e8dd3ac58096ebc6cb46fe40034c706f0"
+  },
+  {
+   "file": "color/HWC Middleware (color).xml",
+   "index": 0,
+   "title": "AppGallery Connect",
+   "bytes": 1319,
+   "sha256": "a0eac48ba68ead826cc358c569324141f0a11607a3354fbf13040b760cd9e2c5"
+  },
+  {
+   "file": "color/HWC Middleware (color).xml",
+   "index": 1,
+   "title": "HMS Core",
+   "bytes": 1682,
+   "sha256": "a9ffbad00d3eb2672a2706061924f55a2d69104d0bf1d9f0e74273ae1d1bb9a7"
+  },
+  {
+   "file": "color/HWC Middleware (color).xml",
+   "index": 2,
+   "title": "Blockchain Service (BCS)",
+   "bytes": 1954,
+   "sha256": "581f10830866532d34d2cac3e6cd16bebc9bf7497f2e5cf4952e6c148e0caa2d"
+  },
+  {
+   "file": "color/HWC Middleware (color).xml",
+   "index": 3,
+   "title": "Trusted Cross-Chain Service (TCS)",
+   "bytes": 1104,
+   "sha256": "0a5f9c9ad85a963492fb15b6969248ec6d00c080a75bbfe70dafcb90aa2e7bd1"
+  },
+  {
+   "file": "color/HWC Middleware (color).xml",
+   "index": 4,
+   "title": "API Gateway (APIG)",
+   "bytes": 1460,
+   "sha256": "a806a28d437fa542a09fa6abde91acc0b9ee20bb3f637a17b80bf7c9dd3f1fa2"
+  },
+  {
+   "file": "color/HWC Middleware (color).xml",
+   "index": 5,
+   "title": "Application Service Mesh (ASM)",
+   "bytes": 3245,
+   "sha256": "6840636f57c706ea3742cca0c5405e112a97152274baa6fa669d0be4d31977b5"
+  },
+  {
+   "file": "color/HWC Middleware (color).xml",
+   "index": 6,
+   "title": "Cloud Service Engine (CSE)",
+   "bytes": 1874,
+   "sha256": "e369b85b5f12fbfae13bda9473cdbfa098e528e466772e0fa2ded57cc492a23f"
+  },
+  {
+   "file": "color/HWC Middleware (color).xml",
+   "index": 7,
+   "title": "Distributed Cache Service (DCS) for Redis",
+   "bytes": 906,
+   "sha256": "0cd7c8e902dc4963da22447570819ae380898268bb19269afa4b0e2df21714a8"
+  },
+  {
+   "file": "color/HWC Middleware (color).xml",
+   "index": 8,
+   "title": "Distributed Message Service (DMS)",
+   "bytes": 1029,
+   "sha256": "458b0e6c0ddbc59092e5d85fffb1260963ad022e7c0ccd4334299eca3c7fd6b6"
+  },
+  {
+   "file": "color/HWC Middleware (color).xml",
+   "index": 9,
+   "title": "Distributed Message Service (DMS) for RocketMQ",
+   "bytes": 2425,
+   "sha256": "d71923894ad3317cde43a91f66fadd9cde658dd161d1cfb6ebcdeeb65b56aaca"
+  },
+  {
+   "file": "color/HWC Middleware (color).xml",
+   "index": 10,
+   "title": "EventGrid (EG)",
+   "bytes": 2054,
+   "sha256": "cb3b7e24d88f2c10d7c4825b6ba179f3110bd24e80ca9818b0941da17e6915cc"
+  },
+  {
+   "file": "color/HWC Middleware (color).xml",
+   "index": 11,
+   "title": "Kafka",
+   "bytes": 2235,
+   "sha256": "518225749b6bbcbe006f1865bd954a12d74cea21d65690528243c0d69020b831"
+  },
+  {
+   "file": "color/HWC Middleware (color).xml",
+   "index": 12,
+   "title": "Memcached (deprecated)",
+   "bytes": 1407,
+   "sha256": "b9e47599eae8c8a8f391ca5faea5437e92a9b7b1ca766d14da405a43cdcec123"
+  },
+  {
+   "file": "color/HWC Middleware (color).xml",
+   "index": 13,
+   "title": "Multi-Site High Availability Service (MAS)",
+   "bytes": 2471,
+   "sha256": "33b0a66e9c9473feb7b4da61bad129fa178684c596889338d054df23a12c0830"
+  },
+  {
+   "file": "color/HWC Middleware (color).xml",
+   "index": 14,
+   "title": "RabbitMQ",
+   "bytes": 1013,
+   "sha256": "487cb1b0f30d029884930faebec9e7e69e574a935244c8a87f1120b81f5eff65"
+  },
+  {
+   "file": "color/HWC Networking (color).xml",
+   "index": 0,
+   "title": "Cloud Connect (CC)",
+   "bytes": 1669,
+   "sha256": "7598e98e33ac4cec820ef5f29c130d6e3ec4c07a8b570831d9c9f9ac1ee21d22"
+  },
+  {
+   "file": "color/HWC Networking (color).xml",
+   "index": 1,
+   "title": "Direct Connect",
+   "bytes": 749,
+   "sha256": "ffcd8716399121261a4cbd6b8bc3741a3bbadefcae891b652d1229d02463ac20"
+  },
+  {
+   "file": "color/HWC Networking (color).xml",
+   "index": 2,
+   "title": "Elastic IP (EIP)",
+   "bytes": 992,
+   "sha256": "5bb69ff63a6d5f8b8681958e9e9288945ee2e9f597dadae30a0f7c27a03352a0"
+  },
+  {
+   "file": "color/HWC Networking (color).xml",
+   "index": 3,
+   "title": "Elastic Load Balance (ELB)",
+   "bytes": 1496,
+   "sha256": "fd089e729c40abd39a664eb3d9e2f9bbadc31adf34aff5d02c715656052bc1fc"
+  },
+  {
+   "file": "color/HWC Networking (color).xml",
+   "index": 4,
+   "title": "Enterprise Connect (EC)",
+   "bytes": 1205,
+   "sha256": "3b7b056e25d93f9a0e47f58c906d62fbe3148bfe5ab1c03e046d9c846eaed6aa"
+  },
+  {
+   "file": "color/HWC Networking (color).xml",
+   "index": 5,
+   "title": "Enterprise Router (ER)",
+   "bytes": 1528,
+   "sha256": "519d07c1ce419502c1c155cc8bb22e2e3aa3843f82cc891ddc71dae222519cd6"
+  },
+  {
+   "file": "color/HWC Networking (color).xml",
+   "index": 6,
+   "title": "Enterprise Switch (ESW)",
+   "bytes": 1350,
+   "sha256": "406bf9f4af9b0284066c24333e17168ca70462e9314690860b6458b3026f335f"
+  },
+  {
+   "file": "color/HWC Networking (color).xml",
+   "index": 7,
+   "title": "Global Accelerator (GA)",
+   "bytes": 2446,
+   "sha256": "a067c4b3c27d493823e4bab1776d0d47ce835ca74a0f0e3d7577910016fa464b"
+  },
+  {
+   "file": "color/HWC Networking (color).xml",
+   "index": 8,
+   "title": "NAT Gateway",
+   "bytes": 1298,
+   "sha256": "f5449bbd8819513486fd071f8ebea05581e76e20578e4727733a473d296880c4"
+  },
+  {
+   "file": "color/HWC Networking (color).xml",
+   "index": 9,
+   "title": "Virtual Private Cloud (VPC)",
+   "bytes": 833,
+   "sha256": "6f94098372d59aea4150307f8bcf6c5962bd6c761a5c15b14e7637e47e524332"
+  },
+  {
+   "file": "color/HWC Networking (color).xml",
+   "index": 10,
+   "title": "Virtual Private Network (VPN)",
+   "bytes": 1666,
+   "sha256": "cc62355267a4d884e1109e8a618c8081f2587fd4aa3657ea122aaa54201f59ed"
+  },
+  {
+   "file": "color/HWC Networking (color).xml",
+   "index": 11,
+   "title": "VPC Endpoint (VPCEP)",
+   "bytes": 1323,
+   "sha256": "bc1aad756c49914daf38205a46c71e67ef7c16c8267bfd44e550324374bce7ab"
+  },
+  {
+   "file": "color/HWC Storage (color).xml",
+   "index": 0,
+   "title": "Cloud Backup and Recovery (CBR)",
+   "bytes": 869,
+   "sha256": "0b4a1e4b8ba02eab497d6f2e8a4d075eac2d0e8bf42198674bbd6ff2753a0f9c"
+  },
+  {
+   "file": "color/HWC Storage (color).xml",
+   "index": 1,
+   "title": "Cloud Server Backup Service (CSBS) (deprecated)",
+   "bytes": 1018,
+   "sha256": "82711a0440db3789b1e38e4df90f91d9c65c8379ccbc89e5d6b846b8ba57ddae"
+  },
+  {
+   "file": "color/HWC Storage (color).xml",
+   "index": 2,
+   "title": "Cloud Storage Gateway (CSG)",
+   "bytes": 1740,
+   "sha256": "f79fb6f048731ad7dd018da24aa64e4c476689ee7d2cbeb6a430bd9b583cb888"
+  },
+  {
+   "file": "color/HWC Storage (color).xml",
+   "index": 3,
+   "title": "Data Express Service (DES)",
+   "bytes": 1195,
+   "sha256": "886d3a0def0cc55227aa74e7ef72af0d9f3bc8cb10adc9a41e1c412d890d5c8c"
+  },
+  {
+   "file": "color/HWC Storage (color).xml",
+   "index": 4,
+   "title": "Data Workshop (DWR)",
+   "bytes": 1968,
+   "sha256": "7ba964dc5cbc8666186b9f1b73e5c0d125999a6f1a68aee2ac7c9f039f1ea22e"
+  },
+  {
+   "file": "color/HWC Storage (color).xml",
+   "index": 5,
+   "title": "Dedicated Distributed Storage Service (DSS)",
+   "bytes": 1161,
+   "sha256": "41b2d732143f3327d7d77707ed2a0d3d1ebef2d07548c3b01da4bf0f700ba714"
+  },
+  {
+   "file": "color/HWC Storage (color).xml",
+   "index": 6,
+   "title": "Elastic Volume Service (EVS)",
+   "bytes": 852,
+   "sha256": "6e0e4121d999bad0a05bbe825a7df6994588bfd0ae543c7ccb89fc431821ffa0"
+  },
+  {
+   "file": "color/HWC Storage (color).xml",
+   "index": 7,
+   "title": "Map Data Service (MapDS)",
+   "bytes": 3486,
+   "sha256": "d1e5284f44457e92539bb5f6d7908d370520ca0d62ff4e54bdec9496905cca7d"
+  },
+  {
+   "file": "color/HWC Storage (color).xml",
+   "index": 8,
+   "title": "Object Storage Service (OBS)",
+   "bytes": 738,
+   "sha256": "28beb75a926486422a764edbf5c2ab97860ce382425b76e165b1e22f3ecdd66d"
+  },
+  {
+   "file": "color/HWC Storage (color).xml",
+   "index": 9,
+   "title": "Scalable File Service (SFS)",
+   "bytes": 580,
+   "sha256": "590d0e8fda89da724672bccedf9e7c017d4f1f1745a166df1f2f1ae422067a08"
+  },
+  {
+   "file": "color/HWC Storage (color).xml",
+   "index": 10,
+   "title": "Scalable File Service (SFS) Turbo",
+   "bytes": 1189,
+   "sha256": "098233bec83004cb3ba21111f19be6e0ae9aacd1a1dbb893f7ecfd8af0e6d6e4"
+  },
+  {
+   "file": "color/HWC Storage (color).xml",
+   "index": 11,
+   "title": "Storage Disaster Recovery Service (SDRS)",
+   "bytes": 1360,
+   "sha256": "1e68a24306f125b3faeb6b6de4cce861e35cce504337e2232e696774e5f6743f"
+  },
+  {
+   "file": "color/HWC Storage (color).xml",
+   "index": 12,
+   "title": "Volume Backup Service (VBS) (deprecated)",
+   "bytes": 1321,
+   "sha256": "bf296d811618ee81f9dbda031704980409f73902d40020e22d01ca0d317ec127"
+  }
+ ]
+}

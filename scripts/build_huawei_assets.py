@@ -1,8 +1,8 @@
-"""Extract the Huawei icons the owner accepted for private personal use (D-017).
+"""Extract the Huawei icons the owner accepted for private personal use (D-018).
 
-Bytes are kept exactly as decoded. The pack is checked against its pinned hashes before any entry
-is read, and it is parsed as data. Only titles naming the service are mapped; the rest stay
-unmapped rather than guessed, so the repository holds no pack file and no unmapped image.
+Each library is checked against its pinned hashes before any entry is read, and it is parsed as
+data. An entry is taken only at its pinned index and exact title. SVG bytes are kept as decoded,
+and PNG needs rsvg-convert. Rights are not cleared by this script or by the owner's decision.
 """
 
 import argparse
@@ -10,7 +10,6 @@ import base64
 import hashlib
 import json
 import re
-import struct
 import subprocess
 import sys
 from pathlib import Path
@@ -18,23 +17,65 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "src/cloud_architecture_diagrams/assets/huawei"
 MANIFEST = ROOT / "src/cloud_architecture_diagrams/catalog_data/assets.json"
-INVENTORY = ROOT / "doc/project-management/evidence/S06-huawei-pack-inventory.json"
-PACK = "huawei-juandiaz00-png"
-COMMIT = "ea52d7356e172a85cde7538f293a663eb137611d"
-SOURCE_PATH = "HuaweiCloud Icons.xml"
-GIT_BLOB = "0bd260648d2525e86c87c671ea9f9deb8d825a14"
-SOURCE_SHA256 = "1afc1f2a0fda735c7b9eda88466725b720045493e61a04d392467596b8c976cd"
-PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
-# Asset ID -> (source title, title token naming the service, required native label).
+INVENTORY = ROOT / "doc/project-management/evidence/S06-latam-pack-inventory.json"
+PACK = "huawei-latam-color"
+COMMIT = "52c33aa12fb816a5de403da85067e1c0f039b5be"
+PNG_EDGE = 256
+# Library path -> (Git blob, SHA-256), both pinned from the audited commit.
+SOURCES = {
+    "color/HWC Compute and Containers (color).xml": (
+        "25f09928318db73046cccc67240df66b5f4f44ab",
+        "7db11f19ad3ad95753b8a57ebb0e3b9b17a3d15728b2cee2b4263893e2b00f16",
+    ),
+    "color/HWC Databases (color).xml": (
+        "e122b11e7cb424ade604e84872029dd93aaaac29",
+        "dbaa9684c7e2ddf66daea7c56cda0c32be7da2efc75704e4d40e3d1e9d60e08b",
+    ),
+    "color/HWC Management and Governance (color).xml": (
+        "5d4c80d517b8776a57a481529613d05f183c8ff7",
+        "45a3d76cad0ff924320b90f748a597b2374b5992bb16c54947a73a898eef80e2",
+    ),
+    "color/HWC Middleware (color).xml": (
+        "f656575ff0321fe6660d8545da14509140190cbc",
+        "f9b4397983cb60ca5b083e13dfc198e4642cfc34f6933d7c51e901ed4e5bf32a",
+    ),
+    "color/HWC Networking (color).xml": (
+        "c065b741f88758a986b978946962690508d0dd7c",
+        "fb53d316edabdce8a7c211283747b16899734d0b92e17aa474641258170bcbda",
+    ),
+    "color/HWC Storage (color).xml": (
+        "5b2e0af9a4067a3cf87e28593e0fab498f8570e1",
+        "22d9927592d46af044485b84103feb5bae2e2d0657ff62d67d96e9ca196d4893",
+    ),
+}
+COMPUTE, DATABASES, MANAGEMENT, MIDDLEWARE, NETWORKING, STORAGE = SOURCES
+# Asset ID -> (library, entry index, exact title, required native label).
 MAPPING = {
-    "huawei-vpc": ("network-vpc", "vpc", "VPC"),
-    "huawei-ecs": ("computing-ecs", "ecs", "Elastic Cloud Server"),
-    "huawei-elb": ("network-elb", "elb", "Elastic Load Balance"),
-    "huawei-eip": ("network-eip", "eip", "Elastic IP"),
-    "huawei-rds": ("database-rds", "rds", "Relational Database Service"),
-    "huawei-iam": ("managementdeployment-iam", "iam", "Identity and Access Management"),
-    "huawei-vpn": ("network-vpn-2", "vpn", "Virtual Private Network"),
-    "huawei-functiongraph": ("computing-fgs", "fgs", "FunctionGraph"),
+    "huawei-vpc": (NETWORKING, 9, "Virtual Private Cloud (VPC)", "VPC"),
+    "huawei-ecs": (COMPUTE, 6, "Elastic Cloud Server (ECS)", "Elastic Cloud Server"),
+    "huawei-elb": (NETWORKING, 3, "Elastic Load Balance (ELB)", "Elastic Load Balance"),
+    "huawei-eip": (NETWORKING, 2, "Elastic IP (EIP)", "Elastic IP"),
+    "huawei-nat": (NETWORKING, 8, "NAT Gateway", "NAT Gateway"),
+    "huawei-cce": (COMPUTE, 12, "Cloud Container Engine (CCE)", "CCE"),
+    "huawei-rds": (
+        DATABASES,
+        15,
+        "Relational Database Service (RDS)",
+        "Relational Database Service",
+    ),
+    "huawei-obs": (STORAGE, 8, "Object Storage Service (OBS)", "Object Storage Service"),
+    "huawei-iam": (
+        MANAGEMENT,
+        7,
+        "Identity and Access Management (IAM)",
+        "Identity and Access Management",
+    ),
+    "huawei-apig": (MIDDLEWARE, 4, "API Gateway (APIG)", "API Gateway"),
+    "huawei-functiongraph": (COMPUTE, 8, "FunctionGraph", "FunctionGraph"),
+    "huawei-vpn": (NETWORKING, 10, "Virtual Private Network (VPN)", "Virtual Private Network"),
+    "huawei-dc": (NETWORKING, 1, "Direct Connect", "Direct Connect"),
+    "huawei-ces": (MANAGEMENT, 2, "Cloud Eye Service (CES)", "Cloud Eye"),
+    "huawei-lts": (MANAGEMENT, 8, "Log Tank Servce (LTS)", "Log Tank Service"),
 }
 
 
@@ -46,47 +87,51 @@ def git_blob(data: bytes) -> str:
     return hashlib.sha1(b"blob %d\0" % len(data) + data, usedforsecurity=False).hexdigest()
 
 
-def entries(source: Path) -> list[dict[str, object]]:
-    raw = source.read_bytes()
-    if digest(raw) != SOURCE_SHA256 or git_blob(raw) != GIT_BLOB:
-        raise SystemExit("The pack differs from the pinned file; review it before changing the pin")
+def library(root: Path, path: str) -> list[dict[str, str]]:
+    raw = (root / path).read_bytes()
+    blob, sha256 = SOURCES[path]
+    if git_blob(raw) != blob or digest(raw) != sha256:
+        raise SystemExit(f"{path} differs from the pinned file; review it before changing the pin")
     match = re.fullmatch(r"\s*<mxlibrary>(.*)</mxlibrary>\s*", raw.decode(), re.DOTALL)
-    assert match
-    rows: list[dict[str, object]] = []
-    for index, entry in enumerate(json.loads(match.group(1))):
-        found = re.fullmatch(r"data:image/png;base64,(.*)", entry["data"], re.DOTALL)
-        assert found, entry["title"]
-        png = base64.b64decode(found.group(1), validate=True)
-        assert png[:8] == PNG_SIGNATURE
-        width, height = struct.unpack(">II", png[16:24])
-        rows.append(
-            {
-                "index": index,
-                "title": entry["title"],
-                "width": width,
-                "height": height,
-                "bytes": len(png),
-                "sha256": digest(png),
-                "png": png,
-            }
-        )
-    return rows
+    assert match, path
+    entries: list[dict[str, str]] = json.loads(match.group(1))
+    return entries
+
+
+def decoded(entry: dict[str, str]) -> bytes:
+    found = re.fullmatch(r"data:image/svg\+xml;base64,(.*)", entry["data"], re.DOTALL)
+    assert found, entry["title"]
+    return base64.b64decode(found.group(1), validate=True)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("source", type=Path)
+    parser.add_argument("root", type=Path, help="Directory holding the pinned color libraries")
     args = parser.parse_args()
-    rows = entries(args.source)
-    by_title = {row["title"]: row for row in rows}
+    libraries = {path: library(args.root, path) for path in SOURCES}
     ASSETS.mkdir(parents=True, exist_ok=True)
+    for stale in [*ASSETS.glob("*.png"), *ASSETS.glob("*.svg")]:
+        stale.unlink()
     records: list[dict[str, object]] = []
-    for asset_id, (title, token, label) in MAPPING.items():
-        row = by_title[title]
-        png = row["png"]
-        assert isinstance(png, bytes)
-        relative = f"assets/huawei/{asset_id.removeprefix('huawei-')}.png"
-        (ASSETS.parent.parent / relative).write_bytes(png)
+    for asset_id, (path, index, title, label) in MAPPING.items():
+        entry = libraries[path][index]
+        assert entry["title"] == title, (asset_id, entry["title"])
+        svg = decoded(entry)
+        base = asset_id.removeprefix("huawei-")
+        (ASSETS / f"{base}.svg").write_bytes(svg)
+        subprocess.run(
+            [
+                "rsvg-convert",
+                "-w",
+                str(PNG_EDGE),
+                "-h",
+                str(PNG_EDGE),
+                "-o",
+                ASSETS / f"{base}.png",
+                ASSETS / f"{base}.svg",
+            ],
+            check=True,
+        )
         records.append(
             {
                 "id": asset_id,
@@ -95,50 +140,57 @@ def main() -> int:
                 "required_label": label,
                 "composition": "direct",
                 "symbols": [title],
-                "title_token": token,
                 "original": [
                     {
                         "name": title,
-                        "sha256": row["sha256"],
-                        "digest_of": "decoded_png",
-                        "entry_index": row["index"],
+                        "sha256": digest(svg),
+                        "digest_of": "decoded_svg",
+                        "entry_index": index,
+                        "source_path": path,
                     }
                 ],
                 "derived": {
-                    "svg": None,
+                    "svg": {"path": f"assets/huawei/{base}.svg", "sha256": digest(svg)},
                     "png": {
-                        "path": relative,
-                        "sha256": row["sha256"],
-                        "width": row["width"],
-                        "height": row["height"],
+                        "path": f"assets/huawei/{base}.png",
+                        "sha256": digest((ASSETS / f"{base}.png").read_bytes()),
+                        "width": PNG_EDGE,
+                        "height": PNG_EDGE,
                     },
                 },
-                "changes": "None; the decoded PNG bytes are kept unchanged",
+                "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it",
             }
         )
     manifest = json.loads(MANIFEST.read_text())
-    kept = [item for item in manifest["assets"] if item["pack"] != PACK]
+    kept = [item for item in manifest["assets"] if not item["pack"].startswith("huawei-")]
     manifest["assets"] = kept + records
     MANIFEST.write_text(json.dumps(manifest, indent=2, ensure_ascii=True) + "\n")
     INVENTORY.write_text(
         json.dumps(
             {
-                "repository": "https://github.com/JuanDiaz00/Huawei-Cloud-draw.io-icons",
+                "repository": "https://github.com/huaweicloud-latam/drawio-libraries",
                 "commit": COMMIT,
-                "source_path": SOURCE_PATH,
-                "git_blob": GIT_BLOB,
-                "source_sha256": SOURCE_SHA256,
-                "format": "image/png, 8-bit RGBA, black on transparent, inside a draw.io mxlibrary",
                 "note": "Metadata only; this file holds no artwork. Listing an entry maps nothing.",
+                "files": [
+                    {"path": path, "git_blob": blob, "sha256": sha256}
+                    for path, (blob, sha256) in SOURCES.items()
+                ],
                 "entries": [
-                    {key: value for key, value in row.items() if key != "png"} for row in rows
+                    {
+                        "file": path,
+                        "index": index,
+                        "title": entry["title"],
+                        "bytes": len(decoded(entry)),
+                        "sha256": digest(decoded(entry)),
+                    }
+                    for path, entries in libraries.items()
+                    for index, entry in enumerate(entries)
                 ],
             },
             indent=1,
         )
         + "\n"
     )
-    subprocess.run(["git", "status", "--short", "--", str(ASSETS)], check=True, cwd=ROOT)
     return 0
 
 

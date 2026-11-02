@@ -139,14 +139,6 @@
           "default": null,
           "title": "Namespaced"
         },
-        "native_aliases": {
-          "default": [],
-          "items": {
-            "type": "string"
-          },
-          "title": "Native Aliases",
-          "type": "array"
-        },
         "native_id": {
           "anyOf": [
             {

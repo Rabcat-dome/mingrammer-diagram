@@ -289,7 +289,7 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - Pinned the pack at `ea52d73`, with hashes matching S02, and inventoried all 155 entries. All are RGBA PNG, 256x256 apart from one 512x512. Measurement showed every image is black line art on transparent, not Huawei's color style.
 - Coverage of the 17 required items: eight mapped (VPC, ECS, ELB, EIP, RDS, IAM, VPN, FunctionGraph), two labeled boundaries (Subnet, Security Group), and seven with no clear match (NAT Gateway, CCE, OBS, API Gateway, Direct Connect, Cloud Eye, LTS), which stay without an icon under new O-010. FunctionGraph goes beyond P-013's seven through Huawei's documented `FGS` code. Tempting guesses such as OBS to `storage-55` now fail the lane.
 - Added `private_use_only` handling: the `Private :: Do Not Upload` classifier, a lane failure on a public repository in Actions, checks that a private pack cannot claim clearance, and two warnings, `ASSET_PRIVATE_USE_ONLY` and the renamed `ICON_UNAVAILABLE`. Requirements revision 0.11 records the scoped exception. Three new sabotage checks failed as intended, and the files were restored.
-- Not done: commit, push and CI for this work, any update to the owner's plugin, owner inspection of the Huawei icons, or the Astra/High review. See the [S06 evidence](evidence/S06-provider-catalogs.md#huawei-cloud-icons-under-d-017).
+- Not done: commit, push and CI for this work, any update to the owner's plugin, owner inspection of the Huawei icons, or the Astra/High review. See the [S06 evidence](evidence/S06-provider-catalogs.md#huawei-cloud-icons-under-d-018).
 
 
 ## 2026-11-02 — S06 owner inspection of on-premises symbols
@@ -301,3 +301,11 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 
 - Confirmed the repository is private, then the owner authorized the commit and push of `9d579f8`. Actual Quality gate [run 41467781802](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41467781802) / job 125353105539 passed all 12 lanes with 514 tests, none skipped and zero annotations, from a clean checkout. The visibility guard read `private`, and the wheel matches the local build's SHA-256 and carries the upload block.
 - Not done: any update to the owner's plugin, which remains on `917f46f`, owner inspection of the Huawei icons, the O-010 decision, or the Astra/High review.
+
+
+## 2026-11-02 — S06 Huawei icons moved to the LATAM library
+
+- The owner chose to extend the private-use decision to the `huaweicloud-latam/drawio-libraries` color group (D-018), closing O-010. This is risk acceptance only: rights are not cleared, and O-002 keeps public distribution blocked. The owner confirmed through the parent session that this set replaces the JuanDiaz00 pack.
+- Pinned commit `52c33aa`, which is both `main` and tag v3.2, with blobs matching S02. All 15 required items that need an icon have an exact title. Subnet and Security Group have no SVG in any of the 15 color libraries, only group definitions. A scan of all 254 SVG entries found no scripts, links or external references. Each SVG is unchanged, and each PNG is derived from it. Subnet and Security Group stay labeled boundaries.
+- Requirements revision 0.12 moves the exception to D-018. The JuanDiaz00 files left `src`, and that pack's images stay in history from `9d579f8`.
+- Not done: commit, push and CI for this work, owner inspection of the Huawei icons, any update to the owner's plugin, or the Astra/High review. See the [S06 evidence](evidence/S06-provider-catalogs.md#huawei-cloud-icons-under-d-018).

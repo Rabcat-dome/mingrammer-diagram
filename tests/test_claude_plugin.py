@@ -199,7 +199,7 @@ def test_skill_discloses_the_huawei_icon_blocker() -> None:
     # A Huawei model validates, so the skill must still state both limits on its icons.
     blockers = capabilities()["release_blockers"]
     assert isinstance(blockers, list)
-    assert [item["id"] for item in blockers] == ["O-002", "O-010"]
+    assert [item["id"] for item in blockers] == ["O-002"]
     skill = (SKILL / "SKILL.md").read_text()
     for term in ("ICON_UNAVAILABLE", "ASSET_PRIVATE_USE_ONLY", "generic", "private personal use"):
         assert term in skill, term

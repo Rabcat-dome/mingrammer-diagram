@@ -1,6 +1,6 @@
 # Cloud Architecture Diagram Plugin Requirements
 
-Document: CADP-REQ-001 | Revision: 0.11 | Updated: 2026-11-02
+Document: CADP-REQ-001 | Revision: 0.12 | Updated: 2026-11-02
 
 Status: Draft baseline with confirmed granularity/style and per-machine local-runtime direction; product implementation and release acceptance remain pending.
 
@@ -210,16 +210,16 @@ Primary semantic references: [components](https://kubernetes.io/docs/concepts/ov
 
 Huawei native service icons are a release objective, not silently replaceable with generic symbols. If rights cannot be established, record a release blocker and discuss a reduced scope explicitly. Do not infer icon rights from the upstream code license. `Custom` supports local assets in the [upstream guide](https://diagrams.mingrammer.com/docs/nodes/custom).
 
-The [S02 source/rights assessment](../project-management/evidence/S02-icon-sources-and-rights.md) identifies a Huawei color-library candidate covering the named minimum inventory, plus on-premises/Kubernetes candidates and gaps. [S06](../project-management/evidence/S06-provider-catalogs.md#huawei-cloud-icons-under-d-017) found a Huawei-operated icon manifest with no license, and site terms that require prior written consent. Huawei rights remain uncleared under O-002. [D-017](../project-management/decisions.md#confirmed-user-direction) accepts the risk for the owner's private personal use only, so a pinned subset is bundled for that use and public distribution stays blocked. The research inventory is not a release asset allowlist. These findings do not change the P0 coverage or licensing requirements.
+The [S02 source/rights assessment](../project-management/evidence/S02-icon-sources-and-rights.md) identifies a Huawei color-library candidate covering the named minimum inventory, plus on-premises/Kubernetes candidates and gaps. [S06](../project-management/evidence/S06-provider-catalogs.md#huawei-cloud-icons-under-d-018) found a Huawei-operated icon manifest with no license, and site terms that require prior written consent. Huawei rights remain uncleared under O-002. [D-018](../project-management/decisions.md#confirmed-user-direction) accepts the risk for the owner's private personal use only, so a pinned subset of this color library is bundled for that use and public distribution stays blocked. The research inventory is not a release asset allowlist. These findings do not change the P0 coverage or licensing requirements.
 
-The [user-supplied Huawei pack follow-up](../project-management/evidence/S02-additional-icon-sources.md#1-huawei-repository-assessment) records a 155-PNG community alternative and its VeryIcon usage claim. D-017 adopts it for the owner's private personal use only, which is not a packaging-rights resolution. Provenance stays recorded under FR-052, and only items its titles clearly name are mapped; [S06](../project-management/evidence/S06-provider-catalogs.md#huawei-cloud-icons-under-d-017) lists the rest under O-010.
+The [user-supplied Huawei pack follow-up](../project-management/evidence/S02-additional-icon-sources.md#1-huawei-repository-assessment) records a 155-PNG community alternative and its VeryIcon usage claim. D-017 first adopted it for the owner's private personal use, and [D-018](../project-management/evidence/S06-provider-catalogs.md#huawei-cloud-icons-under-d-018) replaced it with the color library above. Neither is a packaging-rights resolution, and provenance stays recorded under FR-052.
 
 #### Semantic anchors
 
 - AWS subnets are AZ-scoped: test incompatible subnet/AZ references. [AWS subnet documentation](https://docs.aws.amazon.com/vpc/latest/userguide/configure-subnets.html).
 - Azure administrative ownership and VNet/subnet attachment are separate dimensions. Use regional VNet constraints as documented; verify NIC/resource-group details during M2. [Azure network planning](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-vnet-plan-design-arm).
 - GCP VPC networks are global and subnets are regional; support Shared VPC references without forcing one ownership tree. [GCP VPC documentation](https://docs.cloud.google.com/vpc/docs/vpc).
-- Huawei IAM projects map to one region, while enterprise projects group resources across regions. Authorization scope and location are separate per service, for example on OBS. [S06](../project-management/evidence/S06-provider-catalogs.md) records the verified rules; no universal hierarchy is assumed. Icon rights are not cleared; see D-017.
+- Huawei IAM projects map to one region, while enterprise projects group resources across regions. Authorization scope and location are separate per service, for example on OBS. [S06](../project-management/evidence/S06-provider-catalogs.md) records the verified rules; no universal hierarchy is assumed. Icon rights are not cleared; see D-018.
 - On-premises physical placement, virtualization membership, and logical network/security membership can overlap; test these independently.
 
 ## 7. Non-functional requirements
@@ -229,7 +229,7 @@ The [user-supplied Huawei pack follow-up](../project-management/evidence/S02-add
 | NFR-001 | P0 | Reproduce materially equivalent output from the same input and pinned runtime/catalog/assets/fonts. Normalize generated IDs/timestamps for structural comparison; byte-identical images across platforms are not promised. |
 | NFR-002 | P0 | No arbitrary code, dynamic imports from input, shell interpolation, remote assets, or uncontrolled Graphviz options. Render with network access disabled where the selected runtime permits. |
 | NFR-003 | P0 | Confine input/output/assets to controlled roots; reject traversal, symlink escapes, unsafe URLs, and output collisions. Validate exported SVG for scripts, external references, and unsafe links. |
-| NFR-004 | P0 | Ship license/attribution inventory for dependencies and external visual assets. Unknown redistribution rights block packaging of that asset. D-017 is a scoped exception for the owner's private personal use; public distribution stays blocked. |
+| NFR-004 | P0 | Ship license/attribution inventory for dependencies and external visual assets. Unknown redistribution rights block packaging of that asset. D-018 is a scoped exception for the owner's private personal use; public distribution stays blocked. |
 | NFR-005 | P0 | Machine-readable diagnostics include severity, stable code, entity/field reference, message, and remedy. |
 | NFR-006 | P0 | Never silently omit requested security components or hide invalid semantics through layout/fallback behavior. |
 | NFR-007 | P1 | Benchmark small (<=30 nodes/50 edges) and medium (<=100/150) fixtures with target render times of <5 s and <15 s; record p50/p95, cold/warm runs, fonts, versions, and reference machine before setting a release threshold. |
@@ -251,7 +251,7 @@ All P0 requirements must pass, including those not repeated below. Attach requir
 | T-001 AWS three-tier | SVG/PNG, valid subnet/AZ mapping, multi-subnet ALB representation verified against its product rules, requested security/monitoring retained | M4 |
 | T-002 Azure hub/spoke | Ownership vs attachment preserved, explicit peering/VPN, supplied firewall/NSG shown | M4 |
 | T-003 GCP Shared VPC | Global network/regional subnets, host/service-project references and workload placement validated | M4 |
-| T-004 Huawei web app | ECS/ELB/VPC/subnet/RDS/OBS diagram; every required Huawei catalog item resolves with approved icon evidence, which D-017 limits to private personal use. O-010 items have none yet | M4 |
+| T-004 Huawei web app | ECS/ELB/VPC/subnet/RDS/OBS diagram; every required Huawei catalog item resolves with approved icon evidence, which D-018 limits to private personal use | M4 |
 | T-005 On-premises | Separate physical and logical views; rack, VLAN/VRF, security zone, and compute memberships retained | M4 |
 | T-006 Five-environment hybrid | All five environment types present; only explicitly modeled connectivity shown, trust/link labels visible | M4 |
 | T-007 Unknown type | Strict failure; lenient generic fallback warning and draft marking; no provider substitution | M3 |

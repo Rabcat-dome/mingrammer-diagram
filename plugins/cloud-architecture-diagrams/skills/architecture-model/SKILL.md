@@ -21,9 +21,9 @@ If the user asks for a picture, say this version cannot render one and offer the
 
 ### Huawei Cloud icons
 
-Some Huawei Cloud services have icons that the owner accepted for private personal use only. Their rights are not cleared, so any model using them returns one `ASSET_PRIVATE_USE_ONLY` warning. Report it, and do not suggest publishing the output.
+Huawei Cloud service icons are accepted by the owner for private personal use only. Their rights are not cleared, so any model using them returns one `ASSET_PRIVATE_USE_ONLY` warning. Report it, and do not suggest publishing the output or sharing it outside private use.
 
-Other Huawei services have no icon, because nothing in that pack clearly matches them, and each such type returns an `ICON_UNAVAILABLE` warning. Huawei models still validate fully. Keep the native service name, and never propose a generic symbol or an icon pack found elsewhere as a stand-in.
+If a type returns `ICON_UNAVAILABLE`, it has no usable icon. Keep its native service name, and never propose a generic symbol or an icon pack found elsewhere as a stand-in.
 
 ## Workflow
 

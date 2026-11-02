@@ -524,6 +524,19 @@
    ]
   },
   {
+   "url": "https://github.com/huaweicloud-latam/drawio-libraries/blob/52c33aa12fb816a5de403da85067e1c0f039b5be/README.md",
+   "http_status": 200,
+   "text_sha256": "e5fe3c13d0f75ea9116b900acfca98f0b34f97ec50a26992b376bd3ded4d3c51",
+   "characters": 4122,
+   "claims": [
+    {
+     "claim": "The color group holds the icons seen in the console and product pages",
+     "pattern": "icons you see in the Console and in the product pages",
+     "matched": true
+    }
+   ]
+  },
+  {
    "url": "https://github.com/jgraph/drawio/blob/3e707fd20b6930778d6f6bf6e4d0079b4bce366b/README.md",
    "http_status": 200,
    "text_sha256": "78e85c4cacb33f2a8680b62b5af09eb5c64162ce846d3ae8eff904fa1ff642ff",
