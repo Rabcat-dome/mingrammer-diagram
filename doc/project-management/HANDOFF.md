@@ -6,7 +6,7 @@ Updated: 2026-11-03 | S01-S07 complete. M2 closed on 2026-11-03 for the private 
 
 Personal ChatGPT Work-first plugin on mingrammer/diagrams + Graphviz for AWS/Azure/GCP/Huawei/on-premises, with detailed Kubernetes and provider-reference visuals. Claude Code acceptance is later; D-015 started its preparation early. Keep English docs and one [requirements baseline v0.12](../requirements/requirements.md).
 
-Branch: `codex/s05-core-quality-gate`. M1 executable/workflow source reviewed and CI-tested at `785e1eecb646476691859f14dd4399ac564011ca`, milestone base `ff53a88944e981be2bbbab171e0ccf8cecdb4e41`. Later closure commits are docs/evidence only. M7 preparation is on `codex/m7-claude-plugin`, stacked on the S05 head; its prefix keeps the existing workflow trigger. S06 branched from `c6a59e5` on `codex/m7-claude-plugin`, so it inherits the S05 core and the gate, which now has 12 lanes. The CI-tested S06 code head is `5f391eb`, including the F1-F5, N1 and N5 fixes and the owner's D-016 to D-020. S04, S05, M7 and S06 were fast-forwarded into `main` in that order on 2026-11-03. Their branches remain. Verify HEAD and the latest CI before resuming.
+Branch: `codex/s05-core-quality-gate`. M1 executable/workflow source reviewed and CI-tested at `785e1eecb646476691859f14dd4399ac564011ca`, milestone base `ff53a88944e981be2bbbab171e0ccf8cecdb4e41`. Later closure commits are docs/evidence only. M7 preparation is on `codex/m7-claude-plugin`, stacked on the S05 head; its prefix keeps the existing workflow trigger. S06 branched from `c6a59e5` on `codex/m7-claude-plugin`, so it inherits the S05 core and the gate, which now has 12 lanes. The CI-tested S06 code head is `5f391eb`, including the F1-F5, N1 and N5 fixes and the owner's D-016 to D-020. S04, S05, M7 and S06 were fast-forwarded into `main` in that order on 2026-11-03. S07 followed after M3 closed: `main` had two record commits it lacked, so merge commit `7c461b7` joined them, keeping every recorded SHA, and passes actual CI [run 41600668220](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41600668220). `main` then fast-forwarded to the S07 head. Every branch remains. Verify HEAD and the latest CI before resuming.
 
 D-013/D-014 select per-machine native Python/Graphviz in the separate ChatGPT Work page. Docker, central hosting, public renderer and renderer/model API keys are unnecessary. S04's installed alpha.3 three-node plugin remains separate from M1 core package 0.2.0a1; this activity did not upgrade that plugin/runtime.
 
@@ -39,7 +39,7 @@ Core changes reach the plugin through symlinks, so no copy step exists, and Clau
 
 1. M2 is closed. Its deferred P3 findings, N2-N4, are in the [Fable review](evidence/S06-fable-review.md#follow-up-n1-fix-and-deferrals). The [Fable review](evidence/M7-fable-review.md) now covers the earlier M7 Medium/Low fixes and leaves three P3 findings open.
 2. The owner passed one Kubernetes sample in S07. The full set of Kubernetes representations has not been shown to them, and M4 inspects it.
-3. Update the owner's installed plugin only if asked. It follows `main` and holds `3d235fa`, which has the S06 work but not the renderer.
+3. Update the owner's installed plugin only if asked. It follows `main` and holds `3d235fa`, which has the S06 work but not the renderer that `main` now has. The plugin README's update commands bring it in.
 4. M3 is closed under D-022, and the [Fable review](evidence/S07-fable-review.md) leaves five P3 findings open. S08 / M4 reference diagrams come next. M5 full Work plugin and M6 two-machine release acceptance remain open.
 
 ## Resume prompt
@@ -52,7 +52,7 @@ it does not clear their rights.
 
 S07 / M3 is closed under D-022, with code at c8fc687. Its five P3 findings stay open.
 S08 / M4 is next: read M4 in milestones.md and the core contract's Controlled
-rendering section. Use a codex/ branch; keep docs English.
+rendering section. Branch from main with a codex/ prefix; keep docs English.
 Huawei source availability is not redistribution permission: keep public
 distribution blocked under O-002, and draw no silent generic substitute for a
 type without an icon. Keep S04 alpha.3 and existing runner registrations

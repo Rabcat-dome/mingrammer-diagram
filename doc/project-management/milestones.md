@@ -64,7 +64,7 @@ Exit: all five hosting inventories and the shared Kubernetes detail catalog meet
 
 ## M3 — Controlled rendering vertical slice
 
-Status: Complete on 2026-11-03 under D-022, with code at `c8fc687`. [Evidence](evidence/S07-controlled-rendering.md) records actual CI [run 41539921034](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41539921034) passing at `cddb497`. Under D-021, [Fable/High requested changes](evidence/S07-fable-review.md) on three P2 findings and approved their fixes at `c8fc687`, which passes actual CI [run 41589907300](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41589907300). Five P3 findings stay open, and the owner passed three samples of the first output. Planned implementation: Sol/High; actual implementation: Claude Opus 5.5 (`claude-opus-5-5`), the model of the session that ran S07. Review: Fable/High.
+Status: Complete on 2026-11-03 under D-022, with code at `c8fc687`, and merged into `main`. [Evidence](evidence/S07-controlled-rendering.md) records actual CI [run 41539921034](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41539921034) passing at `cddb497`. Under D-021, [Fable/High requested changes](evidence/S07-fable-review.md) on three P2 findings and approved their fixes at `c8fc687`, which passes actual CI [run 41589907300](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41589907300). Five P3 findings stay open, and the owner passed three samples of the first output. Planned implementation: Sol/High; actual implementation: Claude Opus 5.5 (`claude-opus-5-5`), the model of the session that ran S07. Review: Fable/High.
 
 | Task | Work | Dependency / output |
 |---|---|---|

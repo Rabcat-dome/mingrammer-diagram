@@ -442,3 +442,9 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - The owner passed the three S07 samples and said to go on, so D-022 closes M3. The samples were drawn at `cddb497` and match core `0.4.0a4` byte for byte.
 - The lock and wheel routes ran again from outside the checkout at `0.4.0a4`. Both give identical SVG and PNG bytes, and the wheel matches actual CI at `c8fc687`.
 - Five M3 P3 findings stay open. The acceptance covers those three images, so T-014, T-016, T-017 and the owner's M4 and M6 inspections remain. M7 stays open.
+
+## 2026-11-03 — S07 merged into main
+
+- At the owner's standing request to merge finished work in stages, Claude Opus 5.5 merged `main` into the S07 branch, because `main` had two record commits it lacked. Rebasing would have changed the SHAs the records name. Only the activity log and the handoff conflicted.
+- Merge commit `7c461b7` passes 14 lanes and 985 tests locally and in actual CI [run 41600668220](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41600668220), with the wheel unchanged. `main` then fast-forwarded to the S07 head, and no branch was deleted.
+- The owner's install still holds `3d235fa`, so it has no renderer until the plugin README's update commands run. The repository stays private.

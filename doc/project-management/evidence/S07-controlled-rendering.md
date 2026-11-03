@@ -165,7 +165,7 @@ These would have shipped had the build trusted exit codes and upstream defaults.
 - **T-009's M5 part remains**, as does T-012's measured evaluation under M4-04. The 200 and 300 view limits come from the S04 sizes and this session's timing.
 - **FR-044** PDF and DOT exports are not implemented. They are P1.
 - `reports/render-smoke` holds bundles showing Huawei icons, and CI uploads `reports/` as a private artifact for 14 days. The wheel in that artifact already contains those icons, so this adds no new class of exposure, and the `catalog-license` lane still fails on a public repository.
-- S07 did not change the owner's installed plugin. S04 alpha.3 and the runner registrations are unchanged. This branch is not merged, and nothing is released.
+- S07 did not change the owner's installed plugin. S04 alpha.3 and the runner registrations are unchanged. The branch merged into `main` after M3 closed, through merge commit `7c461b7`, which passes actual CI [run 41600668220](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41600668220). Nothing is released.
 
 ## Decisions for the owner
 
