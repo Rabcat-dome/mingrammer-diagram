@@ -1757,6 +1757,8 @@ def test_skill_keeps_the_rules_a_live_session_depends_on(skill: str) -> None:
         "`JSON.parse`",
         "`result.setup_command`",
         "as a Markdown image",
+        # Measured on both hosts' sessions: without this, regions and zones draw as loose boxes.
+        "the guide's section on choosing what a view selects",
         "On any other status there is no `content[1]`",
         "Only setup reaches the network",
         "`result.runtime.render_probe.passed`",

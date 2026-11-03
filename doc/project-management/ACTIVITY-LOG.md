@@ -487,6 +487,11 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - At the owner's standing request to merge finished work in stages, `main` fast-forwards to this branch once this commit passes CI. It keeps every recorded SHA, and no branch is deleted.
 - Open: four M4, four M3 and three M7 P3 findings, a second machine, and M5, M6 and M7. The owner's installed plugin holds `02dc709`, so it gets the skill correction and the new rendering through the README's update commands.
 
+## 2026-11-03 — View guidance in the skill
+
+- A live session on the owner's install rendered, but with region and zone as loose boxes, because the skill did not say what each `grouping` can draw. The owner asked to fix it. The model guide now has a section on choosing what a view selects, with tests tied to the mapper, and stale lines saying visual work comes later are gone.
+- Six new headless sessions rendered with no loose region or zone box. The first three showed attempts to write the model inside the plugin folder, so the skill now forbids that and asks for a relative path. CI passed at `ccdd73a` ([run 41672108207](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41672108207), 15 lanes and 1,255 tests), and a fresh Claude Fable 5.1 / Medium agent approved it with three P3 findings, which are addressed. `main` fast-forwards to this once CI passes. See the [M7 evidence](evidence/M7-claude-plugin.md).
+
 ## 2026-11-04 — S09 builds the Work plugin
 
 - `plugins/cloud-architecture-work` adds the Work adapter, its runtime handling, the skill and a versioned build, on `codex/s09-work-plugin`. Nothing is merged, and the owner's profile, the S04 fixture and the Claude plugin's install are unchanged.
