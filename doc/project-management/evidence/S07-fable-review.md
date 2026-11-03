@@ -2,7 +2,9 @@
 
 Date: 2026-11-03 (Asia/Bangkok). Reviewer: Claude Fable 5.1 (`claude-fable-5-1`) / High, in a fresh agent with no prior project context, started from the owner's Claude Opus 5.5 session. This is the M3 review under [D-021](../decisions.md#confirmed-user-direction). Claude Opus 5.5 wrote the renderer, so reviewer and implementer share a vendor.
 
-**Disposition at `6353ef1`: changes requested, on three P2 findings, all in output-size handling.** There are no P0 or P1 findings, and five more are P3. The P2 findings now have [fixes](#fixes). Their [re-review](#re-review-at-93b7d11) found a regression, and the [recheck](#recheck-at-e4d9761) of that fix found the PNG could still shrink out of reading. Both are fixed, and the last change needs a final recheck. M3 stays open until that passes and the owner has inspected the output.
+**Final disposition: the P2 fixes are approved at `c8fc687`; see the [final recheck](#final-recheck-at-c8fc687). Five P3 findings stay open, and M3 stays open for the owner's inspection of the output.** The sections before it are the record at each commit.
+
+**Disposition at `6353ef1`: changes requested, on three P2 findings, all in output-size handling.** There are no P0 or P1 findings, and five more are P3. The P2 findings now have [fixes](#fixes). Their [re-review](#re-review-at-93b7d11) found a regression, and the [recheck](#recheck-at-e4d9761) of that fix found the PNG could still shrink out of reading. Both are fixed.
 
 ## Identity and scope
 
@@ -166,13 +168,40 @@ The same reviewer checked `93b7d11..e4d9761` and confirmed R-P1, R-P2 and R-P3 f
 
 The local gate passes 14 lanes and 985 tests with none skipped. Removing the floor, taking its code out of the request codes, and dropping the code from the skill each fail one test.
 
+## Final recheck at `c8fc687`
+
+The same reviewer checked `e4d9761..c8fc687` and **approved** it, with no new finding. In its view the series `0b30b02..c8fc687` can stand as M3's and M7's disposition of the P2 findings, with the P3 findings left open.
+
+| View through the real CLI | Scale without the floor | Result |
+|---|---|---|
+| 197 resources, 256-character names, no groups | 0.323 | Exit 2, `RENDER_PNG_SCALE_LIMIT` |
+| 197 resources, 120-character names, no groups | 0.448 | Exit 2, `RENDER_PNG_SCALE_LIMIT` |
+| 197 resources, 84-character names, no groups | About 0.496 | Exit 2, `RENDER_PNG_SCALE_LIMIT` |
+| 197 resources, 78-character names, no groups | 0.527 | Exit 0, warning |
+| 197 resources, ordinary names, with groups | 0.608 | Exit 0, warning |
+| 150 / 225, labeled | 1.0 | Exit 0, no warning |
+
+The boundary moves in label-wrap steps. Wide chains of 197 icons without groups publish at 0.895 and 0.785, and in that direction the pixel limit refuses a view before the floor can. The floor reads the unrounded scale, and the shape comparison runs before it, so a mis-shaped PNG still fails as an engine fault. The reviewer's three sabotage spot-checks matched the record, and its full gate passed.
+
+The reviewer notes one cost for the owner: a refused view publishes no SVG either, so no SVG-only route is offered. The manifest's `limits` block also gained a key inside version 1.1.0, which is additive and unreleased.
+
+Not run by the reviewer: a second machine and the P3 findings. It did not repeat the 111 to 200 scan, since this diff cannot change scales above 0.5. A view with both sides over 32767 pixels was never run in any pass, because Cairo's bitmap was too slow on this Mac.
+
+All three fix commits passed actual CI from a clean checkout on the runner, which is this same Mac, with 14 lanes, none skipped, zero annotations on the last two, and a wheel matching the local build:
+
+| Commit | Run | Tests | Wheel SHA-256 |
+|---|---|---|---|
+| `93b7d11` | [41585566124](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41585566124) | 971 | `64084f39...` |
+| `e4d9761` | [41588488835](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41588488835) | 984 | `b406125e...` |
+| `c8fc687` | [41589907300](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41589907300) | 985 | `a174e651...` |
+
 ## Disposition
 
 | Finding | State |
 |---|---|
 | P2-1, P2-2 | Fixed in core `0.4.0a2`; the re-review confirms both |
 | P2-3, R-P1, R-P2, R-P3 | Fixed in core `0.4.0a3`; the recheck confirms them |
-| R2-P2 | Fixed in core `0.4.0a4`; final recheck pending |
+| R2-P2 | Fixed in core `0.4.0a4`; the final recheck approves it |
 | P3-1 to P3-5 | Open for the owner; not fixed |
 
-A fix needs another review of the changed code. This approves nothing beyond what it states, and it does not replace the owner's inspection of the output.
+The model strategy lets P3 findings wait, so they do not block M3 unless the owner wants them fixed. This approves nothing beyond what it states, and it does not replace the owner's inspection of the output.

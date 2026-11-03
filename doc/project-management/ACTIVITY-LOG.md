@@ -416,3 +416,9 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - CI passed at `e4d9761` ([run 41588488835](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41588488835), 14 lanes and 984 tests, with the wheel matching the local build). The same Fable/High reviewer confirmed the regression fixed, and requested changes on one P2.
 - That P2 corrects this session's record: "0.487, the lowest seen" came from views with groups, and a view without them published at 0.323, 80 pixels wide. Claude Opus 5.5 reran it through the real CLI.
 - Core `0.4.0a4` refuses a PNG below half size with `RENDER_PNG_SCALE_LIMIT`, exit 2, as the reviewer recommended. P-028 records it, and the owner can change the floor. See the [recheck](evidence/S07-fable-review.md#recheck-at-e4d9761).
+
+## 2026-11-03 — Fable approves the P2 fixes
+
+- CI passed at `c8fc687` ([run 41589907300](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41589907300), 14 lanes and 985 tests, with the wheel matching the local build), and the same Fable/High reviewer approved `e4d9761..c8fc687`. In its view `0b30b02..c8fc687` can stand as M3's and M7's disposition of the P2 findings.
+- Five M3 and three M7 P3 findings stay open. M3 still needs the owner's inspection of the output, and M7 still needs a second machine and interactive permission prompts.
+- This branch is not merged, so the owner's plugin on `main` has none of this. The review worktree was removed.

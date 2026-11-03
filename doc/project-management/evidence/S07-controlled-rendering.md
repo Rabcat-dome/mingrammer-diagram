@@ -2,7 +2,7 @@
 
 Date: 2026-11-03 | Tasks: M3-01..04 | Branch: `codex/s07-controlled-rendering`, from `f3f0789` | Package: `0.4.0a1` at `cddb497`, then `0.4.0a4` with the [review fixes](S07-fable-review.md#fixes) | Code head: `cddb497` for everything below unless stated
 
-**Result: the renderer is implemented and passes all 14 lanes and 959 tests locally and in [actual CI](#actual-ci) at `cddb497`. M3 is not closed.** [Fable/High requested changes](S07-fable-review.md) on three P2 findings, and the owner has not inspected the output. The contract is in the [core contract](../../design/core-contract.md#controlled-rendering).
+**Result: the renderer is implemented and passes all 14 lanes and 959 tests locally and in [actual CI](#actual-ci) at `cddb497`. M3 is not closed.** [Fable/High requested changes](S07-fable-review.md) on three P2 findings and approved their fixes at `c8fc687`, which passes 985 tests in actual CI [run 41589907300](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41589907300). The owner has not inspected the output. The contract is in the [core contract](../../design/core-contract.md#controlled-rendering).
 
 ## Task status
 
@@ -22,7 +22,7 @@ Date: 2026-11-03 | Tasks: M3-01..04 | Branch: `codex/s07-controlled-rendering`, 
 | Usable SVG and PNG with a complete bundle | Met in tests; a tall or wide layout's shrunken PNG is now disclosed, and refused below half size ([P2-3](S07-fable-review.md#p2-3-a-tall-or-wide-layout-publishes-a-downscaled-png-as-complete)); owner inspection pending | All 19 views of the existing fixtures render, together reaching all 148 catalog types. The SVG's content is checked against the graph, and the PNG structurally. This session inspected samples; see [inspection](#inspection) |
 | Required security tests pass | Met | `render-security` covers path, symlink, isolation, timeout, code, Graphviz and SVG injection and resource limits; see [validation](#validation) |
 
-M3 also needs the disposition of the [Fable/High review](S07-fable-review.md) under D-021. It requests changes, and its findings are open.
+The [Fable/High review](S07-fable-review.md) under D-021 approved the fixes for its P2 findings at `c8fc687`, and five P3 findings stay open. M3 still needs the owner's inspection.
 
 ## Validation
 
@@ -168,16 +168,17 @@ These would have shipped had the build trusted exit codes and upstream defaults.
 The session plan lists the owner's inspection of the first output. These proposals are recorded in [decisions](../decisions.md) and take effect until changed:
 
 - P-025: a `blocked` type refuses to render rather than drawing a text-only box. No type is blocked today.
-- P-026: HTML-like label text is drawn literally, not rejected.
+- P-026: HTML-like label text is drawn literally, not rejected. The review agrees.
+- P-028: a PNG below half size refuses the render, and no SVG publishes either. Between half and full size the PNG publishes with a warning.
 
 ## Model and review
 
 Implementation used **Claude Opus 5.5 (`claude-opus-5-5`)**, the model of the session started for S07. The project policy names Sol/High for this milestone, so this is a recorded substitution, and no model setting changed.
 
-Under D-021, Claude Fable 5.1 / High [reviewed `f3f0789..cddb497`](S07-fable-review.md) in a fresh agent and **requested changes on three P2 findings**. It shares a vendor with the implementing model. Sabotage checks and self-review in the implementing session are not a review.
+Under D-021, Claude Fable 5.1 / High [reviewed `f3f0789..cddb497`](S07-fable-review.md) in a fresh agent and **requested changes on three P2 findings**. It approved their fixes at `c8fc687`, after a re-review found a regression and a recheck found a false claim in this project's record. It shares a vendor with the implementing model. Sabotage checks and self-review in the implementing session are not a review.
 
 ## Next steps
 
-1. Dispose of the [review's findings](S07-fable-review.md) and re-review any fixes.
-2. The owner inspects representative output and settles the presentation choices above.
-3. Close M3 only after those. M4 then builds reference scenarios on this renderer.
+1. The owner inspects representative output and settles the presentation choices above.
+2. Close M3 after that. The [review's](S07-fable-review.md) five P3 findings stay open unless the owner wants them fixed first.
+3. M4 then builds reference scenarios on this renderer.
