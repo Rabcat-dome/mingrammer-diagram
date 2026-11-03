@@ -845,12 +845,6 @@ def test_stopping_during_setup_records_no_false_cause(
     assert "RUNTIME_INSTALLING" in {item["code"] for item in report["blockers"]}
     assert "RUNTIME_NOT_READY" not in {item["code"] for item in report["blockers"]}
     assert server.body("validate_model", model={})["code"] == "RUNTIME_INSTALLING"
-    # A client's request ID cannot name setup, however it is spelled.
-    server.send(
-        {"jsonrpc": "2.0", "method": "notifications/cancelled", "params": {"requestId": "setup"}}
-    )
-    assert server.request("ping")["result"] == {}
-    assert not pid_stopped(pid)
     assert server.close() == 0
     wait_until_stopped(pid)
     assert not (tmp_path / "data/setup-failure.json").exists()
@@ -859,6 +853,35 @@ def test_stopping_during_setup_records_no_false_cause(
     assert state == {"state": "not_installed"}
     assert next_chat.body("validate_model", model={})["code"] == "RUNTIME_NOT_READY"
     next_chat.close()
+
+
+def test_a_client_request_id_cannot_cancel_setup(
+    installed: Path, home: dict[str, str], tmp_path: Path
+) -> None:
+    # A call in flight under the ID "setup", cancelled while real setup runs, stops only that call.
+    copy, environment = fake_uv(installed, home, tmp_path)
+    write_stand_in(copy)
+    environment["CLOUD_ARCHITECTURE_WORK_DATA"] = home["CLOUD_ARCHITECTURE_WORK_DATA"]
+    server = Client(copy, environment)
+    server.send(
+        {
+            "jsonrpc": "2.0",
+            "id": "setup",
+            "method": "tools/call",
+            "params": {"name": "render_model", "arguments": {"model": behaving("sleep")}},
+        }
+    )
+    render = wait_for_file(Path(home["HOME"]) / "stand-in.pid")
+    assert server.body("setup_runtime")["result"]["started"] is True
+    setup = wait_for_file(Path(home["HOME"]) / "uv.pid")
+    server.send(
+        {"jsonrpc": "2.0", "method": "notifications/cancelled", "params": {"requestId": "setup"}}
+    )
+    wait_until_stopped(render)
+    assert server.request("ping")["result"] == {}
+    assert not pid_stopped(setup)
+    assert server.close() == 0
+    wait_until_stopped(setup)
 
 
 def test_stopping_during_the_setup_probe_writes_no_marker(

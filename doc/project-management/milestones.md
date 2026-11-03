@@ -91,7 +91,7 @@ Exit: six reference scenario families and their required Kubernetes detail subvi
 
 ## M5 — ChatGPT Work integration
 
-Status: **Open.** M5-01..03 are built on `codex/s09-work-plugin`, and M5-04's automated part passes through the host's real engine. See the [S09 evidence](evidence/S09-work-plugin.md). M5-04 itself needs the owner's run in an actual Work session, recorded in the [Work check](evidence/S09-Work-validation.md), so M5 cannot close before they answer. Planned implementation: Sol/High for local adapter/isolation, Sol/Medium for skill/docs; actual: Claude Opus 5.5. Review: Fable/High.
+Status: **Open.** M5-01..03 are built on `codex/s09-work-plugin`, and M5-04's automated part passes through the host's real engine. See the [S09 evidence](evidence/S09-work-plugin.md). [Fable/High approved](evidence/S09-fable-review.md) the code at `82f14e0`, which passes actual CI [run 41691896306](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41691896306). M5-04 itself needs the owner's run in an actual Work session, recorded in the [Work check](evidence/S09-Work-validation.md), so M5 cannot close before they answer. Planned implementation: Sol/High for local adapter/isolation, Sol/Medium for skill/docs; actual: Claude Opus 5.5. Review: Fable/High.
 
 | Task | Work | Dependency / output |
 |---|---|---|

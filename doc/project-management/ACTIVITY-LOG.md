@@ -492,5 +492,6 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - `plugins/cloud-architecture-work` adds the Work adapter, its runtime handling, the skill and a versioned build, on `codex/s09-work-plugin`. Nothing is merged, and the owner's profile, the S04 fixture and the Claude plugin's install are unchanged.
 - Host behavior was measured with a throwaway profile, then driven through the host's own client and agent with `scripts/work_host_check.py`, using no account and no model. A live Sonnet session rehearsed the skill.
 - Measuring changed the design: the host drops symbolic links, reaches tools through JavaScript, and hangs on a 16 MiB result. Rehearsal found the catalog has no AWS WAF, so the owner's check uses S3.
-- Sabotage caught 26 of 27 changes, and the one it missed led to a better test. A separate finding: the lint lane had been skipping the adapter while passing.
-- **M5 stays open.** Open: Fable/High review, actual CI on the final commit, and the owner's run in Work.
+- Sabotage caught 26 of 27 changes and later 31 of 32, and each miss led to a better test. A separate finding: the lint lane had been skipping the adapter while passing.
+- [Fable/High](evidence/S09-fable-review.md) requested changes on two P2 findings, both reproduced: `prune --apply` crashed on Apple's Python 3.9, and stopping setup recorded a false cause. It approved `82f14e0` after the fixes, which passes actual CI [run 41691896306](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41691896306). Three P3 findings stay open.
+- **M5 stays open** until the owner has run the [Work check](evidence/S09-Work-validation.md).

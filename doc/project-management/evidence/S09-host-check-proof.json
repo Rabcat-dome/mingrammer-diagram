@@ -6,7 +6,7 @@
     {
       "check": "install keeps every built file, byte for byte",
       "passed": true,
-      "version": "0.1.0-alpha.1+094f55bed664",
+      "version": "0.1.0-alpha.1+7ef5b5f31668",
       "files": 97,
       "extra_in_cache": []
     },
@@ -40,7 +40,7 @@
         "setup_runtime",
         "validate_model"
       ],
-      "server_version": "0.1.0-alpha.1+094f55bed664"
+      "server_version": "0.1.0-alpha.1+7ef5b5f31668"
     },
     {
       "check": "a fresh machine reports not_installed and the version",
@@ -69,7 +69,7 @@
         {
           "name": "output_root",
           "ok": true,
-          "detail": "<scratch>/s09-host-tsc_ohkg/home/Documents/CloudArchitectureDiagrams/work"
+          "detail": "<scratch>/s09-host-qexano1g/home/Documents/CloudArchitectureDiagrams/work"
         }
       ],
       "server_python": "3.13.7"
@@ -81,11 +81,11 @@
     {
       "check": "first setup from an empty uv cache finishes and can render",
       "passed": true,
-      "seconds": 4.4,
+      "seconds": 2.3,
       "runtime": {
         "state": "ready",
-        "environment": "<scratch>/s09-host-tsc_ohkg/home/.local/share/cloud-architecture-diagrams/work-plugin/env-7df586841f346fac",
-        "core_version": "0.5.0a1",
+        "environment": "<scratch>/s09-host-qexano1g/home/.local/share/cloud-architecture-diagrams/work-plugin/env-7df586841f346fac",
+        "probed_with": "0.1.0-alpha.1+7ef5b5f31668",
         "python": "3.13.7",
         "render_probe": {
           "passed": true
@@ -110,7 +110,7 @@
       "check": "render publishes a bundle with an inline PNG",
       "passed": true,
       "seconds": 0.71,
-      "bundle_id": "aws-three-tier-reference--overview--ceeff3df3f994d62",
+      "bundle_id": "aws-three-tier-reference--overview--46b204ec50a99ae9",
       "content": [
         "text",
         "image"
@@ -253,5 +253,6 @@
       "check": "uninstall leaves no install and no config entry",
       "passed": true
     }
-  ]
+  ],
+  "commit": "82f14e0"
 }
