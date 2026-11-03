@@ -30,13 +30,13 @@ def main() -> int:
     runtime = Runtime(ROOT)
     try:
         return run(args, runtime)
-    except artifacts.ArtifactError:
+    except (artifacts.ArtifactError, OSError):
         print(
             json.dumps(
                 {
                     "code": "OUTPUT_ROOT_UNAVAILABLE",
-                    "message": f"{runtime.output} cannot be read safely, so nothing was done.",
-                    "remedy": "Keep symbolic links out of its path, and let this process read it.",
+                    "message": f"{runtime.output} could not be read or changed, so this stopped.",
+                    "remedy": "Keep symbolic links out of its path, and let this process write to it.",
                 },
                 indent=2,
             )

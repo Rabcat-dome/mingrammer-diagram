@@ -338,6 +338,28 @@ def test_changing_any_file_changes_the_version(tmp_path: Path) -> None:
     assert module.content_digest(original) != module.content_digest(renamed)
 
 
+def test_the_build_runs_on_the_oldest_python_and_gives_the_same_package(
+    tmp_path: Path, built: dict[str, Any]
+) -> None:
+    # The README's install command runs on whatever `python3` the machine has.
+    output = tmp_path.resolve() / "apple"
+    done = subprocess.run(
+        [
+            APPLE_PYTHON,
+            "-I",
+            "-B",
+            str(ROOT / "scripts/build_work_plugin.py"),
+            "--output",
+            str(output),
+        ],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert done.returncode == 0, done.stderr
+    assert json.loads(done.stdout)["archive_sha256"] == built["archive_sha256"]
+
+
 def test_the_same_source_builds_the_same_archive(tmp_path: Path, built: dict[str, Any]) -> None:
     again = builder().build(tmp_path.resolve() / "again")
     assert again["archive_sha256"] == built["archive_sha256"]
@@ -1331,6 +1353,35 @@ def test_prune_reports_first_and_removes_only_old_bundles(
     assert json.loads(applied.stdout) == {"removed": [old], "applied": True}
     assert not old_folder.exists()
     assert new_folder.is_dir() and keep.is_dir() and outside.is_dir()
+
+
+def test_prune_that_cannot_finish_reports_it_rather_than_a_traceback(
+    client: Client, home: dict[str, str], installed: Path
+) -> None:
+    _, folder = rendered_bundle(client, home)
+    os.utime(folder, (time.time() - 30 * 86400, time.time() - 30 * 86400))
+    folder.chmod(0o500)
+    try:
+        done = subprocess.run(
+            [
+                APPLE_PYTHON,
+                "-I",
+                "-B",
+                str(installed / "scripts/runtime.py"),
+                "prune",
+                "--older-than-days",
+                "7",
+                "--apply",
+            ],
+            env=home,
+            capture_output=True,
+            check=False,
+        )
+    finally:
+        folder.chmod(0o700)
+    assert done.returncode == 1
+    assert json.loads(done.stdout)["code"] == "OUTPUT_ROOT_UNAVAILABLE"
+    assert b"Traceback" not in done.stderr
 
 
 # Failure mapping, against a stand-in core that misbehaves on request.

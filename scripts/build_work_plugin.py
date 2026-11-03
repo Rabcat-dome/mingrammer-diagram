@@ -1,5 +1,8 @@
 """Build the installable Work plugin: real files only, because the host drops symbolic links."""
 
+# The README runs this with `python3`, which on a new Mac is Apple's 3.9.
+from __future__ import annotations
+
 import argparse
 import hashlib
 import json
