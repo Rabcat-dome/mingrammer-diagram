@@ -71,6 +71,10 @@ MESSAGES = {
         "The PNG was shrunk to fit the raster side limit, so its text is smaller than in the SVG.",
         "Use diagram.svg for full size, or split the view into smaller views.",
     ),
+    "RENDER_PNG_SCALE_LIMIT": (
+        "The PNG would need to shrink below half size, which leaves its text unreadable.",
+        "Split the view into smaller views.",
+    ),
     "RENDER_ARTIFACT_LIMIT": (
         "A generated file exceeds the artifact size limit.",
         "Split the view into smaller views.",
@@ -112,6 +116,7 @@ REQUEST_CODES = frozenset(
         "RENDER_GROUP_DEPTH_LIMIT",
         "RENDER_TYPE_BLOCKED",
         "RENDER_PIXEL_LIMIT",
+        "RENDER_PNG_SCALE_LIMIT",
         "RENDER_ARTIFACT_LIMIT",
     }
 )

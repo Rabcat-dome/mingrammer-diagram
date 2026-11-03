@@ -200,6 +200,8 @@ def png_scale(root: ET.Element, size: tuple[int, int], limits: Limits) -> float:
     scale = min(1.0, max(width, height) / max(full_width, full_height))
     if abs(width - full_width * scale) > 2 or abs(height - full_height * scale) > 2:
         raise RenderFailure("RENDER_PNG_INVALID", "/png")
+    if scale < limits.minimum_png_scale:
+        raise RenderFailure("RENDER_PNG_SCALE_LIMIT", "/png")
     # Rounded down, so that any real shrink reads below 1 and gets its warning.
     return math.floor(scale * 1000) / 1000
 

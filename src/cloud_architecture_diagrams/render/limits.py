@@ -14,6 +14,7 @@ class Limits:
     temporary_bytes: int = 256 * 1024**2
     file_bytes: int = 16 * 1024**2
     pixels: int = 32_000_000
+    minimum_png_scale: float = 0.5
     sampling_seconds: float = 0.1
 
     def report(self) -> dict[str, float]:

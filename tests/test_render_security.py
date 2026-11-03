@@ -555,10 +555,10 @@ def test_a_png_of_another_shape_blocks_the_bundle(
 def test_a_uniformly_smaller_png_is_disclosed(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    output_engine(monkeypatch, png=resized(lambda width, height: (width // 2, height // 2)))
+    output_engine(monkeypatch, png=resized(lambda width, height: (width * 3 // 4, height * 3 // 4)))
     result = render(GOOD, tmp_path / "out")
     assert result.rendered, codes(result)
-    assert manifest_of(result)["png"]["scale"] == pytest.approx(0.5, abs=0.05)
+    assert manifest_of(result)["png"]["scale"] == pytest.approx(0.75, abs=0.05)
     assert [item.severity for item in result.diagnostics if item.code == "RENDER_PNG_SCALED"] == [
         "warning"
     ]
@@ -568,7 +568,7 @@ def test_a_uniformly_smaller_png_is_disclosed(
 def test_png_scale_accepts_every_shrink_cairo_writes(tall: bool) -> None:
     # Cairo scales by the longer side and truncates the other to an integer, so the shorter side's
     # ratio runs low and must not set the scale.
-    unlimited = replace(LIMITS, pixels=10**12)
+    unlimited = replace(LIMITS, pixels=10**12, minimum_png_scale=0.0)
     for long_points in range(24_600, 60_000, 97):
         for short_points in (120, 355, 747, 1000):
             ratio = 32767 / (long_points * 96 / 72)
@@ -577,6 +577,21 @@ def test_png_scale_accepts_every_shrink_cairo_writes(tall: bool) -> None:
             short = int(short_points * 96 / 72 * ratio)
             size = (short, 32767) if tall else (32767, short)
             assert checks.png_scale(root, size, unlimited) == pytest.approx(ratio, abs=0.001)
+
+
+def test_a_png_below_half_size_is_refused(tmp_path: Path) -> None:
+    # Without groups this view is 249 pixels wide, so it stays under the pixel limit at full size
+    # and would publish an 80-pixel-wide PNG at about a third of full size.
+    model = icon_model(197, 0)
+    for item in model["resources"]:
+        item["name"] = ("long name " * 26)[:256]
+    model["views"][0]["title"] = "M"
+    model["views"][0]["entity_refs"] = [item["id"] for item in model["resources"]]
+    output = tmp_path / "out"
+    result = render(model, output)
+    assert codes(result) == ["RENDER_PNG_SCALE_LIMIT"]
+    assert renderer.exit_status(result) == 2 and tree(output) == []
+    assert LIMITS.report()["minimum_png_scale"] == 0.5
 
 
 def test_the_pixel_limit_applies_before_a_png_is_shrunk(tmp_path: Path) -> None:

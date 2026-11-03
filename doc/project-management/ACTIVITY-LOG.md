@@ -410,3 +410,9 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - A fresh Claude Fable 5.1 / High agent reviewed `0b30b02..93b7d11` and requested changes. CI had passed there ([run 41585566124](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41585566124), 14 lanes and 971 tests, with the wheel matching the local build), yet about half of real PNG shrinks failed with a false exit 4. The only size the test used happened to pass.
 - Claude Opus 5.5 reran that through the real CLI and fixed it in core `0.4.0a3`: the scale comes from the longer side, the pixel limit applies at full size, and the scale rounds down. The local gate passes 14 lanes and 984 tests. See the [re-review](evidence/S07-fable-review.md#re-review-at-93b7d11).
 - The same reviewer rechecks the fix next. M3 and M7 stay open.
+
+## 2026-11-03 — Half-size floor for the PNG
+
+- CI passed at `e4d9761` ([run 41588488835](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41588488835), 14 lanes and 984 tests, with the wheel matching the local build). The same Fable/High reviewer confirmed the regression fixed, and requested changes on one P2.
+- That P2 corrects this session's record: "0.487, the lowest seen" came from views with groups, and a view without them published at 0.323, 80 pixels wide. Claude Opus 5.5 reran it through the real CLI.
+- Core `0.4.0a4` refuses a PNG below half size with `RENDER_PNG_SCALE_LIMIT`, exit 2, as the reviewer recommended. P-028 records it, and the owner can change the floor. See the [recheck](evidence/S07-fable-review.md#recheck-at-e4d9761).

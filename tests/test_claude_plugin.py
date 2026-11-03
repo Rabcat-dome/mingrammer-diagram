@@ -228,7 +228,7 @@ def test_skill_says_lenient_mode_bypasses_no_other_error() -> None:
 
 def test_skill_names_the_render_size_outcomes() -> None:
     skill = (SKILL / "SKILL.md").read_text()
-    for code in ("RENDER_PIXEL_LIMIT", "RENDER_PNG_SCALED"):
+    for code in ("RENDER_PIXEL_LIMIT", "RENDER_PNG_SCALE_LIMIT", "RENDER_PNG_SCALED"):
         assert code in skill, code
 
 

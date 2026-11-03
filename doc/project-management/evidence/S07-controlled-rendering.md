@@ -1,6 +1,6 @@
 # S07 — Controlled Rendering Vertical Slice
 
-Date: 2026-11-03 | Tasks: M3-01..04 | Branch: `codex/s07-controlled-rendering`, from `f3f0789` | Package: `0.4.0a1` at `cddb497`, then `0.4.0a3` with the [review fixes](S07-fable-review.md#fixes) | Code head: `cddb497` for everything below unless stated
+Date: 2026-11-03 | Tasks: M3-01..04 | Branch: `codex/s07-controlled-rendering`, from `f3f0789` | Package: `0.4.0a1` at `cddb497`, then `0.4.0a4` with the [review fixes](S07-fable-review.md#fixes) | Code head: `cddb497` for everything below unless stated
 
 **Result: the renderer is implemented and passes all 14 lanes and 959 tests locally and in [actual CI](#actual-ci) at `cddb497`. M3 is not closed.** [Fable/High requested changes](S07-fable-review.md) on three P2 findings, and the owner has not inspected the output. The contract is in the [core contract](../../design/core-contract.md#controlled-rendering).
 
@@ -19,7 +19,7 @@ Date: 2026-11-03 | Tasks: M3-01..04 | Branch: `codex/s07-controlled-rendering`, 
 |---|---|---|
 | Repeatable CLI render from a clean setup | Met | A fresh environment from `uv.lock` and a clean wheel install outside the checkout both render; see [clean setup](#clean-setup). Two renders of one input produce identical SVG, PNG and graph bytes |
 | Invalid input cannot bypass validation | Met | `render_model` is the only entry point. 31 invalid and malformed inputs run in both modes, with every later render step replaced by a failing stub |
-| Usable SVG and PNG with a complete bundle | Met in tests; a tall or wide layout's shrunken PNG is now disclosed ([P2-3](S07-fable-review.md#p2-3-a-tall-or-wide-layout-publishes-a-downscaled-png-as-complete)); owner inspection pending | All 19 views of the existing fixtures render, together reaching all 148 catalog types. The SVG's content is checked against the graph, and the PNG structurally. This session inspected samples; see [inspection](#inspection) |
+| Usable SVG and PNG with a complete bundle | Met in tests; a tall or wide layout's shrunken PNG is now disclosed, and refused below half size ([P2-3](S07-fable-review.md#p2-3-a-tall-or-wide-layout-publishes-a-downscaled-png-as-complete)); owner inspection pending | All 19 views of the existing fixtures render, together reaching all 148 catalog types. The SVG's content is checked against the graph, and the PNG structurally. This session inspected samples; see [inspection](#inspection) |
 | Required security tests pass | Met | `render-security` covers path, symlink, isolation, timeout, code, Graphviz and SVG injection and resource limits; see [validation](#validation) |
 
 M3 also needs the disposition of the [Fable/High review](S07-fable-review.md) under D-021. It requests changes, and its findings are open.

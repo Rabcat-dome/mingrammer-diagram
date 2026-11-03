@@ -2,7 +2,7 @@
 
 Date: 2026-11-03 (Asia/Bangkok). Reviewer: Claude Fable 5.1 (`claude-fable-5-1`) / High, in a fresh agent with no prior project context, started from the owner's Claude Opus 5.5 session. This is the M3 review under [D-021](../decisions.md#confirmed-user-direction). Claude Opus 5.5 wrote the renderer, so reviewer and implementer share a vendor.
 
-**Disposition at `6353ef1`: changes requested, on three P2 findings, all in output-size handling.** There are no P0 or P1 findings, and five more are P3. The P2 findings now have [fixes](#fixes). Their [re-review](#re-review-at-93b7d11) found a regression, which is fixed in turn and needs a recheck. M3 stays open until that passes and the owner has inspected the output.
+**Disposition at `6353ef1`: changes requested, on three P2 findings, all in output-size handling.** There are no P0 or P1 findings, and five more are P3. The P2 findings now have [fixes](#fixes). Their [re-review](#re-review-at-93b7d11) found a regression, and the [recheck](#recheck-at-e4d9761) of that fix found the PNG could still shrink out of reading. Both are fixed, and the last change needs a final recheck. M3 stays open until that passes and the owner has inspected the output.
 
 ## Identity and scope
 
@@ -150,12 +150,29 @@ The reviewer also asked whether P-028 needs a floor, and suggested refusing belo
 
 Not findings: when publication fails after a shrink, the result carries only the write failure, and nothing is published. The reviewer's weak-test notes on `test_skill_names_the_render_size_outcomes` and `test_a_uniformly_smaller_png_is_disclosed` stay as they are, since the new sweep covers what the second one cannot see.
 
+## Recheck at `e4d9761`
+
+The same reviewer checked `93b7d11..e4d9761` and confirmed R-P1, R-P2 and R-P3 fixed at the root. Its scan found 78 shrunken views publishing and no false failure, and 519 direct probes against real Graphviz passed in both directions. A compromised engine that declares a false SVG size cannot pass the pixel limit. It can still misreport `png.scale`, which the reviewer does not count as a finding, because such an engine already controls the layout.
+
+**It requested changes on one P2, R2-P2.** The record's "0.487, the lowest seen" came from views that keep their groups, which hold the width at 473 pixels. A view of resources only is 249 pixels wide, so the full-size limit allows a far taller image. The root session reran the first row below through the real CLI.
+
+| View | Full size | PNG | Scale | 11 pt label |
+|---|---|---|---|---|
+| 197 entities, 256-character names, no groups | 249 x 101,297 | 80 x 32767 | 0.323 | 4.7 px |
+| 197 entities, 120-character names, no groups | 249 x 73,095 | 112 x 32767 | 0.448 | 6.6 px |
+| 150 entities, 256-character names, no groups | 249 x 77,171 | 106 x 32767 | 0.424 | 6.2 px |
+
+**Fix in core `0.4.0a4`:** a PNG that would shrink below half size is refused with `RENDER_PNG_SCALE_LIMIT`, exit 2, and a request to split. The reviewer recommended this floor, and at 0.5 an 11 pt label keeps about 7.3 pixels. Between half and full size the PNG still publishes with `png.scale` and the warning. The floor is `minimum_png_scale` in the limits, so the manifest reports it. The "no explicit floor" paragraph and "lowest seen" above are the record at `0.4.0a3`, and this section replaces them.
+
+The local gate passes 14 lanes and 985 tests with none skipped. Removing the floor, taking its code out of the request codes, and dropping the code from the skill each fail one test.
+
 ## Disposition
 
 | Finding | State |
 |---|---|
 | P2-1, P2-2 | Fixed in core `0.4.0a2`; the re-review confirms both |
-| P2-3, R-P1, R-P2, R-P3 | Fixed in core `0.4.0a3`; recheck pending |
+| P2-3, R-P1, R-P2, R-P3 | Fixed in core `0.4.0a3`; the recheck confirms them |
+| R2-P2 | Fixed in core `0.4.0a4`; final recheck pending |
 | P3-1 to P3-5 | Open for the owner; not fixed |
 
 A fix needs another review of the changed code. This approves nothing beyond what it states, and it does not replace the owner's inspection of the output.
