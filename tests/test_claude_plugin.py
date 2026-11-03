@@ -251,7 +251,8 @@ def test_view_guide_covers_every_grouping_the_renderer_has() -> None:
 
 
 def test_view_guide_draws_only_what_each_grouping_can_nest() -> None:
-    # The row for each grouping is what the mapper treats as a group, so a session is not misled.
+    # Each mapper kind must appear in its row. This does not compare every row with `_is_group`,
+    # so a change to what `provider` or `scope` draws needs the guide read by hand.
     rows = view_rows()
     plural = {"data_center": "data centers", "vlan": "vlans", "vrf": "vrfs", "zone": "zones"}
     for kind in NETWORK_KINDS:

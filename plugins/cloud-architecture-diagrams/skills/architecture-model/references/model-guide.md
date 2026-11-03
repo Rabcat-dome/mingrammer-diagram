@@ -99,7 +99,7 @@ A view reads best when it selects only the boxes its grouping can draw. Give one
 - **Leave out what the grouping cannot draw.** Any other selected scope or boundary becomes a loose labeled box. A `network` view, for example, should not select a region or a zone.
 - **Leave out zone boxes in a `provider` view.** A subnet nests under its network, so a zone box stays empty. A declared subnet, zone or rack is noted on each resource even when the view does not select it, so the fact stays. Use a `physical` view when the user wants resources drawn by zone.
 - **Select a region only where it can hold something**, as in `provider` and `physical` views. Elsewhere it would be a loose box, and leaving it out also drops its note.
-- **State an account once.** Selecting a scope without nesting repeats a `scope:` note on every resource. Where it is true, give the outermost boundary the same `scope_refs`, such as the region an account uses, and the account box then holds it. A resource or boundary never nests in a scope it does not declare or inherit.
+- **State an account once.** Selecting a scope without nesting repeats a `scope:` note on every resource. Where it is true, give the outermost boundary the same `scope_refs`, such as the region an account uses, and the account box then holds it. A resource or boundary that declares a scope never nests inside a different one.
 - **Keep ownership apart.** If showing a project or resource group would imply that it owns the network, leave it out of the network view and add a `scope` view.
 - **Split rather than crowd.** Keep each view to about 40 entities. Show a Kubernetes cluster compactly in the cloud view, and give its detail a `namespace` view and a `node` view.
 - **Choose the direction from the picture.** `LR` suits a flow through a few tiers. Use `TB` when `LR` makes one long column, and for Kubernetes detail.
@@ -108,7 +108,7 @@ A view of one account's web tier, and a second view by zone, as the `views` list
 
 ```text
 [
-  {"id": "overview", "title": "Web application", "grouping": "provider",
+  {"id": "overview", "title": "Web application", "grouping": "provider", "direction": "TB",
    "entity_refs": ["account", "region", "vpc", "subnet-a", "subnet-b", "alb", "web-a", "web-b", "db"],
    "relationship_refs": ["alb-web-a", "alb-web-b", "web-a-db", "web-b-db"]},
   {"id": "zones", "title": "By Availability Zone", "grouping": "physical", "direction": "TB",
