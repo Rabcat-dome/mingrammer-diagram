@@ -8,7 +8,7 @@ Target: the separate ChatGPT Work page or mode, not Codex (D-014). Automated che
 
 Install, from a checkout of `codex/s09-work-plugin`, with the commands in the [plugin README](../../../plugins/cloud-architecture-work/README.md#install). Then restart the ChatGPT app, switch to Work mode, open a new chat and select **Cloud Architecture Diagrams**. The S04 plugin stays enabled and unchanged.
 
-Each prompt runs in the same chat unless it says otherwise.
+The expected version is `0.1.0-alpha.1+7ef5b5f31668`, the build Fable approved. Each prompt runs in the same chat unless it says otherwise.
 
 | # | Prompt | What it checks |
 |---|---|---|

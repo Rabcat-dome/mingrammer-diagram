@@ -106,9 +106,11 @@ Sabotage found a weak test both times, which is why it is worth repeating. It co
 
 | Check | Result |
 |---|---|
-| [Actual CI run 41691896306](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41691896306), job 126112325770, at `82f14e0` | All 16 lanes on `macbook-pro-m2-max-mingrammer`, with 1,381 tests, none skipped, and zero job annotations. Read from the run's report on the runner |
+| Local gate at `14a395c`, clean tree | All 16 lanes, with 1,382 tests: 91 schema-core, 76 catalog-license, 442 provider-semantics, 228 render-security, 293 render-smoke, 65 visual-regression, 55 claude-plugin and 132 package-contract |
+| [Actual CI run 41693401824](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41693401824), job 126117518612, at `14a395c` | All 16 lanes on `macbook-pro-m2-max-mingrammer`, with 1,382 tests, none skipped, and zero job annotations. Read from the run's report on the runner. `14a395c` differs from the approved code by the one test and these records |
+| [Actual CI run 41691896306](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41691896306), job 126112325770, at `82f14e0` | All 16 lanes, with 1,381 tests, none skipped, and zero job annotations. This is the commit Fable approved |
 | Core wheel | SHA-256 `1f4d7e474a6011a4ead8e464587e2565775c7d378f4093476e26a88dada30ebc`, the same in CI and locally. `src` has no change in this session |
-| Package at `82f14e0` | `0.1.0-alpha.1+7ef5b5f31668`, 97 files, 1.6 MB, and a ZIP of 716 KB with SHA-256 `f09ad1b512f8f2bae61e27fe3eec99e191ece45a972fd337e1720b8fef5249d1`. Python 3.9.6 and 3.13.7 build the same archive, and the reviewer reproduced that digest |
+| Package at `82f14e0` and `14a395c` | `0.1.0-alpha.1+7ef5b5f31668`, 97 files, 1.6 MB, and a ZIP of 716 KB with SHA-256 `f09ad1b512f8f2bae61e27fe3eec99e191ece45a972fd337e1720b8fef5249d1`. Python 3.9.6 and 3.13.7 build the same archive, and the reviewer reproduced that digest |
 
 ## Findings from building it
 
