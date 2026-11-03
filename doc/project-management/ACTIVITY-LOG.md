@@ -486,3 +486,8 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - The owner passed the 26 reference views and the Thai sample, so D-023 closes M4. All 26 images on the page they inspected match the baselines byte for byte. P-029 to P-031 stand until the owner changes them.
 - At the owner's standing request to merge finished work in stages, `main` fast-forwards to this branch once this commit passes CI. It keeps every recorded SHA, and no branch is deleted.
 - Open: four M4, four M3 and three M7 P3 findings, a second machine, and M5, M6 and M7. The owner's installed plugin holds `02dc709`, so it gets the skill correction and the new rendering through the README's update commands.
+
+## 2026-11-03 — View guidance in the skill
+
+- A live session on the owner's install rendered, but with region and zone as loose boxes, because the skill did not say what each `grouping` can draw. The owner asked to fix it. The model guide now has a section on choosing what a view selects, with tests tied to the mapper, and stale lines saying visual work comes later are gone.
+- Six new headless sessions rendered with no loose region or zone box. The first three showed attempts to write the model inside the plugin folder, so the skill now forbids that and asks for a relative path. See the [M7 evidence](evidence/M7-claude-plugin.md).

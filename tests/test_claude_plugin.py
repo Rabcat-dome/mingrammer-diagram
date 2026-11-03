@@ -26,6 +26,7 @@ from cloud_architecture_diagrams.models import (
     Scope,
     View,
 )
+from cloud_architecture_diagrams.render.graph import NESTING, NETWORK_KINDS, PHYSICAL_KINDS
 from cloud_architecture_diagrams.validation import validate_json
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -230,6 +231,58 @@ def test_skill_names_the_render_size_outcomes() -> None:
     skill = (SKILL / "SKILL.md").read_text()
     for code in ("RENDER_PIXEL_LIMIT", "RENDER_PNG_SCALE_LIMIT", "RENDER_PNG_SCALED"):
         assert code in skill, code
+
+
+def view_guide() -> str:
+    guide = (SKILL / "references/model-guide.md").read_text()
+    return guide.split("### Choosing what a view selects", 1)[1].split("\n## ", 1)[0]
+
+
+def view_rows() -> dict[str, str]:
+    return {
+        line.split("`")[1]: line.split("|")[3].lower()
+        for line in view_guide().splitlines()
+        if line.startswith("| `") and not line.startswith("| `grouping`")
+    }
+
+
+def test_view_guide_covers_every_grouping_the_renderer_has() -> None:
+    assert set(view_rows()) == set(NESTING)
+
+
+def test_view_guide_draws_only_what_each_grouping_can_nest() -> None:
+    # The row for each grouping is what the mapper treats as a group, so a session is not misled.
+    rows = view_rows()
+    plural = {"data_center": "data centers", "vlan": "vlans", "vrf": "vrfs", "zone": "zones"}
+    for kind in NETWORK_KINDS:
+        assert plural.get(kind, f"{kind}s") in rows["network"], kind
+    for kind in PHYSICAL_KINDS:
+        assert plural.get(kind, f"{kind}s") in rows["physical"], kind
+    assert "subnet" not in rows["physical"] and "zone" not in rows["network"]
+    assert "nodes" in rows["node"] and "nodes" not in rows["namespace"]
+    assert rows["none"].strip() == "nothing"
+
+
+def test_view_guide_example_nests_every_box_it_selects() -> None:
+    # The example is what a session copies, so it must not show a loose box or an empty zone.
+    block = view_guide().split("```text", 1)[1].split("```", 1)[0]
+    overview, zones = json.loads(block)
+    assert overview["grouping"] == "provider" and zones["grouping"] == "physical"
+    assert not any(item.startswith("az-") for item in overview["entity_refs"])
+    assert not any(item.startswith(("subnet-", "vpc")) for item in zones["entity_refs"])
+
+
+def test_skill_keeps_the_model_out_of_the_plugin_and_its_path_relative() -> None:
+    # Live sessions tried to write the model into the plugin, and an absolute redirect was denied.
+    skill = (SKILL / "SKILL.md").read_text()
+    assert "never inside this plugin's own folder" in skill
+    assert "relative to the working folder" in skill
+
+
+def test_skill_tells_the_session_to_fix_a_loose_box_in_the_view() -> None:
+    skill = (SKILL / "SKILL.md").read_text()
+    assert "choosing what a view selects" in skill
+    assert "A loose box for a region or zone" in skill
 
 
 def test_skill_says_render_creates_its_output_root() -> None:
