@@ -1,6 +1,6 @@
 # Quality Gate and Self-Hosted Runner Plan
 
-Updated: 2026-11-04 | Status: S05/M1 product quality gate passed on the real runner. S06/M2 adds two lanes, which passed actual CI at `6929253`. S07/M3 activates `render-security` and `render-smoke`, for 14 lanes, which passed actual CI at `cddb497`. S08/M4 activates `visual-regression`, for 15 lanes. S09/M5 activates `package-contract`, for 16 lanes, which passed actual CI at `82f14e0`. S03 runner/service setup and two actual manual preflight jobs passed; M0-04 complete.
+Updated: 2026-11-04 | Status: S05/M1 product quality gate passed on the real runner. S06/M2 adds two lanes, which passed actual CI at `6929253`. S07/M3 activates `render-security` and `render-smoke`, for 14 lanes, which passed actual CI at `cddb497`. S08/M4 activates `visual-regression`, for 15 lanes. S09/M5 activates `package-contract`, for 16 lanes, which passed actual CI at `aa813ed`. S03 runner/service setup and two actual manual preflight jobs passed; M0-04 complete.
 
 ## Recommendation
 

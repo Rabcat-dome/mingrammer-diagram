@@ -56,7 +56,7 @@ S07 / M3 used Claude Opus 5.5 (`claude-opus-5-5`), the model of the session that
 
 S08 / M4 used Claude Opus 5.5 rather than the planned Sol/Medium, with six Claude Sonnet 5.5 agents writing the reference models under its brief, and no model setting changed. This is a recorded substitution. Fable/High [approved it](evidence/S08-fable-review.md) at `a407a7a` after three P2 findings. See the [S08 evidence](evidence/S08-reference-diagrams.md#model-and-review).
 
-S09 / M5 used Claude Opus 5.5 (`claude-opus-5-5`) rather than the planned Sol/High, with no model setting changed. This is a recorded substitution. Under D-021, Fable/High [reviewed it](evidence/S09-fable-review.md) in a fresh agent, requested changes on two P2 findings and approved `82f14e0`. Fable and Opus share a vendor. See the [S09 evidence](evidence/S09-work-plugin.md#model-and-review).
+S09 / M5 used Claude Opus 5.5 (`claude-opus-5-5`) rather than the planned Sol/High, with no model setting changed. This is a recorded substitution. Under D-021, Fable/High [reviewed it](evidence/S09-fable-review.md) in a fresh agent, requested changes on two P2 findings and approved `aa813ed`. Fable and Opus share a vendor. See the [S09 evidence](evidence/S09-work-plugin.md#model-and-review).
 
 ## Pipeline policy
 
