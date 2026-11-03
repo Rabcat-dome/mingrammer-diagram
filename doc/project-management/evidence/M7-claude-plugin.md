@@ -80,7 +80,7 @@ After the fixes, the full gate passed locally and live English and Thai runs sav
 
 ## Separate-session review
 
-A fresh Claude Code session reviewed `c5f74b4..a94b47a` read-only. Record it as a substitute review, not the Astra/High review the [model strategy](../model-strategy.md) names. It used the same model as the implementation, `claude-opus-5-5`, with session effort `xhigh`, and the implementing session wrote its brief, so its independence is limited. It found no Critical or High issues. It did not run the core tests or the full gate locally, relying on CI artifacts, and it had no `claude` CLI for installs, live runs or permission checks.
+A fresh Claude Code session reviewed `c5f74b4..a94b47a` read-only. Record it as a substitute review, not the Astra/High review the [model strategy](../model-strategy.md) then named. It used the same model as the implementation, `claude-opus-5-5`, with session effort `xhigh`, and the implementing session wrote its brief, so its independence is limited. It found no Critical or High issues. It did not run the core tests or the full gate locally, relying on CI artifacts, and it had no `claude` CLI for installs, live runs or permission checks.
 
 The owner asked for the three Medium findings to be fixed:
 
@@ -120,6 +120,6 @@ S06 / M2 moved the core, and the checks built to catch that fired as intended. F
 - A second machine, any other operating system, and first-run setup with an empty uv cache.
 - Interactive permission prompts, and how much `allowed-tools` admits at runtime, including whether a redirect such as `schema > file` prompts. Headless runs exercised `allowed-tools`, but the Code tab check ran under bypass permissions, so it did not.
 - Authoring a model from the Code tab.
-- The Astra/High review the model strategy names. Implementation and both reviews above used Claude Opus 5.5, and the Medium and Low fixes have not been reviewed by any pass.
+- The Fable/High review the model strategy now names under D-021. Implementation and both reviews above used Claude Opus 5.5, and the Medium and Low fixes have not been reviewed by any pass.
 
 Prompts were run once each, so trigger rates are observations rather than measurements. Provider semantics are unchanged from M1: a passing result does not establish that a service type exists or that a placement is legal.

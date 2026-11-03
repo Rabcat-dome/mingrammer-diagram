@@ -18,7 +18,7 @@ S04 result: [M0/S04 closeout](evidence/S04-closeout.md), [native proof](evidence
 
 S05 result: [core/CI evidence](evidence/S05-core-and-ci.md), [contract/setup](../design/core-contract.md) and [Astra review](evidence/S05-astra-review.md). M1-01..04 are complete at code head 785e1ee: 82 tests, eight real runner lanes, clean CI wheel and both initial P2 findings confirmed fixed. This is core-only validation; provider catalogs/rules/assets remain S06 and full rendering/Work/release acceptance remains later work.
 
-S07 result: [controlled rendering](evidence/S07-controlled-rendering.md). M3-01..04 are implemented on `codex/s07-controlled-rendering` and pass the 14-lane gate in actual CI at `cddb497`, including new `render-security` and `render-smoke` lanes. The Astra/High review and the owner's inspection of the first output remain open, so M3 is not closed.
+S07 result: [controlled rendering](evidence/S07-controlled-rendering.md). M3-01..04 are implemented on `codex/s07-controlled-rendering` and pass the 14-lane gate in actual CI at `cddb497`, including new `render-security` and `render-smoke` lanes. The Fable/High review under D-021 and the owner's inspection of the first output remain open, so M3 is not closed.
 
 S06 result: [catalogs, rules and rights](evidence/S06-provider-catalogs.md). M2-01, 02, 04, 05 and 06 are complete, with catalogs, rules, on-premises assets and two gate lanes passing actual CI at `6929253`. Under the owner's D-018, all 15 Huawei items that need an icon have one, for private personal use only. The owner accepted the on-premises and Huawei icon sheets. Astra/High reviewed `5569459` and requested changes. After the fixes, Claude Fable 5.1 / High approved `5f391eb` under D-020, and CI passes there. D-019 closes the asset-rights exit item for the private personal release, and M2 is closed.
 
@@ -51,9 +51,9 @@ S04 can begin with an approved generic icon fixture while Huawei rights are inve
 | S05 — Core contract and first CI | M1-01..04 | Implement package/schema/diagnostics/reference checks including Kubernetes context and a working initial quality gate | Review architecture model examples and materially changed scope decisions | Sol / High |
 | S06 — Cloud and Kubernetes catalogs | M2-01..06 | Freeze cloud/platform IDs, provider/Kubernetes semantics, approved assets and catalog/license checks | Resolve naming/coverage questions and inspect detailed Kubernetes/Huawei/on-premises representations | Sol / Medium; High for semantic rules |
 | S07 — Controlled renderer | M3-01..04 | Implement overview/detail view mapping, SVG/PNG/model bundle, strict/lenient behavior and security/resource controls | Inspect first representative output and clarify presentation choices | Sol / High |
-| S08 — Reference diagrams and appearance | M4-01..05 | Render six scenario families with required Kubernetes detail subviews; inspect labels/boundaries, T-017 relationships and regressions/measurements | Review examples and Kubernetes detail, English/Thai labels, layout, icons and legends | Sol / Medium; Astra / High semantic review |
+| S08 — Reference diagrams and appearance | M4-01..05 | Render six scenario families with required Kubernetes detail subviews; inspect labels/boundaries, T-017 relationships and regressions/measurements | Review examples and Kubernetes detail, English/Thai labels, layout, icons and legends | Sol / Medium; Fable / High semantic review |
 | S09 — Installable Work plugin | M5-01..04 | Implement selected adapter, required auth/artifact handling, bundled skill and versioned plugin; test actual Work install/invoke/edit/download | Participate in account-bound installation/Work checks when needed | Sol / High |
-| S10 — Two-machine acceptance and release | M6-01..04 | Verify the same plugin version on two machines, independently reproduce core setup, check all P0 evidence and prepare personal release/handoff | Use the second machine, inspect results and give owner acceptance | Sol / Medium; Astra / High final review |
+| S10 — Two-machine acceptance and release | M6-01..04 | Verify the same plugin version on two machines, independently reproduce core setup, check all P0 evidence and prepare personal release/handoff | Use the second machine, inspect results and give owner acceptance | Sol / Medium; Fable / High final review |
 
 Model choices follow the existing [model strategy](model-strategy.md); they are not a claim that another session/model has already been selected. Claude Code acceptance is deferred to M7 after this first release; D-015 started its preparation early, outside sessions S01-S10.
 
@@ -96,7 +96,7 @@ S01 should end with scope/example decisions, not implementation of later milesto
 
 ## Separate code review session
 
-Use Astra with High effort for schema/provider semantics/security and milestone reviews; Medium is sufficient for a bounded ordinary PR as defined in the model strategy. Select the model in the new session; naming it in a prompt does not switch the model automatically.
+Use Fable with High effort, under D-021, for schema/provider semantics/security and milestone reviews; Medium is sufficient for a bounded ordinary PR as defined in the model strategy. Select the model in the new session; naming it in a prompt does not switch the model automatically.
 
 After implementation, fill in the exact milestone and base/head commit values. The initial published commit is `5c3859b4a865c3e65fc6ed80a389ec8f8a32182e`; verify the latest head before arranging review. For the initial tree, explicitly review all committed files rather than an assumed parent diff. The S03 preflight jobs are not a separate model review.
 

@@ -22,7 +22,7 @@ Date: 2026-11-03 | Tasks: M3-01..04 | Branch: `codex/s07-controlled-rendering`, 
 | Usable SVG and PNG with a complete bundle | Met in tests; owner inspection pending | All 19 views of the existing fixtures render, together reaching all 148 catalog types. Each output's content is checked against the graph. This session inspected samples; see [inspection](#inspection) |
 | Required security tests pass | Met | `render-security` covers path, symlink, isolation, timeout, code, Graphviz and SVG injection and resource limits; see [validation](#validation) |
 
-M3 also needs the Astra/High review and the disposition of its findings. Those are open.
+M3 also needs the Fable/High review under D-021 and the disposition of its findings. Those are open.
 
 ## Validation
 
@@ -165,10 +165,10 @@ The session plan lists the owner's inspection of the first output. These proposa
 
 Implementation used **Claude Opus 5.5 (`claude-opus-5-5`)**, the model of the session started for S07. The project policy names Sol/High for this milestone, so this is a recorded substitution, and no model setting changed.
 
-The policy names Astra/High for M3's review, and D-020 does not extend to it. **That review has not happened.** Sabotage checks and self-review in this session are not a review.
+D-021 names Fable/High for M3's review, replacing Astra/High. **That review has not happened.** Sabotage checks and self-review in this session are not a review.
 
 ## Next steps
 
-1. Run the Astra/High review on `f3f0789..cddb497`, then dispose of its findings.
+1. Run the Fable/High review on `f3f0789..cddb497`, then dispose of its findings.
 2. The owner inspects representative output and settles the presentation choices above.
 3. Close M3 only after those. M4 then builds reference scenarios on this renderer.

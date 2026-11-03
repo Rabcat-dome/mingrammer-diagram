@@ -68,7 +68,7 @@ The new alpha.3 default uses native Python/Graphviz with no required Docker; use
 - Use per-run temporary directories, job timeouts, bounded renderer child processes, and cleanup on failure. Avoid concurrent jobs that overwrite shared outputs or mutate global tools.
 - Cache dependencies only with OS/architecture/lockfile keys and trusted origins. Do not restore executable artifacts from an untrusted PR into trusted jobs.
 - Upload synthetic-fixture diagnostics/images/reports, even on failure where possible; do not upload customer architectures or secrets. Proposed CI artifact retention: 14 days, subject to repository limits/owner preference.
-- Keep CI independent of paid model calls. Record the Astra review separately. Cloud deployment and publishing are outside the test job and require their own selected destination and release scope.
+- Keep CI independent of paid model calls. Record the independent model review separately. Cloud deployment and publishing are outside the test job and require their own selected destination and release scope.
 
 ## Verification depth
 
@@ -85,7 +85,7 @@ Run the fast lane on ordinary changes. Run the full fixture set for core/schema/
 - All P0 requirements have check or manual acceptance evidence at the release SHA.
 - Every applicable automated check passes; no required check is silently skipped.
 - Required icons/notices have redistribution evidence. D-018 allows Huawei assets in a private personal release only, without that evidence; any public distribution stays blocked by O-002.
-- Astra review completed on the final code; confirmed Critical/High findings resolved, Medium findings dispositioned.
+- Independent review by the model the model strategy names completed on the final code; confirmed Critical/High findings resolved, Medium findings dispositioned.
 - Owner inspected T-001..006; the same plugin version completed the Work workflow on two supported machines (FR-066/T-010), and clean-runtime core reproduction passed. Record setup/authentication steps rather than assuming installation or credentials sync automatically.
 - Setup, supported host modes, limitations, package digest, rollback steps and handoff are current.
 

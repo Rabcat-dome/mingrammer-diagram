@@ -64,7 +64,7 @@ Exit: all five hosting inventories and the shared Kubernetes detail catalog meet
 
 ## M3 — Controlled rendering vertical slice
 
-Status: Implemented on `codex/s07-controlled-rendering`, not closed. [Evidence](evidence/S07-controlled-rendering.md) records actual CI [run 41539921034](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41539921034) passing at `cddb497`. The Astra/High review and the owner's inspection of the first output remain open. Planned implementation: Sol/High; actual implementation: Claude Opus 5.5 (`claude-opus-5-5`), the model of the session that ran S07. Review: Astra/High.
+Status: Implemented on `codex/s07-controlled-rendering`, not closed. [Evidence](evidence/S07-controlled-rendering.md) records actual CI [run 41539921034](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41539921034) passing at `cddb497`. The Fable/High review under D-021 and the owner's inspection of the first output remain open. Planned implementation: Sol/High; actual implementation: Claude Opus 5.5 (`claude-opus-5-5`), the model of the session that ran S07. Review: Fable/High.
 
 | Task | Work | Dependency / output |
 |---|---|---|
@@ -77,7 +77,7 @@ Exit: repeatable CLI render from a clean setup; invalid input cannot bypass vali
 
 ## M4 — Coverage and visual quality
 
-Status: Not started. Implementation: Sol/Medium; review: Astra/High for semantics; optional Terra/Medium for image inspection assistance.
+Status: Not started. Implementation: Sol/Medium; review: Fable/High for semantics; optional Terra/Medium for image inspection assistance.
 
 | Task | Work | Dependency / output |
 |---|---|---|
@@ -91,7 +91,7 @@ Exit: six reference scenario families and their required Kubernetes detail subvi
 
 ## M5 — ChatGPT Work integration
 
-Status: Product integration not started; S04 feasibility pilot is separate. Implementation: Sol/High for local adapter/isolation; Sol/Medium for skill/docs; review: Astra/High.
+Status: Product integration not started; S04 feasibility pilot is separate. Implementation: Sol/High for local adapter/isolation; Sol/Medium for skill/docs; review: Fable/High.
 
 | Task | Work | Dependency / output |
 |---|---|---|
@@ -104,7 +104,7 @@ Exit: installed plugin works in the selected Work mode, artifacts are retrievabl
 
 ## M6 — Reproduction and personal release
 
-Status: Not started. Implementation: Sol/Medium; final review: Astra/High and owner inspection.
+Status: Not started. Implementation: Sol/Medium; final review: Fable/High and owner inspection.
 
 | Task | Work | Dependency / output |
 |---|---|---|
@@ -117,7 +117,7 @@ Exit: all P0 pass; no unresolved Critical/High findings; justified Medium findin
 
 ## M7 — Claude Code adapter and later work
 
-Status: Adapter preparation started under D-015; not complete and not a first-release requirement. See [M7 evidence](evidence/M7-claude-plugin.md). Implementation: Claude Opus 5.5, the model of the owner's session rather than a project selection. A same-session review and a separate-session Claude review ran; all their findings are fixed. The Astra/High review has not been performed.
+Status: Adapter preparation started under D-015; not complete and not a first-release requirement. See [M7 evidence](evidence/M7-claude-plugin.md). Implementation: Claude Opus 5.5, the model of the owner's session rather than a project selection. A same-session review and a separate-session Claude review ran; all their findings are fixed. The Fable/High review that D-021 now names has not been performed.
 
 | Task | Work | Dependency / output |
 |---|---|---|

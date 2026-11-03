@@ -384,3 +384,9 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - A local sdist also holds `.claude/settings.local.json`, which only a global Git ignore hides. The CI sdist and the wheel do not. S07 did not change the sdist settings, and this is left as a follow-up.
 - `main` moved to `f50e66d` with docs-only commits while this ran, and the owner's install now follows `main`. This branch still starts at `f3f0789`, so a later merge should expect small conflicts in this file and possibly in `HANDOFF.md` and the M7 evidence, and it is what would bring rendering to the owner's install at its next update.
 - M3 stays open for the Astra/High review and the owner's inspection of the output. No merge, release or plugin update happened.
+
+## 2026-11-03 — Fable replaces Astra for reviews
+
+- The owner asked to move all reviewing from Astra to Fable. D-021 records that and lifts D-020's one-review limit.
+- Forward-looking rules changed in the model strategy, milestones, session plan, quality gate, core contract, S07 and M7 evidence, and the handoff. Reviews already done stay recorded under the model that ran them, and the Work runtime recommendation for Astra is unchanged because it is not a review.
+- Claude Opus 5.5 made this docs-only change. No review ran and no merge happened. M3 and M7 still need their reviews.
