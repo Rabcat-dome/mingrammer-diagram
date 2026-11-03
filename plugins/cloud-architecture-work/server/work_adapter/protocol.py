@@ -51,7 +51,9 @@ def _no_constant(_name: str) -> Any:
 def parse_frame(frame: bytes) -> tuple[Any, bool]:
     """The message, and whether a key repeated somewhere in it."""
     try:
-        return json.loads(frame, object_pairs_hook=_unique_pairs, parse_constant=_no_constant), False
+        return json.loads(
+            frame, object_pairs_hook=_unique_pairs, parse_constant=_no_constant
+        ), False
     except RepeatedKey:
         return json.loads(frame, parse_constant=_no_constant), True
 
@@ -227,7 +229,9 @@ class Server:
             if not chunk or chunk.endswith(b"\n"):
                 break
         log("oversize-frame")
-        self.error(json.loads(found.group(1)) if found else None, -32600, "The request is too large.")
+        self.error(
+            json.loads(found.group(1)) if found else None, -32600, "The request is too large."
+        )
 
 
 def _signalled(_signum: int, _frame: object) -> None:

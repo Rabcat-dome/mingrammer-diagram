@@ -281,7 +281,6 @@ def test_source_links_into_one_copy_of_the_core() -> None:
     for link, target in {
         "src": "src",
         "uv.lock": "uv.lock",
-        "pyproject.toml": "pyproject.toml",
         "skills/architecture-model/examples/core-valid.json": "tests/fixtures/core-valid.json",
         "skills/architecture-model/examples/kubernetes-valid.json": (
             "tests/fixtures/kubernetes-valid.json"
@@ -418,6 +417,35 @@ def test_core_stays_free_of_the_host_adapter() -> None:
 # The server's own interpreter.
 def adapter_sources(root: Path) -> list[Path]:
     return [*sorted((root / "server").rglob("*.py")), root / "scripts/runtime.py"]
+
+
+def test_the_lint_lane_really_covers_the_adapter() -> None:
+    # A pyproject.toml in the plugin folder once made Ruff treat it as its own project, so the lane
+    # passed while skipping every file here.
+    assert not (SOURCE / "pyproject.toml").exists()
+    listed = subprocess.check_output(
+        [sys.executable, "-m", "ruff", "check", "--show-files", str(SOURCE)], cwd=ROOT, text=True
+    )
+    found = {Path(line).relative_to(SOURCE).as_posix() for line in listed.splitlines()}
+    assert found == {path.relative_to(SOURCE).as_posix() for path in adapter_sources(SOURCE)}
+
+
+def test_the_lint_lane_holds_the_adapter_to_the_oldest_python(tmp_path: Path) -> None:
+    # Python 3.10 syntax in the adapter would pass on the developer's Python and fail on a new Mac.
+    probe = SOURCE / "server/work_adapter/_lint_probe.py"
+    probe.write_text("match 1:\n    case _:\n        pass\n")
+    try:
+        done = subprocess.run(
+            [sys.executable, "-m", "ruff", "check", str(probe)],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    finally:
+        probe.unlink()
+    assert done.returncode != 0
+    assert "3.9" in done.stdout
 
 
 def test_adapter_parses_on_the_oldest_python_a_mac_ships(package: Path) -> None:

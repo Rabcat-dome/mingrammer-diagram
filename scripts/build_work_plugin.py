@@ -32,6 +32,9 @@ def collect() -> dict[str, bytes]:
             if name not in IGNORED and not name.endswith(".pyc"):
                 path = Path(folder) / name
                 files[path.relative_to(SOURCE).as_posix()] = path.read_bytes()
+    # Not a link like the others: a pyproject.toml in that folder would make Ruff treat it as its own
+    # project, and the lint lane would then skip the adapter while still passing.
+    files["pyproject.toml"] = (ROOT / "pyproject.toml").read_bytes()
     return files
 
 

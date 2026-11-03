@@ -301,7 +301,9 @@ class Runtime:
         finally:
             self.setup_state.running = False
 
-    def _record_failure(self, code: str, message: str, remedy: str, detail: str = "") -> dict[str, Any]:
+    def _record_failure(
+        self, code: str, message: str, remedy: str, detail: str = ""
+    ) -> dict[str, Any]:
         failure = {"code": code, "message": message, "remedy": remedy, "detail": detail}
         self.data.mkdir(parents=True, exist_ok=True, mode=0o700)
         self._write_json(self.failure_path, failure)
@@ -309,7 +311,9 @@ class Runtime:
 
     @staticmethod
     def _write_json(path: Path, value: object) -> None:
-        with tempfile.NamedTemporaryFile("w", dir=path.parent, delete=False, encoding="utf-8") as stream:
+        with tempfile.NamedTemporaryFile(
+            "w", dir=path.parent, delete=False, encoding="utf-8"
+        ) as stream:
             json.dump(value, stream, indent=2, sort_keys=True)
             stream.write("\n")
             temporary = stream.name
@@ -424,7 +428,9 @@ class Runtime:
             report = json.loads(ran.stdout)
             if report.get("rendered") is True:
                 return {"passed": True}
-            codes = [d["code"] for d in report.get("diagnostics", []) if d.get("severity") == "error"]
+            codes = [
+                d["code"] for d in report.get("diagnostics", []) if d.get("severity") == "error"
+            ]
             return {"passed": False, "codes": codes}
         except (OSError, ValueError, KeyError, TypeError):
             return {"passed": False, "codes": ["RENDER_PROBE_FAILED"]}

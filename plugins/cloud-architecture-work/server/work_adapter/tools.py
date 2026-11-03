@@ -485,7 +485,11 @@ class Toolbox:
                 if arguments[key] not in allowed:
                     return invalid(f"{key} must be one of: {', '.join(allowed)}.")
                 command.append(f"{option}={arguments[key]}")
-        for key, option in (("taxonomy", "--taxonomy"), ("query", "--query"), ("type_id", "--type")):
+        for key, option in (
+            ("taxonomy", "--taxonomy"),
+            ("query", "--query"),
+            ("type_id", "--type"),
+        ):
             if key in arguments:
                 value = arguments[key]
                 if not isinstance(value, str) or len(value) > TEXT_LIMIT:
@@ -581,7 +585,9 @@ class Toolbox:
             artifacts.verify_published(self.runtime.output, bundle_id, report.get("artifacts", []))
             png = artifacts.read_file(self.runtime.output, bundle_id, "diagram.png")
         except (artifacts.ArtifactError, KeyError, TypeError) as error:
-            code = error.code if isinstance(error, artifacts.ArtifactError) else "ARTIFACT_INTEGRITY"
+            code = (
+                error.code if isinstance(error, artifacts.ArtifactError) else "ARTIFACT_INTEGRITY"
+            )
             return self._artifact_failure(code, result=report)
         if len(png) > MAX_PREVIEW_BYTES:
             return success(report, preview="omitted: open diagram.png by its path")
