@@ -1,6 +1,6 @@
 # S07 — Controlled Rendering Vertical Slice
 
-Date: 2026-11-03 | Tasks: M3-01..04 | Branch: `codex/s07-controlled-rendering`, from `f3f0789` | Package: `0.4.0a1` | Code head: `cddb497`
+Date: 2026-11-03 | Tasks: M3-01..04 | Branch: `codex/s07-controlled-rendering`, from `f3f0789` | Package: `0.4.0a1` at `cddb497`, then `0.4.0a2` with the [review fixes](S07-fable-review.md#fixes) | Code head: `cddb497` for everything below unless stated
 
 **Result: the renderer is implemented and passes all 14 lanes and 959 tests locally and in [actual CI](#actual-ci) at `cddb497`. M3 is not closed.** [Fable/High requested changes](S07-fable-review.md) on three P2 findings, and the owner has not inspected the output. The contract is in the [core contract](../../design/core-contract.md#controlled-rendering).
 
@@ -19,7 +19,7 @@ Date: 2026-11-03 | Tasks: M3-01..04 | Branch: `codex/s07-controlled-rendering`, 
 |---|---|---|
 | Repeatable CLI render from a clean setup | Met | A fresh environment from `uv.lock` and a clean wheel install outside the checkout both render; see [clean setup](#clean-setup). Two renders of one input produce identical SVG, PNG and graph bytes |
 | Invalid input cannot bypass validation | Met | `render_model` is the only entry point. 31 invalid and malformed inputs run in both modes, with every later render step replaced by a failing stub |
-| Usable SVG and PNG with a complete bundle | Met in tests for these views, but a tall or wide layout can publish a downscaled PNG ([P2-3](S07-fable-review.md#p2-3-a-tall-or-wide-layout-publishes-a-downscaled-png-as-complete)); owner inspection pending | All 19 views of the existing fixtures render, together reaching all 148 catalog types. The SVG's content is checked against the graph, and the PNG structurally. This session inspected samples; see [inspection](#inspection) |
+| Usable SVG and PNG with a complete bundle | Met in tests; a tall or wide layout's shrunken PNG is now disclosed ([P2-3](S07-fable-review.md#p2-3-a-tall-or-wide-layout-publishes-a-downscaled-png-as-complete)); owner inspection pending | All 19 views of the existing fixtures render, together reaching all 148 catalog types. The SVG's content is checked against the graph, and the PNG structurally. This session inspected samples; see [inspection](#inspection) |
 | Required security tests pass | Met | `render-security` covers path, symlink, isolation, timeout, code, Graphviz and SVG injection and resource limits; see [validation](#validation) |
 
 M3 also needs the disposition of the [Fable/High review](S07-fable-review.md) under D-021. It requests changes, and its findings are open.
@@ -93,6 +93,15 @@ Three runs of each size on this Mac, with a connected synthetic graph of labeled
 | 100 / 150 | 0.34, 0.34, 0.33 | 127544 | 681081 |
 | 200 / 300 | 0.49, 0.49, 0.49 | 253636 | 1283412 |
 
+The table above has no icons. After the [review](S07-fable-review.md), the root session measured real icons and traffic edges with the pixel limit lifted, once each:
+
+| Entities / relationships | Seconds | PNG megapixels, limit 32 |
+|---|---|---|
+| 100 / 150, labeled | 0.6 | 12.2 |
+| 150 / 225, labeled | 0.9 | 17.6 |
+| 197 / 300, unlabeled | 1.1 | 28.9 |
+| 197 / 300, labeled | 1.4 | 38.0, refused under the shipped limit |
+
 ### Inspection
 
 This session looked at the PNG output of the hybrid, AWS, on-premises, EKS and Kubernetes fixtures and at a Thai sample. Icons, cluster nesting, edges, the legend, DRAFT lines and the Thai text with its marks are present and legible. An independent renderer, `rsvg-convert` 2.63.4, also rasterized the Azure and Thai SVGs, showing the embedded icons with no file beside them. These are engineering checks, not owner acceptance. T-014 Thai inspection and the owner's review remain open.
@@ -111,7 +120,7 @@ These states were written from the local gate, and the same tests then passed in
 | FR-043 | Met locally | The result lists artifact paths and checksums, and `rendered` is true only after publication |
 | FR-044 | Not implemented | P1, by design |
 | FR-045 | Met locally | The closed schema, literal labels, and a read-back of the DOT through Graphviz. See P-026 on "reject" |
-| FR-046 | Partly; see P2-1 and P2-2 in the [review](S07-fable-review.md) | View limits and nesting depth, with a suggestion to split. Automatic generation is P1 |
+| FR-046 | Met locally after the [review fixes](S07-fable-review.md#fixes); numbers refine in M4 | View limits, nesting depth and the finished image's pixel and file limits, with a suggestion to split. Automatic generation is P1 |
 | FR-047 | Met locally | Manifest test against each named field |
 | FR-048 | Partly | Approved icons, native labels and grouping conventions. Reference comparison is M4 |
 | NFR-001 | Met on this Mac | Identical SVG, PNG and graph bytes across repeat renders. The wheel route matches the lock route, and two-machine comparison is M6 |

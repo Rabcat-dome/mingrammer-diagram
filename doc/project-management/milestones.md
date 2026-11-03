@@ -84,7 +84,7 @@ Status: Not started. Implementation: Sol/Medium; review: Fable/High for semantic
 | M4-01 | Build AWS, Azure, GCP, Huawei and on-premises reference models | M2 + M3 -> T-001..005 with expected semantics |
 | M4-02 | Build one hybrid model containing all five environments | M4-01 -> T-006; explicit link types/trust boundaries |
 | M4-03 | Verify TB/LR views, legends, icons, English/Thai labels, non-silent omissions and provider-reference fidelity | M4-01..02 + M4-05 + S01 official references -> reviewed samples, documented deviations and T-016 evidence; FR-048 |
-| M4-04 | Add structural/visual regression checks; measure chosen limits and performance | M3 -> normalized graph baseline, reviewed visual baseline, T-012 rejection evidence |
+| M4-04 | Add structural/visual regression checks; measure chosen limits and performance with icon views, where the pixel limit can bind before 200 / 300 | M3 -> normalized graph baseline, reviewed visual baseline, T-012 rejection evidence |
 | M4-05 | Build detailed Kubernetes subviews and provider-mapping fixtures | M2-06 + M3 -> T-017: workload/Pod/node/namespace, Ingress/Service, storage/config/security relationships and cross-view stable IDs; cover EKS/AKS/GKE/CCE/on-premises |
 
 Exit: six reference scenario families and their required Kubernetes detail subviews inspected by the owner/reviewer; T-017 passes and all required catalog entries have resolution/rule fixtures even if not all appear in one image. Record performance measurements; P1 automatic splitting and 200/300 stress work can remain deferred explicitly.

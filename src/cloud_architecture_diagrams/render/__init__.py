@@ -13,11 +13,18 @@ from pydantic import BaseModel, Field
 
 from .. import __version__
 from ..catalog import catalog
-from ..diagnostics import ValidationResult
+from ..diagnostics import Diagnostic, ValidationResult
 from ..models import Architecture, View
 from ..validation import Mode, validate_model
 from .bundle import OutputRoot
-from .checks import check_content, check_png, check_svg, check_undistorted, finalize_svg
+from .checks import (
+    check_content,
+    check_png,
+    check_svg,
+    check_undistorted,
+    finalize_svg,
+    png_scale,
+)
 from .draw import build_dot
 from .errors import MESSAGES, REQUEST_CODES, RenderFailure, diagnostic
 from .execution import ENGINE_LOG, ISOLATION, Engine, check_fonts_used, find_engine, run_engine
@@ -162,13 +169,14 @@ def _manifest(
     fonts: list[dict[str, str]],
     icons: dict[str, VerifiedIcon],
     size: tuple[int, int],
+    scale: float,
     files: dict[str, bytes],
     limits: Limits,
 ) -> dict[str, Any]:
     """FR-047. No timestamps or host paths, so the same input stays comparable across machines."""
     packs = catalog().packs
     return {
-        "manifest_version": "1.0.0",
+        "manifest_version": "1.1.0",
         "status": "complete",
         "bundle_id": bundle_id,
         "package_version": __version__,
@@ -214,7 +222,7 @@ def _manifest(
             key=lambda item: item["reference"],
         ),
         "rights": rights_report(graph),
-        "png": {"width": size[0], "height": size[1]},
+        "png": {"width": size[0], "height": size[1], "scale": scale},
         "artifacts": {
             name: {"bytes": len(data), "sha256": _digest(data), "media_type": MEDIA_TYPES[name]}
             for name, data in sorted(files.items())
@@ -231,7 +239,7 @@ def _draw(
     root: OutputRoot,
     engine: Engine,
     limits: Limits,
-) -> tuple[str, dict[str, bytes]]:
+) -> tuple[str, dict[str, bytes], list[Diagnostic]]:
     icons = verified_icons(graph, limits)
     dot = build_dot(graph, icons)
     with root.request() as (directory, request):
@@ -245,6 +253,12 @@ def _draw(
     tree = check_svg(svg, {icon.sha256 for icon in icons.values()})
     check_undistorted(tree)
     check_content(tree, graph, icons)
+    scale = png_scale(tree, size)
+    if scale < 1:
+        warning = diagnostic("RENDER_PNG_SCALED", "/png", severity="warning")
+        validation = validation.model_copy(
+            update={"diagnostics": [*validation.diagnostics, warning]}
+        )
     files = {
         "diagram.svg": svg,
         "diagram.png": png,
@@ -267,9 +281,20 @@ def _draw(
     }
     bundle_id = f"{model.metadata.id}--{view.id}--{secrets.token_hex(8)}"
     manifest = _manifest(
-        bundle_id, payload, view, graph, validation, engine, fonts, icons, size, files, limits
+        bundle_id,
+        payload,
+        view,
+        graph,
+        validation,
+        engine,
+        fonts,
+        icons,
+        size,
+        scale,
+        files,
+        limits,
     )
-    return bundle_id, files | {"manifest.json": _json(manifest)}
+    return bundle_id, files | {"manifest.json": _json(manifest)}, validation.diagnostics
 
 
 def render_model(
@@ -301,12 +326,15 @@ def render_model(
         validation = validation.model_copy(update={"diagnostics": result.diagnostics})
         engine = find_engine()
         with OutputRoot(output) as root:
-            bundle_id, files = _draw(payload, model, view, graph, validation, root, engine, limits)
+            bundle_id, files, diagnostics = _draw(
+                payload, model, view, graph, validation, root, engine, limits
+            )
             path = root.publish(bundle_id, files)
     except RenderFailure as failure:
         result.diagnostics = [*result.diagnostics, failure.diagnostic()]
         return result
     result.rendered = True
+    result.diagnostics = diagnostics
     result.pending_checks = []
     result.bundle_id = bundle_id
     result.bundle_path = str(path)

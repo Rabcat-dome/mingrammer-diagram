@@ -32,6 +32,8 @@ ROOT_TRANSFORM = re.compile(
 )
 ICON_HREF = re.compile(r"^icons/(?P<sha>[0-9a-f]{64})\.png$")
 DATA_PNG = "data:image/png;base64,"
+SVG_SIZE = re.compile(r"^(?P<points>[0-9]+(?:\.[0-9]+)?)pt$")
+PIXELS_PER_POINT = 96 / 72
 
 
 def _local(tag: str) -> str:
@@ -173,6 +175,25 @@ def check_content(root: ET.Element, graph: RenderGraph, icons: dict[str, Verifie
         legend = groups.get("legend")
         if legend is None:
             raise missing()
+
+
+def _full_size(root: ET.Element, key: str) -> float:
+    match = SVG_SIZE.match(root.get(key, ""))
+    if match is None or float(match["points"]) <= 0:
+        raise RenderFailure("RENDER_SVG_UNSAFE", "/svg")
+    return float(match["points"]) * PIXELS_PER_POINT
+
+
+def png_scale(root: ET.Element, size: tuple[int, int]) -> float:
+    """Cairo shrinks an image past its side limit and only warns, so compare it with the SVG."""
+    width, height = size
+    full_width, full_height = _full_size(root, "width"), _full_size(root, "height")
+    if abs(width - full_width) <= 1 and abs(height - full_height) <= 1:
+        return 1.0
+    scale = min(1.0, width / full_width, height / full_height)
+    if abs(width - full_width * scale) > 2 or abs(height - full_height * scale) > 2:
+        raise RenderFailure("RENDER_PNG_INVALID", "/png")
+    return round(scale, 3)
 
 
 def check_png(data: bytes, limits: Limits) -> tuple[int, int]:

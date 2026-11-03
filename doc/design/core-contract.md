@@ -1,6 +1,6 @@
 # Core Contract v1.0.0
 
-S05 / M1, S06 / M2 and S07 / M3 implementation guide, subordinate to the single [requirements](../requirements/requirements.md). Package `0.4.0a1` is a core development version; installed Work plugin `0.1.0-alpha.3` remains the independent S04 fixture. This change does not replace that plugin. The renderer is an engineering slice, so coverage, visual quality and official-reference comparison stay with M4.
+S05 / M1, S06 / M2 and S07 / M3 implementation guide, subordinate to the single [requirements](../requirements/requirements.md). Package `0.4.0a2` is a core development version; installed Work plugin `0.1.0-alpha.3` remains the independent S04 fixture. This change does not replace that plugin. The renderer is an engineering slice, so coverage, visual quality and official-reference comparison stay with M4.
 
 ## Setup and discovery
 
@@ -18,7 +18,7 @@ uv run --locked cloud-diagrams render --output rendered --view detail < tests/fi
 uv run --locked python scripts/quality_gate.py
 ```
 
-Exit 0 means the command succeeded; exit 2 means invalid input, or a view that cannot be drawn as asked; exit 4 means a render failed and published nothing, with JSON diagnostics on stdout; exit 64 means the command was used incorrectly. A result with a core error stops there, reporting `validation_scope: core_only` and `catalog`, `provider_rules` and `render` as pending. A sound model also runs the semantic layer and reports `core_catalog_provider`, with `catalog_version` and only `render` pending on a `validate` result. A published `render` result reports nothing pending. Lenient mode marks a draft and turns one thing into a warning, an unknown `service_type`, keeping its provider, type and label. Every other error stays fatal.
+Exit 0 means the command succeeded; exit 2 means invalid input, or a view that cannot be drawn as asked, including a finished image over the pixel or file limit; exit 4 means this render failed and published nothing, with JSON diagnostics on stdout; exit 64 means the command was used incorrectly. A result with a core error stops there, reporting `validation_scope: core_only` and `catalog`, `provider_rules` and `render` as pending. A sound model also runs the semantic layer and reports `core_catalog_provider`, with `catalog_version` and only `render` pending on a `validate` result. A published `render` result reports nothing pending. Lenient mode marks a draft and turns one thing into a warning, an unknown `service_type`, keeping its provider, type and label. Every other error stays fatal.
 
 Discovery emits the [executable schema](../../schemas/architecture-v1.schema.json). The gate compares it with the Python model and checks valid fixtures with an independent JSON Schema validator. JSON Schema expresses structural checks; cross-field/reference semantics require the core validator too. [Pydantic strict mode](https://docs.pydantic.dev/latest/concepts/strict_mode/) supplies strict types and [schema generation](https://docs.pydantic.dev/latest/concepts/json_schema/) derives the machine contract from the same definitions.
 
@@ -119,11 +119,15 @@ Clusters form a tree, and these dimensions do not. Each entity therefore nests u
 | Memory | 1 GiB | Sampled process-group RSS, not a kernel cap |
 | Temporary storage | 256 MiB | Sampled request-directory bytes, not a quota |
 | Each file | 16 MiB | `RLIMIT_FSIZE`, then checked on read |
-| PNG pixels | 32,000,000 | Checked on the finished file |
+| PNG pixels | 32,000,000 | Checked on the finished file; exit 2 |
+| PNG side | 32,767 pixels | Cairo shrinks a larger image, which is compared with the SVG, recorded as `png.scale` and reported as `RENDER_PNG_SCALED` |
+
+The entity and relationship limit is an upper bound, not a promise that a view fits. The pixel limit is checked on the finished image, so it can refuse a view inside 200 / 300, most often one with many icons and labeled edges. M4-04 sizes these numbers from icon views. A file over 16 MiB also exits 2. Time, memory and temporary storage exit 4, because host load can move them.
 
 **Publication (FR-043, NFR-003, NFR-010).** The output root must be a real directory owned by the user and not writable by group or others, and a symbolic link or `..` anywhere in its path is refused. Access is held by descriptor. A random-suffix bundle name means no render overwrites another. Scratch lives in a hidden `.request-*` directory, which is removed on success, failure and SIGTERM, SIGINT or SIGHUP. SIGKILL cannot run cleanup, so it can leave one behind. Nothing is published until these pass:
 
 - The PNG's chunks and checksums, and the pixel limit.
+- The PNG's size against the SVG's. A uniform shrink is disclosed, and any other difference fails.
 - An allowlist over the final SVG's elements and attributes. Every `image` must be a base64 PNG whose digest is one of this render's verified icons; a script, an event handler, an external reference, a `style` or a document type fails.
 - Every selected entity, relationship, label, title line and icon really being in the SVG. Graphviz exits 0 even when an image cannot load, so its exit status proves little here.
 - No distortion: uniform root scaling, no rotation, and `preserveAspectRatio` that keeps each icon's proportions, as Azure's terms require.
@@ -133,11 +137,11 @@ The bundle is then written to a stage directory, read back and renamed into plac
 | File | Holds |
 |---|---|
 | `diagram.svg` | Portable image with icons embedded. Text stays text and names Noto first, so a viewer without those fonts falls back and its metrics can differ |
-| `diagram.png` | The same layout as a raster |
+| `diagram.png` | The same layout as a raster, at the `png.scale` the manifest records |
 | `model.json` | The exact input bytes |
 | `view.json` | The view, its excluded IDs and the normalized graph |
 | `diagnostics.json` | Validation and render warnings |
-| `manifest.json` | FR-047: package, schema, catalog, engine and font versions, input digest, mode, draft state, limits, isolation, icons with their digests, rights, and output checksums. It holds no timestamp or host path, so only `bundle_id` differs between repeat renders |
+| `manifest.json` | FR-047: package, schema, catalog, engine and font versions, input digest, mode, draft state, limits, isolation, icons with their digests, rights, PNG size and scale, and output checksums. It holds no timestamp or host path, so only `bundle_id` differs between repeat renders |
 
 **Strict and lenient (T-007).** Strict rejects an unknown `service_type` and draws nothing. Lenient draws it in a dashed frame with the catalog's approved generic symbol, keeping its provider, type and name, and adds `RENDER_GENERIC_FALLBACK`. A lenient image always carries a visible `DRAFT` line, and the manifest records `draft` and each fallback. A provider icon is never borrowed.
 

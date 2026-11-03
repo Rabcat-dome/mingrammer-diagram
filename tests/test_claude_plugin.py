@@ -215,6 +215,23 @@ def test_skill_discloses_what_validation_leaves_unchecked() -> None:
         assert limit in caveat, limit
 
 
+def test_skill_says_lenient_mode_bypasses_no_other_error() -> None:
+    # S06 once reworded this to say the opposite, and nothing failed.
+    model = load(FIXTURES / "core-valid.json")
+    model["resources"][0]["taxonomy"] = "made.up"
+    result = validate_json(json.dumps(model).encode(), mode="lenient")
+    assert not result.valid
+    assert "CATALOG_TAXONOMY_UNKNOWN" in {item.code for item in result.diagnostics}
+    skill = (SKILL / "SKILL.md").read_text()
+    assert "It bypasses no other error" in skill and "bypasses every" not in skill
+
+
+def test_skill_names_the_render_size_outcomes() -> None:
+    skill = (SKILL / "SKILL.md").read_text()
+    for code in ("RENDER_PIXEL_LIMIT", "RENDER_PNG_SCALED"):
+        assert code in skill, code
+
+
 def test_skill_discloses_the_huawei_icon_blocker() -> None:
     # A Huawei model validates, so the skill must still state both limits on its icons.
     blockers = capabilities()["release_blockers"]

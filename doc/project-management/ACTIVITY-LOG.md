@@ -398,3 +398,9 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - [S07 / M3](evidence/S07-fable-review.md): changes requested on three P2 findings in output-size handling, with five P3 findings. The sandbox, escaping, publication, cleanup, mapping and strict and lenient behavior held. One number differed in the rerun: an unlabeled 197 / 300 view with traffic edges only measures 28.9 Mpx, under the limit, against the reviewer's 34 Mpx with mixed kinds.
 - [M7](evidence/M7-fable-review.md): `c5f74b4..c6a59e5` approved, including the Medium and Low fixes, with one P2 at the head from S06 and three P3 findings.
 - No finding is fixed, no code changed, and M3 and M7 stay open. The review worktrees were removed.
+
+## 2026-11-03 — Fixes for the Fable review findings
+
+- The owner asked to fix the P2 findings and re-review. Claude Opus 5.5 fixed P2-1, P2-2 and P2-3 from the [M3 review](evidence/S07-fable-review.md#fixes) in core `0.4.0a2`, and corrected the skill's lenient-mode sentence from the [M7 review](evidence/M7-fable-review.md).
+- P2-2 changed the contract, the diagnostic and M4-04, not the limits or the layout. P-028 records why a shrunken PNG warns rather than fails.
+- The local gate passes 14 lanes and 971 tests with none skipped, and all 10 sabotage changes failed tests. The P3 findings are not fixed. M3 and M7 stay open.

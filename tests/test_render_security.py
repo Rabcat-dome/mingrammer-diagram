@@ -4,14 +4,17 @@ import base64
 import hashlib
 import json
 import os
+import re
 import shutil
 import signal
 import socket
 import stat
+import struct
 import subprocess
 import sys
 import threading
 import time
+import zlib
 from collections.abc import Callable
 from dataclasses import replace
 from pathlib import Path
@@ -26,6 +29,7 @@ from render_helpers import (
     codes,
     encode,
     graph_of,
+    icon_model,
     joined_text,
     large_model,
     load,
@@ -55,7 +59,7 @@ from cloud_architecture_diagrams.render.execution import (
     sandboxed,
 )
 from cloud_architecture_diagrams.render.graph import GraphIcon, Mapper, map_view
-from cloud_architecture_diagrams.render.icons import verified_icon, verified_icons
+from cloud_architecture_diagrams.render.icons import PNG_SIGNATURE, verified_icon, verified_icons
 from cloud_architecture_diagrams.render.limits import LIMITS, Limits
 
 GOOD = (FIXTURES / "core-valid.json").read_bytes()
@@ -509,8 +513,79 @@ def test_an_invalid_png_blocks_the_bundle(
 ) -> None:
     output_engine(monkeypatch, png=alter)
     output = tmp_path / "out"
-    assert codes(render(GOOD, output)) == [code]
+    result = render(GOOD, output)
+    assert codes(result) == [code]
+    assert renderer.exit_status(result) == (2 if code == "RENDER_PIXEL_LIMIT" else 4)
     assert tree(output) == []
+
+
+def rebuilt_png(width: int, height: int) -> bytes:
+    """A structurally valid PNG of any size, as a compromised engine could write."""
+
+    def chunk(kind: bytes, body: bytes) -> bytes:
+        return len(body).to_bytes(4) + kind + body + zlib.crc32(kind + body).to_bytes(4)
+
+    header = struct.pack(">IIBBBBB", width, height, 8, 0, 0, 0, 0)
+    return PNG_SIGNATURE + chunk(b"IHDR", header) + chunk(b"IDAT", b"x") + chunk(b"IEND", b"")
+
+
+def resized(resize: Callable[[int, int], tuple[int, int]]) -> Callable[[bytes], bytes]:
+    return lambda raw: rebuilt_png(*resize(*struct.unpack(">II", raw[16:24])))
+
+
+@pytest.mark.parametrize(
+    "resize",
+    [
+        lambda width, height: (width * 2, height * 2),
+        lambda width, height: (width, height // 2),
+        lambda width, height: (width * 2, height),
+    ],
+)
+def test_a_png_of_another_shape_blocks_the_bundle(
+    resize: Callable[[int, int], tuple[int, int]], tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    output_engine(monkeypatch, png=resized(resize))
+    output = tmp_path / "out"
+    result = render(GOOD, output)
+    assert codes(result) == ["RENDER_PNG_INVALID"]
+    assert renderer.exit_status(result) == 4 and tree(output) == []
+
+
+def test_a_uniformly_smaller_png_is_disclosed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    output_engine(monkeypatch, png=resized(lambda width, height: (width // 2, height // 2)))
+    result = render(GOOD, tmp_path / "out")
+    assert result.rendered, codes(result)
+    assert manifest_of(result)["png"]["scale"] == pytest.approx(0.5, abs=0.05)
+    assert [item.severity for item in result.diagnostics if item.code == "RENDER_PNG_SCALED"] == [
+        "warning"
+    ]
+
+
+@pytest.mark.parametrize("size", [b'width="100%"', b'width="0pt"'])
+def test_an_svg_without_a_usable_size_blocks_the_bundle(
+    size: bytes, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def alter(raw: bytes) -> bytes:
+        changed, count = re.subn(rb'(?<=<svg )width="[^"]*"', size, raw, count=1)
+        assert count == 1
+        return changed
+
+    output_engine(monkeypatch, svg=alter)
+    output = tmp_path / "out"
+    assert codes(render(GOOD, output)) == ["RENDER_SVG_UNSAFE"]
+    assert tree(output) == []
+
+
+def test_an_in_bound_view_over_the_pixel_limit_asks_for_a_split(tmp_path: Path) -> None:
+    # The real engine and real icons, with a lower limit so that a new layout cannot change this.
+    output = tmp_path / "out"
+    result = render(icon_model(20, 30), output, limits=replace(LIMITS, pixels=100_000))
+    assert codes(result) == ["RENDER_PIXEL_LIMIT"]
+    assert renderer.exit_status(result) == 2 and tree(output) == []
+    failure = next(item for item in result.diagnostics if item.code == "RENDER_PIXEL_LIMIT")
+    assert "Split" in (failure.remedy or "")
 
 
 def test_output_links_and_missing_files_block_the_bundle(
@@ -550,8 +625,9 @@ def test_an_oversize_output_blocks_the_bundle(
 
     monkeypatch.setattr(renderer, "run_engine", grow)
     output = tmp_path / "out"
-    assert codes(render(GOOD, output)) == ["RENDER_ARTIFACT_LIMIT"]
-    assert tree(output) == []
+    result = render(GOOD, output)
+    assert codes(result) == ["RENDER_ARTIFACT_LIMIT"]
+    assert renderer.exit_status(result) == 2 and tree(output) == []
 
 
 def test_a_root_replaced_during_rendering_gets_no_bundle(

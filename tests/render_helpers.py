@@ -118,6 +118,49 @@ def amplified_model() -> dict[str, Any]:
     return model
 
 
+def icon_model(entities: int, relationships: int) -> dict[str, Any]:
+    """A view of real icons with labeled edges, which a labeled box does not measure."""
+    model = load("core-valid.json")
+    model["resources"] = [
+        {
+            "id": f"n{index}",
+            "name": f"Resource number {index} with a long label",
+            "provider": "gcp",
+            "service_type": "gcp.compute.compute_engine",
+            "taxonomy": "compute.vm",
+            "placement": {
+                "scope_refs": ["project"],
+                "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["subnet"]}],
+            },
+        }
+        for index in range(entities)
+    ]
+    model["relationships"] = [
+        {
+            "id": f"r{index}",
+            "source_ref": f"n{index % entities}",
+            "target_ref": f"n{(index * 7 + 13) % entities}",
+            "kind": "traffic",
+            "label": f"edge {index}",
+        }
+        for index in range(relationships)
+    ]
+    model["views"] = [
+        {
+            "id": "main",
+            "title": "Main",
+            "entity_refs": [
+                "project",
+                "vpc",
+                "subnet",
+                *(item["id"] for item in model["resources"]),
+            ],
+            "relationship_refs": [item["id"] for item in model["relationships"]],
+        }
+    ]
+    return model
+
+
 def large_model(entities: int, relationships: int) -> dict[str, Any]:
     """A connected view at a chosen size, for limits and for real engine time."""
     model = single_resource_model()

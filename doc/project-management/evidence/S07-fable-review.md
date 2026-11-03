@@ -2,7 +2,7 @@
 
 Date: 2026-11-03 (Asia/Bangkok). Reviewer: Claude Fable 5.1 (`claude-fable-5-1`) / High, in a fresh agent with no prior project context, started from the owner's Claude Opus 5.5 session. This is the M3 review under [D-021](../decisions.md#confirmed-user-direction). Claude Opus 5.5 wrote the renderer, so reviewer and implementer share a vendor.
 
-**Disposition: changes requested, on three P2 findings, all in output-size handling.** There are no P0 or P1 findings, and five more are P3. M3 stays open until these are disposed of and the owner has inspected the output.
+**Disposition at `6353ef1`: changes requested, on three P2 findings, all in output-size handling.** There are no P0 or P1 findings, and five more are P3. The P2 findings now have [fixes](#fixes), which need their own review. M3 stays open until that passes and the owner has inspected the output.
 
 ## Identity and scope
 
@@ -95,11 +95,36 @@ The rest of what the reviewer checked held, including the test counts, the CI ru
 
 SIGHUP; memory, temporary-storage and CPU limits through the CLI at real sizes; Thai visual inspection; a hostile `dot` on `PATH`; parent-directory races, which need a second user; the `rsvg-convert` cross-check; and a second machine. The sandbox probe ran `/bin/bash` under the renderer's profile, as the tests do, not `dot` itself. The reviewer did not exercise the owner's installed plugin.
 
+## Fixes
+
+On the owner's instruction, Claude Opus 5.5 fixed the three P2 findings in core `0.4.0a2`. The P3 findings are not touched. The local gate passes 14 lanes and 971 tests with none skipped, 12 more than before.
+
+| Finding | Fix | Check |
+|---|---|---|
+| P2-1 | `RENDER_PIXEL_LIMIT` and `RENDER_ARTIFACT_LIMIT` are now request codes and exit 2. Time, memory and temporary storage stay at exit 4, because host load can move them | Exit status is asserted for both codes, and a real render of an in-bound icon view under a lowered limit exits 2 and publishes nothing |
+| P2-2 | The contract and the diagnostic now say the pixel limit can refuse a view inside 200 / 300, and M4-04 names icon views. The limits and the layout did not change. This follows the root session's note above, which went to the owner before the instruction to fix | A 150 / 225 icon view renders at full size under the shipped limits, and the [S07 evidence](S07-controlled-rendering.md#measured-render-time) adds icon measurements |
+| P2-3 | Every render compares the PNG's size with the SVG's. A uniform shrink publishes with `png.scale` in the manifest, now version 1.1.0, and a `RENDER_PNG_SCALED` warning in the result and `diagnostics.json`. Any other difference fails with `RENDER_PNG_INVALID`. See P-028 for why a shrink warns and does not fail | A real 197-icon render reports the scale and the warning, all fixture views stay at 1.0, and PNGs of another shape or an SVG with no usable size block the bundle |
+
+Each of these 10 changes went into the real source, ran the new and changed tests, and was restored, with the sources hashing the same afterwards:
+
+| Change | Tests failed |
+|---|---|
+| Pixel limit back to exit 4 | 2 |
+| Artifact limit back to exit 4 | 1 |
+| Scale never measured | 7 |
+| Warning not added | 2 |
+| Warning dropped from the result | 2 |
+| Scale left out of the manifest | 4 |
+| Shape comparison removed | 3 |
+| A zero SVG size accepted | 1 |
+| Skill says lenient bypasses every other error | 1 |
+| Skill drops the scaled warning | 1 |
+
 ## Disposition
 
 | Finding | State |
 |---|---|
-| P2-1, P2-2, P2-3 | Open for the owner; not fixed |
+| P2-1, P2-2, P2-3 | Fixed in core `0.4.0a2`; re-review pending |
 | P3-1 to P3-5 | Open for the owner; not fixed |
 
 A fix needs another review of the changed code. This approves nothing beyond what it states, and it does not replace the owner's inspection of the output.

@@ -64,8 +64,12 @@ MESSAGES = {
         "No bundle was published. Check the Graphviz installation, then retry.",
     ),
     "RENDER_PIXEL_LIMIT": (
-        "The generated PNG exceeds the pixel limit.",
+        "The finished PNG exceeds the pixel limit, which a view can reach inside its entity limit.",
         "Split the view into smaller views.",
+    ),
+    "RENDER_PNG_SCALED": (
+        "The PNG was shrunk to fit the raster side limit, so its text is smaller than in the SVG.",
+        "Use diagram.svg for full size, or split the view into smaller views.",
     ),
     "RENDER_ARTIFACT_LIMIT": (
         "A generated file exceeds the artifact size limit.",
@@ -100,9 +104,16 @@ MESSAGES = {
         "Use a catalog type before treating this diagram as final; lenient output stays a draft.",
     ),
 }
-# These describe the request rather than the host, so they exit like an invalid model.
+# These describe the request rather than the host, so they exit like an invalid model. The time,
+# memory and temporary limits stay with the run, because host load can move them.
 REQUEST_CODES = frozenset(
-    {"RENDER_VIEW_TOO_LARGE", "RENDER_GROUP_DEPTH_LIMIT", "RENDER_TYPE_BLOCKED"}
+    {
+        "RENDER_VIEW_TOO_LARGE",
+        "RENDER_GROUP_DEPTH_LIMIT",
+        "RENDER_TYPE_BLOCKED",
+        "RENDER_PIXEL_LIMIT",
+        "RENDER_ARTIFACT_LIMIT",
+    }
 )
 
 

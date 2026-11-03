@@ -19,6 +19,7 @@ from render_helpers import (
     codes,
     encode,
     graph_of,
+    icon_model,
     joined_text,
     large_model,
     load,
@@ -244,6 +245,36 @@ def test_manifest_records_what_fr_047_requires(
     assert manifest["assets"] and all(item["sha256"] for item in manifest["assets"])
     assert all(item["source_version"] for item in manifest["assets"])
     assert manifest["png"]["width"] > 0
+
+
+def test_fixture_views_keep_the_png_at_full_size(
+    rendered: dict[tuple[str, str], RenderResult],
+) -> None:
+    for result in rendered.values():
+        assert manifest_of(result)["png"]["scale"] == 1.0
+        assert "RENDER_PNG_SCALED" not in {item.code for item in result.diagnostics}
+
+
+def test_a_tall_view_discloses_its_shrunken_png(tmp_path: Path) -> None:
+    # Cairo shrinks past 32767 pixels and exits 0, so only this comparison can say so.
+    result = render(icon_model(197, 0), tmp_path / "out")
+    assert result.rendered and exit_status(result) == 0, codes(result)
+    png = manifest_of(result)["png"]
+    full_height = float(svg_root(result).get("height", "").removesuffix("pt")) * 96 / 72
+    assert max(png["width"], png["height"]) == 32767
+    assert png["scale"] == pytest.approx(32767 / full_height, abs=0.001) and png["scale"] < 1
+    assert [item.severity for item in result.diagnostics if item.code == "RENDER_PNG_SCALED"] == [
+        "warning"
+    ]
+    recorded = json.loads(bundle_files(result)["diagnostics.json"])["diagnostics"]
+    assert "RENDER_PNG_SCALED" in {item["code"] for item in recorded}
+
+
+def test_a_large_icon_view_inside_the_limits_renders_at_full_size(tmp_path: Path) -> None:
+    result = render(icon_model(150, 225), tmp_path / "out")
+    assert result.rendered, codes(result)
+    png = manifest_of(result)["png"]
+    assert png["scale"] == 1.0 and png["width"] * png["height"] <= LIMITS.pixels
 
 
 def test_bundle_is_portable_and_free_of_host_details(

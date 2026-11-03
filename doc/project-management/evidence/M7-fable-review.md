@@ -2,7 +2,7 @@
 
 Date: 2026-11-03 (Asia/Bangkok). Reviewer: Claude Fable 5.1 (`claude-fable-5-1`) / High, in a fresh agent with no prior project context, started from the owner's Claude Opus 5.5 session. This is the M7 review under [D-021](../decisions.md#confirmed-user-direction). Claude Opus 5.5 wrote the code, so reviewer and implementer share a vendor.
 
-**Disposition: approved for `c5f74b4..c6a59e5`.** The Medium and Low fixes hold at the root, and they still hold at `6353ef1`. One P2 exists at that head, in a sentence S06 changed, so it falls outside the reviewed range. It and three P3 findings are open. M7 is not closed, because a second machine and interactive permission prompts remain unverified.
+**Disposition: approved for `c5f74b4..c6a59e5`.** The Medium and Low fixes hold at the root, and they still hold at `6353ef1`. One P2 existed at that head, in a sentence S06 changed, so it falls outside the reviewed range. It is now fixed, and three P3 findings are open. M7 is not closed, because a second machine and interactive permission prompts remain unverified.
 
 ## Identity and scope
 
@@ -57,4 +57,4 @@ Edge observations, not findings: closed stdin gives a traceback and exit 3, clos
 
 ## Disposition
 
-No finding is fixed yet, and each is open for the owner.
+On the owner's instruction, Claude Opus 5.5 corrected the P2 sentence to "bypasses no other error". A new test checks the core's behavior and the wording, and restoring the old wording fails it. The fix needs its own review, which runs with the [M3 fixes](S07-fable-review.md#fixes). The three P3 findings are not fixed and stay open for the owner.
