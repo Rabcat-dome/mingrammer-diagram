@@ -12,6 +12,8 @@
       "A region lists its account, subscription, project or IAM project in scope_refs so that views nest it there once. That states the scope uses the region, not that it owns it. The Google Cloud VPC is global, so its region stays a separate box.",
       "Hub-and-spoke through on-premises is the stated choice: every link runs between on-premises and one cloud. No cloud-to-cloud link is modeled or implied, and each cloud has exactly one stated link.",
       "Link products are chosen here: AWS Direct Connect, Google Cloud Dedicated Interconnect and Huawei Cloud Direct Connect are dedicated links ending on the on-premises router. Azure VPN Gateway is an IPsec VPN ending on the on-premises firewall.",
+      "This mix of link products and endpoints was chosen for layout, after a sweep of valid combinations, because it draws with no link crossing a trust zone.",
+      "That choice is not an architecture recommendation.",
       "The schema has no dedicated-link kind, so dedicated links use kind peering and the tunnel uses kind vpn. Links are undirected, which here means two-way with no stated initiator. Bandwidth, redundancy, tunnel count and routing are not supplied.",
       "IPsec on the Azure VPN link is an assumption, since the brief names no protocol. The three dedicated links state no encryption. No internal on-premises link, such as router to firewall, is modeled.",
       "Connectivity endpoints are drawn outside the workload trust zones, because the brief states no zone for them. The on-premises router and firewall are the only on-premises endpoints, and neither is linked to a workload.",

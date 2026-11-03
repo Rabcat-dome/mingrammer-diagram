@@ -81,7 +81,8 @@ Pages opened on 2026-11-03 in the built-in browser. Official images are compared
 | Azure, GCP | `overview` leaves out subscription, resource groups and projects, which `ownership` and `projects` show | S01 asks that ownership stay apart from the network |
 | GCP | Regions are not nested inside the VPC | A VPC is global and a region is not its child in the model. `locations` draws by region |
 | All | Group kinds are text, with no small corner icon. A group whose type has an icon holds it as a separate tile | Graphviz has no corner placement for an image in a cluster, and this tile is what an edge can reach |
-| All | Layout comes from Graphviz, so tiers do not line up as in a hand-drawn diagram, some edges cross notes, and a vertical edge can stop short of a left-right icon | The automatic layout is the design. Fewer notes and a chosen direction reduce it |
+| All | Layout comes from Graphviz, so tiers do not line up as in a hand-drawn diagram, and some edges cross notes | The automatic layout is the design. Fewer notes and a chosen direction reduce it |
+| Left-right views | An edge arriving from above or below stops at the node's invisible top or bottom, up to the label's height from the icon. In the hybrid overview the replica arrow ends 89 pt above the Huawei database icon | The equal space above the icon keeps horizontal edges off the label, and it costs this. The owner can choose |
 | Hybrid | Dedicated links use kind `peering`, with a label naming the product | The schema has no dedicated-link kind |
 
 ## What changed in the renderer
@@ -92,11 +93,11 @@ The contract's [presentation paragraph](../../design/core-contract.md) states th
 |---|---|
 | A closed table of borders and fills per provider and kind, used only in a `provider`-style view | FR-048 |
 | A provider box is tinted only when a view holds several | D-008 starts from a white background |
-| Members with no edge form rows, through invisible edges that draw nothing | S07 recorded one long column. The AWS fixture went from 1868x5292 to about 2300x3800 |
+| Members with no edge form rows, through invisible edges that draw nothing | S07 recorded one long column. It trades height for width: the AWS catalog fixture went from 1868x5292 to 2803x4785 |
 | A left-right icon sits at its node's middle | Edges landed on label text, as a live session and this session's inspection both found |
 | A top-down legend lies flat, and an arrowhead appears only for a kind with a directed edge | Labels overprinted the vertical samples, and the legend showed arrows on undirected kinds |
 | A declared subnet, zone or rack is noted even when not selected | A view can drop those boxes and keep the fact, which also removed the repeated boxes |
-| A resource does not nest in a scope it does not declare or inherit | OBS was drawn inside an IAM project although its scope is the account |
+| A resource or boundary does not nest in a scope it does not declare or inherit | OBS was drawn inside an IAM project although its scope is the account, and the [review](S08-fable-review.md) showed a boundary could do the same |
 | A word up to three characters past the label width stays whole | `PersistentVolumeClaim` broke before its last letter |
 | More canvas and group margin | A wide label touched the canvas edge in `logical` |
 
@@ -113,12 +114,12 @@ The contract's [presentation paragraph](../../design/core-contract.md) states th
 
 ## Validation
 
-The local gate passes **15 lanes and 1,228 tests with none skipped**, at Python 3.13.7, uv 0.13.0 and Graphviz 16.1.0. Actual CI follows this commit.
+The local gate passes **15 lanes and 1,241 tests with none skipped**, at Python 3.13.7, uv 0.13.0 and Graphviz 16.1.0. Actual CI [run 41658114802](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41658114802), job 125993790820, passed the same 15 lanes and tests at `1ee4a58` from a clean checkout on the runner, which is this same Mac, and its wheel matches the local build at SHA-256 `143ea72aed4e7a13e03d01a93dab3a8a2a0f96a711c78092831fb659413713e3`. That run had 1,228 tests, before the [review fixes](S08-fable-review.md) added 13.
 
 | Lane | Tests | Work done |
 |---|---|---|
 | `render-security` | 226 | Tall views rebuilt, and a test that `render` creates a missing root privately |
-| `render-smoke` | 273 | Adds `tests/test_references.py`, every reference view, and the presentation tests |
+| `render-smoke` | 286 | Adds `tests/test_references.py`, every reference view, and the presentation tests |
 | `visual-regression` (new) | 65 | One structural and one image comparison per view, a check on the engine, and tests of the comparison itself |
 | `claude-plugin` | 55 | The skill's sentence on the output root |
 | Others | Unchanged in purpose | `schema-core` 91, `catalog-license` 76, `provider-semantics` 442 |
@@ -152,7 +153,7 @@ Each change went into the real source, ran its tests and was restored, and the f
 | Baseline image edited by hand | `visual-regression` | 1 |
 | The skill says the root must exist again | `claude-plugin` | 1 |
 
-All 14 failed their lane. The first try at the one-hop case left broken indentation, so its failure proved nothing. Repeated with valid code, `test_t005_rejects_a_subnet_paired_with_a_network_it_reaches_only_elsewhere` is the test that fails.
+All 14 failed their lane. The first try at the one-hop case left broken indentation, so its failure proved nothing. Repeated with valid code, `test_t005_rejects_a_subnet_paired_with_a_network_it_reaches_only_elsewhere` is the test that fails. The review fixes add three more: a boundary left out of the scope rule fails 3 tests, the second pass removed fails 2, and a web-view node that changes when CCE is added fails 1.
 
 ## Measurements
 
@@ -165,7 +166,7 @@ From [`scripts/measure_render.py`](../../../scripts/measure_render.py) on one Ap
 | 150 / 225 | Published, 23.3 Mpx | 1.16 / 1.22 | 1.00 / 1.01 | None |
 | 197 / 300 | Refused, `RENDER_PIXEL_LIMIT` | 1.81 / 1.83 | 1.65 / 1.67 | None |
 
-**Where the limits bind.** With the relationship count at 1.5 times the entities, labeled views publish up to 170 entities at 30.2 Mpx and are refused from 180. A connected top-down line shrinks its PNG from 120 entities and is refused from 140. Selecting more than 200 entities or 300 relationships is refused with `RENDER_VIEW_TOO_LARGE`, which is T-012's rejection evidence. So 200 / 300 is an upper bound, and these views reach the pixel limit first, each with exit 2 and a request to split. T-012's P1 part, 200 / 300 stability, stays deferred.
+**Where the limits bind.** With the relationship count at 1.5 times the entities, labeled views publish at every scanned size up to 170 entities, at up to 30.2 Mpx, and are refused at every scanned size from 180. A connected top-down line shrinks its PNG from 120 entities and is refused at every scanned size from 140. These are scan points in steps of 10 and size does not rise smoothly with entities, so neither is a sharp threshold: the reviewer's own run published 175 at 27.4 Mpx and refused a line at 135. Selecting more than 200 entities or 300 relationships is refused with `RENDER_VIEW_TOO_LARGE`, which is T-012's rejection evidence. So 200 / 300 is an upper bound, and these views reach the pixel limit first, each with exit 2 and a request to split. T-012's P1 part, 200 / 300 stability, stays deferred.
 
 Time is far from any limit: the slowest run is 1.83 s against 55 s.
 
@@ -192,6 +193,7 @@ Time is far from any limit: the slowest run is 1.83 s against 55 s.
 - **The reference comparison is by eye**, against one page per provider, and the colors are approximate.
 - **Some assumptions came from layout, not architecture.** The hybrid's three dedicated links and one VPN were chosen after a sweep, because that mix drew with no link crossing a trust zone. Its assumptions state the choice, and a real design should not be read from it.
 - **A view with both sides over 32767 pixels was never run**, as in S07.
+- **A subnet with no path to any network accepts any `network_ref`**, which predates this work and which the [review](S08-fable-review.md) lists as P3.
 - **A live session rendered only through `--plugin-dir`** on this branch. The installed copy gets the skill correction after a merge.
 - Four P3 findings from the [S07 review](S07-fable-review.md) stay open: P3-1, P3-2, P3-3 and P3-5. P3-4 is fixed here. Three M7 P3 findings also stay open.
 - Nothing is merged or released, and `main` still holds `02dc709`.
@@ -200,7 +202,7 @@ Time is far from any limit: the slowest run is 1.83 s against 55 s.
 
 Claude Opus 5.5 (`claude-opus-5-5`) did the renderer, tests, baselines and records, in the session that started from the owner's request. Six Claude Sonnet 5.5 agents wrote the six models under its brief, and it then trimmed some view selections. The project policy names Sol/Medium for M4, so this is a recorded substitution, and no model setting changed.
 
-The Fable/High review under D-021 has not run yet.
+Under D-021, Claude Fable 5.1 / High [reviewed `02dc709..1ee4a58`](S08-fable-review.md) in a fresh agent and **requested changes on two P2 findings**. They are fixed, and the recheck is pending. It shares a vendor with the implementing models.
 
 ## Next steps
 

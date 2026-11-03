@@ -802,13 +802,20 @@ def layout_edges(dot: str) -> list[str]:
     return [line for line in dot.splitlines() if "->" in line and "style=invis" in line]
 
 
-def test_unconnected_members_form_rows_rather_than_one_column(tmp_path: Path) -> None:
-    # Four rows of four are three links each. One column would be about 4,800 pixels tall.
-    model = icon_model(16, 0)
-    assert len(layout_edges(dot_of(model))) == 12
+@pytest.mark.parametrize(("entities", "links"), [(9, 6), (16, 12), (25, 20), (10, 7), (2, 1)])
+@pytest.mark.parametrize("direction", ["LR", "TB"])
+def test_unconnected_members_form_rows_rather_than_one_column(
+    entities: int, links: int, direction: str, tmp_path: Path
+) -> None:
+    # A square of rows, so N members take about the height of the square root of N. A column of
+    # 25 would be about 7,500 pixels tall in left-right.
+    model = icon_model(entities, 0)
+    model["views"][0]["direction"] = direction
+    assert len(layout_edges(dot_of(model))) == links
     result = render(model, tmp_path / "out")
     assert result.rendered, codes(result)
-    assert manifest_of(result)["png"]["height"] < 2600
+    png = manifest_of(result)["png"]
+    assert max(png["height"], png["width"]) < 300 * max(entities, 9) ** 0.5 + 1600
     # A layout edge draws nothing, so the image holds only what the model states.
     drawn = [item for item in svg_root(result).iter(f"{{{SVG}}}g") if item.get("class") == "edge"]
     assert all(item.find(f"{{{SVG}}}path") is None for item in drawn)
@@ -859,6 +866,45 @@ def test_a_top_down_legend_stacks_flat_samples() -> None:
     assert not any(
         "constraint=false" in line for line in dot_of(model, direction="LR").splitlines()
     )
+
+
+def nsg_in_a_region_of_another_group() -> dict[str, Any]:
+    """An NSG owned by one resource group, located in a region scoped to the other."""
+    model = load("providers/azure.json")
+    boundaries = {item["id"]: item for item in model["boundaries"]}
+    boundaries["region"]["scope_refs"] = ["rg-net"]
+    boundaries["nsg"]["relations"] = [{"kind": "located_in", "target_ref": "region"}]
+    return model
+
+
+@pytest.mark.parametrize(
+    "selected",
+    [
+        ["tenant", "sub", "rg-net", "rg-app", "region", "nsg"],
+        ["nsg", "region", "rg-net", "rg-app", "sub", "tenant"],
+        ["rg-app", "nsg", "tenant", "region", "sub", "rg-net"],
+    ],
+)
+def test_a_boundary_does_not_nest_in_a_scope_it_does_not_declare(selected: list[str]) -> None:
+    # A group can be listed before the group that nests it, so the order must not change this.
+    model = nsg_in_a_region_of_another_group()
+    model["views"][0] |= {"entity_refs": selected, "relationship_refs": []}
+    parsed = Architecture.model_validate(model)
+    graph = map_view(parsed, parsed.views[0], "strict", LIMITS)
+    groups = {item.id: item for item in graph.groups}
+    assert groups["region"].parent == "rg-net"
+    assert groups["nsg"].parent == "rg-app"
+    assert "Southeast Asia" in " ".join(groups["nsg"].lines) or "location:" in " ".join(
+        groups["nsg"].lines
+    )
+
+
+def test_a_boundary_keeps_a_parent_in_the_same_scope() -> None:
+    model = load("providers/azure.json")
+    parsed = Architecture.model_validate(model)
+    graph = map_view(parsed, parsed.views[0], "strict", LIMITS)
+    groups = {item.id: item for item in graph.groups}
+    assert groups["app"].parent == "vnet"
 
 
 def test_a_left_right_icon_centers_on_its_node_so_edges_meet_the_icon() -> None:

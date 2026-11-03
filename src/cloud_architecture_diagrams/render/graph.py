@@ -309,15 +309,21 @@ class Mapper:
         return None
 
     def _implies_another_scope(self, entity: Entity, target: str) -> bool:
-        """A box reads as ownership, so a resource must not sit inside a scope it does not declare.
+        """A box reads as ownership, so an entity must not sit inside a scope it does not declare.
 
         A regional service scoped to an account can have its region inside a project's box. It then
         nests by its account, and the region stays a note.
         """
-        if not isinstance(entity, Resource) or not entity.placement.scope_refs:
+        if isinstance(entity, Resource):
+            scope_refs = entity.placement.scope_refs
+        elif isinstance(entity, Boundary):
+            scope_refs = entity.scope_refs
+        else:
+            return False
+        if not scope_refs:
             return False
         allowed: set[str] = set()
-        for declared in entity.placement.scope_refs:
+        for declared in scope_refs:
             current: str | None = declared
             while current is not None and current not in allowed:
                 allowed.add(current)
@@ -328,6 +334,19 @@ class Mapper:
             for group in self._chain(target)
             if group in self.entities
         )
+
+    def _settle_scopes(self) -> None:
+        """A group can come before the one that nests it, so recheck with every parent known."""
+        groups = [entity for entity in self.selected if entity.id in self.group_ids]
+        for _ in groups:
+            moved = False
+            for entity in groups:
+                parent = self.parents.get(entity.id)
+                if parent and self._implies_another_scope(entity, parent):
+                    self.parents[entity.id] = self._container(entity)
+                    moved = True
+            if not moved:
+                return
 
     def _notes(self, entity: Entity, parent: str | None) -> list[str]:
         chain = self._chain(parent)
@@ -427,6 +446,7 @@ class Mapper:
         for entity in self.selected:
             if entity.id in self.group_ids:
                 self.parents[entity.id] = self._container(entity)
+        self._settle_scopes()
         self._check_depth()
         for entity in self.selected:
             if entity.id not in self.group_ids:

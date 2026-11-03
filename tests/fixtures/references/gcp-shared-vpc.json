@@ -11,6 +11,8 @@
       "The two Compute Engine workloads sit in asia-southeast1 zones a and b on web-subnet. The GKE cluster, node pool and two Nodes sit in asia-southeast2 on gke-subnet. No zone is declared for the Nodes.",
       "GKE Standard is chosen over Autopilot because Autopilot abstracts nodes and the brief asks for declared node pools and Nodes. The cluster is regional. No control plane resource is modeled.",
       "The load-balancing product is the global external Application Load Balancer, chosen because its backends sit in two regions. The brief did not select a product.",
+      "The load balancer is managed outside the cluster and reaches GKE through a standalone network endpoint group.",
+      "The Ingress is served by the in-cluster controller in the namespace view, not by a GKE controller that would provision its own load balancer.",
       "The brief supplies no traffic flows. Only HTTPS entry from the load balancer to the two VMs and to the GKE Ingress is modeled, plus Ingress to Service to Pod inside the cluster. No flow to Cloud SQL or Cloud Storage is modeled.",
       "Cloud SQL is one instance in asia-southeast1-a, attached to the Shared VPC at network level. The Cloud Storage bucket is regional in asia-southeast1. The brief gave neither location.",
       "Ownership uses project references only. The VPC and both subnets belong to the host project. The VMs, GKE cluster, node pool, Nodes, load balancer, Cloud SQL and bucket belong to the service project. The attachment link records the Shared VPC reference.",

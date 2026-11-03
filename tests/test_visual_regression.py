@@ -94,6 +94,8 @@ def test_the_image_matches_its_baseline(
     share, marked = compare_images(baseline, current["png"])
     (OUTPUT / f"{key}.before.png").write_bytes(baseline)
     (OUTPUT / f"{key}.after.png").write_bytes(current["png"])
+    # A change can reach only the SVG, so that needs its own evidence too.
+    (OUTPUT / f"{key}.after.svg").write_bytes(current["svg"])
     if marked is not None:
         (OUTPUT / f"{key}.diff.png").write_bytes(marked)
     changed = "not computed" if share is None else f"{share:.4%} of pixels"

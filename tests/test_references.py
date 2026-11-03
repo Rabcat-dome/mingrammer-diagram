@@ -410,7 +410,7 @@ def test_t004_the_egress_path_is_only_what_the_model_states(tmp_path: Path) -> N
     }
 
 
-def test_t004_edit_adds_cce_with_its_detail_view_keeping_the_web_ids() -> None:
+def test_t004_edit_adds_cce_with_its_detail_view_keeping_the_web_ids(tmp_path: Path) -> None:
     full = model_of("huawei-web")
     detail = {
         identifier
@@ -430,9 +430,23 @@ def test_t004_edit_adds_cce_with_its_detail_view_keeping_the_web_ids() -> None:
     for view in web["views"]:
         view["entity_refs"] = [item for item in view["entity_refs"] if item not in detail]
         view["relationship_refs"] = [item for item in view["relationship_refs"] if item in kept]
-    assert validated(web).valid
-    assert all_ids(web) | detail == all_ids(full)
-    assert validated(full).valid
+    assert validated(web).valid and validated(full).valid
+    before = graph("huawei-web", "overview", tmp_path, web)
+    after = graph("huawei-web", "overview", tmp_path, full)
+    # The edit adds the compact cluster to the web view, and changes nothing that was there.
+    assert after["edges"] == before["edges"]
+    shared = {item["id"]: item for item in before["nodes"]}
+    added = {item["id"] for item in after["nodes"]} - set(shared)
+    assert added == {"cce-cluster"}
+    for node in after["nodes"]:
+        if node["id"] in shared:
+            assert node == shared[node["id"]], node["id"]
+    groups = {item["id"]: item for item in before["groups"]}
+    assert {item["id"] for item in after["groups"]} - set(groups) == {"cce-cluster"}
+    assert [item for item in after["groups"] if item["id"] in groups] == before["groups"]
+    # The detail view it brings draws from the same model, with its own IDs.
+    detail_view = graph("huawei-web", "cce-namespaces", tmp_path)
+    assert {"cce-cluster", "ns-web"} <= {item["id"] for item in detail_view["groups"]}
 
 
 # T-005 On-premises physical and logical views.

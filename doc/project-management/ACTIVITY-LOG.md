@@ -462,3 +462,9 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - Findings: a one-hop lookup let a subnet pair with a network it reached only through other networks, and Huawei OBS was drawn inside a project it is not scoped to. Both are fixed. The row layout also moved S07's size numbers, so its tests now use a connected line.
 - A new `visual-regression` lane compares each view with a baseline accepted through `scripts/update_visual_baselines.py`. All 14 sabotage changes failed their lanes.
 - Measured on this Mac: a labeled 100 / 150 icon view takes under a second, and labeled views are refused from about 180 entities by the pixel limit. The Fable/High review and the owner's inspection remain, so M4 is not closed.
+
+## 2026-11-03 — Fable requests changes on S08
+
+- CI passed at `1ee4a58` ([run 41658114802](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41658114802), 15 lanes and 1,228 tests, with the wheel matching the local build). A fresh Claude Fable 5.1 / High agent reviewed `02dc709..1ee4a58` and requested changes on two P2 findings: a boundary could nest in a scope it does not declare, and the T-004 edit test was a tautology.
+- One P3 corrects this session's record: "about 2300x3800" for the AWS fixture was stale, and the head measures 2803x4785.
+- Claude Opus 5.5 fixed both P2 findings and seven P3 findings. The local gate passes 15 lanes and 1,241 tests, and three more sabotage changes fail their tests. See the [review](evidence/S08-fable-review.md). The same reviewer rechecks next, and M4 stays open.

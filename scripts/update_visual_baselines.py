@@ -13,7 +13,9 @@ import tempfile
 from datetime import date
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tests"))
+ROOT = Path(__file__).resolve().parents[1]
+REPORTS = ROOT / "reports"
+sys.path.insert(0, str(ROOT / "tests"))
 
 from visual_helpers import (  # noqa: E402
     BASELINES,
@@ -31,17 +33,23 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--reason", required=True, help="Why the output changed")
     arguments = parser.parse_args()
-    shutil.rmtree(BASELINES, ignore_errors=True)
-    BASELINES.mkdir(parents=True)
     views = {}
-    # The renderer refuses a root with a symbolic link in its path, as $TMPDIR has on macOS.
-    with tempfile.TemporaryDirectory(dir=BASELINES.parent) as scratch:
+    outputs: dict[str, bytes] = {}
+    # The renderer refuses a root with a symbolic link in its path, as $TMPDIR has on macOS, and
+    # reports/ is where private-use bundles already live, so a killed run leaves nothing elsewhere.
+    REPORTS.mkdir(exist_ok=True)
+    with tempfile.TemporaryDirectory(dir=REPORTS) as scratch:
         for scenario, view in reference_views():
             rendered = render_view(scenario, view, Path(scratch))
             key = view_key(scenario, view)
-            (BASELINES / f"{key}.graph.json").write_text(graph_text(rendered["graph"]))
-            (BASELINES / f"{key}.png").write_bytes(rendered["png"])
+            outputs[f"{key}.graph.json"] = graph_text(rendered["graph"]).encode()
+            outputs[f"{key}.png"] = rendered["png"]
             views[key] = {"svg": digest(rendered["svg"]), "png": digest(rendered["png"])}
+    # Nothing is removed until every view has rendered, so a failed run keeps the old baselines.
+    shutil.rmtree(BASELINES, ignore_errors=True)
+    BASELINES.mkdir(parents=True)
+    for name, data in outputs.items():
+        (BASELINES / name).write_bytes(data)
     RECORD.write_text(
         json.dumps(
             {
