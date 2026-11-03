@@ -1,0 +1,513 @@
+{
+ "direction": "TB",
+ "draft": false,
+ "edges": [
+  {
+   "directed": false,
+   "id": "peering-hub-spoke",
+   "kind": "peering",
+   "lines": [
+    "VNet peering"
+   ],
+   "source": "vnet-hub",
+   "target": "vnet-spoke"
+  },
+  {
+   "directed": false,
+   "id": "attach-nic-vm",
+   "kind": "attachment",
+   "lines": [
+    "NIC attached"
+   ],
+   "source": "spoke-vm-nic",
+   "target": "spoke-vm"
+  },
+  {
+   "directed": true,
+   "id": "traffic-vm-sql",
+   "kind": "traffic",
+   "lines": [
+    "TCP 1433"
+   ],
+   "source": "spoke-vm",
+   "target": "spoke-sql-database"
+  },
+  {
+   "directed": true,
+   "id": "traffic-vm-blob",
+   "kind": "traffic",
+   "lines": [
+    "HTTPS"
+   ],
+   "source": "spoke-vm",
+   "target": "spoke-blob-storage"
+  }
+ ],
+ "fallbacks": [],
+ "grouping": "provider",
+ "groups": [
+  {
+   "boundary_kind": null,
+   "entity": "provider",
+   "id": "_provider.azure",
+   "lines": [
+    "Microsoft Azure"
+   ],
+   "memberships": {},
+   "parent": null,
+   "provider": "azure",
+   "scope_kind": null,
+   "type_id": null
+  },
+  {
+   "boundary_kind": "region",
+   "entity": "boundary",
+   "id": "region-southeastasia",
+   "lines": [
+    "Southeast Asia",
+    "Azure region"
+   ],
+   "memberships": {},
+   "parent": "_provider.azure",
+   "provider": "azure",
+   "scope_kind": null,
+   "type_id": "azure.location.region"
+  },
+  {
+   "boundary_kind": "network",
+   "entity": "boundary",
+   "id": "vnet-hub",
+   "lines": [
+    "Hub VNet",
+    "VNet"
+   ],
+   "memberships": {
+    "parent": [
+     "region-southeastasia"
+    ],
+    "scope": [
+     "rg-hub"
+    ]
+   },
+   "parent": "region-southeastasia",
+   "provider": "azure",
+   "scope_kind": null,
+   "type_id": "azure.network.vnet"
+  },
+  {
+   "boundary_kind": "subnet",
+   "entity": "boundary",
+   "id": "subnet-hub-firewall",
+   "lines": [
+    "AzureFirewallSubnet",
+    "Subnet"
+   ],
+   "memberships": {
+    "parent": [
+     "vnet-hub"
+    ],
+    "scope": [
+     "rg-hub"
+    ]
+   },
+   "parent": "vnet-hub",
+   "provider": "azure",
+   "scope_kind": null,
+   "type_id": "azure.network.subnet"
+  },
+  {
+   "boundary_kind": "subnet",
+   "entity": "boundary",
+   "id": "subnet-hub-gateway",
+   "lines": [
+    "GatewaySubnet",
+    "Subnet"
+   ],
+   "memberships": {
+    "parent": [
+     "vnet-hub"
+    ],
+    "scope": [
+     "rg-hub"
+    ]
+   },
+   "parent": "vnet-hub",
+   "provider": "azure",
+   "scope_kind": null,
+   "type_id": "azure.network.subnet"
+  },
+  {
+   "boundary_kind": "network",
+   "entity": "boundary",
+   "id": "vnet-spoke",
+   "lines": [
+    "Spoke VNet",
+    "VNet"
+   ],
+   "memberships": {
+    "parent": [
+     "region-southeastasia"
+    ],
+    "scope": [
+     "rg-spoke"
+    ]
+   },
+   "parent": "region-southeastasia",
+   "provider": "azure",
+   "scope_kind": null,
+   "type_id": "azure.network.vnet"
+  },
+  {
+   "boundary_kind": "subnet",
+   "entity": "boundary",
+   "id": "subnet-spoke-workload",
+   "lines": [
+    "Workload subnet",
+    "Subnet"
+   ],
+   "memberships": {
+    "parent": [
+     "vnet-spoke"
+    ],
+    "scope": [
+     "rg-spoke"
+    ]
+   },
+   "parent": "vnet-spoke",
+   "provider": "azure",
+   "scope_kind": null,
+   "type_id": "azure.network.subnet"
+  },
+  {
+   "boundary_kind": "subnet",
+   "entity": "boundary",
+   "id": "subnet-spoke-aks",
+   "lines": [
+    "AKS node subnet",
+    "Subnet"
+   ],
+   "memberships": {
+    "parent": [
+     "vnet-spoke"
+    ],
+    "scope": [
+     "rg-spoke"
+    ]
+   },
+   "parent": "vnet-spoke",
+   "provider": "azure",
+   "scope_kind": null,
+   "type_id": "azure.network.subnet"
+  },
+  {
+   "boundary_kind": "security_group",
+   "entity": "boundary",
+   "id": "nsg-spoke",
+   "lines": [
+    "Spoke NSG",
+    "NSG"
+   ],
+   "memberships": {
+    "location": [
+     "region-southeastasia"
+    ],
+    "scope": [
+     "rg-spoke"
+    ]
+   },
+   "parent": "region-southeastasia",
+   "provider": "azure",
+   "scope_kind": null,
+   "type_id": "azure.security.network_security_group"
+  },
+  {
+   "boundary_kind": null,
+   "entity": "resource",
+   "id": "aks-cluster",
+   "lines": [
+    "Spoke AKS cluster",
+    "Azure Kubernetes",
+    "Service cluster"
+   ],
+   "memberships": {
+    "location": [
+     "region-southeastasia"
+    ],
+    "network": [
+     "vnet-spoke"
+    ],
+    "scope": [
+     "rg-spoke"
+    ],
+    "subnet": [
+     "subnet-spoke-aks"
+    ]
+   },
+   "parent": "subnet-spoke-aks",
+   "provider": "azure",
+   "scope_kind": null,
+   "type_id": "azure.containers.aks"
+  }
+ ],
+ "legend": [
+  "attachment",
+  "peering",
+  "traffic"
+ ],
+ "nodes": [
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "subnet-hub-firewall",
+   "icon": {
+    "pack": "azure-architecture-icons",
+    "reference": "diagrams.azure.networking.Firewalls",
+    "source": "native_class"
+   },
+   "id": "hub-firewall",
+   "lines": [
+    "Azure Firewall"
+   ],
+   "memberships": {
+    "location": [
+     "region-southeastasia"
+    ],
+    "network": [
+     "vnet-hub"
+    ],
+    "scope": [
+     "rg-hub"
+    ],
+    "subnet": [
+     "subnet-hub-firewall"
+    ]
+   },
+   "provider": "azure",
+   "type_id": "azure.security.firewall"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "subnet-hub-gateway",
+   "icon": {
+    "pack": "azure-architecture-icons",
+    "reference": "diagrams.azure.networking.VirtualNetworkGateways",
+    "source": "native_class"
+   },
+   "id": "hub-vpn-gateway",
+   "lines": [
+    "Azure VPN Gateway"
+   ],
+   "memberships": {
+    "location": [
+     "region-southeastasia"
+    ],
+    "network": [
+     "vnet-hub"
+    ],
+    "scope": [
+     "rg-hub"
+    ],
+    "subnet": [
+     "subnet-hub-gateway"
+    ]
+   },
+   "provider": "azure",
+   "type_id": "azure.network.vpn_gateway"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "subnet-spoke-workload",
+   "icon": {
+    "pack": "azure-architecture-icons",
+    "reference": "diagrams.azure.compute.VM",
+    "source": "native_class"
+   },
+   "id": "spoke-vm",
+   "lines": [
+    "Spoke VM",
+    "Azure Virtual",
+    "Machine"
+   ],
+   "memberships": {
+    "location": [
+     "region-southeastasia"
+    ],
+    "network": [
+     "vnet-spoke"
+    ],
+    "scope": [
+     "rg-spoke"
+    ],
+    "subnet": [
+     "subnet-spoke-workload"
+    ]
+   },
+   "provider": "azure",
+   "type_id": "azure.compute.virtual_machine"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "subnet-spoke-workload",
+   "icon": {
+    "pack": "azure-architecture-icons",
+    "reference": "diagrams.azure.networking.NetworkInterfaces",
+    "source": "native_class"
+   },
+   "id": "spoke-vm-nic",
+   "lines": [
+    "Spoke VM NIC",
+    "Network interface",
+    "security: Spoke NSG"
+   ],
+   "memberships": {
+    "location": [
+     "region-southeastasia"
+    ],
+    "network": [
+     "vnet-spoke"
+    ],
+    "scope": [
+     "rg-spoke"
+    ],
+    "security": [
+     "nsg-spoke"
+    ],
+    "subnet": [
+     "subnet-spoke-workload"
+    ]
+   },
+   "provider": "azure",
+   "type_id": "azure.network.network_interface"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "aks-cluster",
+   "icon": {
+    "pack": "azure-architecture-icons",
+    "reference": "diagrams.azure.containers.KubernetesServices",
+    "source": "native_class"
+   },
+   "id": "aks-cluster",
+   "lines": [
+    "Azure Kubernetes",
+    "Service cluster"
+   ],
+   "memberships": {},
+   "provider": "azure",
+   "type_id": "azure.containers.aks"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "region-southeastasia",
+   "icon": {
+    "pack": "azure-architecture-icons",
+    "reference": "diagrams.azure.databases.SQLDatabase",
+    "source": "native_class"
+   },
+   "id": "spoke-sql-database",
+   "lines": [
+    "Azure SQL Database"
+   ],
+   "memberships": {
+    "location": [
+     "region-southeastasia"
+    ],
+    "scope": [
+     "rg-spoke"
+    ]
+   },
+   "provider": "azure",
+   "type_id": "azure.database.sql_database"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "region-southeastasia",
+   "icon": {
+    "pack": "azure-architecture-icons",
+    "reference": "diagrams.azure.storage.BlobStorage",
+    "source": "native_class"
+   },
+   "id": "spoke-blob-storage",
+   "lines": [
+    "Azure Blob Storage"
+   ],
+   "memberships": {
+    "location": [
+     "region-southeastasia"
+    ],
+    "scope": [
+     "rg-spoke"
+    ]
+   },
+   "provider": "azure",
+   "type_id": "azure.storage.blob_storage"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "_provider.azure",
+   "icon": {
+    "pack": "azure-architecture-icons",
+    "reference": "diagrams.azure.identity.ActiveDirectory",
+    "source": "native_class"
+   },
+   "id": "entra-id",
+   "lines": [
+    "Microsoft Entra ID"
+   ],
+   "memberships": {
+    "scope": [
+     "tenant"
+    ]
+   },
+   "provider": "azure",
+   "type_id": "azure.identity.entra_id"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "region-southeastasia",
+   "icon": {
+    "pack": "azure-architecture-icons",
+    "reference": "diagrams.azure.monitor.Monitor",
+    "source": "native_class"
+   },
+   "id": "azure-monitor",
+   "lines": [
+    "Azure Monitor"
+   ],
+   "memberships": {
+    "location": [
+     "region-southeastasia"
+    ],
+    "scope": [
+     "rg-hub"
+    ]
+   },
+   "provider": "azure",
+   "type_id": "azure.observability.monitor"
+  }
+ ],
+ "notice_lines": [],
+ "style": "provider",
+ "title_lines": [
+  "Azure hub-and-spoke reference architecture",
+  "Hub-and-spoke network overview (reference)"
+ ],
+ "view_id": "overview"
+}

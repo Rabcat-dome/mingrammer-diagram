@@ -454,3 +454,11 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - The owner asked to start M4. S08 runs on `codex/s08-reference-diagrams`, from `main` at `02dc709`, on Claude Opus 5.5 rather than the planned Sol/Medium.
 - The owner updated the installed plugin from `f50e66d` to `02dc709`. The records said `3d235fa`, which was stale, and they now say `02dc709`. The two older commits differ only in records.
 - A live headless session on the installed copy got no image: the skill said the output root must exist, so it ran `mkdir`, was denied, and never tried `render`, which creates a missing root. The skill now says so, and P3-4 from the [S07 review](evidence/S07-fable-review.md) is fixed in the same sentence. A new session on the corrected copy through `--plugin-dir` rendered with no denials. See the [M7 evidence](evidence/M7-claude-plugin.md).
+
+## 2026-11-03 — S08 / M4 implemented
+
+- Six Claude Sonnet 5.5 agents wrote the T-001 to T-006 models under a brief from Claude Opus 5.5, which did the renderer, tests and baselines. All 26 views render at full size, and `tests/test_references.py` covers the S01 inspect, reject and edit checks plus T-017.
+- The renderer now follows one official diagram per provider, arranges unconnected members in rows, keeps edges off labels in left-right views, and notes a declared subnet, zone or rack. P-029 to P-031 record these, and the [deviations](evidence/S08-reference-diagrams.md#deviations) are listed.
+- Findings: a one-hop lookup let a subnet pair with a network it reached only through other networks, and Huawei OBS was drawn inside a project it is not scoped to. Both are fixed. The row layout also moved S07's size numbers, so its tests now use a connected line.
+- A new `visual-regression` lane compares each view with a baseline accepted through `scripts/update_visual_baselines.py`. All 14 sabotage changes failed their lanes.
+- Measured on this Mac: a labeled 100 / 150 icon view takes under a second, and labeled views are refused from about 180 entities by the pixel limit. The Fable/High review and the owner's inspection remain, so M4 is not closed.

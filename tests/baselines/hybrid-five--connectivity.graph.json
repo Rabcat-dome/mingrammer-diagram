@@ -1,0 +1,438 @@
+{
+ "direction": "LR",
+ "draft": false,
+ "edges": [
+  {
+   "directed": false,
+   "id": "link-aws-direct-connect",
+   "kind": "peering",
+   "lines": [
+    "Direct Connect, two-way"
+   ],
+   "source": "aws-direct-connect",
+   "target": "onprem-router"
+  },
+  {
+   "directed": false,
+   "id": "link-azure-vpn",
+   "kind": "vpn",
+   "lines": [
+    "Site-to-site VPN, two-way",
+    "IPsec"
+   ],
+   "source": "azure-vpn-gateway",
+   "target": "onprem-firewall"
+  },
+  {
+   "directed": false,
+   "id": "link-gcp-interconnect",
+   "kind": "peering",
+   "lines": [
+    "Dedicated Interconnect,",
+    "two-way"
+   ],
+   "source": "gcp-interconnect",
+   "target": "onprem-router"
+  },
+  {
+   "directed": false,
+   "id": "link-huawei-direct-connect",
+   "kind": "peering",
+   "lines": [
+    "Direct Connect, two-way"
+   ],
+   "source": "huawei-direct-connect",
+   "target": "onprem-router"
+  }
+ ],
+ "fallbacks": [],
+ "grouping": "provider",
+ "groups": [
+  {
+   "boundary_kind": null,
+   "entity": "provider",
+   "id": "_provider.onprem",
+   "lines": [
+    "On-premises"
+   ],
+   "memberships": {},
+   "parent": null,
+   "provider": "onprem",
+   "scope_kind": null,
+   "type_id": null
+  },
+  {
+   "boundary_kind": null,
+   "entity": "provider",
+   "id": "_provider.aws",
+   "lines": [
+    "AWS"
+   ],
+   "memberships": {},
+   "parent": null,
+   "provider": "aws",
+   "scope_kind": null,
+   "type_id": null
+  },
+  {
+   "boundary_kind": null,
+   "entity": "provider",
+   "id": "_provider.azure",
+   "lines": [
+    "Microsoft Azure"
+   ],
+   "memberships": {},
+   "parent": null,
+   "provider": "azure",
+   "scope_kind": null,
+   "type_id": null
+  },
+  {
+   "boundary_kind": null,
+   "entity": "provider",
+   "id": "_provider.gcp",
+   "lines": [
+    "Google Cloud"
+   ],
+   "memberships": {},
+   "parent": null,
+   "provider": "gcp",
+   "scope_kind": null,
+   "type_id": null
+  },
+  {
+   "boundary_kind": null,
+   "entity": "provider",
+   "id": "_provider.huawei",
+   "lines": [
+    "Huawei Cloud"
+   ],
+   "memberships": {},
+   "parent": null,
+   "provider": "huawei",
+   "scope_kind": null,
+   "type_id": null
+  },
+  {
+   "boundary_kind": "network",
+   "entity": "boundary",
+   "id": "onprem-network",
+   "lines": [
+    "On-premises network",
+    "Network",
+    "location: Reference",
+    "site"
+   ],
+   "memberships": {
+    "location": [
+     "onprem-site"
+    ],
+    "scope": [
+     "onprem-environment"
+    ]
+   },
+   "parent": "_provider.onprem",
+   "provider": "onprem",
+   "scope_kind": null,
+   "type_id": "onprem.network.network"
+  },
+  {
+   "boundary_kind": "network",
+   "entity": "boundary",
+   "id": "aws-vpc",
+   "lines": [
+    "AWS VPC",
+    "VPC"
+   ],
+   "memberships": {
+    "parent": [
+     "aws-region"
+    ],
+    "scope": [
+     "aws-account"
+    ]
+   },
+   "parent": "_provider.aws",
+   "provider": "aws",
+   "scope_kind": null,
+   "type_id": "aws.network.vpc"
+  },
+  {
+   "boundary_kind": "network",
+   "entity": "boundary",
+   "id": "azure-vnet",
+   "lines": [
+    "Azure VNet",
+    "VNet"
+   ],
+   "memberships": {
+    "parent": [
+     "azure-region"
+    ],
+    "scope": [
+     "azure-subscription"
+    ]
+   },
+   "parent": "_provider.azure",
+   "provider": "azure",
+   "scope_kind": null,
+   "type_id": "azure.network.vnet"
+  },
+  {
+   "boundary_kind": "network",
+   "entity": "boundary",
+   "id": "gcp-vpc",
+   "lines": [
+    "Google Cloud VPC",
+    "VPC network"
+   ],
+   "memberships": {
+    "scope": [
+     "gcp-project"
+    ]
+   },
+   "parent": "_provider.gcp",
+   "provider": "gcp",
+   "scope_kind": null,
+   "type_id": "gcp.network.vpc"
+  },
+  {
+   "boundary_kind": "network",
+   "entity": "boundary",
+   "id": "huawei-vpc",
+   "lines": [
+    "Huawei Cloud VPC",
+    "VPC"
+   ],
+   "memberships": {
+    "parent": [
+     "huawei-region"
+    ],
+    "scope": [
+     "huawei-project"
+    ]
+   },
+   "parent": "_provider.huawei",
+   "provider": "huawei",
+   "scope_kind": null,
+   "type_id": "huawei.network.vpc"
+  }
+ ],
+ "legend": [
+  "peering",
+  "vpn"
+ ],
+ "nodes": [
+  {
+   "drawing": "icon",
+   "entity": "boundary",
+   "fallback": false,
+   "group": "huawei-vpc",
+   "icon": {
+    "pack": "huawei-latam-color",
+    "reference": "huawei-vpc",
+    "source": "custom_asset"
+   },
+   "id": "huawei-vpc",
+   "lines": [
+    "VPC"
+   ],
+   "memberships": {},
+   "provider": "huawei",
+   "type_id": "huawei.network.vpc"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "onprem-network",
+   "icon": {
+    "pack": "diagrams-generic",
+    "reference": "diagrams.generic.network.Router",
+    "source": "native_class"
+   },
+   "id": "onprem-router",
+   "lines": [
+    "On-premises router",
+    "Router",
+    "location: Reference",
+    "site"
+   ],
+   "memberships": {
+    "location": [
+     "onprem-site"
+    ],
+    "network": [
+     "onprem-network"
+    ],
+    "scope": [
+     "onprem-environment"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "onprem.network.router"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "onprem-network",
+   "icon": {
+    "pack": "diagrams-generic",
+    "reference": "diagrams.generic.network.Firewall",
+    "source": "native_class"
+   },
+   "id": "onprem-firewall",
+   "lines": [
+    "On-premises firewall",
+    "Firewall",
+    "location: Reference",
+    "site"
+   ],
+   "memberships": {
+    "location": [
+     "onprem-site"
+    ],
+    "network": [
+     "onprem-network"
+    ],
+    "scope": [
+     "onprem-environment"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "onprem.security.firewall"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "aws-vpc",
+   "icon": {
+    "pack": "aws-architecture-icons",
+    "reference": "diagrams.aws.network.DirectConnect",
+    "source": "native_class"
+   },
+   "id": "aws-direct-connect",
+   "lines": [
+    "AWS link endpoint",
+    "AWS Direct Connect"
+   ],
+   "memberships": {
+    "location": [
+     "aws-region"
+    ],
+    "network": [
+     "aws-vpc"
+    ],
+    "scope": [
+     "aws-account"
+    ]
+   },
+   "provider": "aws",
+   "type_id": "aws.network.direct_connect"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "azure-vnet",
+   "icon": {
+    "pack": "azure-architecture-icons",
+    "reference": "diagrams.azure.networking.VirtualNetworkGateways",
+    "source": "native_class"
+   },
+   "id": "azure-vpn-gateway",
+   "lines": [
+    "Azure link endpoint",
+    "Azure VPN Gateway"
+   ],
+   "memberships": {
+    "location": [
+     "azure-region"
+    ],
+    "network": [
+     "azure-vnet"
+    ],
+    "scope": [
+     "azure-subscription"
+    ]
+   },
+   "provider": "azure",
+   "type_id": "azure.network.vpn_gateway"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "gcp-vpc",
+   "icon": {
+    "pack": "gcp-product-icons",
+    "reference": "diagrams.gcp.network.DedicatedInterconnect",
+    "source": "native_class"
+   },
+   "id": "gcp-interconnect",
+   "lines": [
+    "Google Cloud link",
+    "endpoint",
+    "Cloud Interconnect",
+    "(Dedicated)"
+   ],
+   "memberships": {
+    "location": [
+     "gcp-region"
+    ],
+    "network": [
+     "gcp-vpc"
+    ],
+    "scope": [
+     "gcp-project"
+    ]
+   },
+   "provider": "gcp",
+   "type_id": "gcp.network.dedicated_interconnect"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "huawei-vpc",
+   "icon": {
+    "pack": "huawei-latam-color",
+    "reference": "huawei-dc",
+    "source": "custom_asset"
+   },
+   "id": "huawei-direct-connect",
+   "lines": [
+    "Huawei Cloud link",
+    "endpoint",
+    "Direct Connect"
+   ],
+   "memberships": {
+    "location": [
+     "huawei-region"
+    ],
+    "network": [
+     "huawei-vpc"
+    ],
+    "scope": [
+     "huawei-project"
+    ]
+   },
+   "provider": "huawei",
+   "type_id": "huawei.network.direct_connect"
+  }
+ ],
+ "notice_lines": [
+  "Contains icons for private personal use only; rights not cleared (D-018, O-002). Do not share outside private",
+  "use.",
+  "Huawei Cloud service icons from the color group of huaweicloud-latam/drawio-libraries at commit 52c33aa.",
+  "Huawei Cloud names and marks belong to Huawei."
+ ],
+ "style": "provider",
+ "title_lines": [
+  "Five-environment hybrid reference: on-premises, AWS, Azure, Google Cloud and Huawei Cloud",
+  "Connectivity endpoints and links (reference)"
+ ],
+ "view_id": "connectivity"
+}

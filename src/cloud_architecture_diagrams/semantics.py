@@ -191,16 +191,27 @@ class Semantics:
         return next(iter(candidates.values())) if len(candidates) == 1 else None
 
     def subnet_networks(self, subnet: Boundary) -> set[str]:
-        targets = [subnet.parent_ref] + [
-            relation.target_ref
-            for relation in subnet.relations
-            if relation.kind == "network_member_of"
-        ]
-        return {
-            target.id
-            for identifier in targets
-            if (target := self.boundary(identifier)) is not None and target.kind == "network"
-        }
+        """The networks a subnet belongs to, directly or through its VLAN and VRF."""
+        found: set[str] = set()
+        seen = {subnet.id}
+        pending = [subnet]
+        while pending:
+            current = pending.pop()
+            targets = [current.parent_ref] + [
+                relation.target_ref
+                for relation in current.relations
+                if relation.kind == "network_member_of"
+            ]
+            for identifier in targets:
+                target = self.boundary(identifier)
+                if target is None or target.id in seen:
+                    continue
+                seen.add(target.id)
+                if target.kind == "network":
+                    found.add(target.id)
+                elif target.kind in {"vlan", "vrf"}:
+                    pending.append(target)
+        return found
 
     def run(self) -> list[Diagnostic]:
         self.scopes()

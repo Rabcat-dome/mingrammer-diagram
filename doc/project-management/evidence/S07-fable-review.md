@@ -202,6 +202,7 @@ All three fix commits passed actual CI from a clean checkout on the runner, whic
 | P2-1, P2-2 | Fixed in core `0.4.0a2`; the re-review confirms both |
 | P2-3, R-P1, R-P2, R-P3 | Fixed in core `0.4.0a3`; the recheck confirms them |
 | R2-P2 | Fixed in core `0.4.0a4`; the final recheck approves it |
-| P3-1 to P3-5 | Open for the owner; not fixed |
+| P3-1 to P3-3, P3-5 | Open for the owner; not fixed |
+| P3-4 | Fixed in S08: the skill names `/tmp` and `$TMPDIR` |
 
 The model strategy lets P3 findings wait, so they do not block M3 unless the owner wants them fixed. This approves nothing beyond what it states, and it does not replace the owner's inspection of the output.

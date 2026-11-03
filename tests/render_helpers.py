@@ -161,6 +161,25 @@ def icon_model(entities: int, relationships: int) -> dict[str, Any]:
     return model
 
 
+def icon_chain(entities: int) -> dict[str, Any]:
+    """A connected top-down line of icons, the shape that stays one column under row layout."""
+    model = icon_model(entities, 0)
+    model["relationships"] = [
+        {
+            "id": f"r{index}",
+            "source_ref": f"n{index}",
+            "target_ref": f"n{index + 1}",
+            "kind": "traffic",
+        }
+        for index in range(entities - 1)
+    ]
+    model["views"][0] |= {
+        "direction": "TB",
+        "relationship_refs": [item["id"] for item in model["relationships"]],
+    }
+    return model
+
+
 def large_model(entities: int, relationships: int) -> dict[str, Any]:
     """A connected view at a chosen size, for limits and for real engine time."""
     model = single_resource_model()

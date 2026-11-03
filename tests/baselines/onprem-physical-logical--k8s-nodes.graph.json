@@ -1,0 +1,182 @@
+{
+ "direction": "TB",
+ "draft": false,
+ "edges": [],
+ "fallbacks": [],
+ "grouping": "node",
+ "groups": [
+  {
+   "boundary_kind": null,
+   "entity": "resource",
+   "id": "k8s-cluster",
+   "lines": [
+    "Kubernetes cluster 1",
+    "Kubernetes cluster",
+    "subnet:",
+    "10.20.120.0/24",
+    "location: Reference",
+    "site"
+   ],
+   "memberships": {
+    "location": [
+     "site-main"
+    ],
+    "network": [
+     "net-prod"
+    ],
+    "security": [
+     "zone-app"
+    ],
+    "subnet": [
+     "subnet-app"
+    ]
+   },
+   "parent": null,
+   "provider": "onprem",
+   "scope_kind": null,
+   "type_id": "onprem.containers.kubernetes_cluster"
+  },
+  {
+   "boundary_kind": null,
+   "entity": "resource",
+   "id": "k8s-node-1",
+   "lines": [
+    "worker-1",
+    "Node"
+   ],
+   "memberships": {
+    "cluster": [
+     "k8s-cluster"
+    ]
+   },
+   "parent": "k8s-cluster",
+   "provider": "onprem",
+   "scope_kind": null,
+   "type_id": "k8s.node"
+  },
+  {
+   "boundary_kind": null,
+   "entity": "resource",
+   "id": "k8s-node-2",
+   "lines": [
+    "worker-2",
+    "Node"
+   ],
+   "memberships": {
+    "cluster": [
+     "k8s-cluster"
+    ]
+   },
+   "parent": "k8s-cluster",
+   "provider": "onprem",
+   "scope_kind": null,
+   "type_id": "k8s.node"
+  }
+ ],
+ "legend": [],
+ "nodes": [
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "k8s-node-1",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.infra.Node",
+    "source": "native_class"
+   },
+   "id": "k8s-node-1",
+   "lines": [
+    "Node"
+   ],
+   "memberships": {},
+   "provider": "onprem",
+   "type_id": "k8s.node"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "k8s-node-2",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.infra.Node",
+    "source": "native_class"
+   },
+   "id": "k8s-node-2",
+   "lines": [
+    "Node"
+   ],
+   "memberships": {},
+   "provider": "onprem",
+   "type_id": "k8s.node"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "k8s-node-1",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.compute.Pod",
+    "source": "native_class"
+   },
+   "id": "pod-web-1",
+   "lines": [
+    "web-pod-1",
+    "Pod",
+    "namespace: app"
+   ],
+   "memberships": {
+    "cluster": [
+     "k8s-cluster"
+    ],
+    "namespace": [
+     "ns-app"
+    ],
+    "node": [
+     "k8s-node-1"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "k8s.pod"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "k8s-node-2",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.compute.Pod",
+    "source": "native_class"
+   },
+   "id": "pod-web-2",
+   "lines": [
+    "web-pod-2",
+    "Pod",
+    "namespace: app"
+   ],
+   "memberships": {
+    "cluster": [
+     "k8s-cluster"
+    ],
+    "namespace": [
+     "ns-app"
+    ],
+    "node": [
+     "k8s-node-2"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "k8s.pod"
+  }
+ ],
+ "notice_lines": [],
+ "style": "provider",
+ "title_lines": [
+  "On-premises physical and logical reference",
+  "Kubernetes view: worker Nodes and Pod placement (reference)"
+ ],
+ "view_id": "k8s-nodes"
+}

@@ -1,0 +1,1016 @@
+{
+  "schema_version": "1.0.0",
+  "metadata": {
+    "id": "onprem-physical-logical",
+    "title": "On-premises physical and logical reference",
+    "environment": "reference",
+    "assumptions": [
+      "Synthetic reference model: nothing here describes deployed infrastructure. Every name, ID, VLAN number and address range is invented for illustration.",
+      "The brief supplied no cabling, routing, storage-path or traffic flows, so the infrastructure part declares no relationships. Only the Kubernetes links the brief names are drawn.",
+      "The site, data center, room, three racks and each device's rack are chosen here; the brief asked only for a data center with at least two racks.",
+      "Network, VRF, VLAN, subnet and security-zone names, numbers and CIDR ranges, and each device's membership in them, are authored for this reference.",
+      "Two networks (production and management) are modeled so that the router, L3 switch, firewall, hypervisor and VM 1 each belong to more than one network.",
+      "Both VMs declare the single hypervisor as their host. No compute-cluster boundary is modeled because the brief names one hypervisor only.",
+      "The physical server is a separate bare-metal host. It is not declared to run the hypervisor or any VM, and the brief states no workload for it.",
+      "Database, NAS, SAN, identity, backup and monitoring are placed as rack-mounted devices on IP subnets. A storage fabric such as Fibre Channel is not modeled.",
+      "The Kubernetes cluster is user-managed, one entity in every view, attached to the application subnet and zone. No node pool or control plane is modeled, and Nodes declare no pool.",
+      "The Nodes' host VM or server and their subnets are not supplied, so the Nodes carry no placement outside the cluster.",
+      "The Deployment has two replicas matching two Pods, one on each Node. Names such as worker-1, web and app are invented for this reference.",
+      "The Ingress controller is cluster-level with no declared namespace. The NetworkPolicy is declared to apply to the Deployment's Pods and defines no rules.",
+      "The Deployment claims the PVC, which is bound to a PV with a StorageClass. The PV backing store is not supplied and is not linked to the NAS or SAN.",
+      "The Secret is a reference only. No value, key or data is stored in the model.",
+      "The physical view also selects the networks, subnets and security zones, only so that devices show their logical memberships as notes.",
+      "The logical view also selects the racks, only so that devices show their rack placement as notes. VMs and the cluster declare the site, not a rack, so the physical view draws them in the site outside any rack."
+    ],
+    "description": "Synthetic T-005 reference: one data center modeled once, drawn as separate physical, logical and Kubernetes views that share resource IDs."
+  },
+  "scopes": [],
+  "boundaries": [
+    {
+      "id": "site-main",
+      "name": "Reference site",
+      "provider": "onprem",
+      "kind": "site"
+    },
+    {
+      "id": "dc-1",
+      "name": "Data center 1",
+      "provider": "onprem",
+      "kind": "data_center",
+      "parent_ref": "site-main"
+    },
+    {
+      "id": "room-a",
+      "name": "Room A",
+      "provider": "onprem",
+      "kind": "room",
+      "parent_ref": "dc-1"
+    },
+    {
+      "id": "rack-a",
+      "name": "Rack A",
+      "provider": "onprem",
+      "kind": "rack",
+      "parent_ref": "room-a"
+    },
+    {
+      "id": "rack-b",
+      "name": "Rack B",
+      "provider": "onprem",
+      "kind": "rack",
+      "parent_ref": "room-a"
+    },
+    {
+      "id": "rack-c",
+      "name": "Rack C",
+      "provider": "onprem",
+      "kind": "rack",
+      "parent_ref": "room-a"
+    },
+    {
+      "id": "net-prod",
+      "name": "Production network",
+      "provider": "onprem",
+      "kind": "network"
+    },
+    {
+      "id": "net-mgmt",
+      "name": "Management network",
+      "provider": "onprem",
+      "kind": "network"
+    },
+    {
+      "id": "vrf-prod",
+      "name": "VRF PROD",
+      "provider": "onprem",
+      "kind": "vrf",
+      "relations": [
+        {
+          "kind": "network_member_of",
+          "target_ref": "net-prod"
+        }
+      ]
+    },
+    {
+      "id": "vrf-mgmt",
+      "name": "VRF MGMT",
+      "provider": "onprem",
+      "kind": "vrf",
+      "relations": [
+        {
+          "kind": "network_member_of",
+          "target_ref": "net-mgmt"
+        }
+      ]
+    },
+    {
+      "id": "vlan-120",
+      "name": "VLAN 120 Application",
+      "provider": "onprem",
+      "kind": "vlan",
+      "relations": [
+        {
+          "kind": "network_member_of",
+          "target_ref": "vrf-prod"
+        }
+      ]
+    },
+    {
+      "id": "vlan-130",
+      "name": "VLAN 130 Data",
+      "provider": "onprem",
+      "kind": "vlan",
+      "relations": [
+        {
+          "kind": "network_member_of",
+          "target_ref": "vrf-prod"
+        }
+      ]
+    },
+    {
+      "id": "vlan-900",
+      "name": "VLAN 900 Management",
+      "provider": "onprem",
+      "kind": "vlan",
+      "relations": [
+        {
+          "kind": "network_member_of",
+          "target_ref": "vrf-mgmt"
+        }
+      ]
+    },
+    {
+      "id": "subnet-app",
+      "name": "10.20.120.0/24",
+      "provider": "onprem",
+      "kind": "subnet",
+      "relations": [
+        {
+          "kind": "network_member_of",
+          "target_ref": "vlan-120"
+        }
+      ]
+    },
+    {
+      "id": "subnet-data",
+      "name": "10.20.130.0/24",
+      "provider": "onprem",
+      "kind": "subnet",
+      "relations": [
+        {
+          "kind": "network_member_of",
+          "target_ref": "vlan-130"
+        }
+      ]
+    },
+    {
+      "id": "subnet-mgmt",
+      "name": "10.30.90.0/24",
+      "provider": "onprem",
+      "kind": "subnet",
+      "relations": [
+        {
+          "kind": "network_member_of",
+          "target_ref": "vlan-900"
+        }
+      ]
+    },
+    {
+      "id": "zone-app",
+      "name": "Application zone",
+      "provider": "onprem",
+      "kind": "security_zone",
+      "relations": [
+        {
+          "kind": "network_member_of",
+          "target_ref": "vlan-120"
+        }
+      ]
+    },
+    {
+      "id": "zone-data",
+      "name": "Data zone",
+      "provider": "onprem",
+      "kind": "security_zone",
+      "relations": [
+        {
+          "kind": "network_member_of",
+          "target_ref": "vlan-130"
+        }
+      ]
+    },
+    {
+      "id": "zone-mgmt",
+      "name": "Management zone",
+      "provider": "onprem",
+      "kind": "security_zone",
+      "relations": [
+        {
+          "kind": "network_member_of",
+          "target_ref": "vlan-900"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "router-1",
+      "name": "Router 1",
+      "provider": "onprem",
+      "service_type": "onprem.network.router",
+      "taxonomy": "network.routing",
+      "placement": {
+        "location": {
+          "rack_ref": "rack-a"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net-prod",
+            "subnet_refs": [
+              "subnet-app"
+            ]
+          },
+          {
+            "network_ref": "net-mgmt",
+            "subnet_refs": [
+              "subnet-mgmt"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "firewall-1",
+      "name": "Firewall 1",
+      "provider": "onprem",
+      "service_type": "onprem.security.firewall",
+      "taxonomy": "security.control",
+      "placement": {
+        "location": {
+          "rack_ref": "rack-a"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net-prod",
+            "subnet_refs": [
+              "subnet-app",
+              "subnet-data"
+            ]
+          },
+          {
+            "network_ref": "net-mgmt",
+            "subnet_refs": [
+              "subnet-mgmt"
+            ]
+          }
+        ],
+        "security_boundaries": [
+          "zone-app",
+          "zone-data",
+          "zone-mgmt"
+        ]
+      }
+    },
+    {
+      "id": "l3-switch-1",
+      "name": "L3 switch 1",
+      "provider": "onprem",
+      "service_type": "onprem.network.l3_switch",
+      "taxonomy": "network.routing",
+      "placement": {
+        "location": {
+          "rack_ref": "rack-a"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net-prod",
+            "subnet_refs": [
+              "subnet-app",
+              "subnet-data"
+            ]
+          },
+          {
+            "network_ref": "net-mgmt",
+            "subnet_refs": [
+              "subnet-mgmt"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "l2-switch-1",
+      "name": "L2 switch 1",
+      "provider": "onprem",
+      "service_type": "onprem.network.l2_switch",
+      "taxonomy": "network.routing",
+      "placement": {
+        "location": {
+          "rack_ref": "rack-a"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net-prod",
+            "subnet_refs": [
+              "subnet-app",
+              "subnet-data"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "hypervisor-1",
+      "name": "Hypervisor 1",
+      "provider": "onprem",
+      "service_type": "onprem.compute.hypervisor",
+      "taxonomy": "compute.physical",
+      "placement": {
+        "location": {
+          "rack_ref": "rack-b"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net-prod",
+            "subnet_refs": [
+              "subnet-app"
+            ]
+          },
+          {
+            "network_ref": "net-mgmt",
+            "subnet_refs": [
+              "subnet-mgmt"
+            ]
+          }
+        ],
+        "security_boundaries": [
+          "zone-mgmt"
+        ]
+      }
+    },
+    {
+      "id": "physical-server-1",
+      "name": "Physical server 1",
+      "provider": "onprem",
+      "service_type": "onprem.compute.physical_server",
+      "taxonomy": "compute.physical",
+      "placement": {
+        "location": {
+          "rack_ref": "rack-b"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net-prod",
+            "subnet_refs": [
+              "subnet-app"
+            ]
+          }
+        ],
+        "security_boundaries": [
+          "zone-app"
+        ]
+      }
+    },
+    {
+      "id": "vm-1",
+      "name": "VM 1",
+      "provider": "onprem",
+      "service_type": "onprem.compute.virtual_machine",
+      "taxonomy": "compute.vm",
+      "placement": {
+        "location": {
+          "site_ref": "site-main"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net-prod",
+            "subnet_refs": [
+              "subnet-app"
+            ]
+          },
+          {
+            "network_ref": "net-mgmt",
+            "subnet_refs": [
+              "subnet-mgmt"
+            ]
+          }
+        ],
+        "security_boundaries": [
+          "zone-app",
+          "zone-mgmt"
+        ],
+        "deployment_context": [
+          "hypervisor-1"
+        ]
+      }
+    },
+    {
+      "id": "vm-2",
+      "name": "VM 2",
+      "provider": "onprem",
+      "service_type": "onprem.compute.virtual_machine",
+      "taxonomy": "compute.vm",
+      "placement": {
+        "location": {
+          "site_ref": "site-main"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net-prod",
+            "subnet_refs": [
+              "subnet-app"
+            ]
+          }
+        ],
+        "security_boundaries": [
+          "zone-app"
+        ],
+        "deployment_context": [
+          "hypervisor-1"
+        ]
+      }
+    },
+    {
+      "id": "database-1",
+      "name": "Database 1",
+      "provider": "onprem",
+      "service_type": "onprem.database.database",
+      "taxonomy": "data.relational",
+      "placement": {
+        "location": {
+          "rack_ref": "rack-b"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net-prod",
+            "subnet_refs": [
+              "subnet-data"
+            ]
+          }
+        ],
+        "security_boundaries": [
+          "zone-data"
+        ]
+      }
+    },
+    {
+      "id": "nas-1",
+      "name": "NAS 1",
+      "provider": "onprem",
+      "service_type": "onprem.storage.nas",
+      "taxonomy": "storage.block_file",
+      "placement": {
+        "location": {
+          "rack_ref": "rack-c"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net-prod",
+            "subnet_refs": [
+              "subnet-data"
+            ]
+          }
+        ],
+        "security_boundaries": [
+          "zone-data"
+        ]
+      }
+    },
+    {
+      "id": "san-1",
+      "name": "SAN 1",
+      "provider": "onprem",
+      "service_type": "onprem.storage.san",
+      "taxonomy": "storage.block_file",
+      "placement": {
+        "location": {
+          "rack_ref": "rack-c"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net-prod",
+            "subnet_refs": [
+              "subnet-data"
+            ]
+          }
+        ],
+        "security_boundaries": [
+          "zone-data"
+        ]
+      }
+    },
+    {
+      "id": "identity-1",
+      "name": "Identity service 1",
+      "provider": "onprem",
+      "service_type": "onprem.identity.identity_service",
+      "taxonomy": "identity.access",
+      "placement": {
+        "location": {
+          "rack_ref": "rack-c"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net-mgmt",
+            "subnet_refs": [
+              "subnet-mgmt"
+            ]
+          }
+        ],
+        "security_boundaries": [
+          "zone-mgmt"
+        ]
+      }
+    },
+    {
+      "id": "backup-1",
+      "name": "Backup system 1",
+      "provider": "onprem",
+      "service_type": "onprem.operations.backup_system",
+      "taxonomy": "operations.backup_dr",
+      "placement": {
+        "location": {
+          "rack_ref": "rack-c"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net-mgmt",
+            "subnet_refs": [
+              "subnet-mgmt"
+            ]
+          }
+        ],
+        "security_boundaries": [
+          "zone-mgmt"
+        ]
+      }
+    },
+    {
+      "id": "monitoring-1",
+      "name": "Monitoring 1",
+      "provider": "onprem",
+      "service_type": "onprem.operations.monitoring",
+      "taxonomy": "operations.observability",
+      "placement": {
+        "location": {
+          "rack_ref": "rack-c"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net-mgmt",
+            "subnet_refs": [
+              "subnet-mgmt"
+            ]
+          }
+        ],
+        "security_boundaries": [
+          "zone-mgmt"
+        ]
+      }
+    },
+    {
+      "id": "k8s-cluster",
+      "name": "Kubernetes cluster 1",
+      "provider": "onprem",
+      "service_type": "onprem.containers.kubernetes_cluster",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "location": {
+          "site_ref": "site-main"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "net-prod",
+            "subnet_refs": [
+              "subnet-app"
+            ]
+          }
+        ],
+        "security_boundaries": [
+          "zone-app"
+        ]
+      },
+      "kubernetes": {
+        "kind": "Cluster"
+      }
+    },
+    {
+      "id": "k8s-node-1",
+      "name": "worker-1",
+      "provider": "onprem",
+      "service_type": "k8s.node",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Node",
+        "cluster_ref": "k8s-cluster"
+      }
+    },
+    {
+      "id": "k8s-node-2",
+      "name": "worker-2",
+      "provider": "onprem",
+      "service_type": "k8s.node",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Node",
+        "cluster_ref": "k8s-cluster"
+      }
+    },
+    {
+      "id": "ns-app",
+      "name": "app",
+      "provider": "onprem",
+      "service_type": "k8s.namespace",
+      "taxonomy": "governance.scope",
+      "kubernetes": {
+        "kind": "Namespace",
+        "cluster_ref": "k8s-cluster"
+      }
+    },
+    {
+      "id": "deploy-web",
+      "name": "web",
+      "provider": "onprem",
+      "service_type": "k8s.deployment",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Deployment",
+        "cluster_ref": "k8s-cluster",
+        "namespace_ref": "ns-app",
+        "volume_claim_refs": [
+          "pvc-web-data"
+        ],
+        "secret_refs": [
+          "secret-web"
+        ],
+        "service_account_ref": "sa-web"
+      },
+      "properties": {
+        "replicas": 2
+      }
+    },
+    {
+      "id": "rs-web",
+      "name": "web-rs",
+      "provider": "onprem",
+      "service_type": "k8s.replicaset",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "ReplicaSet",
+        "cluster_ref": "k8s-cluster",
+        "namespace_ref": "ns-app",
+        "owner_ref": "deploy-web"
+      }
+    },
+    {
+      "id": "pod-web-1",
+      "name": "web-pod-1",
+      "provider": "onprem",
+      "service_type": "k8s.pod",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Pod",
+        "cluster_ref": "k8s-cluster",
+        "namespace_ref": "ns-app",
+        "owner_ref": "rs-web",
+        "node_ref": "k8s-node-1"
+      }
+    },
+    {
+      "id": "pod-web-2",
+      "name": "web-pod-2",
+      "provider": "onprem",
+      "service_type": "k8s.pod",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Pod",
+        "cluster_ref": "k8s-cluster",
+        "namespace_ref": "ns-app",
+        "owner_ref": "rs-web",
+        "node_ref": "k8s-node-2"
+      }
+    },
+    {
+      "id": "svc-web",
+      "name": "web-svc",
+      "provider": "onprem",
+      "service_type": "k8s.service",
+      "taxonomy": "network.load_balancing",
+      "kubernetes": {
+        "kind": "Service",
+        "cluster_ref": "k8s-cluster",
+        "namespace_ref": "ns-app",
+        "target_refs": [
+          "pod-web-1",
+          "pod-web-2"
+        ]
+      }
+    },
+    {
+      "id": "ing-web",
+      "name": "web-ing",
+      "provider": "onprem",
+      "service_type": "k8s.ingress",
+      "taxonomy": "network.load_balancing",
+      "kubernetes": {
+        "kind": "Ingress",
+        "cluster_ref": "k8s-cluster",
+        "namespace_ref": "ns-app",
+        "service_refs": [
+          "svc-web"
+        ]
+      }
+    },
+    {
+      "id": "ingress-controller",
+      "name": "ingress-controller",
+      "provider": "onprem",
+      "service_type": "k8s.ingresscontroller",
+      "taxonomy": "network.load_balancing",
+      "kubernetes": {
+        "kind": "IngressController",
+        "cluster_ref": "k8s-cluster"
+      }
+    },
+    {
+      "id": "pvc-web-data",
+      "name": "web-data",
+      "provider": "onprem",
+      "service_type": "k8s.persistentvolumeclaim",
+      "taxonomy": "storage.block_file",
+      "kubernetes": {
+        "kind": "PersistentVolumeClaim",
+        "cluster_ref": "k8s-cluster",
+        "namespace_ref": "ns-app",
+        "volume_ref": "pv-web-data",
+        "storage_class_ref": "sc-reference"
+      }
+    },
+    {
+      "id": "pv-web-data",
+      "name": "pv-web-data",
+      "provider": "onprem",
+      "service_type": "k8s.persistentvolume",
+      "taxonomy": "storage.block_file",
+      "kubernetes": {
+        "kind": "PersistentVolume",
+        "cluster_ref": "k8s-cluster",
+        "storage_class_ref": "sc-reference"
+      }
+    },
+    {
+      "id": "sc-reference",
+      "name": "reference-sc",
+      "provider": "onprem",
+      "service_type": "k8s.storageclass",
+      "taxonomy": "storage.block_file",
+      "kubernetes": {
+        "kind": "StorageClass",
+        "cluster_ref": "k8s-cluster"
+      }
+    },
+    {
+      "id": "sa-web",
+      "name": "web-sa",
+      "provider": "onprem",
+      "service_type": "k8s.serviceaccount",
+      "taxonomy": "identity.access",
+      "kubernetes": {
+        "kind": "ServiceAccount",
+        "cluster_ref": "k8s-cluster",
+        "namespace_ref": "ns-app"
+      }
+    },
+    {
+      "id": "secret-web",
+      "name": "web-credentials",
+      "provider": "onprem",
+      "service_type": "k8s.secret",
+      "taxonomy": "security.secrets_keys",
+      "kubernetes": {
+        "kind": "Secret",
+        "cluster_ref": "k8s-cluster",
+        "namespace_ref": "ns-app"
+      }
+    },
+    {
+      "id": "netpol-web",
+      "name": "web-netpol",
+      "provider": "onprem",
+      "service_type": "k8s.networkpolicy",
+      "taxonomy": "security.control",
+      "kubernetes": {
+        "kind": "NetworkPolicy",
+        "cluster_ref": "k8s-cluster",
+        "namespace_ref": "ns-app"
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "id": "traffic-ing-svc",
+      "source_ref": "ing-web",
+      "target_ref": "svc-web",
+      "kind": "traffic"
+    },
+    {
+      "id": "traffic-svc-pod-1",
+      "source_ref": "svc-web",
+      "target_ref": "pod-web-1",
+      "kind": "traffic"
+    },
+    {
+      "id": "traffic-svc-pod-2",
+      "source_ref": "svc-web",
+      "target_ref": "pod-web-2",
+      "kind": "traffic"
+    },
+    {
+      "id": "manage-controller-ing",
+      "source_ref": "ingress-controller",
+      "target_ref": "ing-web",
+      "kind": "management",
+      "label": "Implements"
+    },
+    {
+      "id": "own-deploy-rs",
+      "source_ref": "deploy-web",
+      "target_ref": "rs-web",
+      "kind": "ownership"
+    },
+    {
+      "id": "own-rs-pod-1",
+      "source_ref": "rs-web",
+      "target_ref": "pod-web-1",
+      "kind": "ownership"
+    },
+    {
+      "id": "own-rs-pod-2",
+      "source_ref": "rs-web",
+      "target_ref": "pod-web-2",
+      "kind": "ownership"
+    },
+    {
+      "id": "store-deploy-pvc",
+      "source_ref": "deploy-web",
+      "target_ref": "pvc-web-data",
+      "kind": "storage",
+      "label": "Claims"
+    },
+    {
+      "id": "store-pvc-pv",
+      "source_ref": "pvc-web-data",
+      "target_ref": "pv-web-data",
+      "kind": "storage",
+      "label": "Bound to"
+    },
+    {
+      "id": "store-pv-sc",
+      "source_ref": "pv-web-data",
+      "target_ref": "sc-reference",
+      "kind": "storage",
+      "label": "Class"
+    },
+    {
+      "id": "config-deploy-sa",
+      "source_ref": "deploy-web",
+      "target_ref": "sa-web",
+      "kind": "configuration",
+      "label": "Runs as"
+    },
+    {
+      "id": "config-deploy-secret",
+      "source_ref": "deploy-web",
+      "target_ref": "secret-web",
+      "kind": "configuration",
+      "label": "Secret reference"
+    },
+    {
+      "id": "policy-netpol-deploy",
+      "source_ref": "netpol-web",
+      "target_ref": "deploy-web",
+      "kind": "policy"
+    }
+  ],
+  "views": [
+    {
+      "id": "physical",
+      "title": "Physical view: site, rooms, racks and devices",
+      "entity_refs": [
+        "site-main",
+        "dc-1",
+        "room-a",
+        "rack-a",
+        "rack-b",
+        "rack-c",
+        "router-1",
+        "firewall-1",
+        "l3-switch-1",
+        "l2-switch-1",
+        "hypervisor-1",
+        "physical-server-1",
+        "vm-1",
+        "vm-2",
+        "database-1",
+        "nas-1",
+        "san-1",
+        "identity-1",
+        "backup-1",
+        "monitoring-1",
+        "k8s-cluster"
+      ],
+      "relationship_refs": [],
+      "grouping": "physical",
+      "direction": "TB"
+    },
+    {
+      "id": "logical",
+      "title": "Logical view: network, VRF, VLAN, subnet and security zone",
+      "entity_refs": [
+        "net-prod",
+        "net-mgmt",
+        "vrf-prod",
+        "vrf-mgmt",
+        "vlan-120",
+        "vlan-130",
+        "vlan-900",
+        "subnet-app",
+        "subnet-data",
+        "subnet-mgmt",
+        "zone-app",
+        "zone-data",
+        "zone-mgmt",
+        "router-1",
+        "firewall-1",
+        "l3-switch-1",
+        "l2-switch-1",
+        "hypervisor-1",
+        "physical-server-1",
+        "vm-1",
+        "vm-2",
+        "database-1",
+        "nas-1",
+        "san-1",
+        "identity-1",
+        "backup-1",
+        "monitoring-1",
+        "k8s-cluster"
+      ],
+      "relationship_refs": [],
+      "grouping": "network",
+      "direction": "TB"
+    },
+    {
+      "id": "k8s-namespaces",
+      "title": "Kubernetes view: namespace, workloads and references",
+      "entity_refs": [
+        "k8s-cluster",
+        "ns-app",
+        "deploy-web",
+        "rs-web",
+        "pod-web-1",
+        "pod-web-2",
+        "svc-web",
+        "ing-web",
+        "ingress-controller",
+        "pvc-web-data",
+        "pv-web-data",
+        "sc-reference",
+        "sa-web",
+        "secret-web",
+        "netpol-web"
+      ],
+      "relationship_refs": [
+        "traffic-ing-svc",
+        "traffic-svc-pod-1",
+        "traffic-svc-pod-2",
+        "manage-controller-ing",
+        "own-deploy-rs",
+        "own-rs-pod-1",
+        "own-rs-pod-2",
+        "store-deploy-pvc",
+        "store-pvc-pv",
+        "store-pv-sc",
+        "config-deploy-sa",
+        "config-deploy-secret",
+        "policy-netpol-deploy"
+      ],
+      "grouping": "namespace",
+      "direction": "TB"
+    },
+    {
+      "id": "k8s-nodes",
+      "title": "Kubernetes view: worker Nodes and Pod placement",
+      "entity_refs": [
+        "k8s-cluster",
+        "k8s-node-1",
+        "k8s-node-2",
+        "pod-web-1",
+        "pod-web-2"
+      ],
+      "relationship_refs": [],
+      "grouping": "node",
+      "direction": "TB"
+    }
+  ]
+}

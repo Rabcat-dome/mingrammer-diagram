@@ -1,0 +1,186 @@
+{
+ "direction": "TB",
+ "draft": false,
+ "edges": [],
+ "fallbacks": [],
+ "grouping": "provider",
+ "groups": [
+  {
+   "boundary_kind": null,
+   "entity": "provider",
+   "id": "_provider.huawei",
+   "lines": [
+    "Huawei Cloud"
+   ],
+   "memberships": {},
+   "parent": null,
+   "provider": "huawei",
+   "scope_kind": null,
+   "type_id": null
+  },
+  {
+   "boundary_kind": null,
+   "entity": "scope",
+   "id": "huawei-account",
+   "lines": [
+    "Web application account",
+    "Huawei Cloud account"
+   ],
+   "memberships": {},
+   "parent": "_provider.huawei",
+   "provider": "huawei",
+   "scope_kind": "account",
+   "type_id": "huawei.scope.account"
+  },
+  {
+   "boundary_kind": null,
+   "entity": "scope",
+   "id": "project-ap-southeast-2",
+   "lines": [
+    "ap-southeast-2",
+    "IAM project"
+   ],
+   "memberships": {
+    "parent": [
+     "huawei-account"
+    ]
+   },
+   "parent": "huawei-account",
+   "provider": "huawei",
+   "scope_kind": "iam_project",
+   "type_id": "huawei.scope.iam_project"
+  },
+  {
+   "boundary_kind": "region",
+   "entity": "boundary",
+   "id": "region-ap-southeast-2",
+   "lines": [
+    "AP-Bangkok",
+    "Region"
+   ],
+   "memberships": {
+    "scope": [
+     "project-ap-southeast-2"
+    ]
+   },
+   "parent": "project-ap-southeast-2",
+   "provider": "huawei",
+   "scope_kind": null,
+   "type_id": "huawei.location.region"
+  }
+ ],
+ "legend": [],
+ "nodes": [
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "region-ap-southeast-2",
+   "icon": {
+    "pack": "huawei-latam-color",
+    "reference": "huawei-apig",
+    "source": "custom_asset"
+   },
+   "id": "api-gateway",
+   "lines": [
+    "API Gateway"
+   ],
+   "memberships": {
+    "location": [
+     "region-ap-southeast-2"
+    ],
+    "scope": [
+     "project-ap-southeast-2"
+    ]
+   },
+   "provider": "huawei",
+   "type_id": "huawei.integration.api_gateway"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "region-ap-southeast-2",
+   "icon": {
+    "pack": "huawei-latam-color",
+    "reference": "huawei-functiongraph",
+    "source": "custom_asset"
+   },
+   "id": "functiongraph",
+   "lines": [
+    "FunctionGraph"
+   ],
+   "memberships": {
+    "location": [
+     "region-ap-southeast-2"
+    ],
+    "scope": [
+     "project-ap-southeast-2"
+    ]
+   },
+   "provider": "huawei",
+   "type_id": "huawei.compute.functiongraph"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "huawei-account",
+   "icon": {
+    "pack": "huawei-latam-color",
+    "reference": "huawei-iam",
+    "source": "custom_asset"
+   },
+   "id": "iam",
+   "lines": [
+    "Identity and Access",
+    "Management"
+   ],
+   "memberships": {
+    "scope": [
+     "huawei-account"
+    ]
+   },
+   "provider": "huawei",
+   "type_id": "huawei.identity.iam"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "region-ap-southeast-2",
+   "icon": {
+    "pack": "huawei-latam-color",
+    "reference": "huawei-vpn",
+    "source": "custom_asset"
+   },
+   "id": "vpn",
+   "lines": [
+    "Virtual Private",
+    "Network"
+   ],
+   "memberships": {
+    "location": [
+     "region-ap-southeast-2"
+    ],
+    "scope": [
+     "project-ap-southeast-2"
+    ]
+   },
+   "provider": "huawei",
+   "type_id": "huawei.network.vpn"
+  }
+ ],
+ "notice_lines": [
+  "Contains icons for private personal use only; rights not cleared (D-018, O-002). Do not share outside private",
+  "use.",
+  "Huawei Cloud service icons from the color group of huaweicloud-latam/drawio-libraries at commit 52c33aa.",
+  "Huawei Cloud names and marks belong to Huawei."
+ ],
+ "style": "provider",
+ "title_lines": [
+  "Huawei Cloud web application with CCE detail",
+  "API, serverless, identity and connectivity services (reference)"
+ ],
+ "view_id": "services"
+}

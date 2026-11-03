@@ -1,0 +1,965 @@
+{
+  "schema_version": "1.0.0",
+  "metadata": {
+    "id": "aws-three-tier-reference",
+    "title": "AWS three-tier web application with EKS companion",
+    "environment": "reference",
+    "assumptions": [
+      "Synthetic reference model for the T-001 brief and its EKS companion; nothing here describes deployed infrastructure or observed state.",
+      "Region ap-southeast-1 and zones ap-southeast-1a and ap-southeast-1b are illustrative; the brief supplies no region or zone names.",
+      "The region lists the account in scope_refs so the overview nests the region in the account once. It states that the account uses the region, not that an account owns a region.",
+      "Each zone has a public, an app and a data subnet. The second data subnet holds no resource; it is declared because an RDS DB subnet group must span at least two zones.",
+      "One RDS DB instance sits in the first zone's data subnet; no standby, replica or Multi-AZ deployment is modeled, and the engine, size and port are not supplied.",
+      "Two application EC2 instances, one per app subnet, are an illustrative count; the brief gives no instance count, type or size. Add or rename instances without changing existing IDs.",
+      "The ALB is one logical load balancer attached to both public subnets; it is not duplicated per zone.",
+      "One security group per tier (ALB, application, database) is shown and listed on each tier's resources; the brief supplies no rules, so none are modeled.",
+      "HTTPS is labeled on the Internet gateway to ALB hop (the client-facing listener). The brief names no protocol for the ALB-to-instance hop, so that hop is unlabeled.",
+      "Internet clients are not modeled as an entity; the Internet gateway is the edge of the model.",
+      "The application-to-database edge carries only that label from the brief.",
+      "Egress: one zonal NAT gateway in the first public subnet serves both application instances and reaches the Internet gateway. Per-zone NAT redundancy was not supplied, so the second instance egresses across zones.",
+      "S3 and CloudWatch are shown as regional services in the account. The brief states no link to either, so no relationship to them is drawn.",
+      "The EKS cluster attaches to both app subnets, and its managed node group launches one Node in each; no subnets were added for Kubernetes.",
+      "Kubernetes names, the namespace and a replica count of 2 are illustrative. The Deployment's two Pods run one per Node.",
+      "The Ingress controller's implementation is not supplied; it is cluster-level with no namespace, and no load balancer is linked to it. It is not the web-tier ALB.",
+      "The PVC is claimed by the Deployment, bound to a PV and uses a StorageClass; backing store, size and access mode are not supplied.",
+      "The Secret is a reference marker with no value. NetworkPolicy rules and ServiceAccount permissions are not supplied.",
+      "The overview shows the EKS cluster only; Kubernetes detail is in the eks-namespaces and eks-nodes views, so the overview lists those entities in view_exclusions."
+    ],
+    "description": "Reference model for scenario T-001: one account and region across two availability zones, with an Amazon EKS workload in the same account and VPC. Synthetic; it does not describe deployed infrastructure."
+  },
+  "scopes": [
+    {
+      "id": "aws-account",
+      "name": "AWS account",
+      "provider": "aws",
+      "kind": "account"
+    }
+  ],
+  "boundaries": [
+    {
+      "id": "region",
+      "name": "ap-southeast-1",
+      "provider": "aws",
+      "kind": "region",
+      "scope_refs": [
+        "aws-account"
+      ]
+    },
+    {
+      "id": "az-a",
+      "name": "ap-southeast-1a",
+      "provider": "aws",
+      "kind": "zone",
+      "parent_ref": "region"
+    },
+    {
+      "id": "az-b",
+      "name": "ap-southeast-1b",
+      "provider": "aws",
+      "kind": "zone",
+      "parent_ref": "region"
+    },
+    {
+      "id": "vpc",
+      "name": "Application VPC",
+      "provider": "aws",
+      "kind": "network",
+      "scope_refs": [
+        "aws-account"
+      ],
+      "parent_ref": "region"
+    },
+    {
+      "id": "subnet-public-a",
+      "name": "Public subnet A",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+        "aws-account"
+      ],
+      "parent_ref": "vpc",
+      "relations": [
+        {
+          "kind": "located_in",
+          "target_ref": "az-a"
+        }
+      ]
+    },
+    {
+      "id": "subnet-public-b",
+      "name": "Public subnet B",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+        "aws-account"
+      ],
+      "parent_ref": "vpc",
+      "relations": [
+        {
+          "kind": "located_in",
+          "target_ref": "az-b"
+        }
+      ]
+    },
+    {
+      "id": "subnet-app-a",
+      "name": "App subnet A",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+        "aws-account"
+      ],
+      "parent_ref": "vpc",
+      "relations": [
+        {
+          "kind": "located_in",
+          "target_ref": "az-a"
+        }
+      ]
+    },
+    {
+      "id": "subnet-app-b",
+      "name": "App subnet B",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+        "aws-account"
+      ],
+      "parent_ref": "vpc",
+      "relations": [
+        {
+          "kind": "located_in",
+          "target_ref": "az-b"
+        }
+      ]
+    },
+    {
+      "id": "subnet-data-a",
+      "name": "Data subnet A",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+        "aws-account"
+      ],
+      "parent_ref": "vpc",
+      "relations": [
+        {
+          "kind": "located_in",
+          "target_ref": "az-a"
+        }
+      ]
+    },
+    {
+      "id": "subnet-data-b",
+      "name": "Data subnet B",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+        "aws-account"
+      ],
+      "parent_ref": "vpc",
+      "relations": [
+        {
+          "kind": "located_in",
+          "target_ref": "az-b"
+        }
+      ]
+    },
+    {
+      "id": "sg-alb",
+      "name": "ALB security group",
+      "provider": "aws",
+      "kind": "security_group",
+      "scope_refs": [
+        "aws-account"
+      ],
+      "parent_ref": "vpc",
+      "relations": [
+        {
+          "kind": "located_in",
+          "target_ref": "region"
+        }
+      ]
+    },
+    {
+      "id": "sg-app",
+      "name": "Application security group",
+      "provider": "aws",
+      "kind": "security_group",
+      "scope_refs": [
+        "aws-account"
+      ],
+      "parent_ref": "vpc",
+      "relations": [
+        {
+          "kind": "located_in",
+          "target_ref": "region"
+        }
+      ]
+    },
+    {
+      "id": "sg-db",
+      "name": "Database security group",
+      "provider": "aws",
+      "kind": "security_group",
+      "scope_refs": [
+        "aws-account"
+      ],
+      "parent_ref": "vpc",
+      "relations": [
+        {
+          "kind": "located_in",
+          "target_ref": "region"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "alb",
+      "name": "Application Load Balancer",
+      "provider": "aws",
+      "service_type": "aws.network.application_load_balancer",
+      "taxonomy": "network.load_balancing",
+      "placement": {
+        "scope_refs": [
+          "aws-account"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet-public-a",
+              "subnet-public-b"
+            ]
+          }
+        ],
+        "security_boundaries": [
+          "sg-alb"
+        ]
+      }
+    },
+    {
+      "id": "app-instance-a",
+      "name": "App instance A",
+      "provider": "aws",
+      "service_type": "aws.compute.ec2",
+      "taxonomy": "compute.vm",
+      "placement": {
+        "scope_refs": [
+          "aws-account"
+        ],
+        "location": {
+          "region_ref": "region",
+          "zone_ref": "az-a"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet-app-a"
+            ]
+          }
+        ],
+        "security_boundaries": [
+          "sg-app"
+        ]
+      }
+    },
+    {
+      "id": "app-instance-b",
+      "name": "App instance B",
+      "provider": "aws",
+      "service_type": "aws.compute.ec2",
+      "taxonomy": "compute.vm",
+      "placement": {
+        "scope_refs": [
+          "aws-account"
+        ],
+        "location": {
+          "region_ref": "region",
+          "zone_ref": "az-b"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet-app-b"
+            ]
+          }
+        ],
+        "security_boundaries": [
+          "sg-app"
+        ]
+      }
+    },
+    {
+      "id": "database",
+      "name": "Application database",
+      "provider": "aws",
+      "service_type": "aws.database.rds",
+      "taxonomy": "data.relational",
+      "placement": {
+        "scope_refs": [
+          "aws-account"
+        ],
+        "location": {
+          "region_ref": "region",
+          "zone_ref": "az-a"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet-data-a"
+            ]
+          }
+        ],
+        "security_boundaries": [
+          "sg-db"
+        ]
+      }
+    },
+    {
+      "id": "s3-bucket",
+      "name": "Amazon S3 bucket",
+      "provider": "aws",
+      "service_type": "aws.storage.s3",
+      "taxonomy": "storage.object",
+      "placement": {
+        "scope_refs": [
+          "aws-account"
+        ],
+        "location": {
+          "region_ref": "region"
+        }
+      }
+    },
+    {
+      "id": "cloudwatch",
+      "name": "Amazon CloudWatch",
+      "provider": "aws",
+      "service_type": "aws.observability.cloudwatch",
+      "taxonomy": "operations.observability",
+      "placement": {
+        "scope_refs": [
+          "aws-account"
+        ],
+        "location": {
+          "region_ref": "region"
+        }
+      }
+    },
+    {
+      "id": "nat-gateway",
+      "name": "NAT gateway (zonal)",
+      "provider": "aws",
+      "service_type": "aws.network.nat_gateway",
+      "taxonomy": "network.routing",
+      "placement": {
+        "scope_refs": [
+          "aws-account"
+        ],
+        "location": {
+          "region_ref": "region",
+          "zone_ref": "az-a"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet-public-a"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "internet-gateway",
+      "name": "Internet gateway",
+      "provider": "aws",
+      "service_type": "aws.network.internet_gateway",
+      "taxonomy": "network.routing",
+      "placement": {
+        "scope_refs": [
+          "aws-account"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc"
+          }
+        ]
+      }
+    },
+    {
+      "id": "eks-cluster",
+      "name": "Workload cluster",
+      "provider": "aws",
+      "service_type": "aws.containers.eks",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "aws-account"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet-app-a",
+              "subnet-app-b"
+            ]
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "Cluster"
+      }
+    },
+    {
+      "id": "eks-node-group",
+      "name": "Managed node group",
+      "provider": "aws",
+      "service_type": "aws.containers.eks_managed_node_group",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "aws-account"
+        ],
+        "location": {
+          "region_ref": "region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet-app-a",
+              "subnet-app-b"
+            ]
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "NodePool",
+        "cluster_ref": "eks-cluster"
+      }
+    },
+    {
+      "id": "eks-node-a",
+      "name": "Worker node A",
+      "provider": "aws",
+      "service_type": "k8s.node",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "aws-account"
+        ],
+        "location": {
+          "zone_ref": "az-a"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet-app-a"
+            ]
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "Node",
+        "cluster_ref": "eks-cluster",
+        "node_pool_ref": "eks-node-group"
+      }
+    },
+    {
+      "id": "eks-node-b",
+      "name": "Worker node B",
+      "provider": "aws",
+      "service_type": "k8s.node",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "aws-account"
+        ],
+        "location": {
+          "zone_ref": "az-b"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc",
+            "subnet_refs": [
+              "subnet-app-b"
+            ]
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "Node",
+        "cluster_ref": "eks-cluster",
+        "node_pool_ref": "eks-node-group"
+      }
+    },
+    {
+      "id": "ns-web",
+      "name": "web-app",
+      "provider": "aws",
+      "service_type": "k8s.namespace",
+      "taxonomy": "governance.scope",
+      "kubernetes": {
+        "kind": "Namespace",
+        "cluster_ref": "eks-cluster"
+      }
+    },
+    {
+      "id": "deploy-web",
+      "name": "web",
+      "provider": "aws",
+      "service_type": "k8s.deployment",
+      "taxonomy": "compute.containers",
+      "properties": {
+        "replicas": 2
+      },
+      "kubernetes": {
+        "kind": "Deployment",
+        "cluster_ref": "eks-cluster",
+        "namespace_ref": "ns-web",
+        "volume_claim_refs": [
+          "pvc-web-data"
+        ],
+        "secret_refs": [
+          "secret-web"
+        ],
+        "service_account_ref": "sa-web"
+      }
+    },
+    {
+      "id": "rs-web",
+      "name": "web-rs",
+      "provider": "aws",
+      "service_type": "k8s.replicaset",
+      "taxonomy": "compute.containers",
+      "properties": {
+        "replicas": 2
+      },
+      "kubernetes": {
+        "kind": "ReplicaSet",
+        "cluster_ref": "eks-cluster",
+        "namespace_ref": "ns-web",
+        "owner_ref": "deploy-web"
+      }
+    },
+    {
+      "id": "pod-web-a",
+      "name": "web-pod-a",
+      "provider": "aws",
+      "service_type": "k8s.pod",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Pod",
+        "cluster_ref": "eks-cluster",
+        "namespace_ref": "ns-web",
+        "owner_ref": "rs-web",
+        "node_ref": "eks-node-a"
+      }
+    },
+    {
+      "id": "pod-web-b",
+      "name": "web-pod-b",
+      "provider": "aws",
+      "service_type": "k8s.pod",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Pod",
+        "cluster_ref": "eks-cluster",
+        "namespace_ref": "ns-web",
+        "owner_ref": "rs-web",
+        "node_ref": "eks-node-b"
+      }
+    },
+    {
+      "id": "svc-web",
+      "name": "web-svc",
+      "provider": "aws",
+      "service_type": "k8s.service",
+      "taxonomy": "network.load_balancing",
+      "kubernetes": {
+        "kind": "Service",
+        "cluster_ref": "eks-cluster",
+        "namespace_ref": "ns-web",
+        "target_refs": [
+          "pod-web-a",
+          "pod-web-b"
+        ]
+      }
+    },
+    {
+      "id": "ing-web",
+      "name": "web-ing",
+      "provider": "aws",
+      "service_type": "k8s.ingress",
+      "taxonomy": "network.load_balancing",
+      "kubernetes": {
+        "kind": "Ingress",
+        "cluster_ref": "eks-cluster",
+        "namespace_ref": "ns-web",
+        "service_refs": [
+          "svc-web"
+        ]
+      }
+    },
+    {
+      "id": "ingress-controller",
+      "name": "Ingress controller",
+      "provider": "aws",
+      "service_type": "k8s.ingresscontroller",
+      "taxonomy": "network.load_balancing",
+      "kubernetes": {
+        "kind": "IngressController",
+        "cluster_ref": "eks-cluster"
+      }
+    },
+    {
+      "id": "pvc-web-data",
+      "name": "web-data",
+      "provider": "aws",
+      "service_type": "k8s.persistentvolumeclaim",
+      "taxonomy": "storage.block_file",
+      "kubernetes": {
+        "kind": "PersistentVolumeClaim",
+        "cluster_ref": "eks-cluster",
+        "namespace_ref": "ns-web",
+        "volume_ref": "pv-web-data",
+        "storage_class_ref": "sc-web"
+      }
+    },
+    {
+      "id": "pv-web-data",
+      "name": "web-data-pv",
+      "provider": "aws",
+      "service_type": "k8s.persistentvolume",
+      "taxonomy": "storage.block_file",
+      "kubernetes": {
+        "kind": "PersistentVolume",
+        "cluster_ref": "eks-cluster",
+        "storage_class_ref": "sc-web"
+      }
+    },
+    {
+      "id": "sc-web",
+      "name": "web-storage",
+      "provider": "aws",
+      "service_type": "k8s.storageclass",
+      "taxonomy": "storage.block_file",
+      "kubernetes": {
+        "kind": "StorageClass",
+        "cluster_ref": "eks-cluster"
+      }
+    },
+    {
+      "id": "sa-web",
+      "name": "web-sa",
+      "provider": "aws",
+      "service_type": "k8s.serviceaccount",
+      "taxonomy": "identity.access",
+      "kubernetes": {
+        "kind": "ServiceAccount",
+        "cluster_ref": "eks-cluster",
+        "namespace_ref": "ns-web"
+      }
+    },
+    {
+      "id": "secret-web",
+      "name": "web-secret",
+      "provider": "aws",
+      "service_type": "k8s.secret",
+      "taxonomy": "security.secrets_keys",
+      "kubernetes": {
+        "kind": "Secret",
+        "cluster_ref": "eks-cluster",
+        "namespace_ref": "ns-web"
+      }
+    },
+    {
+      "id": "netpol-web",
+      "name": "web-netpol",
+      "provider": "aws",
+      "service_type": "k8s.networkpolicy",
+      "taxonomy": "security.control",
+      "kubernetes": {
+        "kind": "NetworkPolicy",
+        "cluster_ref": "eks-cluster",
+        "namespace_ref": "ns-web"
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "id": "t-igw-alb",
+      "source_ref": "internet-gateway",
+      "target_ref": "alb",
+      "kind": "traffic",
+      "protocol": "HTTPS"
+    },
+    {
+      "id": "t-alb-app-a",
+      "source_ref": "alb",
+      "target_ref": "app-instance-a",
+      "kind": "traffic"
+    },
+    {
+      "id": "t-alb-app-b",
+      "source_ref": "alb",
+      "target_ref": "app-instance-b",
+      "kind": "traffic"
+    },
+    {
+      "id": "t-app-a-db",
+      "source_ref": "app-instance-a",
+      "target_ref": "database",
+      "kind": "traffic",
+      "label": "Application to database"
+    },
+    {
+      "id": "t-app-b-db",
+      "source_ref": "app-instance-b",
+      "target_ref": "database",
+      "kind": "traffic",
+      "label": "Application to database"
+    },
+    {
+      "id": "t-app-a-nat",
+      "source_ref": "app-instance-a",
+      "target_ref": "nat-gateway",
+      "kind": "traffic",
+      "label": "Egress"
+    },
+    {
+      "id": "t-app-b-nat",
+      "source_ref": "app-instance-b",
+      "target_ref": "nat-gateway",
+      "kind": "traffic",
+      "label": "Egress"
+    },
+    {
+      "id": "t-nat-igw",
+      "source_ref": "nat-gateway",
+      "target_ref": "internet-gateway",
+      "kind": "traffic",
+      "label": "Egress"
+    },
+    {
+      "id": "t-ing-svc",
+      "source_ref": "ing-web",
+      "target_ref": "svc-web",
+      "kind": "traffic"
+    },
+    {
+      "id": "t-svc-pod-a",
+      "source_ref": "svc-web",
+      "target_ref": "pod-web-a",
+      "kind": "traffic"
+    },
+    {
+      "id": "t-svc-pod-b",
+      "source_ref": "svc-web",
+      "target_ref": "pod-web-b",
+      "kind": "traffic"
+    },
+    {
+      "id": "m-ctl-ing",
+      "source_ref": "ingress-controller",
+      "target_ref": "ing-web",
+      "kind": "management"
+    },
+    {
+      "id": "o-deploy-rs",
+      "source_ref": "deploy-web",
+      "target_ref": "rs-web",
+      "kind": "ownership"
+    },
+    {
+      "id": "o-rs-pod-a",
+      "source_ref": "rs-web",
+      "target_ref": "pod-web-a",
+      "kind": "ownership"
+    },
+    {
+      "id": "o-rs-pod-b",
+      "source_ref": "rs-web",
+      "target_ref": "pod-web-b",
+      "kind": "ownership"
+    },
+    {
+      "id": "s-deploy-pvc",
+      "source_ref": "deploy-web",
+      "target_ref": "pvc-web-data",
+      "kind": "storage"
+    },
+    {
+      "id": "s-pvc-pv",
+      "source_ref": "pvc-web-data",
+      "target_ref": "pv-web-data",
+      "kind": "storage",
+      "label": "Bound to"
+    },
+    {
+      "id": "s-pv-sc",
+      "source_ref": "pv-web-data",
+      "target_ref": "sc-web",
+      "kind": "storage"
+    },
+    {
+      "id": "c-deploy-sa",
+      "source_ref": "deploy-web",
+      "target_ref": "sa-web",
+      "kind": "configuration"
+    },
+    {
+      "id": "c-deploy-secret",
+      "source_ref": "deploy-web",
+      "target_ref": "secret-web",
+      "kind": "configuration"
+    },
+    {
+      "id": "p-netpol-deploy",
+      "source_ref": "netpol-web",
+      "target_ref": "deploy-web",
+      "kind": "policy"
+    }
+  ],
+  "views": [
+    {
+      "id": "overview",
+      "title": "Cloud solution overview",
+      "entity_refs": [
+        "aws-account",
+        "region",
+        "vpc",
+        "subnet-public-a",
+        "subnet-public-b",
+        "subnet-app-a",
+        "subnet-app-b",
+        "subnet-data-a",
+        "subnet-data-b",
+        "sg-alb",
+        "sg-app",
+        "sg-db",
+        "internet-gateway",
+        "alb",
+        "app-instance-a",
+        "app-instance-b",
+        "database",
+        "nat-gateway",
+        "s3-bucket",
+        "cloudwatch",
+        "eks-cluster"
+      ],
+      "relationship_refs": [
+        "t-igw-alb",
+        "t-alb-app-a",
+        "t-alb-app-b",
+        "t-app-a-db",
+        "t-app-b-db",
+        "t-app-a-nat",
+        "t-app-b-nat",
+        "t-nat-igw"
+      ],
+      "grouping": "provider",
+      "direction": "LR"
+    },
+    {
+      "id": "zones",
+      "title": "Workloads by availability zone",
+      "entity_refs": [
+        "region",
+        "az-a",
+        "az-b",
+        "internet-gateway",
+        "alb",
+        "app-instance-a",
+        "app-instance-b",
+        "database",
+        "nat-gateway",
+        "s3-bucket",
+        "cloudwatch",
+        "eks-cluster",
+        "eks-node-a",
+        "eks-node-b"
+      ],
+      "relationship_refs": [
+        "t-igw-alb",
+        "t-alb-app-a",
+        "t-alb-app-b",
+        "t-app-a-db",
+        "t-app-b-db",
+        "t-app-a-nat",
+        "t-app-b-nat",
+        "t-nat-igw"
+      ],
+      "grouping": "physical",
+      "direction": "TB"
+    },
+    {
+      "id": "eks-namespaces",
+      "title": "EKS logical view by namespace",
+      "entity_refs": [
+        "eks-cluster",
+        "ns-web",
+        "deploy-web",
+        "rs-web",
+        "pod-web-a",
+        "pod-web-b",
+        "svc-web",
+        "ing-web",
+        "ingress-controller",
+        "pvc-web-data",
+        "pv-web-data",
+        "sc-web",
+        "sa-web",
+        "secret-web",
+        "netpol-web"
+      ],
+      "relationship_refs": [
+        "t-ing-svc",
+        "t-svc-pod-a",
+        "t-svc-pod-b",
+        "m-ctl-ing",
+        "o-deploy-rs",
+        "o-rs-pod-a",
+        "o-rs-pod-b",
+        "s-deploy-pvc",
+        "s-pvc-pv",
+        "s-pv-sc",
+        "c-deploy-sa",
+        "c-deploy-secret",
+        "p-netpol-deploy"
+      ],
+      "grouping": "namespace",
+      "direction": "TB"
+    },
+    {
+      "id": "eks-nodes",
+      "title": "EKS worker placement by node",
+      "entity_refs": [
+        "eks-cluster",
+        "eks-node-group",
+        "eks-node-a",
+        "eks-node-b",
+        "pod-web-a",
+        "pod-web-b"
+      ],
+      "relationship_refs": [],
+      "grouping": "node",
+      "direction": "TB"
+    }
+  ]
+}

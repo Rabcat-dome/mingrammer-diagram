@@ -1,0 +1,237 @@
+{
+ "direction": "TB",
+ "draft": false,
+ "edges": [],
+ "fallbacks": [],
+ "grouping": "node",
+ "groups": [
+  {
+   "boundary_kind": null,
+   "entity": "resource",
+   "id": "gke-cluster",
+   "lines": [
+    "app-cluster",
+    "GKE Standard cluster",
+    "subnet: gke-subnet"
+   ],
+   "memberships": {
+    "location": [
+     "region-asia-southeast2"
+    ],
+    "network": [
+     "vpc-shared"
+    ],
+    "scope": [
+     "project-app-service"
+    ],
+    "subnet": [
+     "subnet-gke"
+    ]
+   },
+   "parent": null,
+   "provider": "gcp",
+   "scope_kind": null,
+   "type_id": "gcp.containers.gke_standard"
+  },
+  {
+   "boundary_kind": null,
+   "entity": "resource",
+   "id": "gke-node-pool",
+   "lines": [
+    "app-pool",
+    "Node pool",
+    "subnet: gke-subnet"
+   ],
+   "memberships": {
+    "cluster": [
+     "gke-cluster"
+    ],
+    "network": [
+     "vpc-shared"
+    ],
+    "scope": [
+     "project-app-service"
+    ],
+    "subnet": [
+     "subnet-gke"
+    ]
+   },
+   "parent": "gke-cluster",
+   "provider": "gcp",
+   "scope_kind": null,
+   "type_id": "gcp.containers.gke_node_pool"
+  },
+  {
+   "boundary_kind": null,
+   "entity": "resource",
+   "id": "gke-node-a",
+   "lines": [
+    "node-a",
+    "Node"
+   ],
+   "memberships": {
+    "cluster": [
+     "gke-cluster"
+    ],
+    "node pool": [
+     "gke-node-pool"
+    ],
+    "scope": [
+     "project-app-service"
+    ]
+   },
+   "parent": "gke-node-pool",
+   "provider": "gcp",
+   "scope_kind": null,
+   "type_id": "k8s.node"
+  },
+  {
+   "boundary_kind": null,
+   "entity": "resource",
+   "id": "gke-node-b",
+   "lines": [
+    "node-b",
+    "Node"
+   ],
+   "memberships": {
+    "cluster": [
+     "gke-cluster"
+    ],
+    "node pool": [
+     "gke-node-pool"
+    ],
+    "scope": [
+     "project-app-service"
+    ]
+   },
+   "parent": "gke-node-pool",
+   "provider": "gcp",
+   "scope_kind": null,
+   "type_id": "k8s.node"
+  }
+ ],
+ "legend": [],
+ "nodes": [
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "gke-cluster",
+   "icon": {
+    "pack": "gcp-product-icons",
+    "reference": "diagrams.gcp.compute.KubernetesEngine",
+    "source": "native_class"
+   },
+   "id": "gke-cluster",
+   "lines": [
+    "GKE Standard cluster"
+   ],
+   "memberships": {},
+   "provider": "gcp",
+   "type_id": "gcp.containers.gke_standard"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "gke-node-a",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.infra.Node",
+    "source": "native_class"
+   },
+   "id": "gke-node-a",
+   "lines": [
+    "Node"
+   ],
+   "memberships": {},
+   "provider": "gcp",
+   "type_id": "k8s.node"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "gke-node-b",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.infra.Node",
+    "source": "native_class"
+   },
+   "id": "gke-node-b",
+   "lines": [
+    "Node"
+   ],
+   "memberships": {},
+   "provider": "gcp",
+   "type_id": "k8s.node"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "gke-node-a",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.compute.Pod",
+    "source": "native_class"
+   },
+   "id": "pod-web-a",
+   "lines": [
+    "web-pod-a",
+    "Pod",
+    "namespace: web"
+   ],
+   "memberships": {
+    "cluster": [
+     "gke-cluster"
+    ],
+    "namespace": [
+     "ns-web"
+    ],
+    "node": [
+     "gke-node-a"
+    ]
+   },
+   "provider": "gcp",
+   "type_id": "k8s.pod"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "gke-node-b",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.compute.Pod",
+    "source": "native_class"
+   },
+   "id": "pod-web-b",
+   "lines": [
+    "web-pod-b",
+    "Pod",
+    "namespace: web"
+   ],
+   "memberships": {
+    "cluster": [
+     "gke-cluster"
+    ],
+    "namespace": [
+     "ns-web"
+    ],
+    "node": [
+     "gke-node-b"
+    ]
+   },
+   "provider": "gcp",
+   "type_id": "k8s.pod"
+  }
+ ],
+ "notice_lines": [],
+ "style": "provider",
+ "title_lines": [
+  "GCP Shared VPC with GKE detail",
+  "GKE worker placement by node (reference)"
+ ],
+ "view_id": "gke-nodes"
+}

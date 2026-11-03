@@ -1,0 +1,711 @@
+{
+ "direction": "LR",
+ "draft": false,
+ "edges": [
+  {
+   "directed": true,
+   "id": "t-igw-alb",
+   "kind": "traffic",
+   "lines": [
+    "HTTPS"
+   ],
+   "source": "internet-gateway",
+   "target": "alb"
+  },
+  {
+   "directed": true,
+   "id": "t-alb-app-a",
+   "kind": "traffic",
+   "lines": [],
+   "source": "alb",
+   "target": "app-instance-a"
+  },
+  {
+   "directed": true,
+   "id": "t-alb-app-b",
+   "kind": "traffic",
+   "lines": [],
+   "source": "alb",
+   "target": "app-instance-b"
+  },
+  {
+   "directed": true,
+   "id": "t-app-a-db",
+   "kind": "traffic",
+   "lines": [
+    "Application to database"
+   ],
+   "source": "app-instance-a",
+   "target": "database"
+  },
+  {
+   "directed": true,
+   "id": "t-app-b-db",
+   "kind": "traffic",
+   "lines": [
+    "Application to database"
+   ],
+   "source": "app-instance-b",
+   "target": "database"
+  },
+  {
+   "directed": true,
+   "id": "t-app-a-nat",
+   "kind": "traffic",
+   "lines": [
+    "Egress"
+   ],
+   "source": "app-instance-a",
+   "target": "nat-gateway"
+  },
+  {
+   "directed": true,
+   "id": "t-app-b-nat",
+   "kind": "traffic",
+   "lines": [
+    "Egress"
+   ],
+   "source": "app-instance-b",
+   "target": "nat-gateway"
+  },
+  {
+   "directed": true,
+   "id": "t-nat-igw",
+   "kind": "traffic",
+   "lines": [
+    "Egress"
+   ],
+   "source": "nat-gateway",
+   "target": "internet-gateway"
+  }
+ ],
+ "fallbacks": [],
+ "grouping": "provider",
+ "groups": [
+  {
+   "boundary_kind": null,
+   "entity": "provider",
+   "id": "_provider.aws",
+   "lines": [
+    "AWS"
+   ],
+   "memberships": {},
+   "parent": null,
+   "provider": "aws",
+   "scope_kind": null,
+   "type_id": null
+  },
+  {
+   "boundary_kind": null,
+   "entity": "scope",
+   "id": "aws-account",
+   "lines": [
+    "AWS account"
+   ],
+   "memberships": {},
+   "parent": "_provider.aws",
+   "provider": "aws",
+   "scope_kind": "account",
+   "type_id": "aws.scope.account"
+  },
+  {
+   "boundary_kind": "region",
+   "entity": "boundary",
+   "id": "region",
+   "lines": [
+    "ap-southeast-1",
+    "AWS Region"
+   ],
+   "memberships": {
+    "scope": [
+     "aws-account"
+    ]
+   },
+   "parent": "aws-account",
+   "provider": "aws",
+   "scope_kind": null,
+   "type_id": "aws.location.region"
+  },
+  {
+   "boundary_kind": "network",
+   "entity": "boundary",
+   "id": "vpc",
+   "lines": [
+    "Application VPC",
+    "VPC"
+   ],
+   "memberships": {
+    "parent": [
+     "region"
+    ],
+    "scope": [
+     "aws-account"
+    ]
+   },
+   "parent": "region",
+   "provider": "aws",
+   "scope_kind": null,
+   "type_id": "aws.network.vpc"
+  },
+  {
+   "boundary_kind": "subnet",
+   "entity": "boundary",
+   "id": "subnet-public-a",
+   "lines": [
+    "Public subnet A",
+    "Subnet",
+    "location:",
+    "ap-southeast-1a"
+   ],
+   "memberships": {
+    "location": [
+     "az-a"
+    ],
+    "parent": [
+     "vpc"
+    ],
+    "scope": [
+     "aws-account"
+    ]
+   },
+   "parent": "vpc",
+   "provider": "aws",
+   "scope_kind": null,
+   "type_id": "aws.network.subnet"
+  },
+  {
+   "boundary_kind": "subnet",
+   "entity": "boundary",
+   "id": "subnet-public-b",
+   "lines": [
+    "Public subnet B",
+    "Subnet",
+    "location:",
+    "ap-southeast-1b"
+   ],
+   "memberships": {
+    "location": [
+     "az-b"
+    ],
+    "parent": [
+     "vpc"
+    ],
+    "scope": [
+     "aws-account"
+    ]
+   },
+   "parent": "vpc",
+   "provider": "aws",
+   "scope_kind": null,
+   "type_id": "aws.network.subnet"
+  },
+  {
+   "boundary_kind": "subnet",
+   "entity": "boundary",
+   "id": "subnet-app-a",
+   "lines": [
+    "App subnet A",
+    "Subnet",
+    "location:",
+    "ap-southeast-1a"
+   ],
+   "memberships": {
+    "location": [
+     "az-a"
+    ],
+    "parent": [
+     "vpc"
+    ],
+    "scope": [
+     "aws-account"
+    ]
+   },
+   "parent": "vpc",
+   "provider": "aws",
+   "scope_kind": null,
+   "type_id": "aws.network.subnet"
+  },
+  {
+   "boundary_kind": "subnet",
+   "entity": "boundary",
+   "id": "subnet-app-b",
+   "lines": [
+    "App subnet B",
+    "Subnet",
+    "location:",
+    "ap-southeast-1b"
+   ],
+   "memberships": {
+    "location": [
+     "az-b"
+    ],
+    "parent": [
+     "vpc"
+    ],
+    "scope": [
+     "aws-account"
+    ]
+   },
+   "parent": "vpc",
+   "provider": "aws",
+   "scope_kind": null,
+   "type_id": "aws.network.subnet"
+  },
+  {
+   "boundary_kind": "subnet",
+   "entity": "boundary",
+   "id": "subnet-data-a",
+   "lines": [
+    "Data subnet A",
+    "Subnet",
+    "location:",
+    "ap-southeast-1a"
+   ],
+   "memberships": {
+    "location": [
+     "az-a"
+    ],
+    "parent": [
+     "vpc"
+    ],
+    "scope": [
+     "aws-account"
+    ]
+   },
+   "parent": "vpc",
+   "provider": "aws",
+   "scope_kind": null,
+   "type_id": "aws.network.subnet"
+  },
+  {
+   "boundary_kind": "subnet",
+   "entity": "boundary",
+   "id": "subnet-data-b",
+   "lines": [
+    "Data subnet B",
+    "Subnet",
+    "location:",
+    "ap-southeast-1b"
+   ],
+   "memberships": {
+    "location": [
+     "az-b"
+    ],
+    "parent": [
+     "vpc"
+    ],
+    "scope": [
+     "aws-account"
+    ]
+   },
+   "parent": "vpc",
+   "provider": "aws",
+   "scope_kind": null,
+   "type_id": "aws.network.subnet"
+  },
+  {
+   "boundary_kind": "security_group",
+   "entity": "boundary",
+   "id": "sg-alb",
+   "lines": [
+    "ALB security group",
+    "Security group"
+   ],
+   "memberships": {
+    "location": [
+     "region"
+    ],
+    "parent": [
+     "vpc"
+    ],
+    "scope": [
+     "aws-account"
+    ]
+   },
+   "parent": "vpc",
+   "provider": "aws",
+   "scope_kind": null,
+   "type_id": "aws.security.security_group"
+  },
+  {
+   "boundary_kind": "security_group",
+   "entity": "boundary",
+   "id": "sg-app",
+   "lines": [
+    "Application security group",
+    "Security group"
+   ],
+   "memberships": {
+    "location": [
+     "region"
+    ],
+    "parent": [
+     "vpc"
+    ],
+    "scope": [
+     "aws-account"
+    ]
+   },
+   "parent": "vpc",
+   "provider": "aws",
+   "scope_kind": null,
+   "type_id": "aws.security.security_group"
+  },
+  {
+   "boundary_kind": "security_group",
+   "entity": "boundary",
+   "id": "sg-db",
+   "lines": [
+    "Database security group",
+    "Security group"
+   ],
+   "memberships": {
+    "location": [
+     "region"
+    ],
+    "parent": [
+     "vpc"
+    ],
+    "scope": [
+     "aws-account"
+    ]
+   },
+   "parent": "vpc",
+   "provider": "aws",
+   "scope_kind": null,
+   "type_id": "aws.security.security_group"
+  },
+  {
+   "boundary_kind": null,
+   "entity": "resource",
+   "id": "eks-cluster",
+   "lines": [
+    "Workload cluster",
+    "Amazon EKS cluster",
+    "subnet: App subnet",
+    "A, App subnet B"
+   ],
+   "memberships": {
+    "location": [
+     "region"
+    ],
+    "network": [
+     "vpc"
+    ],
+    "scope": [
+     "aws-account"
+    ],
+    "subnet": [
+     "subnet-app-a",
+     "subnet-app-b"
+    ]
+   },
+   "parent": "vpc",
+   "provider": "aws",
+   "scope_kind": null,
+   "type_id": "aws.containers.eks"
+  }
+ ],
+ "legend": [
+  "traffic"
+ ],
+ "nodes": [
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "vpc",
+   "icon": {
+    "pack": "aws-architecture-icons",
+    "reference": "diagrams.aws.network.InternetGateway",
+    "source": "native_class"
+   },
+   "id": "internet-gateway",
+   "lines": [
+    "Internet gateway"
+   ],
+   "memberships": {
+    "location": [
+     "region"
+    ],
+    "network": [
+     "vpc"
+    ],
+    "scope": [
+     "aws-account"
+    ]
+   },
+   "provider": "aws",
+   "type_id": "aws.network.internet_gateway"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "vpc",
+   "icon": {
+    "pack": "aws-architecture-icons",
+    "reference": "diagrams.aws.network.ElbApplicationLoadBalancer",
+    "source": "native_class"
+   },
+   "id": "alb",
+   "lines": [
+    "Application Load",
+    "Balancer",
+    "subnet: Public",
+    "subnet A, Public",
+    "subnet B",
+    "security: ALB",
+    "security group"
+   ],
+   "memberships": {
+    "location": [
+     "region"
+    ],
+    "network": [
+     "vpc"
+    ],
+    "scope": [
+     "aws-account"
+    ],
+    "security": [
+     "sg-alb"
+    ],
+    "subnet": [
+     "subnet-public-a",
+     "subnet-public-b"
+    ]
+   },
+   "provider": "aws",
+   "type_id": "aws.network.application_load_balancer"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "subnet-app-a",
+   "icon": {
+    "pack": "aws-architecture-icons",
+    "reference": "diagrams.aws.compute.EC2",
+    "source": "native_class"
+   },
+   "id": "app-instance-a",
+   "lines": [
+    "App instance A",
+    "Amazon EC2 instance",
+    "location:",
+    "ap-southeast-1a",
+    "security:",
+    "Application security",
+    "group"
+   ],
+   "memberships": {
+    "location": [
+     "region"
+    ],
+    "network": [
+     "vpc"
+    ],
+    "scope": [
+     "aws-account"
+    ],
+    "security": [
+     "sg-app"
+    ],
+    "subnet": [
+     "subnet-app-a"
+    ]
+   },
+   "provider": "aws",
+   "type_id": "aws.compute.ec2"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "subnet-app-b",
+   "icon": {
+    "pack": "aws-architecture-icons",
+    "reference": "diagrams.aws.compute.EC2",
+    "source": "native_class"
+   },
+   "id": "app-instance-b",
+   "lines": [
+    "App instance B",
+    "Amazon EC2 instance",
+    "location:",
+    "ap-southeast-1b",
+    "security:",
+    "Application security",
+    "group"
+   ],
+   "memberships": {
+    "location": [
+     "region"
+    ],
+    "network": [
+     "vpc"
+    ],
+    "scope": [
+     "aws-account"
+    ],
+    "security": [
+     "sg-app"
+    ],
+    "subnet": [
+     "subnet-app-b"
+    ]
+   },
+   "provider": "aws",
+   "type_id": "aws.compute.ec2"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "subnet-data-a",
+   "icon": {
+    "pack": "aws-architecture-icons",
+    "reference": "diagrams.aws.database.RDS",
+    "source": "native_class"
+   },
+   "id": "database",
+   "lines": [
+    "Application database",
+    "Amazon RDS DB",
+    "instance",
+    "location:",
+    "ap-southeast-1a",
+    "security: Database",
+    "security group"
+   ],
+   "memberships": {
+    "location": [
+     "region"
+    ],
+    "network": [
+     "vpc"
+    ],
+    "scope": [
+     "aws-account"
+    ],
+    "security": [
+     "sg-db"
+    ],
+    "subnet": [
+     "subnet-data-a"
+    ]
+   },
+   "provider": "aws",
+   "type_id": "aws.database.rds"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "subnet-public-a",
+   "icon": {
+    "pack": "aws-architecture-icons",
+    "reference": "diagrams.aws.network.NATGateway",
+    "source": "native_class"
+   },
+   "id": "nat-gateway",
+   "lines": [
+    "NAT gateway (zonal)",
+    "location:",
+    "ap-southeast-1a"
+   ],
+   "memberships": {
+    "location": [
+     "region"
+    ],
+    "network": [
+     "vpc"
+    ],
+    "scope": [
+     "aws-account"
+    ],
+    "subnet": [
+     "subnet-public-a"
+    ]
+   },
+   "provider": "aws",
+   "type_id": "aws.network.nat_gateway"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "region",
+   "icon": {
+    "pack": "aws-architecture-icons",
+    "reference": "diagrams.aws.storage.S3",
+    "source": "native_class"
+   },
+   "id": "s3-bucket",
+   "lines": [
+    "Amazon S3 bucket"
+   ],
+   "memberships": {
+    "location": [
+     "region"
+    ],
+    "scope": [
+     "aws-account"
+    ]
+   },
+   "provider": "aws",
+   "type_id": "aws.storage.s3"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "region",
+   "icon": {
+    "pack": "aws-architecture-icons",
+    "reference": "diagrams.aws.management.Cloudwatch",
+    "source": "native_class"
+   },
+   "id": "cloudwatch",
+   "lines": [
+    "Amazon CloudWatch"
+   ],
+   "memberships": {
+    "location": [
+     "region"
+    ],
+    "scope": [
+     "aws-account"
+    ]
+   },
+   "provider": "aws",
+   "type_id": "aws.observability.cloudwatch"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "eks-cluster",
+   "icon": {
+    "pack": "aws-architecture-icons",
+    "reference": "diagrams.aws.compute.EKS",
+    "source": "native_class"
+   },
+   "id": "eks-cluster",
+   "lines": [
+    "Amazon EKS cluster"
+   ],
+   "memberships": {},
+   "provider": "aws",
+   "type_id": "aws.containers.eks"
+  }
+ ],
+ "notice_lines": [],
+ "style": "provider",
+ "title_lines": [
+  "AWS three-tier web application with EKS companion",
+  "Cloud solution overview (reference)"
+ ],
+ "view_id": "overview"
+}

@@ -1,0 +1,352 @@
+{
+ "direction": "TB",
+ "draft": false,
+ "edges": [
+  {
+   "directed": true,
+   "id": "shared-vpc-attachment",
+   "kind": "attachment",
+   "lines": [
+    "Service project attached to",
+    "host"
+   ],
+   "source": "project-app-service",
+   "target": "project-network-host"
+  }
+ ],
+ "fallbacks": [],
+ "grouping": "scope",
+ "groups": [
+  {
+   "boundary_kind": null,
+   "entity": "scope",
+   "id": "org-example",
+   "lines": [
+    "Example organization",
+    "Google Cloud",
+    "organization"
+   ],
+   "memberships": {},
+   "parent": null,
+   "provider": "gcp",
+   "scope_kind": "organization",
+   "type_id": "gcp.scope.organization"
+  },
+  {
+   "boundary_kind": null,
+   "entity": "scope",
+   "id": "project-network-host",
+   "lines": [
+    "Shared VPC host project",
+    "Project"
+   ],
+   "memberships": {
+    "parent": [
+     "org-example"
+    ]
+   },
+   "parent": "org-example",
+   "provider": "gcp",
+   "scope_kind": "project",
+   "type_id": "gcp.scope.project"
+  },
+  {
+   "boundary_kind": null,
+   "entity": "scope",
+   "id": "project-app-service",
+   "lines": [
+    "Application service project",
+    "Project"
+   ],
+   "memberships": {
+    "parent": [
+     "org-example"
+    ]
+   },
+   "parent": "org-example",
+   "provider": "gcp",
+   "scope_kind": "project",
+   "type_id": "gcp.scope.project"
+  }
+ ],
+ "legend": [
+  "attachment"
+ ],
+ "nodes": [
+  {
+   "drawing": "labeled_box",
+   "entity": "boundary",
+   "fallback": false,
+   "group": "project-network-host",
+   "icon": null,
+   "id": "vpc-shared",
+   "lines": [
+    "Shared VPC (global)",
+    "VPC network"
+   ],
+   "memberships": {
+    "scope": [
+     "project-network-host"
+    ]
+   },
+   "provider": "gcp",
+   "type_id": "gcp.network.vpc"
+  },
+  {
+   "drawing": "labeled_box",
+   "entity": "boundary",
+   "fallback": false,
+   "group": "project-network-host",
+   "icon": null,
+   "id": "subnet-web",
+   "lines": [
+    "web-subnet",
+    "Subnet",
+    "parent: Shared VPC",
+    "(global)"
+   ],
+   "memberships": {
+    "location": [
+     "region-asia-southeast1"
+    ],
+    "parent": [
+     "vpc-shared"
+    ],
+    "scope": [
+     "project-network-host"
+    ]
+   },
+   "provider": "gcp",
+   "type_id": "gcp.network.subnet"
+  },
+  {
+   "drawing": "labeled_box",
+   "entity": "boundary",
+   "fallback": false,
+   "group": "project-network-host",
+   "icon": null,
+   "id": "subnet-gke",
+   "lines": [
+    "gke-subnet",
+    "Subnet",
+    "parent: Shared VPC",
+    "(global)"
+   ],
+   "memberships": {
+    "location": [
+     "region-asia-southeast2"
+    ],
+    "parent": [
+     "vpc-shared"
+    ],
+    "scope": [
+     "project-network-host"
+    ]
+   },
+   "provider": "gcp",
+   "type_id": "gcp.network.subnet"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "project-app-service",
+   "icon": {
+    "pack": "gcp-product-icons",
+    "reference": "diagrams.gcp.compute.ComputeEngine",
+    "source": "native_class"
+   },
+   "id": "vm-web-a",
+   "lines": [
+    "web-vm-a",
+    "Compute Engine",
+    "instance",
+    "subnet: web-subnet",
+    "network: Shared VPC",
+    "(global)",
+    "location:",
+    "asia-southeast1-a"
+   ],
+   "memberships": {
+    "location": [
+     "zone-asia-southeast1-a"
+    ],
+    "network": [
+     "vpc-shared"
+    ],
+    "scope": [
+     "project-app-service"
+    ],
+    "subnet": [
+     "subnet-web"
+    ]
+   },
+   "provider": "gcp",
+   "type_id": "gcp.compute.compute_engine"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "project-app-service",
+   "icon": {
+    "pack": "gcp-product-icons",
+    "reference": "diagrams.gcp.compute.ComputeEngine",
+    "source": "native_class"
+   },
+   "id": "vm-web-b",
+   "lines": [
+    "web-vm-b",
+    "Compute Engine",
+    "instance",
+    "subnet: web-subnet",
+    "network: Shared VPC",
+    "(global)",
+    "location:",
+    "asia-southeast1-b"
+   ],
+   "memberships": {
+    "location": [
+     "zone-asia-southeast1-b"
+    ],
+    "network": [
+     "vpc-shared"
+    ],
+    "scope": [
+     "project-app-service"
+    ],
+    "subnet": [
+     "subnet-web"
+    ]
+   },
+   "provider": "gcp",
+   "type_id": "gcp.compute.compute_engine"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "project-app-service",
+   "icon": {
+    "pack": "gcp-product-icons",
+    "reference": "diagrams.gcp.compute.KubernetesEngine",
+    "source": "native_class"
+   },
+   "id": "gke-cluster",
+   "lines": [
+    "app-cluster",
+    "GKE Standard cluster",
+    "subnet: gke-subnet",
+    "network: Shared VPC",
+    "(global)"
+   ],
+   "memberships": {
+    "location": [
+     "region-asia-southeast2"
+    ],
+    "network": [
+     "vpc-shared"
+    ],
+    "scope": [
+     "project-app-service"
+    ],
+    "subnet": [
+     "subnet-gke"
+    ]
+   },
+   "provider": "gcp",
+   "type_id": "gcp.containers.gke_standard"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "project-app-service",
+   "icon": {
+    "pack": "gcp-product-icons",
+    "reference": "diagrams.gcp.network.LoadBalancing",
+    "source": "native_class"
+   },
+   "id": "lb-global-external",
+   "lines": [
+    "web-load-balancer",
+    "Global external",
+    "Application Load",
+    "Balancer"
+   ],
+   "memberships": {
+    "scope": [
+     "project-app-service"
+    ]
+   },
+   "provider": "gcp",
+   "type_id": "gcp.network.global_external_application_load_balancer"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "project-app-service",
+   "icon": {
+    "pack": "gcp-product-icons",
+    "reference": "diagrams.gcp.database.SQL",
+    "source": "native_class"
+   },
+   "id": "sql-primary",
+   "lines": [
+    "app-sql",
+    "Cloud SQL instance",
+    "network: Shared VPC",
+    "(global)",
+    "location:",
+    "asia-southeast1-a"
+   ],
+   "memberships": {
+    "location": [
+     "zone-asia-southeast1-a"
+    ],
+    "network": [
+     "vpc-shared"
+    ],
+    "scope": [
+     "project-app-service"
+    ]
+   },
+   "provider": "gcp",
+   "type_id": "gcp.database.cloud_sql"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "project-app-service",
+   "icon": {
+    "pack": "gcp-product-icons",
+    "reference": "diagrams.gcp.storage.Storage",
+    "source": "native_class"
+   },
+   "id": "gcs-assets",
+   "lines": [
+    "app-assets",
+    "Cloud Storage bucket"
+   ],
+   "memberships": {
+    "location": [
+     "region-asia-southeast1"
+    ],
+    "scope": [
+     "project-app-service"
+    ]
+   },
+   "provider": "gcp",
+   "type_id": "gcp.storage.cloud_storage"
+  }
+ ],
+ "notice_lines": [],
+ "style": "provider",
+ "title_lines": [
+  "GCP Shared VPC with GKE detail",
+  "Project ownership (reference)"
+ ],
+ "view_id": "projects"
+}

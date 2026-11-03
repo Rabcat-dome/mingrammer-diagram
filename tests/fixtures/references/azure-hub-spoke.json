@@ -1,0 +1,785 @@
+{
+  "schema_version": "1.0.0",
+  "metadata": {
+    "id": "azure-hub-spoke-reference",
+    "title": "Azure hub-and-spoke reference architecture",
+    "environment": "reference",
+    "assumptions": [
+      "Synthetic reference architecture for authoring and rendering checks. Nothing here describes deployed Azure infrastructure.",
+      "Region: the brief names none, so Southeast Asia (southeastasia) is assumed. No availability zones are declared, so the VM and node pool zones stay unspecified.",
+      "Tenant, subscription and all entity names are placeholders. Address spaces, SKUs, tiers, VM size and OS are not declared.",
+      "Resource groups: one for the hub and one for the spoke, as briefed. Azure Monitor is placed in the hub resource group; the brief did not say where.",
+      "Ownership (scope_refs) and network attachment are declared separately. A resource group is never inferred from the VNet or subnet an entity attaches to.",
+      "The overview shows network and location only; the subscription and resource groups appear only in the ownership view, so ownership is not implied by nesting.",
+      "Subnets: the hub has AzureFirewallSubnet and GatewaySubnet; the spoke has a workload subnet (VM and NIC) and an AKS node subnet. The brief did not list subnets.",
+      "Peering is one undirected relationship between the hub and spoke VNets. Gateway transit, forwarded traffic and user-defined routes are not declared.",
+      "Azure Firewall and VPN Gateway sit in the hub with no traffic links, and no on-premises endpoint is modelled, because the brief supplies none.",
+      "The NSG is associated with the NIC; the brief did not say NIC or subnet level, so no subnet association is declared.",
+      "VM-to-SQL (TCP 1433) and VM-to-Blob (HTTPS) are the only data-path flows, taken from the spoke application intent. The network path (private endpoint, firewall) is not declared.",
+      "Microsoft Entra ID (tenant-scoped, global) and Azure Monitor have no relationships because the brief supplies none; they are shown as context.",
+      "AKS: the cluster and node pool attach to the spoke VNet and AKS node subnet, in the same subscription and spoke resource group. The managed control plane is not drawn.",
+      "Kubernetes names, the two-replica Deployment and the Pod-to-Node placement are declared by the author for the reference, not observed from a live cluster.",
+      "The Deployment, not each Pod, references the PVC, Secret and ServiceAccount, as a workload template would. The NetworkPolicy is drawn against the Deployment; its rules are not declared.",
+      "The Ingress controller is cluster-level with no namespace, and its implementation is not named. No load balancer or other entry point in front of it is declared.",
+      "Storage: the PVC is bound to a PV with a StorageClass. No Azure disk or file share backing the PV is modelled. The Secret is a reference only and holds no value."
+    ],
+    "description": "Reference scenario T-002: one subscription with separate hub and spoke resource groups and VNets, explicit peering, a spoke VM and managed services, plus an AKS companion in the same subscription and spoke VNet. Synthetic; not deployed infrastructure."
+  },
+  "scopes": [
+    {
+      "id": "tenant",
+      "name": "Reference tenant",
+      "provider": "azure",
+      "kind": "tenant"
+    },
+    {
+      "id": "subscription",
+      "name": "Reference subscription",
+      "provider": "azure",
+      "kind": "subscription",
+      "parent_ref": "tenant"
+    },
+    {
+      "id": "rg-hub",
+      "name": "Hub resource group",
+      "provider": "azure",
+      "kind": "resource_group",
+      "parent_ref": "subscription"
+    },
+    {
+      "id": "rg-spoke",
+      "name": "Spoke resource group",
+      "provider": "azure",
+      "kind": "resource_group",
+      "parent_ref": "subscription"
+    }
+  ],
+  "boundaries": [
+    {
+      "id": "region-southeastasia",
+      "name": "Southeast Asia",
+      "provider": "azure",
+      "kind": "region"
+    },
+    {
+      "id": "vnet-hub",
+      "name": "Hub VNet",
+      "provider": "azure",
+      "kind": "network",
+      "scope_refs": [
+        "rg-hub"
+      ],
+      "parent_ref": "region-southeastasia"
+    },
+    {
+      "id": "vnet-spoke",
+      "name": "Spoke VNet",
+      "provider": "azure",
+      "kind": "network",
+      "scope_refs": [
+        "rg-spoke"
+      ],
+      "parent_ref": "region-southeastasia"
+    },
+    {
+      "id": "subnet-hub-firewall",
+      "name": "AzureFirewallSubnet",
+      "provider": "azure",
+      "kind": "subnet",
+      "scope_refs": [
+        "rg-hub"
+      ],
+      "parent_ref": "vnet-hub"
+    },
+    {
+      "id": "subnet-hub-gateway",
+      "name": "GatewaySubnet",
+      "provider": "azure",
+      "kind": "subnet",
+      "scope_refs": [
+        "rg-hub"
+      ],
+      "parent_ref": "vnet-hub"
+    },
+    {
+      "id": "subnet-spoke-workload",
+      "name": "Workload subnet",
+      "provider": "azure",
+      "kind": "subnet",
+      "scope_refs": [
+        "rg-spoke"
+      ],
+      "parent_ref": "vnet-spoke"
+    },
+    {
+      "id": "subnet-spoke-aks",
+      "name": "AKS node subnet",
+      "provider": "azure",
+      "kind": "subnet",
+      "scope_refs": [
+        "rg-spoke"
+      ],
+      "parent_ref": "vnet-spoke"
+    },
+    {
+      "id": "nsg-spoke",
+      "name": "Spoke NSG",
+      "provider": "azure",
+      "kind": "security_group",
+      "scope_refs": [
+        "rg-spoke"
+      ],
+      "relations": [
+        {
+          "kind": "located_in",
+          "target_ref": "region-southeastasia"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "hub-firewall",
+      "name": "Azure Firewall",
+      "provider": "azure",
+      "service_type": "azure.security.firewall",
+      "taxonomy": "security.control",
+      "placement": {
+        "scope_refs": [
+          "rg-hub"
+        ],
+        "location": {
+          "region_ref": "region-southeastasia"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vnet-hub",
+            "subnet_refs": [
+              "subnet-hub-firewall"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "hub-vpn-gateway",
+      "name": "Azure VPN Gateway",
+      "provider": "azure",
+      "service_type": "azure.network.vpn_gateway",
+      "taxonomy": "network.connectivity",
+      "placement": {
+        "scope_refs": [
+          "rg-hub"
+        ],
+        "location": {
+          "region_ref": "region-southeastasia"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vnet-hub",
+            "subnet_refs": [
+              "subnet-hub-gateway"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "azure-monitor",
+      "name": "Azure Monitor",
+      "provider": "azure",
+      "service_type": "azure.observability.monitor",
+      "taxonomy": "operations.observability",
+      "placement": {
+        "scope_refs": [
+          "rg-hub"
+        ],
+        "location": {
+          "region_ref": "region-southeastasia"
+        }
+      }
+    },
+    {
+      "id": "entra-id",
+      "name": "Microsoft Entra ID",
+      "provider": "azure",
+      "service_type": "azure.identity.entra_id",
+      "taxonomy": "identity.access",
+      "placement": {
+        "scope_refs": [
+          "tenant"
+        ]
+      }
+    },
+    {
+      "id": "spoke-vm",
+      "name": "Spoke VM",
+      "provider": "azure",
+      "service_type": "azure.compute.virtual_machine",
+      "taxonomy": "compute.vm",
+      "placement": {
+        "scope_refs": [
+          "rg-spoke"
+        ],
+        "location": {
+          "region_ref": "region-southeastasia"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vnet-spoke",
+            "subnet_refs": [
+              "subnet-spoke-workload"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "spoke-vm-nic",
+      "name": "Spoke VM NIC",
+      "provider": "azure",
+      "service_type": "azure.network.network_interface",
+      "taxonomy": "compute.vm",
+      "placement": {
+        "scope_refs": [
+          "rg-spoke"
+        ],
+        "location": {
+          "region_ref": "region-southeastasia"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vnet-spoke",
+            "subnet_refs": [
+              "subnet-spoke-workload"
+            ]
+          }
+        ],
+        "security_boundaries": [
+          "nsg-spoke"
+        ]
+      }
+    },
+    {
+      "id": "spoke-sql-database",
+      "name": "Azure SQL Database",
+      "provider": "azure",
+      "service_type": "azure.database.sql_database",
+      "taxonomy": "data.relational",
+      "placement": {
+        "scope_refs": [
+          "rg-spoke"
+        ],
+        "location": {
+          "region_ref": "region-southeastasia"
+        }
+      }
+    },
+    {
+      "id": "spoke-blob-storage",
+      "name": "Azure Blob Storage",
+      "provider": "azure",
+      "service_type": "azure.storage.blob_storage",
+      "taxonomy": "storage.object",
+      "placement": {
+        "scope_refs": [
+          "rg-spoke"
+        ],
+        "location": {
+          "region_ref": "region-southeastasia"
+        }
+      }
+    },
+    {
+      "id": "aks-cluster",
+      "name": "Spoke AKS cluster",
+      "provider": "azure",
+      "service_type": "azure.containers.aks",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "rg-spoke"
+        ],
+        "location": {
+          "region_ref": "region-southeastasia"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vnet-spoke",
+            "subnet_refs": [
+              "subnet-spoke-aks"
+            ]
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "Cluster"
+      }
+    },
+    {
+      "id": "aks-node-pool",
+      "name": "nodepool1",
+      "provider": "azure",
+      "service_type": "azure.containers.aks_node_pool",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "rg-spoke"
+        ],
+        "location": {
+          "region_ref": "region-southeastasia"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vnet-spoke",
+            "subnet_refs": [
+              "subnet-spoke-aks"
+            ]
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "NodePool",
+        "cluster_ref": "aks-cluster"
+      }
+    },
+    {
+      "id": "aks-node-1",
+      "name": "node-1",
+      "provider": "azure",
+      "service_type": "k8s.node",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Node",
+        "cluster_ref": "aks-cluster",
+        "node_pool_ref": "aks-node-pool"
+      }
+    },
+    {
+      "id": "aks-node-2",
+      "name": "node-2",
+      "provider": "azure",
+      "service_type": "k8s.node",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Node",
+        "cluster_ref": "aks-cluster",
+        "node_pool_ref": "aks-node-pool"
+      }
+    },
+    {
+      "id": "aks-namespace-web",
+      "name": "web",
+      "provider": "azure",
+      "service_type": "k8s.namespace",
+      "taxonomy": "governance.scope",
+      "kubernetes": {
+        "kind": "Namespace",
+        "cluster_ref": "aks-cluster"
+      }
+    },
+    {
+      "id": "web-deployment",
+      "name": "web-frontend",
+      "provider": "azure",
+      "service_type": "k8s.deployment",
+      "taxonomy": "compute.containers",
+      "properties": {
+        "replicas": 2
+      },
+      "kubernetes": {
+        "kind": "Deployment",
+        "cluster_ref": "aks-cluster",
+        "namespace_ref": "aks-namespace-web",
+        "volume_claim_refs": [
+          "web-data-pvc"
+        ],
+        "secret_refs": [
+          "web-secret"
+        ],
+        "service_account_ref": "web-service-account"
+      }
+    },
+    {
+      "id": "web-replicaset",
+      "name": "web-frontend-rs",
+      "provider": "azure",
+      "service_type": "k8s.replicaset",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "ReplicaSet",
+        "cluster_ref": "aks-cluster",
+        "namespace_ref": "aks-namespace-web",
+        "owner_ref": "web-deployment"
+      }
+    },
+    {
+      "id": "web-pod-1",
+      "name": "web-frontend-pod-1",
+      "provider": "azure",
+      "service_type": "k8s.pod",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Pod",
+        "cluster_ref": "aks-cluster",
+        "namespace_ref": "aks-namespace-web",
+        "owner_ref": "web-replicaset",
+        "node_ref": "aks-node-1"
+      }
+    },
+    {
+      "id": "web-pod-2",
+      "name": "web-frontend-pod-2",
+      "provider": "azure",
+      "service_type": "k8s.pod",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Pod",
+        "cluster_ref": "aks-cluster",
+        "namespace_ref": "aks-namespace-web",
+        "owner_ref": "web-replicaset",
+        "node_ref": "aks-node-2"
+      }
+    },
+    {
+      "id": "web-service",
+      "name": "web-frontend-svc",
+      "provider": "azure",
+      "service_type": "k8s.service",
+      "taxonomy": "network.load_balancing",
+      "kubernetes": {
+        "kind": "Service",
+        "cluster_ref": "aks-cluster",
+        "namespace_ref": "aks-namespace-web",
+        "target_refs": [
+          "web-pod-1",
+          "web-pod-2"
+        ]
+      }
+    },
+    {
+      "id": "web-ingress",
+      "name": "web-ingress",
+      "provider": "azure",
+      "service_type": "k8s.ingress",
+      "taxonomy": "network.load_balancing",
+      "kubernetes": {
+        "kind": "Ingress",
+        "cluster_ref": "aks-cluster",
+        "namespace_ref": "aks-namespace-web",
+        "service_refs": [
+          "web-service"
+        ]
+      }
+    },
+    {
+      "id": "ingress-controller",
+      "name": "ingress-controller",
+      "provider": "azure",
+      "service_type": "k8s.ingresscontroller",
+      "taxonomy": "network.load_balancing",
+      "kubernetes": {
+        "kind": "IngressController",
+        "cluster_ref": "aks-cluster"
+      }
+    },
+    {
+      "id": "web-data-pvc",
+      "name": "web-data-pvc",
+      "provider": "azure",
+      "service_type": "k8s.persistentvolumeclaim",
+      "taxonomy": "storage.block_file",
+      "kubernetes": {
+        "kind": "PersistentVolumeClaim",
+        "cluster_ref": "aks-cluster",
+        "namespace_ref": "aks-namespace-web",
+        "volume_ref": "web-data-pv",
+        "storage_class_ref": "web-storage-class"
+      }
+    },
+    {
+      "id": "web-data-pv",
+      "name": "web-data-pv",
+      "provider": "azure",
+      "service_type": "k8s.persistentvolume",
+      "taxonomy": "storage.block_file",
+      "kubernetes": {
+        "kind": "PersistentVolume",
+        "cluster_ref": "aks-cluster",
+        "storage_class_ref": "web-storage-class"
+      }
+    },
+    {
+      "id": "web-storage-class",
+      "name": "web-storage-class",
+      "provider": "azure",
+      "service_type": "k8s.storageclass",
+      "taxonomy": "storage.block_file",
+      "kubernetes": {
+        "kind": "StorageClass",
+        "cluster_ref": "aks-cluster"
+      }
+    },
+    {
+      "id": "web-service-account",
+      "name": "web-frontend-sa",
+      "provider": "azure",
+      "service_type": "k8s.serviceaccount",
+      "taxonomy": "identity.access",
+      "kubernetes": {
+        "kind": "ServiceAccount",
+        "cluster_ref": "aks-cluster",
+        "namespace_ref": "aks-namespace-web"
+      }
+    },
+    {
+      "id": "web-network-policy",
+      "name": "web-frontend-netpol",
+      "provider": "azure",
+      "service_type": "k8s.networkpolicy",
+      "taxonomy": "security.control",
+      "kubernetes": {
+        "kind": "NetworkPolicy",
+        "cluster_ref": "aks-cluster",
+        "namespace_ref": "aks-namespace-web"
+      }
+    },
+    {
+      "id": "web-secret",
+      "name": "web-frontend-secret",
+      "provider": "azure",
+      "service_type": "k8s.secret",
+      "taxonomy": "security.secrets_keys",
+      "kubernetes": {
+        "kind": "Secret",
+        "cluster_ref": "aks-cluster",
+        "namespace_ref": "aks-namespace-web"
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "id": "peering-hub-spoke",
+      "source_ref": "vnet-hub",
+      "target_ref": "vnet-spoke",
+      "kind": "peering",
+      "direction": "undirected",
+      "label": "VNet peering"
+    },
+    {
+      "id": "attach-nic-vm",
+      "source_ref": "spoke-vm-nic",
+      "target_ref": "spoke-vm",
+      "kind": "attachment",
+      "direction": "undirected",
+      "label": "NIC attached"
+    },
+    {
+      "id": "traffic-vm-sql",
+      "source_ref": "spoke-vm",
+      "target_ref": "spoke-sql-database",
+      "kind": "traffic",
+      "protocol": "TCP 1433"
+    },
+    {
+      "id": "traffic-vm-blob",
+      "source_ref": "spoke-vm",
+      "target_ref": "spoke-blob-storage",
+      "kind": "traffic",
+      "protocol": "HTTPS"
+    },
+    {
+      "id": "traffic-ingress-service",
+      "source_ref": "web-ingress",
+      "target_ref": "web-service",
+      "kind": "traffic"
+    },
+    {
+      "id": "traffic-service-pod-1",
+      "source_ref": "web-service",
+      "target_ref": "web-pod-1",
+      "kind": "traffic"
+    },
+    {
+      "id": "traffic-service-pod-2",
+      "source_ref": "web-service",
+      "target_ref": "web-pod-2",
+      "kind": "traffic"
+    },
+    {
+      "id": "management-controller-ingress",
+      "source_ref": "ingress-controller",
+      "target_ref": "web-ingress",
+      "kind": "management",
+      "label": "fulfils Ingress"
+    },
+    {
+      "id": "ownership-deployment-replicaset",
+      "source_ref": "web-deployment",
+      "target_ref": "web-replicaset",
+      "kind": "ownership"
+    },
+    {
+      "id": "ownership-replicaset-pod-1",
+      "source_ref": "web-replicaset",
+      "target_ref": "web-pod-1",
+      "kind": "ownership"
+    },
+    {
+      "id": "ownership-replicaset-pod-2",
+      "source_ref": "web-replicaset",
+      "target_ref": "web-pod-2",
+      "kind": "ownership"
+    },
+    {
+      "id": "storage-deployment-pvc",
+      "source_ref": "web-deployment",
+      "target_ref": "web-data-pvc",
+      "kind": "storage",
+      "label": "mounts"
+    },
+    {
+      "id": "storage-pvc-pv",
+      "source_ref": "web-data-pvc",
+      "target_ref": "web-data-pv",
+      "kind": "storage",
+      "label": "bound to"
+    },
+    {
+      "id": "storage-pv-class",
+      "source_ref": "web-data-pv",
+      "target_ref": "web-storage-class",
+      "kind": "storage"
+    },
+    {
+      "id": "configuration-deployment-secret",
+      "source_ref": "web-deployment",
+      "target_ref": "web-secret",
+      "kind": "configuration"
+    },
+    {
+      "id": "configuration-deployment-service-account",
+      "source_ref": "web-deployment",
+      "target_ref": "web-service-account",
+      "kind": "configuration"
+    },
+    {
+      "id": "policy-network-policy-deployment",
+      "source_ref": "web-network-policy",
+      "target_ref": "web-deployment",
+      "kind": "policy"
+    }
+  ],
+  "views": [
+    {
+      "id": "overview",
+      "title": "Hub-and-spoke network overview",
+      "entity_refs": [
+        "region-southeastasia",
+        "vnet-hub",
+        "subnet-hub-firewall",
+        "subnet-hub-gateway",
+        "hub-firewall",
+        "hub-vpn-gateway",
+        "vnet-spoke",
+        "subnet-spoke-workload",
+        "subnet-spoke-aks",
+        "spoke-vm",
+        "spoke-vm-nic",
+        "nsg-spoke",
+        "aks-cluster",
+        "spoke-sql-database",
+        "spoke-blob-storage",
+        "entra-id",
+        "azure-monitor"
+      ],
+      "relationship_refs": [
+        "peering-hub-spoke",
+        "attach-nic-vm",
+        "traffic-vm-sql",
+        "traffic-vm-blob"
+      ],
+      "grouping": "provider",
+      "direction": "TB"
+    },
+    {
+      "id": "ownership",
+      "title": "Subscription and resource-group ownership",
+      "entity_refs": [
+        "tenant",
+        "entra-id",
+        "subscription",
+        "rg-hub",
+        "rg-spoke",
+        "vnet-hub",
+        "vnet-spoke",
+        "hub-firewall",
+        "hub-vpn-gateway",
+        "azure-monitor",
+        "spoke-vm",
+        "spoke-vm-nic",
+        "nsg-spoke",
+        "spoke-sql-database",
+        "spoke-blob-storage",
+        "aks-cluster",
+        "aks-node-pool"
+      ],
+      "relationship_refs": [],
+      "grouping": "scope",
+      "direction": "TB"
+    },
+    {
+      "id": "aks-namespaces",
+      "title": "AKS namespace and workload view",
+      "entity_refs": [
+        "aks-cluster",
+        "aks-namespace-web",
+        "web-deployment",
+        "web-replicaset",
+        "web-pod-1",
+        "web-pod-2",
+        "web-service",
+        "web-ingress",
+        "ingress-controller",
+        "web-data-pvc",
+        "web-data-pv",
+        "web-storage-class",
+        "web-secret",
+        "web-service-account",
+        "web-network-policy"
+      ],
+      "relationship_refs": [
+        "traffic-ingress-service",
+        "traffic-service-pod-1",
+        "traffic-service-pod-2",
+        "management-controller-ingress",
+        "ownership-deployment-replicaset",
+        "ownership-replicaset-pod-1",
+        "ownership-replicaset-pod-2",
+        "storage-deployment-pvc",
+        "storage-pvc-pv",
+        "storage-pv-class",
+        "configuration-deployment-secret",
+        "configuration-deployment-service-account",
+        "policy-network-policy-deployment"
+      ],
+      "grouping": "namespace",
+      "direction": "TB"
+    },
+    {
+      "id": "aks-nodes",
+      "title": "AKS worker placement",
+      "entity_refs": [
+        "aks-cluster",
+        "aks-node-pool",
+        "aks-node-1",
+        "aks-node-2",
+        "web-pod-1",
+        "web-pod-2"
+      ],
+      "relationship_refs": [],
+      "grouping": "node",
+      "direction": "TB"
+    }
+  ]
+}

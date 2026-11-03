@@ -1,0 +1,726 @@
+{
+  "schema_version": "1.0.0",
+  "metadata": {
+    "id": "gcp-shared-vpc-reference",
+    "title": "GCP Shared VPC with GKE detail",
+    "environment": "reference",
+    "description": "Synthetic reference for scenario T-003: a Shared VPC host project and a service project, one global VPC with regional subnets, zonal Compute Engine workloads, a GKE cluster with Kubernetes detail, a global load balancer, Cloud SQL and Cloud Storage.",
+    "assumptions": [
+      "Synthetic reference model. Names and IDs are illustrative and nothing here describes deployed infrastructure.",
+      "The brief names no regions or zones. asia-southeast1 and asia-southeast2 are chosen so the one global VPC visibly spans two regions. The VPC declares no region.",
+      "The two Compute Engine workloads sit in asia-southeast1 zones a and b on web-subnet. The GKE cluster, node pool and two Nodes sit in asia-southeast2 on gke-subnet. No zone is declared for the Nodes.",
+      "GKE Standard is chosen over Autopilot because Autopilot abstracts nodes and the brief asks for declared node pools and Nodes. The cluster is regional. No control plane resource is modeled.",
+      "The load-balancing product is the global external Application Load Balancer, chosen because its backends sit in two regions. The brief did not select a product.",
+      "The brief supplies no traffic flows. Only HTTPS entry from the load balancer to the two VMs and to the GKE Ingress is modeled, plus Ingress to Service to Pod inside the cluster. No flow to Cloud SQL or Cloud Storage is modeled.",
+      "Cloud SQL is one instance in asia-southeast1-a, attached to the Shared VPC at network level. The Cloud Storage bucket is regional in asia-southeast1. The brief gave neither location.",
+      "Ownership uses project references only. The VPC and both subnets belong to the host project. The VMs, GKE cluster, node pool, Nodes, load balancer, Cloud SQL and bucket belong to the service project. The attachment link records the Shared VPC reference.",
+      "The overview omits the organization, projects and zones. A service-project note would repeat on every node nested in the host-owned VPC. Ownership is shown only in the projects view.",
+      "The locations view is an addition beyond the four requested views. It shows regional and zonal placement with the zones as boxes. The VPC sits outside every region box because it declares no region.",
+      "No folder, firewall rule, NAT, IAM, monitoring or control plane resource is modeled because the brief requests none.",
+      "Kubernetes objects are declared, not observed: namespace web, two replicas, Pods placed on named Nodes. StorageClass, PV and PVC names are placeholders with no driver, access mode or size. The Secret is a reference with no value."
+    ]
+  },
+  "scopes": [
+    {
+      "id": "org-example",
+      "name": "Example organization",
+      "provider": "gcp",
+      "kind": "organization"
+    },
+    {
+      "id": "project-network-host",
+      "name": "Shared VPC host project",
+      "provider": "gcp",
+      "kind": "project",
+      "parent_ref": "org-example"
+    },
+    {
+      "id": "project-app-service",
+      "name": "Application service project",
+      "provider": "gcp",
+      "kind": "project",
+      "parent_ref": "org-example"
+    }
+  ],
+  "boundaries": [
+    {
+      "id": "region-asia-southeast1",
+      "name": "asia-southeast1",
+      "provider": "gcp",
+      "kind": "region"
+    },
+    {
+      "id": "region-asia-southeast2",
+      "name": "asia-southeast2",
+      "provider": "gcp",
+      "kind": "region"
+    },
+    {
+      "id": "zone-asia-southeast1-a",
+      "name": "asia-southeast1-a",
+      "provider": "gcp",
+      "kind": "zone",
+      "parent_ref": "region-asia-southeast1"
+    },
+    {
+      "id": "zone-asia-southeast1-b",
+      "name": "asia-southeast1-b",
+      "provider": "gcp",
+      "kind": "zone",
+      "parent_ref": "region-asia-southeast1"
+    },
+    {
+      "id": "vpc-shared",
+      "name": "Shared VPC (global)",
+      "provider": "gcp",
+      "kind": "network",
+      "scope_refs": [
+        "project-network-host"
+      ]
+    },
+    {
+      "id": "subnet-web",
+      "name": "web-subnet",
+      "provider": "gcp",
+      "kind": "subnet",
+      "scope_refs": [
+        "project-network-host"
+      ],
+      "parent_ref": "vpc-shared",
+      "relations": [
+        {
+          "kind": "located_in",
+          "target_ref": "region-asia-southeast1"
+        }
+      ]
+    },
+    {
+      "id": "subnet-gke",
+      "name": "gke-subnet",
+      "provider": "gcp",
+      "kind": "subnet",
+      "scope_refs": [
+        "project-network-host"
+      ],
+      "parent_ref": "vpc-shared",
+      "relations": [
+        {
+          "kind": "located_in",
+          "target_ref": "region-asia-southeast2"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "vm-web-a",
+      "name": "web-vm-a",
+      "provider": "gcp",
+      "service_type": "gcp.compute.compute_engine",
+      "taxonomy": "compute.vm",
+      "placement": {
+        "scope_refs": [
+          "project-app-service"
+        ],
+        "location": {
+          "zone_ref": "zone-asia-southeast1-a"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc-shared",
+            "subnet_refs": [
+              "subnet-web"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "vm-web-b",
+      "name": "web-vm-b",
+      "provider": "gcp",
+      "service_type": "gcp.compute.compute_engine",
+      "taxonomy": "compute.vm",
+      "placement": {
+        "scope_refs": [
+          "project-app-service"
+        ],
+        "location": {
+          "zone_ref": "zone-asia-southeast1-b"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc-shared",
+            "subnet_refs": [
+              "subnet-web"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "gke-cluster",
+      "name": "app-cluster",
+      "provider": "gcp",
+      "service_type": "gcp.containers.gke_standard",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "project-app-service"
+        ],
+        "location": {
+          "region_ref": "region-asia-southeast2"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc-shared",
+            "subnet_refs": [
+              "subnet-gke"
+            ]
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "Cluster"
+      }
+    },
+    {
+      "id": "gke-node-pool",
+      "name": "app-pool",
+      "provider": "gcp",
+      "service_type": "gcp.containers.gke_node_pool",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "project-app-service"
+        ],
+        "network_attachments": [
+          {
+            "network_ref": "vpc-shared",
+            "subnet_refs": [
+              "subnet-gke"
+            ]
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "NodePool",
+        "cluster_ref": "gke-cluster"
+      }
+    },
+    {
+      "id": "gke-node-a",
+      "name": "node-a",
+      "provider": "gcp",
+      "service_type": "k8s.node",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "project-app-service"
+        ]
+      },
+      "kubernetes": {
+        "kind": "Node",
+        "cluster_ref": "gke-cluster",
+        "node_pool_ref": "gke-node-pool"
+      }
+    },
+    {
+      "id": "gke-node-b",
+      "name": "node-b",
+      "provider": "gcp",
+      "service_type": "k8s.node",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "project-app-service"
+        ]
+      },
+      "kubernetes": {
+        "kind": "Node",
+        "cluster_ref": "gke-cluster",
+        "node_pool_ref": "gke-node-pool"
+      }
+    },
+    {
+      "id": "ns-web",
+      "name": "web",
+      "provider": "gcp",
+      "service_type": "k8s.namespace",
+      "taxonomy": "governance.scope",
+      "kubernetes": {
+        "kind": "Namespace",
+        "cluster_ref": "gke-cluster"
+      }
+    },
+    {
+      "id": "deploy-web",
+      "name": "web",
+      "provider": "gcp",
+      "service_type": "k8s.deployment",
+      "taxonomy": "compute.containers",
+      "properties": {
+        "replicas": 2
+      },
+      "kubernetes": {
+        "kind": "Deployment",
+        "cluster_ref": "gke-cluster",
+        "namespace_ref": "ns-web",
+        "volume_claim_refs": [
+          "pvc-web-data"
+        ],
+        "secret_refs": [
+          "secret-web"
+        ],
+        "service_account_ref": "sa-web"
+      }
+    },
+    {
+      "id": "rs-web",
+      "name": "web-rs",
+      "provider": "gcp",
+      "service_type": "k8s.replicaset",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "ReplicaSet",
+        "cluster_ref": "gke-cluster",
+        "namespace_ref": "ns-web",
+        "owner_ref": "deploy-web"
+      }
+    },
+    {
+      "id": "pod-web-a",
+      "name": "web-pod-a",
+      "provider": "gcp",
+      "service_type": "k8s.pod",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Pod",
+        "cluster_ref": "gke-cluster",
+        "namespace_ref": "ns-web",
+        "owner_ref": "rs-web",
+        "node_ref": "gke-node-a"
+      }
+    },
+    {
+      "id": "pod-web-b",
+      "name": "web-pod-b",
+      "provider": "gcp",
+      "service_type": "k8s.pod",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Pod",
+        "cluster_ref": "gke-cluster",
+        "namespace_ref": "ns-web",
+        "owner_ref": "rs-web",
+        "node_ref": "gke-node-b"
+      }
+    },
+    {
+      "id": "svc-web",
+      "name": "web",
+      "provider": "gcp",
+      "service_type": "k8s.service",
+      "taxonomy": "network.load_balancing",
+      "kubernetes": {
+        "kind": "Service",
+        "cluster_ref": "gke-cluster",
+        "namespace_ref": "ns-web",
+        "target_refs": [
+          "pod-web-a",
+          "pod-web-b"
+        ]
+      }
+    },
+    {
+      "id": "ing-web",
+      "name": "web",
+      "provider": "gcp",
+      "service_type": "k8s.ingress",
+      "taxonomy": "network.load_balancing",
+      "kubernetes": {
+        "kind": "Ingress",
+        "cluster_ref": "gke-cluster",
+        "namespace_ref": "ns-web",
+        "service_refs": [
+          "svc-web"
+        ]
+      }
+    },
+    {
+      "id": "ing-controller",
+      "name": "gke-ingress",
+      "provider": "gcp",
+      "service_type": "k8s.ingresscontroller",
+      "taxonomy": "network.load_balancing",
+      "kubernetes": {
+        "kind": "IngressController",
+        "cluster_ref": "gke-cluster"
+      }
+    },
+    {
+      "id": "pvc-web-data",
+      "name": "web-data",
+      "provider": "gcp",
+      "service_type": "k8s.persistentvolumeclaim",
+      "taxonomy": "storage.block_file",
+      "kubernetes": {
+        "kind": "PersistentVolumeClaim",
+        "cluster_ref": "gke-cluster",
+        "namespace_ref": "ns-web",
+        "volume_ref": "pv-web-data",
+        "storage_class_ref": "sc-web-data"
+      }
+    },
+    {
+      "id": "pv-web-data",
+      "name": "web-data-pv",
+      "provider": "gcp",
+      "service_type": "k8s.persistentvolume",
+      "taxonomy": "storage.block_file",
+      "kubernetes": {
+        "kind": "PersistentVolume",
+        "cluster_ref": "gke-cluster",
+        "storage_class_ref": "sc-web-data"
+      }
+    },
+    {
+      "id": "sc-web-data",
+      "name": "web-data-class",
+      "provider": "gcp",
+      "service_type": "k8s.storageclass",
+      "taxonomy": "storage.block_file",
+      "kubernetes": {
+        "kind": "StorageClass",
+        "cluster_ref": "gke-cluster"
+      }
+    },
+    {
+      "id": "sa-web",
+      "name": "web-sa",
+      "provider": "gcp",
+      "service_type": "k8s.serviceaccount",
+      "taxonomy": "identity.access",
+      "kubernetes": {
+        "kind": "ServiceAccount",
+        "cluster_ref": "gke-cluster",
+        "namespace_ref": "ns-web"
+      }
+    },
+    {
+      "id": "netpol-web",
+      "name": "web-netpol",
+      "provider": "gcp",
+      "service_type": "k8s.networkpolicy",
+      "taxonomy": "security.control",
+      "kubernetes": {
+        "kind": "NetworkPolicy",
+        "cluster_ref": "gke-cluster",
+        "namespace_ref": "ns-web"
+      }
+    },
+    {
+      "id": "secret-web",
+      "name": "web-secret",
+      "provider": "gcp",
+      "service_type": "k8s.secret",
+      "taxonomy": "security.secrets_keys",
+      "kubernetes": {
+        "kind": "Secret",
+        "cluster_ref": "gke-cluster",
+        "namespace_ref": "ns-web"
+      }
+    },
+    {
+      "id": "lb-global-external",
+      "name": "web-load-balancer",
+      "provider": "gcp",
+      "service_type": "gcp.network.global_external_application_load_balancer",
+      "taxonomy": "network.load_balancing",
+      "placement": {
+        "scope_refs": [
+          "project-app-service"
+        ]
+      }
+    },
+    {
+      "id": "sql-primary",
+      "name": "app-sql",
+      "provider": "gcp",
+      "service_type": "gcp.database.cloud_sql",
+      "taxonomy": "data.relational",
+      "placement": {
+        "scope_refs": [
+          "project-app-service"
+        ],
+        "location": {
+          "zone_ref": "zone-asia-southeast1-a"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc-shared"
+          }
+        ]
+      }
+    },
+    {
+      "id": "gcs-assets",
+      "name": "app-assets",
+      "provider": "gcp",
+      "service_type": "gcp.storage.cloud_storage",
+      "taxonomy": "storage.object",
+      "placement": {
+        "scope_refs": [
+          "project-app-service"
+        ],
+        "location": {
+          "region_ref": "region-asia-southeast1"
+        }
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "id": "shared-vpc-attachment",
+      "source_ref": "project-app-service",
+      "target_ref": "project-network-host",
+      "kind": "attachment",
+      "purpose": "Service project attached to host"
+    },
+    {
+      "id": "t-lb-vm-a",
+      "source_ref": "lb-global-external",
+      "target_ref": "vm-web-a",
+      "kind": "traffic",
+      "protocol": "HTTPS"
+    },
+    {
+      "id": "t-lb-vm-b",
+      "source_ref": "lb-global-external",
+      "target_ref": "vm-web-b",
+      "kind": "traffic",
+      "protocol": "HTTPS"
+    },
+    {
+      "id": "t-lb-gke",
+      "source_ref": "lb-global-external",
+      "target_ref": "gke-cluster",
+      "kind": "traffic",
+      "protocol": "HTTPS",
+      "purpose": "To the GKE Ingress"
+    },
+    {
+      "id": "m-controller-ingress",
+      "source_ref": "ing-controller",
+      "target_ref": "ing-web",
+      "kind": "management",
+      "purpose": "Implements the Ingress"
+    },
+    {
+      "id": "t-ingress-service",
+      "source_ref": "ing-web",
+      "target_ref": "svc-web",
+      "kind": "traffic"
+    },
+    {
+      "id": "t-service-pod-a",
+      "source_ref": "svc-web",
+      "target_ref": "pod-web-a",
+      "kind": "traffic"
+    },
+    {
+      "id": "t-service-pod-b",
+      "source_ref": "svc-web",
+      "target_ref": "pod-web-b",
+      "kind": "traffic"
+    },
+    {
+      "id": "own-deploy-rs",
+      "source_ref": "deploy-web",
+      "target_ref": "rs-web",
+      "kind": "ownership"
+    },
+    {
+      "id": "own-rs-pod-a",
+      "source_ref": "rs-web",
+      "target_ref": "pod-web-a",
+      "kind": "ownership"
+    },
+    {
+      "id": "own-rs-pod-b",
+      "source_ref": "rs-web",
+      "target_ref": "pod-web-b",
+      "kind": "ownership"
+    },
+    {
+      "id": "store-deploy-pvc",
+      "source_ref": "deploy-web",
+      "target_ref": "pvc-web-data",
+      "kind": "storage"
+    },
+    {
+      "id": "store-pvc-pv",
+      "source_ref": "pvc-web-data",
+      "target_ref": "pv-web-data",
+      "kind": "storage",
+      "purpose": "Bound"
+    },
+    {
+      "id": "store-pv-class",
+      "source_ref": "pv-web-data",
+      "target_ref": "sc-web-data",
+      "kind": "storage"
+    },
+    {
+      "id": "conf-deploy-secret",
+      "source_ref": "deploy-web",
+      "target_ref": "secret-web",
+      "kind": "configuration",
+      "purpose": "Reference only"
+    },
+    {
+      "id": "conf-deploy-sa",
+      "source_ref": "deploy-web",
+      "target_ref": "sa-web",
+      "kind": "configuration"
+    },
+    {
+      "id": "policy-netpol-pod-a",
+      "source_ref": "netpol-web",
+      "target_ref": "pod-web-a",
+      "kind": "policy"
+    },
+    {
+      "id": "policy-netpol-pod-b",
+      "source_ref": "netpol-web",
+      "target_ref": "pod-web-b",
+      "kind": "policy"
+    }
+  ],
+  "views": [
+    {
+      "id": "overview",
+      "title": "Shared VPC network and solution (ownership in projects view)",
+      "entity_refs": [
+        "region-asia-southeast1",
+        "region-asia-southeast2",
+        "vpc-shared",
+        "subnet-gke",
+        "subnet-web",
+        "gke-cluster",
+        "vm-web-a",
+        "vm-web-b",
+        "lb-global-external",
+        "sql-primary",
+        "gcs-assets"
+      ],
+      "relationship_refs": [
+        "t-lb-vm-a",
+        "t-lb-vm-b",
+        "t-lb-gke"
+      ],
+      "grouping": "provider",
+      "direction": "TB"
+    },
+    {
+      "id": "locations",
+      "title": "Regional and zonal placement",
+      "entity_refs": [
+        "region-asia-southeast1",
+        "region-asia-southeast2",
+        "zone-asia-southeast1-a",
+        "zone-asia-southeast1-b",
+        "vpc-shared",
+        "subnet-web",
+        "subnet-gke",
+        "vm-web-a",
+        "vm-web-b",
+        "sql-primary",
+        "gke-cluster",
+        "gcs-assets"
+      ],
+      "relationship_refs": [],
+      "grouping": "physical",
+      "direction": "TB"
+    },
+    {
+      "id": "projects",
+      "title": "Project ownership",
+      "entity_refs": [
+        "org-example",
+        "project-network-host",
+        "project-app-service",
+        "vpc-shared",
+        "subnet-web",
+        "subnet-gke",
+        "vm-web-a",
+        "vm-web-b",
+        "gke-cluster",
+        "lb-global-external",
+        "sql-primary",
+        "gcs-assets"
+      ],
+      "relationship_refs": [
+        "shared-vpc-attachment"
+      ],
+      "grouping": "scope",
+      "direction": "TB"
+    },
+    {
+      "id": "gke-namespaces",
+      "title": "GKE logical view by namespace",
+      "entity_refs": [
+        "lb-global-external",
+        "ing-controller",
+        "gke-cluster",
+        "sc-web-data",
+        "pv-web-data",
+        "ns-web",
+        "deploy-web",
+        "rs-web",
+        "pod-web-a",
+        "pod-web-b",
+        "svc-web",
+        "ing-web",
+        "pvc-web-data",
+        "sa-web",
+        "netpol-web",
+        "secret-web"
+      ],
+      "relationship_refs": [
+        "t-lb-gke",
+        "m-controller-ingress",
+        "t-ingress-service",
+        "t-service-pod-a",
+        "t-service-pod-b",
+        "own-deploy-rs",
+        "own-rs-pod-a",
+        "own-rs-pod-b",
+        "store-deploy-pvc",
+        "store-pvc-pv",
+        "store-pv-class",
+        "conf-deploy-secret",
+        "conf-deploy-sa",
+        "policy-netpol-pod-a",
+        "policy-netpol-pod-b"
+      ],
+      "grouping": "namespace",
+      "direction": "TB"
+    },
+    {
+      "id": "gke-nodes",
+      "title": "GKE worker placement by node",
+      "entity_refs": [
+        "gke-cluster",
+        "gke-node-pool",
+        "gke-node-a",
+        "gke-node-b",
+        "pod-web-a",
+        "pod-web-b"
+      ],
+      "relationship_refs": [],
+      "grouping": "node",
+      "direction": "TB"
+    }
+  ]
+}

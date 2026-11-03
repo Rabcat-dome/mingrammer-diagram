@@ -1,0 +1,240 @@
+{
+ "direction": "LR",
+ "draft": false,
+ "edges": [],
+ "fallbacks": [],
+ "grouping": "node",
+ "groups": [
+  {
+   "boundary_kind": null,
+   "entity": "resource",
+   "id": "cce-cluster",
+   "lines": [
+    "web-cluster",
+    "CCE standard cluster",
+    "subnet: App subnet"
+   ],
+   "memberships": {
+    "location": [
+     "region-ap-southeast-2"
+    ],
+    "network": [
+     "vpc-web"
+    ],
+    "scope": [
+     "project-ap-southeast-2"
+    ],
+    "subnet": [
+     "subnet-app"
+    ]
+   },
+   "parent": null,
+   "provider": "huawei",
+   "scope_kind": null,
+   "type_id": "huawei.containers.cce_standard"
+  },
+  {
+   "boundary_kind": null,
+   "entity": "resource",
+   "id": "cce-node-pool",
+   "lines": [
+    "web-pool",
+    "Node pool"
+   ],
+   "memberships": {
+    "cluster": [
+     "cce-cluster"
+    ],
+    "location": [
+     "region-ap-southeast-2"
+    ],
+    "scope": [
+     "project-ap-southeast-2"
+    ]
+   },
+   "parent": "cce-cluster",
+   "provider": "huawei",
+   "scope_kind": null,
+   "type_id": "huawei.containers.cce_node_pool"
+  },
+  {
+   "boundary_kind": null,
+   "entity": "resource",
+   "id": "node-1",
+   "lines": [
+    "node-1",
+    "Node",
+    "location: AZ1"
+   ],
+   "memberships": {
+    "cluster": [
+     "cce-cluster"
+    ],
+    "location": [
+     "az-1"
+    ],
+    "node pool": [
+     "cce-node-pool"
+    ]
+   },
+   "parent": "cce-node-pool",
+   "provider": "huawei",
+   "scope_kind": null,
+   "type_id": "k8s.node"
+  },
+  {
+   "boundary_kind": null,
+   "entity": "resource",
+   "id": "node-2",
+   "lines": [
+    "node-2",
+    "Node",
+    "location: AZ2"
+   ],
+   "memberships": {
+    "cluster": [
+     "cce-cluster"
+    ],
+    "location": [
+     "az-2"
+    ],
+    "node pool": [
+     "cce-node-pool"
+    ]
+   },
+   "parent": "cce-node-pool",
+   "provider": "huawei",
+   "scope_kind": null,
+   "type_id": "k8s.node"
+  }
+ ],
+ "legend": [],
+ "nodes": [
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "cce-cluster",
+   "icon": {
+    "pack": "huawei-latam-color",
+    "reference": "huawei-cce",
+    "source": "custom_asset"
+   },
+   "id": "cce-cluster",
+   "lines": [
+    "CCE standard cluster"
+   ],
+   "memberships": {},
+   "provider": "huawei",
+   "type_id": "huawei.containers.cce_standard"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "node-1",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.infra.Node",
+    "source": "native_class"
+   },
+   "id": "node-1",
+   "lines": [
+    "Node"
+   ],
+   "memberships": {},
+   "provider": "huawei",
+   "type_id": "k8s.node"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "node-2",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.infra.Node",
+    "source": "native_class"
+   },
+   "id": "node-2",
+   "lines": [
+    "Node"
+   ],
+   "memberships": {},
+   "provider": "huawei",
+   "type_id": "k8s.node"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "node-1",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.compute.Pod",
+    "source": "native_class"
+   },
+   "id": "pod-web-1",
+   "lines": [
+    "web-app-pod-1",
+    "Pod",
+    "namespace: web"
+   ],
+   "memberships": {
+    "cluster": [
+     "cce-cluster"
+    ],
+    "namespace": [
+     "ns-web"
+    ],
+    "node": [
+     "node-1"
+    ]
+   },
+   "provider": "huawei",
+   "type_id": "k8s.pod"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "node-2",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.compute.Pod",
+    "source": "native_class"
+   },
+   "id": "pod-web-2",
+   "lines": [
+    "web-app-pod-2",
+    "Pod",
+    "namespace: web"
+   ],
+   "memberships": {
+    "cluster": [
+     "cce-cluster"
+    ],
+    "namespace": [
+     "ns-web"
+    ],
+    "node": [
+     "node-2"
+    ]
+   },
+   "provider": "huawei",
+   "type_id": "k8s.pod"
+  }
+ ],
+ "notice_lines": [
+  "Contains icons for private personal use only; rights not cleared (D-018, O-002). Do not share outside private",
+  "use.",
+  "Huawei Cloud service icons from the color group of huaweicloud-latam/drawio-libraries at commit 52c33aa.",
+  "Huawei Cloud names and marks belong to Huawei."
+ ],
+ "style": "provider",
+ "title_lines": [
+  "Huawei Cloud web application with CCE detail",
+  "CCE worker placement by node (reference)"
+ ],
+ "view_id": "cce-nodes"
+}

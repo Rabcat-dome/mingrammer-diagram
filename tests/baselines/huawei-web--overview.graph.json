@@ -1,0 +1,516 @@
+{
+ "direction": "TB",
+ "draft": false,
+ "edges": [
+  {
+   "directed": true,
+   "id": "t-elb-ecs",
+   "kind": "traffic",
+   "lines": [
+    "Application requests"
+   ],
+   "source": "elb-web",
+   "target": "ecs-web"
+  },
+  {
+   "directed": true,
+   "id": "t-ecs-rds",
+   "kind": "traffic",
+   "lines": [
+    "Application to database"
+   ],
+   "source": "ecs-web",
+   "target": "rds-web"
+  },
+  {
+   "directed": true,
+   "id": "t-ecs-nat",
+   "kind": "traffic",
+   "lines": [
+    "Outbound traffic"
+   ],
+   "source": "ecs-web",
+   "target": "nat-egress"
+  },
+  {
+   "directed": true,
+   "id": "t-nat-eip",
+   "kind": "traffic",
+   "lines": [
+    "Internet egress"
+   ],
+   "source": "nat-egress",
+   "target": "eip-egress"
+  }
+ ],
+ "fallbacks": [],
+ "grouping": "provider",
+ "groups": [
+  {
+   "boundary_kind": null,
+   "entity": "provider",
+   "id": "_provider.huawei",
+   "lines": [
+    "Huawei Cloud"
+   ],
+   "memberships": {},
+   "parent": null,
+   "provider": "huawei",
+   "scope_kind": null,
+   "type_id": null
+  },
+  {
+   "boundary_kind": null,
+   "entity": "scope",
+   "id": "huawei-account",
+   "lines": [
+    "Web application account",
+    "Huawei Cloud account"
+   ],
+   "memberships": {},
+   "parent": "_provider.huawei",
+   "provider": "huawei",
+   "scope_kind": "account",
+   "type_id": "huawei.scope.account"
+  },
+  {
+   "boundary_kind": null,
+   "entity": "scope",
+   "id": "project-ap-southeast-2",
+   "lines": [
+    "ap-southeast-2",
+    "IAM project"
+   ],
+   "memberships": {
+    "parent": [
+     "huawei-account"
+    ]
+   },
+   "parent": "huawei-account",
+   "provider": "huawei",
+   "scope_kind": "iam_project",
+   "type_id": "huawei.scope.iam_project"
+  },
+  {
+   "boundary_kind": "region",
+   "entity": "boundary",
+   "id": "region-ap-southeast-2",
+   "lines": [
+    "AP-Bangkok",
+    "Region"
+   ],
+   "memberships": {
+    "scope": [
+     "project-ap-southeast-2"
+    ]
+   },
+   "parent": "project-ap-southeast-2",
+   "provider": "huawei",
+   "scope_kind": null,
+   "type_id": "huawei.location.region"
+  },
+  {
+   "boundary_kind": "network",
+   "entity": "boundary",
+   "id": "vpc-web",
+   "lines": [
+    "Web VPC",
+    "VPC"
+   ],
+   "memberships": {
+    "parent": [
+     "region-ap-southeast-2"
+    ],
+    "scope": [
+     "project-ap-southeast-2"
+    ]
+   },
+   "parent": "region-ap-southeast-2",
+   "provider": "huawei",
+   "scope_kind": null,
+   "type_id": "huawei.network.vpc"
+  },
+  {
+   "boundary_kind": "subnet",
+   "entity": "boundary",
+   "id": "subnet-app",
+   "lines": [
+    "App subnet",
+    "Subnet"
+   ],
+   "memberships": {
+    "parent": [
+     "vpc-web"
+    ],
+    "scope": [
+     "project-ap-southeast-2"
+    ]
+   },
+   "parent": "vpc-web",
+   "provider": "huawei",
+   "scope_kind": null,
+   "type_id": "huawei.network.subnet"
+  },
+  {
+   "boundary_kind": "subnet",
+   "entity": "boundary",
+   "id": "subnet-data",
+   "lines": [
+    "Data subnet",
+    "Subnet"
+   ],
+   "memberships": {
+    "parent": [
+     "vpc-web"
+    ],
+    "scope": [
+     "project-ap-southeast-2"
+    ]
+   },
+   "parent": "vpc-web",
+   "provider": "huawei",
+   "scope_kind": null,
+   "type_id": "huawei.network.subnet"
+  },
+  {
+   "boundary_kind": "security_group",
+   "entity": "boundary",
+   "id": "sg-web",
+   "lines": [
+    "Web tier",
+    "Security group"
+   ],
+   "memberships": {
+    "location": [
+     "region-ap-southeast-2"
+    ],
+    "scope": [
+     "project-ap-southeast-2"
+    ]
+   },
+   "parent": "region-ap-southeast-2",
+   "provider": "huawei",
+   "scope_kind": null,
+   "type_id": "huawei.security.security_group"
+  },
+  {
+   "boundary_kind": null,
+   "entity": "resource",
+   "id": "cce-cluster",
+   "lines": [
+    "web-cluster",
+    "CCE standard cluster"
+   ],
+   "memberships": {
+    "location": [
+     "region-ap-southeast-2"
+    ],
+    "network": [
+     "vpc-web"
+    ],
+    "scope": [
+     "project-ap-southeast-2"
+    ],
+    "subnet": [
+     "subnet-app"
+    ]
+   },
+   "parent": "subnet-app",
+   "provider": "huawei",
+   "scope_kind": null,
+   "type_id": "huawei.containers.cce_standard"
+  }
+ ],
+ "legend": [
+  "traffic"
+ ],
+ "nodes": [
+  {
+   "drawing": "icon",
+   "entity": "boundary",
+   "fallback": false,
+   "group": "vpc-web",
+   "icon": {
+    "pack": "huawei-latam-color",
+    "reference": "huawei-vpc",
+    "source": "custom_asset"
+   },
+   "id": "vpc-web",
+   "lines": [
+    "VPC"
+   ],
+   "memberships": {},
+   "provider": "huawei",
+   "type_id": "huawei.network.vpc"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "subnet-app",
+   "icon": {
+    "pack": "huawei-latam-color",
+    "reference": "huawei-elb",
+    "source": "custom_asset"
+   },
+   "id": "elb-web",
+   "lines": [
+    "Web ELB",
+    "Elastic Load Balance"
+   ],
+   "memberships": {
+    "location": [
+     "region-ap-southeast-2"
+    ],
+    "network": [
+     "vpc-web"
+    ],
+    "scope": [
+     "project-ap-southeast-2"
+    ],
+    "subnet": [
+     "subnet-app"
+    ]
+   },
+   "provider": "huawei",
+   "type_id": "huawei.network.elb"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "subnet-app",
+   "icon": {
+    "pack": "huawei-latam-color",
+    "reference": "huawei-ecs",
+    "source": "custom_asset"
+   },
+   "id": "ecs-web",
+   "lines": [
+    "Web ECS",
+    "Elastic Cloud Server",
+    "location: AZ1",
+    "security: Web tier"
+   ],
+   "memberships": {
+    "location": [
+     "az-1"
+    ],
+    "network": [
+     "vpc-web"
+    ],
+    "scope": [
+     "project-ap-southeast-2"
+    ],
+    "security": [
+     "sg-web"
+    ],
+    "subnet": [
+     "subnet-app"
+    ]
+   },
+   "provider": "huawei",
+   "type_id": "huawei.compute.ecs"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "subnet-data",
+   "icon": {
+    "pack": "huawei-latam-color",
+    "reference": "huawei-rds",
+    "source": "custom_asset"
+   },
+   "id": "rds-web",
+   "lines": [
+    "Web RDS",
+    "Relational Database",
+    "Service",
+    "location: AZ2"
+   ],
+   "memberships": {
+    "location": [
+     "az-2"
+    ],
+    "network": [
+     "vpc-web"
+    ],
+    "scope": [
+     "project-ap-southeast-2"
+    ],
+    "subnet": [
+     "subnet-data"
+    ]
+   },
+   "provider": "huawei",
+   "type_id": "huawei.database.rds"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "huawei-account",
+   "icon": {
+    "pack": "huawei-latam-color",
+    "reference": "huawei-obs",
+    "source": "custom_asset"
+   },
+   "id": "obs-web",
+   "lines": [
+    "Web OBS",
+    "Object Storage",
+    "Service",
+    "location: AP-Bangkok"
+   ],
+   "memberships": {
+    "location": [
+     "region-ap-southeast-2"
+    ],
+    "scope": [
+     "huawei-account"
+    ]
+   },
+   "provider": "huawei",
+   "type_id": "huawei.storage.obs"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "region-ap-southeast-2",
+   "icon": {
+    "pack": "huawei-latam-color",
+    "reference": "huawei-eip",
+    "source": "custom_asset"
+   },
+   "id": "eip-egress",
+   "lines": [
+    "Egress EIP",
+    "Elastic IP"
+   ],
+   "memberships": {
+    "location": [
+     "region-ap-southeast-2"
+    ],
+    "scope": [
+     "project-ap-southeast-2"
+    ]
+   },
+   "provider": "huawei",
+   "type_id": "huawei.network.eip"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "subnet-app",
+   "icon": {
+    "pack": "huawei-latam-color",
+    "reference": "huawei-nat",
+    "source": "custom_asset"
+   },
+   "id": "nat-egress",
+   "lines": [
+    "Egress NAT",
+    "NAT Gateway"
+   ],
+   "memberships": {
+    "location": [
+     "region-ap-southeast-2"
+    ],
+    "network": [
+     "vpc-web"
+    ],
+    "scope": [
+     "project-ap-southeast-2"
+    ],
+    "subnet": [
+     "subnet-app"
+    ]
+   },
+   "provider": "huawei",
+   "type_id": "huawei.network.nat_gateway"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "region-ap-southeast-2",
+   "icon": {
+    "pack": "huawei-latam-color",
+    "reference": "huawei-ces",
+    "source": "custom_asset"
+   },
+   "id": "cloud-eye",
+   "lines": [
+    "Cloud Eye"
+   ],
+   "memberships": {
+    "location": [
+     "region-ap-southeast-2"
+    ],
+    "scope": [
+     "project-ap-southeast-2"
+    ]
+   },
+   "provider": "huawei",
+   "type_id": "huawei.observability.cloud_eye"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "region-ap-southeast-2",
+   "icon": {
+    "pack": "huawei-latam-color",
+    "reference": "huawei-lts",
+    "source": "custom_asset"
+   },
+   "id": "lts",
+   "lines": [
+    "Log Tank Service"
+   ],
+   "memberships": {
+    "location": [
+     "region-ap-southeast-2"
+    ],
+    "scope": [
+     "project-ap-southeast-2"
+    ]
+   },
+   "provider": "huawei",
+   "type_id": "huawei.observability.lts"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "cce-cluster",
+   "icon": {
+    "pack": "huawei-latam-color",
+    "reference": "huawei-cce",
+    "source": "custom_asset"
+   },
+   "id": "cce-cluster",
+   "lines": [
+    "CCE standard cluster"
+   ],
+   "memberships": {},
+   "provider": "huawei",
+   "type_id": "huawei.containers.cce_standard"
+  }
+ ],
+ "notice_lines": [
+  "Contains icons for private personal use only; rights not cleared (D-018, O-002). Do not share outside private",
+  "use.",
+  "Huawei Cloud service icons from the color group of huaweicloud-latam/drawio-libraries at commit 52c33aa.",
+  "Huawei Cloud names and marks belong to Huawei."
+ ],
+ "style": "provider",
+ "title_lines": [
+  "Huawei Cloud web application with CCE detail",
+  "Web application solution (reference)"
+ ],
+ "view_id": "overview"
+}

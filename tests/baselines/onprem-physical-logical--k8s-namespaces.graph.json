@@ -1,0 +1,543 @@
+{
+ "direction": "TB",
+ "draft": false,
+ "edges": [
+  {
+   "directed": true,
+   "id": "traffic-ing-svc",
+   "kind": "traffic",
+   "lines": [],
+   "source": "ing-web",
+   "target": "svc-web"
+  },
+  {
+   "directed": true,
+   "id": "traffic-svc-pod-1",
+   "kind": "traffic",
+   "lines": [],
+   "source": "svc-web",
+   "target": "pod-web-1"
+  },
+  {
+   "directed": true,
+   "id": "traffic-svc-pod-2",
+   "kind": "traffic",
+   "lines": [],
+   "source": "svc-web",
+   "target": "pod-web-2"
+  },
+  {
+   "directed": true,
+   "id": "manage-controller-ing",
+   "kind": "management",
+   "lines": [
+    "Implements"
+   ],
+   "source": "ingress-controller",
+   "target": "ing-web"
+  },
+  {
+   "directed": true,
+   "id": "own-deploy-rs",
+   "kind": "ownership",
+   "lines": [],
+   "source": "deploy-web",
+   "target": "rs-web"
+  },
+  {
+   "directed": true,
+   "id": "own-rs-pod-1",
+   "kind": "ownership",
+   "lines": [],
+   "source": "rs-web",
+   "target": "pod-web-1"
+  },
+  {
+   "directed": true,
+   "id": "own-rs-pod-2",
+   "kind": "ownership",
+   "lines": [],
+   "source": "rs-web",
+   "target": "pod-web-2"
+  },
+  {
+   "directed": true,
+   "id": "store-deploy-pvc",
+   "kind": "storage",
+   "lines": [
+    "Claims"
+   ],
+   "source": "deploy-web",
+   "target": "pvc-web-data"
+  },
+  {
+   "directed": true,
+   "id": "store-pvc-pv",
+   "kind": "storage",
+   "lines": [
+    "Bound to"
+   ],
+   "source": "pvc-web-data",
+   "target": "pv-web-data"
+  },
+  {
+   "directed": true,
+   "id": "store-pv-sc",
+   "kind": "storage",
+   "lines": [
+    "Class"
+   ],
+   "source": "pv-web-data",
+   "target": "sc-reference"
+  },
+  {
+   "directed": true,
+   "id": "config-deploy-sa",
+   "kind": "configuration",
+   "lines": [
+    "Runs as"
+   ],
+   "source": "deploy-web",
+   "target": "sa-web"
+  },
+  {
+   "directed": true,
+   "id": "config-deploy-secret",
+   "kind": "configuration",
+   "lines": [
+    "Secret reference"
+   ],
+   "source": "deploy-web",
+   "target": "secret-web"
+  },
+  {
+   "directed": true,
+   "id": "policy-netpol-deploy",
+   "kind": "policy",
+   "lines": [],
+   "source": "netpol-web",
+   "target": "deploy-web"
+  }
+ ],
+ "fallbacks": [],
+ "grouping": "namespace",
+ "groups": [
+  {
+   "boundary_kind": null,
+   "entity": "resource",
+   "id": "k8s-cluster",
+   "lines": [
+    "Kubernetes cluster 1",
+    "Kubernetes cluster",
+    "subnet:",
+    "10.20.120.0/24",
+    "location: Reference",
+    "site"
+   ],
+   "memberships": {
+    "location": [
+     "site-main"
+    ],
+    "network": [
+     "net-prod"
+    ],
+    "security": [
+     "zone-app"
+    ],
+    "subnet": [
+     "subnet-app"
+    ]
+   },
+   "parent": null,
+   "provider": "onprem",
+   "scope_kind": null,
+   "type_id": "onprem.containers.kubernetes_cluster"
+  },
+  {
+   "boundary_kind": null,
+   "entity": "resource",
+   "id": "ns-app",
+   "lines": [
+    "app",
+    "Namespace"
+   ],
+   "memberships": {
+    "cluster": [
+     "k8s-cluster"
+    ]
+   },
+   "parent": "k8s-cluster",
+   "provider": "onprem",
+   "scope_kind": null,
+   "type_id": "k8s.namespace"
+  }
+ ],
+ "legend": [
+  "configuration",
+  "management",
+  "ownership",
+  "policy",
+  "storage",
+  "traffic"
+ ],
+ "nodes": [
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "ns-app",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.group.Namespace",
+    "source": "native_class"
+   },
+   "id": "ns-app",
+   "lines": [
+    "Namespace"
+   ],
+   "memberships": {},
+   "provider": "onprem",
+   "type_id": "k8s.namespace"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "ns-app",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.compute.Deployment",
+    "source": "native_class"
+   },
+   "id": "deploy-web",
+   "lines": [
+    "web",
+    "Deployment"
+   ],
+   "memberships": {
+    "cluster": [
+     "k8s-cluster"
+    ],
+    "namespace": [
+     "ns-app"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "k8s.deployment"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "ns-app",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.compute.ReplicaSet",
+    "source": "native_class"
+   },
+   "id": "rs-web",
+   "lines": [
+    "web-rs",
+    "ReplicaSet"
+   ],
+   "memberships": {
+    "cluster": [
+     "k8s-cluster"
+    ],
+    "namespace": [
+     "ns-app"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "k8s.replicaset"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "ns-app",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.compute.Pod",
+    "source": "native_class"
+   },
+   "id": "pod-web-1",
+   "lines": [
+    "web-pod-1",
+    "Pod",
+    "node: worker-1"
+   ],
+   "memberships": {
+    "cluster": [
+     "k8s-cluster"
+    ],
+    "namespace": [
+     "ns-app"
+    ],
+    "node": [
+     "k8s-node-1"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "k8s.pod"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "ns-app",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.compute.Pod",
+    "source": "native_class"
+   },
+   "id": "pod-web-2",
+   "lines": [
+    "web-pod-2",
+    "Pod",
+    "node: worker-2"
+   ],
+   "memberships": {
+    "cluster": [
+     "k8s-cluster"
+    ],
+    "namespace": [
+     "ns-app"
+    ],
+    "node": [
+     "k8s-node-2"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "k8s.pod"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "ns-app",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.network.Service",
+    "source": "native_class"
+   },
+   "id": "svc-web",
+   "lines": [
+    "web-svc",
+    "Service"
+   ],
+   "memberships": {
+    "cluster": [
+     "k8s-cluster"
+    ],
+    "namespace": [
+     "ns-app"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "k8s.service"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "ns-app",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.network.Ingress",
+    "source": "native_class"
+   },
+   "id": "ing-web",
+   "lines": [
+    "web-ing",
+    "Ingress"
+   ],
+   "memberships": {
+    "cluster": [
+     "k8s-cluster"
+    ],
+    "namespace": [
+     "ns-app"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "k8s.ingress"
+  },
+  {
+   "drawing": "labeled_node",
+   "entity": "resource",
+   "fallback": false,
+   "group": "k8s-cluster",
+   "icon": null,
+   "id": "ingress-controller",
+   "lines": [
+    "ingress-controller",
+    "Ingress controller"
+   ],
+   "memberships": {
+    "cluster": [
+     "k8s-cluster"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "k8s.ingresscontroller"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "ns-app",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.storage.PersistentVolumeClaim",
+    "source": "native_class"
+   },
+   "id": "pvc-web-data",
+   "lines": [
+    "web-data",
+    "PersistentVolumeClaim"
+   ],
+   "memberships": {
+    "cluster": [
+     "k8s-cluster"
+    ],
+    "namespace": [
+     "ns-app"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "k8s.persistentvolumeclaim"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "k8s-cluster",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.storage.PersistentVolume",
+    "source": "native_class"
+   },
+   "id": "pv-web-data",
+   "lines": [
+    "pv-web-data",
+    "PersistentVolume"
+   ],
+   "memberships": {
+    "cluster": [
+     "k8s-cluster"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "k8s.persistentvolume"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "k8s-cluster",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.storage.StorageClass",
+    "source": "native_class"
+   },
+   "id": "sc-reference",
+   "lines": [
+    "reference-sc",
+    "StorageClass"
+   ],
+   "memberships": {
+    "cluster": [
+     "k8s-cluster"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "k8s.storageclass"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "ns-app",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.rbac.ServiceAccount",
+    "source": "native_class"
+   },
+   "id": "sa-web",
+   "lines": [
+    "web-sa",
+    "ServiceAccount"
+   ],
+   "memberships": {
+    "cluster": [
+     "k8s-cluster"
+    ],
+    "namespace": [
+     "ns-app"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "k8s.serviceaccount"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "ns-app",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.podconfig.Secret",
+    "source": "native_class"
+   },
+   "id": "secret-web",
+   "lines": [
+    "web-credentials",
+    "Secret"
+   ],
+   "memberships": {
+    "cluster": [
+     "k8s-cluster"
+    ],
+    "namespace": [
+     "ns-app"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "k8s.secret"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "ns-app",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.network.NetworkPolicy",
+    "source": "native_class"
+   },
+   "id": "netpol-web",
+   "lines": [
+    "web-netpol",
+    "NetworkPolicy"
+   ],
+   "memberships": {
+    "cluster": [
+     "k8s-cluster"
+    ],
+    "namespace": [
+     "ns-app"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "k8s.networkpolicy"
+  }
+ ],
+ "notice_lines": [],
+ "style": "provider",
+ "title_lines": [
+  "On-premises physical and logical reference",
+  "Kubernetes view: namespace, workloads and references (reference)"
+ ],
+ "view_id": "k8s-namespaces"
+}

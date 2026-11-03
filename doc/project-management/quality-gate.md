@@ -1,6 +1,6 @@
 # Quality Gate and Self-Hosted Runner Plan
 
-Updated: 2026-11-03 | Status: S05/M1 product quality gate passed on the real runner. S06/M2 adds two lanes, which passed actual CI at `6929253`. S07/M3 activates `render-security` and `render-smoke`, for 14 lanes, which passed actual CI at `cddb497`. S03 runner/service setup and two actual manual preflight jobs passed; M0-04 complete.
+Updated: 2026-11-03 | Status: S05/M1 product quality gate passed on the real runner. S06/M2 adds two lanes, which passed actual CI at `6929253`. S07/M3 activates `render-security` and `render-smoke`, for 14 lanes, which passed actual CI at `cddb497`. S08/M4 activates `visual-regression`, for 15 lanes. S03 runner/service setup and two actual manual preflight jobs passed; M0-04 complete.
 
 ## Recommendation
 
@@ -23,7 +23,7 @@ Implemented [quality-gate.yml](../../.github/workflows/quality-gate.yml) runs do
 | `provider-semantics` | M2, active | Provider/Kubernetes rules fail, wrong cluster/namespace scope, conflated ownership/placement, invalid Service/Ingress/storage references, or a rule or catalog type with no fixture | Rule fixtures and primary references; FR-018/029 and T-017 |
 | `render-security` | M3, active | Code/path/URL/Graphviz/SVG injection, limits, cleanup or isolation regression | Negative cases and bounded-execution results, including real sandbox probes with positive controls |
 | `render-smoke` | M3, active; M4 adds to it | Invalid/missing SVG/PNG or bundle metadata, icon loss, a required label or a selected element missing from the image, a catalog type no render reaches | Bundles with model, diagnostics, images and normalized graph in `reports/render-smoke`. Automated checks find a missing label, not an unreadable one; readability stays with inspection |
-| `visual-regression` | M4 | Unexpected structural/visual change lacking reviewed baseline update; unresolved provider-reference mismatch under FR-048/T-016 | Before/after/diff images, pinned official references and inspection/deviation notes |
+| `visual-regression` | M4, active | Unexpected structural/visual change lacking reviewed baseline update, a baseline edited by hand, or an engine other than the one a baseline was accepted on. Provider-reference mismatch under FR-048/T-016 stays with inspection | Before/after/diff images in `reports/visual-regression`, [baselines](../../tests/baselines), and the [references and deviations](evidence/S08-reference-diagrams.md#provider-references). `scripts/update_visual_baselines.py --reason` is the only way to accept a change |
 | `package-contract` | M5 | Broken manifests, missing packaged assets/skills, tool contract or clean-install failure | Package inventory and protocol smoke result |
 | `claude-plugin` | M7 | Broken Claude manifests or skill metadata, files outside the package allowlist, guide lists that differ from the contract, a change to the capabilities the skill describes, or a clean-copy runtime failure | Contract and clean-copy tests. Actual Claude Code acceptance stays manual; CI needs no Claude CLI or model call |
 | `package-contents` | M7 | Core wheel file names or SHA-256 digests differ from `src`, including a build that exits 0 with no code | Wheel-to-source comparison |

@@ -23,6 +23,7 @@ TEST_LANES = {
     "claude-plugin": "claude-plugin-tests.xml",
     "render-security": "render-security-tests.xml",
     "render-smoke": "render-smoke-tests.xml",
+    "visual-regression": "visual-regression-tests.xml",
 }
 
 
@@ -61,6 +62,8 @@ def main() -> int:
             "--ignore=tests/test_provider_semantics.py",
             "--ignore=tests/test_render_security.py",
             "--ignore=tests/test_render_smoke.py",
+            "--ignore=tests/test_references.py",
+            "--ignore=tests/test_visual_regression.py",
             "--junitxml=reports/tests.xml",
             "-q",
         ],
@@ -86,7 +89,16 @@ def main() -> int:
             "-m",
             "pytest",
             "tests/test_render_smoke.py",
+            "tests/test_references.py",
             "--junitxml=reports/render-smoke-tests.xml",
+            "-q",
+        ],
+        "visual-regression": [
+            python,
+            "-m",
+            "pytest",
+            "tests/test_visual_regression.py",
+            "--junitxml=reports/visual-regression-tests.xml",
             "-q",
         ],
         "claude-plugin": [
@@ -103,6 +115,7 @@ def main() -> int:
     # A stale wheel must not stand in for a build that failed or changed version.
     shutil.rmtree(REPORTS / "dist", ignore_errors=True)
     shutil.rmtree(REPORTS / "render-smoke", ignore_errors=True)
+    shutil.rmtree(REPORTS / "visual-regression", ignore_errors=True)
     for stale in TEST_LANES.values():
         (REPORTS / stale).unlink(missing_ok=True)
     (REPORTS / "catalog-license.json").unlink(missing_ok=True)

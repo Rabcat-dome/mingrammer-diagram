@@ -1,6 +1,6 @@
 # Cross-Machine Handoff
 
-Updated: 2026-11-03 | S01-S07 complete. M2 closed on 2026-11-03 for the private personal release, at `5f391eb` on `codex/s06-provider-catalogs`, which passes CI with 12 lanes and 652 tests. Claude Fable 5.1 / High approved the fixes under D-020 as a substitute for Astra/High, and D-019 settles the asset-rights exit item. **S07 / M3 closed on 2026-11-03 under D-022, on `codex/s07-controlled-rendering`, branched from `f3f0789`. Its code passes actual CI at `c8fc687`, Fable/High approved its P2 fixes there, and the owner passed three samples of its output.** M7 Claude Code preparation started early under D-015. D-021 moves every remaining review from Astra to Claude Fable 5.1.
+Updated: 2026-11-03 | S01-S07 complete, and **S08 / M4 is implemented on `codex/s08-reference-diagrams` and not closed: the Fable/High review and the owner's inspection remain.** M2 closed on 2026-11-03 for the private personal release, at `5f391eb` on `codex/s06-provider-catalogs`, which passes CI with 12 lanes and 652 tests. Claude Fable 5.1 / High approved the fixes under D-020 as a substitute for Astra/High, and D-019 settles the asset-rights exit item. **S07 / M3 closed on 2026-11-03 under D-022, on `codex/s07-controlled-rendering`, branched from `f3f0789`. Its code passes actual CI at `c8fc687`, Fable/High approved its P2 fixes there, and the owner passed three samples of its output.** M7 Claude Code preparation started early under D-015. D-021 moves every remaining review from Astra to Claude Fable 5.1.
 
 ## Goal and current source
 
@@ -12,7 +12,7 @@ D-013/D-014 select per-machine native Python/Graphviz in the separate ChatGPT Wo
 
 ## Read order
 
-1. This file, [milestones](milestones.md), [S07 evidence](evidence/S07-controlled-rendering.md) and [S06 evidence](evidence/S06-provider-catalogs.md).
+1. This file, [milestones](milestones.md), [S08 evidence](evidence/S08-reference-diagrams.md), [S07 evidence](evidence/S07-controlled-rendering.md) and [S06 evidence](evidence/S06-provider-catalogs.md).
 2. [Core contract/setup](../design/core-contract.md), relevant requirements and the S05 and S06 records.
 3. Relevant decision, quality-gate and model-policy sections.
 
@@ -30,6 +30,7 @@ D-013/D-014 select per-machine native Python/Graphviz in the separate ChatGPT Wo
 - [M7 Claude Code preparation](evidence/M7-claude-plugin.md): `plugins/cloud-architecture-diagrams` validates models through the core and cannot render. Packaging at `22fc85e` left the wheel byte-identical to the S05 CI wheel; core `0.2.0a2` then added a usage exit code. GitHub and real-config installs, live English/Thai/edit invocations and a Code tab runtime check pass on one Mac. The owner's install has followed `main` since 2026-11-03 and holds `02dc709`; later commits reach it through the README's update commands. A same-session review found 10 issues, all fixed at `0220e94`, which passed actual CI run 41443551856. A separate Claude session then reviewed `c5f74b4..a94b47a` as a substitute, not Astra: no Critical or High issues, with all three Medium and six Low findings fixed by core `0.2.0a4`. Those fixes passed actual CI run 41453874994 at `917f46f`, and the owner's install held that commit; no review pass covered them until the Fable review below. A second machine, interactive permission prompts remain open. [Fable/High approved `c5f74b4..c6a59e5`](evidence/M7-fable-review.md) under D-021. The P2 it found at the head, from S06, is fixed, and three P3 findings stay open. Run 41441398887 at `359f1ea` confirms the move of `actions/upload-artifact` to Node 24, with no job annotations.
 
 - [S07 / M3](evidence/S07-controlled-rendering.md): `cloud-diagrams render` validates, maps one view through catalog representations, runs `dot` alone under `sandbox-exec` and resource limits, checks the finished SVG and PNG against the graph, and atomically publishes a bundle with a manifest. The gate now has 14 lanes and 959 tests, with `render-security` and `render-smoke` active. Actual [run 41539921034](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41539921034) passes them at `cddb497` with none skipped, and the wheel matches the local build. **Under D-021, [Fable/High requested changes](evidence/S07-fable-review.md) on three P2 findings in output-size handling and approved their fixes at `c8fc687`, core `0.4.0a4`, which passes actual CI [run 41589907300](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41589907300) with 985 tests.** Actual implementation used Claude Opus 5.5, not Sol. Building it found that Homebrew Graphviz on macOS ignores fontconfig unless Pango's backend is forced, so every render now verifies the fonts it used. P-025 to P-027 record the design choices. `diagrams` is now a runtime dependency, which grows the plugin's locked environment.
+- [S08 / M4](evidence/S08-reference-diagrams.md): six reference models, including the hybrid, in `tests/fixtures/references`, with 26 views. Semantic checks are in `tests/test_references.py`, and a new `visual-regression` lane compares each view with a reviewed baseline in `tests/baselines`. Renderer changes follow one official diagram per provider, and P-029 to P-031 record them. Core is `0.5.0a1`. The gate has 15 lanes. On one Mac, a labeled 100 / 150 icon view renders in under a second, and labeled views are refused from about 180 entities by the pixel limit.
 
 ## Keeping the Claude plugin in step
 
@@ -40,7 +41,7 @@ Core changes reach the plugin through symlinks, so no copy step exists, and Clau
 1. M2 is closed. Its deferred P3 findings, N2-N4, are in the [Fable review](evidence/S06-fable-review.md#follow-up-n1-fix-and-deferrals). The [Fable review](evidence/M7-fable-review.md) now covers the earlier M7 Medium/Low fixes and leaves three P3 findings open.
 2. The owner passed one Kubernetes sample in S07. The full set of Kubernetes representations has not been shown to them, and M4 inspects it.
 3. Update the owner's installed plugin only if asked. It follows `main` and holds `02dc709`, which has the renderer. The skill correction from S08 reaches it after the next merge.
-4. M3 is closed under D-022, and the [Fable review](evidence/S07-fable-review.md) leaves five P3 findings open. S08 / M4 reference diagrams come next. M5 full Work plugin and M6 two-machine release acceptance remain open.
+4. M3 is closed under D-022, and four of its P3 findings stay open. S08 / M4 needs its Fable/High review and the owner's inspection of the samples. M5 full Work plugin and M6 two-machine release acceptance remain open.
 
 ## Resume prompt
 
@@ -51,8 +52,9 @@ the private personal release: D-019 settles its asset-rights exit item, and D-01
 it does not clear their rights.
 
 S07 / M3 is closed under D-022, with code at c8fc687. Its five P3 findings stay open.
-S08 / M4 is next: read M4 in milestones.md and the core contract's Controlled
-rendering section. Branch from main with a codex/ prefix; keep docs English.
+S08 / M4 is implemented on codex/s08-reference-diagrams and not closed: its Fable/High
+review and the owner's inspection remain. Read M4 in milestones.md, the S08 evidence and the
+core contract's Controlled rendering section. Keep docs English.
 Huawei source availability is not redistribution permission: keep public
 distribution blocked under O-002, and draw no silent generic substitute for a
 type without an icon. Keep S04 alpha.3 and existing runner registrations

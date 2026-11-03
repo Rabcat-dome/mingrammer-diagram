@@ -1,0 +1,267 @@
+{
+ "direction": "TB",
+ "draft": false,
+ "edges": [],
+ "fallbacks": [],
+ "grouping": "node",
+ "groups": [
+  {
+   "boundary_kind": null,
+   "entity": "resource",
+   "id": "eks-cluster",
+   "lines": [
+    "Workload cluster",
+    "Amazon EKS cluster",
+    "subnet: App subnet",
+    "A, App subnet B"
+   ],
+   "memberships": {
+    "location": [
+     "region"
+    ],
+    "network": [
+     "vpc"
+    ],
+    "scope": [
+     "aws-account"
+    ],
+    "subnet": [
+     "subnet-app-a",
+     "subnet-app-b"
+    ]
+   },
+   "parent": null,
+   "provider": "aws",
+   "scope_kind": null,
+   "type_id": "aws.containers.eks"
+  },
+  {
+   "boundary_kind": null,
+   "entity": "resource",
+   "id": "eks-node-group",
+   "lines": [
+    "Managed node group",
+    "subnet: App subnet",
+    "A, App subnet B"
+   ],
+   "memberships": {
+    "cluster": [
+     "eks-cluster"
+    ],
+    "location": [
+     "region"
+    ],
+    "network": [
+     "vpc"
+    ],
+    "scope": [
+     "aws-account"
+    ],
+    "subnet": [
+     "subnet-app-a",
+     "subnet-app-b"
+    ]
+   },
+   "parent": "eks-cluster",
+   "provider": "aws",
+   "scope_kind": null,
+   "type_id": "aws.containers.eks_managed_node_group"
+  },
+  {
+   "boundary_kind": null,
+   "entity": "resource",
+   "id": "eks-node-a",
+   "lines": [
+    "Worker node A",
+    "Node",
+    "subnet: App subnet A",
+    "location:",
+    "ap-southeast-1a"
+   ],
+   "memberships": {
+    "cluster": [
+     "eks-cluster"
+    ],
+    "location": [
+     "az-a"
+    ],
+    "network": [
+     "vpc"
+    ],
+    "node pool": [
+     "eks-node-group"
+    ],
+    "scope": [
+     "aws-account"
+    ],
+    "subnet": [
+     "subnet-app-a"
+    ]
+   },
+   "parent": "eks-node-group",
+   "provider": "aws",
+   "scope_kind": null,
+   "type_id": "k8s.node"
+  },
+  {
+   "boundary_kind": null,
+   "entity": "resource",
+   "id": "eks-node-b",
+   "lines": [
+    "Worker node B",
+    "Node",
+    "subnet: App subnet B",
+    "location:",
+    "ap-southeast-1b"
+   ],
+   "memberships": {
+    "cluster": [
+     "eks-cluster"
+    ],
+    "location": [
+     "az-b"
+    ],
+    "network": [
+     "vpc"
+    ],
+    "node pool": [
+     "eks-node-group"
+    ],
+    "scope": [
+     "aws-account"
+    ],
+    "subnet": [
+     "subnet-app-b"
+    ]
+   },
+   "parent": "eks-node-group",
+   "provider": "aws",
+   "scope_kind": null,
+   "type_id": "k8s.node"
+  }
+ ],
+ "legend": [],
+ "nodes": [
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "eks-cluster",
+   "icon": {
+    "pack": "aws-architecture-icons",
+    "reference": "diagrams.aws.compute.EKS",
+    "source": "native_class"
+   },
+   "id": "eks-cluster",
+   "lines": [
+    "Amazon EKS cluster"
+   ],
+   "memberships": {},
+   "provider": "aws",
+   "type_id": "aws.containers.eks"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "eks-node-a",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.infra.Node",
+    "source": "native_class"
+   },
+   "id": "eks-node-a",
+   "lines": [
+    "Node"
+   ],
+   "memberships": {},
+   "provider": "aws",
+   "type_id": "k8s.node"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "eks-node-b",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.infra.Node",
+    "source": "native_class"
+   },
+   "id": "eks-node-b",
+   "lines": [
+    "Node"
+   ],
+   "memberships": {},
+   "provider": "aws",
+   "type_id": "k8s.node"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "eks-node-a",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.compute.Pod",
+    "source": "native_class"
+   },
+   "id": "pod-web-a",
+   "lines": [
+    "web-pod-a",
+    "Pod",
+    "namespace: web-app"
+   ],
+   "memberships": {
+    "cluster": [
+     "eks-cluster"
+    ],
+    "namespace": [
+     "ns-web"
+    ],
+    "node": [
+     "eks-node-a"
+    ]
+   },
+   "provider": "aws",
+   "type_id": "k8s.pod"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "eks-node-b",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.compute.Pod",
+    "source": "native_class"
+   },
+   "id": "pod-web-b",
+   "lines": [
+    "web-pod-b",
+    "Pod",
+    "namespace: web-app"
+   ],
+   "memberships": {
+    "cluster": [
+     "eks-cluster"
+    ],
+    "namespace": [
+     "ns-web"
+    ],
+    "node": [
+     "eks-node-b"
+    ]
+   },
+   "provider": "aws",
+   "type_id": "k8s.pod"
+  }
+ ],
+ "notice_lines": [],
+ "style": "provider",
+ "title_lines": [
+  "AWS three-tier web application with EKS companion",
+  "EKS worker placement by node (reference)"
+ ],
+ "view_id": "eks-nodes"
+}

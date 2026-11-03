@@ -1,0 +1,996 @@
+{
+  "schema_version": "1.0.0",
+  "metadata": {
+    "id": "hybrid-five-reference",
+    "title": "Five-environment hybrid reference: on-premises, AWS, Azure, Google Cloud and Huawei Cloud",
+    "environment": "reference",
+    "assumptions": [
+      "Synthetic reference model for scenario T-006: nothing here describes deployed infrastructure, observed state or a real network. Every name, region and link product is illustrative.",
+      "The brief supplied no regions, so each cloud uses an illustrative one: AWS ap-southeast-1, Azure southeastasia, Google Cloud asia-southeast1 and Huawei Cloud ap-southeast-2. The on-premises side is one invented site.",
+      "Each environment has one administrative scope: an AWS account, an Azure subscription, a Google Cloud project, a Huawei account with one IAM project, and an on-premises environment. Resource groups, folders and enterprise projects are not modeled.",
+      "Each environment has one network boundary: an AWS VPC, an Azure VNet, a Google Cloud VPC, a Huawei Cloud VPC and an on-premises network. No subnets, zones or security groups are modeled, so resources attach to the network only.",
+      "A region lists its account, subscription, project or IAM project in scope_refs so that views nest it there once. That states the scope uses the region, not that it owns it. The Google Cloud VPC is global, so its region stays a separate box.",
+      "Hub-and-spoke through on-premises is the stated choice: every link runs between on-premises and one cloud. No cloud-to-cloud link is modeled or implied, and each cloud has exactly one stated link.",
+      "Link products are chosen here: AWS Direct Connect, Google Cloud Dedicated Interconnect and Huawei Cloud Direct Connect are dedicated links ending on the on-premises router. Azure VPN Gateway is an IPsec VPN ending on the on-premises firewall.",
+      "The schema has no dedicated-link kind, so dedicated links use kind peering and the tunnel uses kind vpn. Links are undirected, which here means two-way with no stated initiator. Bandwidth, redundancy, tunnel count and routing are not supplied.",
+      "IPsec on the Azure VPN link is an assumption, since the brief names no protocol. The three dedicated links state no encryption. No internal on-premises link, such as router to firewall, is modeled.",
+      "Connectivity endpoints are drawn outside the workload trust zones, because the brief states no zone for them. The on-premises router and firewall are the only on-premises endpoints, and neither is linked to a workload.",
+      "Trust boundaries are one security_zone per environment, named for its workload. Each zone is a member of that environment's network and shares its scope. The brief states no zone rules or inter-zone policy, so none is modeled.",
+      "Each cloud's small workload is one web or application resource and one database resource, one instance each. On-premises has a database and the Kubernetes cluster. Types, names, sizes and engines are illustrative.",
+      "The business data flows are authored here, not supplied: AWS web to the cluster, the cluster to the order database, replicas from it to Azure and Huawei Cloud, Google Cloud web reading from it, and web to database inside each cloud.",
+      "Every cross-environment flow has on-premises at one end, matching the hub-and-spoke links, and is assumed to use that cloud's stated link. No flow states a route, and no flow runs between two clouds.",
+      "Flow protocols, ports and encryption are not supplied, so flow edges carry only a purpose label. Kinds traffic and replication carry business data; kinds vpn and peering carry connectivity only.",
+      "The Kubernetes cluster is user-managed and hosted on-premises. Its Nodes worker-1 and worker-2 are declared with no host VM or server, no node pool and no control-plane entity. Names, the namespace and the replica count of 2 are illustrative.",
+      "The Deployment owns one ReplicaSet with two Pods, one per Node. The Service selects both Pods and the Ingress routes to the Service. No ingress controller, storage, Secret or NetworkPolicy is modeled, so none is drawn.",
+      "The cluster is one entity in every view that selects it. The other views draw it as a compact box. The k8s-detail view adds the Kubernetes entities with the same IDs. The AWS flow ends at the cluster, because those views do not show the Ingress.",
+      "The overview draws zones, workloads, endpoints, links and flows, and leaves out scopes, regions, the site and networks. Connectivity adds the networks. Data-flows adds scopes, regions and the site. Every entity is drawn in some view.",
+      "In the overview an on-premises resource shows its site as a text note, because its trust zone nests it before its site could. The site is a box in the connectivity and data-flows views. view_exclusions lists what each view leaves out.",
+      "Huawei Cloud icons are for the owner's private personal use only. The ASSET_PRIVATE_USE_ONLY warning is expected, and every image that draws a Huawei Cloud icon carries that limit."
+    ],
+    "description": "Synthetic T-006 reference: one on-premises site and AWS, Azure, Google Cloud and Huawei Cloud workloads, joined hub-and-spoke through on-premises by four stated links. One on-premises Kubernetes cluster is compact in the overview and has a detail view with the same IDs. Nothing here describes deployed infrastructure."
+  },
+  "scopes": [
+    {
+      "id": "aws-account",
+      "name": "AWS account",
+      "provider": "aws",
+      "kind": "account"
+    },
+    {
+      "id": "azure-subscription",
+      "name": "Azure subscription",
+      "provider": "azure",
+      "kind": "subscription"
+    },
+    {
+      "id": "gcp-project",
+      "name": "Google Cloud project",
+      "provider": "gcp",
+      "kind": "project"
+    },
+    {
+      "id": "huawei-account",
+      "name": "Huawei Cloud account",
+      "provider": "huawei",
+      "kind": "account"
+    },
+    {
+      "id": "huawei-project",
+      "name": "Huawei Cloud IAM project",
+      "provider": "huawei",
+      "kind": "iam_project",
+      "parent_ref": "huawei-account"
+    },
+    {
+      "id": "onprem-environment",
+      "name": "On-premises environment",
+      "provider": "onprem",
+      "kind": "environment"
+    }
+  ],
+  "boundaries": [
+    {
+      "id": "aws-region",
+      "name": "ap-southeast-1",
+      "provider": "aws",
+      "kind": "region",
+      "scope_refs": [
+        "aws-account"
+      ]
+    },
+    {
+      "id": "aws-vpc",
+      "name": "AWS VPC",
+      "provider": "aws",
+      "kind": "network",
+      "scope_refs": [
+        "aws-account"
+      ],
+      "parent_ref": "aws-region"
+    },
+    {
+      "id": "aws-trust-zone",
+      "name": "AWS workload trust zone",
+      "provider": "aws",
+      "kind": "security_zone",
+      "scope_refs": [
+        "aws-account"
+      ],
+      "relations": [
+        {
+          "kind": "network_member_of",
+          "target_ref": "aws-vpc"
+        }
+      ]
+    },
+    {
+      "id": "azure-region",
+      "name": "southeastasia",
+      "provider": "azure",
+      "kind": "region",
+      "scope_refs": [
+        "azure-subscription"
+      ]
+    },
+    {
+      "id": "azure-vnet",
+      "name": "Azure VNet",
+      "provider": "azure",
+      "kind": "network",
+      "scope_refs": [
+        "azure-subscription"
+      ],
+      "parent_ref": "azure-region"
+    },
+    {
+      "id": "azure-trust-zone",
+      "name": "Azure workload trust zone",
+      "provider": "azure",
+      "kind": "security_zone",
+      "scope_refs": [
+        "azure-subscription"
+      ],
+      "relations": [
+        {
+          "kind": "network_member_of",
+          "target_ref": "azure-vnet"
+        }
+      ]
+    },
+    {
+      "id": "gcp-region",
+      "name": "asia-southeast1",
+      "provider": "gcp",
+      "kind": "region",
+      "scope_refs": [
+        "gcp-project"
+      ]
+    },
+    {
+      "id": "gcp-vpc",
+      "name": "Google Cloud VPC",
+      "provider": "gcp",
+      "kind": "network",
+      "scope_refs": [
+        "gcp-project"
+      ]
+    },
+    {
+      "id": "gcp-trust-zone",
+      "name": "Google Cloud workload trust zone",
+      "provider": "gcp",
+      "kind": "security_zone",
+      "scope_refs": [
+        "gcp-project"
+      ],
+      "relations": [
+        {
+          "kind": "network_member_of",
+          "target_ref": "gcp-vpc"
+        }
+      ]
+    },
+    {
+      "id": "huawei-region",
+      "name": "ap-southeast-2",
+      "provider": "huawei",
+      "kind": "region",
+      "scope_refs": [
+        "huawei-project"
+      ]
+    },
+    {
+      "id": "huawei-vpc",
+      "name": "Huawei Cloud VPC",
+      "provider": "huawei",
+      "kind": "network",
+      "scope_refs": [
+        "huawei-project"
+      ],
+      "parent_ref": "huawei-region"
+    },
+    {
+      "id": "huawei-trust-zone",
+      "name": "Huawei Cloud workload trust zone",
+      "provider": "huawei",
+      "kind": "security_zone",
+      "scope_refs": [
+        "huawei-project"
+      ],
+      "relations": [
+        {
+          "kind": "network_member_of",
+          "target_ref": "huawei-vpc"
+        }
+      ]
+    },
+    {
+      "id": "onprem-site",
+      "name": "Reference site",
+      "provider": "onprem",
+      "kind": "site",
+      "scope_refs": [
+        "onprem-environment"
+      ]
+    },
+    {
+      "id": "onprem-network",
+      "name": "On-premises network",
+      "provider": "onprem",
+      "kind": "network",
+      "scope_refs": [
+        "onprem-environment"
+      ],
+      "relations": [
+        {
+          "kind": "located_in",
+          "target_ref": "onprem-site"
+        }
+      ]
+    },
+    {
+      "id": "onprem-trust-zone",
+      "name": "On-premises workload trust zone",
+      "provider": "onprem",
+      "kind": "security_zone",
+      "scope_refs": [
+        "onprem-environment"
+      ],
+      "relations": [
+        {
+          "kind": "network_member_of",
+          "target_ref": "onprem-network"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "aws-direct-connect",
+      "name": "AWS link endpoint",
+      "provider": "aws",
+      "service_type": "aws.network.direct_connect",
+      "taxonomy": "network.connectivity",
+      "placement": {
+        "scope_refs": [
+          "aws-account"
+        ],
+        "location": {
+          "region_ref": "aws-region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "aws-vpc"
+          }
+        ]
+      }
+    },
+    {
+      "id": "aws-web",
+      "name": "AWS web app",
+      "provider": "aws",
+      "service_type": "aws.compute.ec2",
+      "taxonomy": "compute.vm",
+      "placement": {
+        "scope_refs": [
+          "aws-account"
+        ],
+        "location": {
+          "region_ref": "aws-region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "aws-vpc"
+          }
+        ],
+        "security_boundaries": [
+          "aws-trust-zone"
+        ]
+      }
+    },
+    {
+      "id": "aws-database",
+      "name": "AWS app database",
+      "provider": "aws",
+      "service_type": "aws.database.rds",
+      "taxonomy": "data.relational",
+      "placement": {
+        "scope_refs": [
+          "aws-account"
+        ],
+        "location": {
+          "region_ref": "aws-region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "aws-vpc"
+          }
+        ],
+        "security_boundaries": [
+          "aws-trust-zone"
+        ]
+      }
+    },
+    {
+      "id": "azure-vpn-gateway",
+      "name": "Azure link endpoint",
+      "provider": "azure",
+      "service_type": "azure.network.vpn_gateway",
+      "taxonomy": "network.connectivity",
+      "placement": {
+        "scope_refs": [
+          "azure-subscription"
+        ],
+        "location": {
+          "region_ref": "azure-region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "azure-vnet"
+          }
+        ]
+      }
+    },
+    {
+      "id": "azure-web",
+      "name": "Azure web app",
+      "provider": "azure",
+      "service_type": "azure.compute.virtual_machine",
+      "taxonomy": "compute.vm",
+      "placement": {
+        "scope_refs": [
+          "azure-subscription"
+        ],
+        "location": {
+          "region_ref": "azure-region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "azure-vnet"
+          }
+        ],
+        "security_boundaries": [
+          "azure-trust-zone"
+        ]
+      }
+    },
+    {
+      "id": "azure-database",
+      "name": "Azure reporting database",
+      "provider": "azure",
+      "service_type": "azure.database.sql_database",
+      "taxonomy": "data.relational",
+      "placement": {
+        "scope_refs": [
+          "azure-subscription"
+        ],
+        "location": {
+          "region_ref": "azure-region"
+        },
+        "security_boundaries": [
+          "azure-trust-zone"
+        ]
+      }
+    },
+    {
+      "id": "gcp-interconnect",
+      "name": "Google Cloud link endpoint",
+      "provider": "gcp",
+      "service_type": "gcp.network.dedicated_interconnect",
+      "taxonomy": "network.connectivity",
+      "placement": {
+        "scope_refs": [
+          "gcp-project"
+        ],
+        "location": {
+          "region_ref": "gcp-region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "gcp-vpc"
+          }
+        ]
+      }
+    },
+    {
+      "id": "gcp-web",
+      "name": "Google Cloud analytics app",
+      "provider": "gcp",
+      "service_type": "gcp.compute.compute_engine",
+      "taxonomy": "compute.vm",
+      "placement": {
+        "scope_refs": [
+          "gcp-project"
+        ],
+        "location": {
+          "region_ref": "gcp-region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "gcp-vpc"
+          }
+        ],
+        "security_boundaries": [
+          "gcp-trust-zone"
+        ]
+      }
+    },
+    {
+      "id": "gcp-database",
+      "name": "Google Cloud analytics database",
+      "provider": "gcp",
+      "service_type": "gcp.database.cloud_sql",
+      "taxonomy": "data.relational",
+      "placement": {
+        "scope_refs": [
+          "gcp-project"
+        ],
+        "location": {
+          "region_ref": "gcp-region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "gcp-vpc"
+          }
+        ],
+        "security_boundaries": [
+          "gcp-trust-zone"
+        ]
+      }
+    },
+    {
+      "id": "huawei-direct-connect",
+      "name": "Huawei Cloud link endpoint",
+      "provider": "huawei",
+      "service_type": "huawei.network.direct_connect",
+      "taxonomy": "network.connectivity",
+      "placement": {
+        "scope_refs": [
+          "huawei-project"
+        ],
+        "location": {
+          "region_ref": "huawei-region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "huawei-vpc"
+          }
+        ]
+      }
+    },
+    {
+      "id": "huawei-web",
+      "name": "Huawei Cloud web app",
+      "provider": "huawei",
+      "service_type": "huawei.compute.ecs",
+      "taxonomy": "compute.vm",
+      "placement": {
+        "scope_refs": [
+          "huawei-project"
+        ],
+        "location": {
+          "region_ref": "huawei-region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "huawei-vpc"
+          }
+        ],
+        "security_boundaries": [
+          "huawei-trust-zone"
+        ]
+      }
+    },
+    {
+      "id": "huawei-database",
+      "name": "Huawei Cloud replica database",
+      "provider": "huawei",
+      "service_type": "huawei.database.rds",
+      "taxonomy": "data.relational",
+      "placement": {
+        "scope_refs": [
+          "huawei-project"
+        ],
+        "location": {
+          "region_ref": "huawei-region"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "huawei-vpc"
+          }
+        ],
+        "security_boundaries": [
+          "huawei-trust-zone"
+        ]
+      }
+    },
+    {
+      "id": "onprem-router",
+      "name": "On-premises router",
+      "provider": "onprem",
+      "service_type": "onprem.network.router",
+      "taxonomy": "network.routing",
+      "placement": {
+        "scope_refs": [
+          "onprem-environment"
+        ],
+        "location": {
+          "site_ref": "onprem-site"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "onprem-network"
+          }
+        ]
+      }
+    },
+    {
+      "id": "onprem-firewall",
+      "name": "On-premises firewall",
+      "provider": "onprem",
+      "service_type": "onprem.security.firewall",
+      "taxonomy": "security.control",
+      "placement": {
+        "scope_refs": [
+          "onprem-environment"
+        ],
+        "location": {
+          "site_ref": "onprem-site"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "onprem-network"
+          }
+        ]
+      }
+    },
+    {
+      "id": "onprem-database",
+      "name": "Order database",
+      "provider": "onprem",
+      "service_type": "onprem.database.database",
+      "taxonomy": "data.relational",
+      "placement": {
+        "scope_refs": [
+          "onprem-environment"
+        ],
+        "location": {
+          "site_ref": "onprem-site"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "onprem-network"
+          }
+        ],
+        "security_boundaries": [
+          "onprem-trust-zone"
+        ]
+      }
+    },
+    {
+      "id": "k8s-cluster",
+      "name": "Order platform cluster",
+      "provider": "onprem",
+      "service_type": "onprem.containers.kubernetes_cluster",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "onprem-environment"
+        ],
+        "location": {
+          "site_ref": "onprem-site"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "onprem-network"
+          }
+        ],
+        "security_boundaries": [
+          "onprem-trust-zone"
+        ]
+      },
+      "kubernetes": {
+        "kind": "Cluster"
+      }
+    },
+    {
+      "id": "k8s-node-1",
+      "name": "worker-1",
+      "provider": "onprem",
+      "service_type": "k8s.node",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Node",
+        "cluster_ref": "k8s-cluster"
+      }
+    },
+    {
+      "id": "k8s-node-2",
+      "name": "worker-2",
+      "provider": "onprem",
+      "service_type": "k8s.node",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Node",
+        "cluster_ref": "k8s-cluster"
+      }
+    },
+    {
+      "id": "k8s-namespace-orders",
+      "name": "orders",
+      "provider": "onprem",
+      "service_type": "k8s.namespace",
+      "taxonomy": "governance.scope",
+      "kubernetes": {
+        "kind": "Namespace",
+        "cluster_ref": "k8s-cluster"
+      }
+    },
+    {
+      "id": "k8s-deployment-orders",
+      "name": "orders",
+      "provider": "onprem",
+      "service_type": "k8s.deployment",
+      "taxonomy": "compute.containers",
+      "properties": {
+        "replicas": 2
+      },
+      "kubernetes": {
+        "kind": "Deployment",
+        "cluster_ref": "k8s-cluster",
+        "namespace_ref": "k8s-namespace-orders"
+      }
+    },
+    {
+      "id": "k8s-replicaset-orders",
+      "name": "orders-rs",
+      "provider": "onprem",
+      "service_type": "k8s.replicaset",
+      "taxonomy": "compute.containers",
+      "properties": {
+        "replicas": 2
+      },
+      "kubernetes": {
+        "kind": "ReplicaSet",
+        "cluster_ref": "k8s-cluster",
+        "namespace_ref": "k8s-namespace-orders",
+        "owner_ref": "k8s-deployment-orders"
+      }
+    },
+    {
+      "id": "k8s-pod-orders-1",
+      "name": "orders-pod-1",
+      "provider": "onprem",
+      "service_type": "k8s.pod",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Pod",
+        "cluster_ref": "k8s-cluster",
+        "namespace_ref": "k8s-namespace-orders",
+        "owner_ref": "k8s-replicaset-orders",
+        "node_ref": "k8s-node-1"
+      }
+    },
+    {
+      "id": "k8s-pod-orders-2",
+      "name": "orders-pod-2",
+      "provider": "onprem",
+      "service_type": "k8s.pod",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Pod",
+        "cluster_ref": "k8s-cluster",
+        "namespace_ref": "k8s-namespace-orders",
+        "owner_ref": "k8s-replicaset-orders",
+        "node_ref": "k8s-node-2"
+      }
+    },
+    {
+      "id": "k8s-service-orders",
+      "name": "orders-svc",
+      "provider": "onprem",
+      "service_type": "k8s.service",
+      "taxonomy": "network.load_balancing",
+      "kubernetes": {
+        "kind": "Service",
+        "cluster_ref": "k8s-cluster",
+        "namespace_ref": "k8s-namespace-orders",
+        "target_refs": [
+          "k8s-pod-orders-1",
+          "k8s-pod-orders-2"
+        ]
+      }
+    },
+    {
+      "id": "k8s-ingress-orders",
+      "name": "orders-ing",
+      "provider": "onprem",
+      "service_type": "k8s.ingress",
+      "taxonomy": "network.load_balancing",
+      "kubernetes": {
+        "kind": "Ingress",
+        "cluster_ref": "k8s-cluster",
+        "namespace_ref": "k8s-namespace-orders",
+        "service_refs": [
+          "k8s-service-orders"
+        ]
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "id": "link-aws-direct-connect",
+      "source_ref": "aws-direct-connect",
+      "target_ref": "onprem-router",
+      "kind": "peering",
+      "direction": "undirected",
+      "label": "Direct Connect, two-way"
+    },
+    {
+      "id": "link-azure-vpn",
+      "source_ref": "azure-vpn-gateway",
+      "target_ref": "onprem-firewall",
+      "kind": "vpn",
+      "direction": "undirected",
+      "label": "Site-to-site VPN, two-way",
+      "security": "IPsec"
+    },
+    {
+      "id": "link-gcp-interconnect",
+      "source_ref": "gcp-interconnect",
+      "target_ref": "onprem-router",
+      "kind": "peering",
+      "direction": "undirected",
+      "label": "Dedicated Interconnect, two-way"
+    },
+    {
+      "id": "link-huawei-direct-connect",
+      "source_ref": "huawei-direct-connect",
+      "target_ref": "onprem-router",
+      "kind": "peering",
+      "direction": "undirected",
+      "label": "Direct Connect, two-way"
+    },
+    {
+      "id": "flow-aws-web-to-cluster",
+      "source_ref": "aws-web",
+      "target_ref": "k8s-cluster",
+      "kind": "traffic",
+      "label": "Order requests"
+    },
+    {
+      "id": "flow-cluster-to-order-database",
+      "source_ref": "k8s-cluster",
+      "target_ref": "onprem-database",
+      "kind": "traffic",
+      "label": "Order records"
+    },
+    {
+      "id": "flow-order-database-to-azure",
+      "source_ref": "onprem-database",
+      "target_ref": "azure-database",
+      "kind": "replication",
+      "label": "Reporting replica"
+    },
+    {
+      "id": "flow-gcp-web-from-order-database",
+      "source_ref": "onprem-database",
+      "target_ref": "gcp-web",
+      "kind": "traffic",
+      "label": "Analytics reads"
+    },
+    {
+      "id": "flow-order-database-to-huawei",
+      "source_ref": "onprem-database",
+      "target_ref": "huawei-database",
+      "kind": "replication",
+      "label": "Regional replica"
+    },
+    {
+      "id": "flow-aws-web-to-database",
+      "source_ref": "aws-web",
+      "target_ref": "aws-database",
+      "kind": "traffic",
+      "label": "App data"
+    },
+    {
+      "id": "flow-azure-web-to-database",
+      "source_ref": "azure-web",
+      "target_ref": "azure-database",
+      "kind": "traffic",
+      "label": "App data"
+    },
+    {
+      "id": "flow-gcp-web-to-database",
+      "source_ref": "gcp-web",
+      "target_ref": "gcp-database",
+      "kind": "traffic",
+      "label": "App data"
+    },
+    {
+      "id": "flow-huawei-web-to-database",
+      "source_ref": "huawei-web",
+      "target_ref": "huawei-database",
+      "kind": "traffic",
+      "label": "App data"
+    },
+    {
+      "id": "traffic-ingress-service",
+      "source_ref": "k8s-ingress-orders",
+      "target_ref": "k8s-service-orders",
+      "kind": "traffic"
+    },
+    {
+      "id": "traffic-service-pod-1",
+      "source_ref": "k8s-service-orders",
+      "target_ref": "k8s-pod-orders-1",
+      "kind": "traffic"
+    },
+    {
+      "id": "traffic-service-pod-2",
+      "source_ref": "k8s-service-orders",
+      "target_ref": "k8s-pod-orders-2",
+      "kind": "traffic"
+    },
+    {
+      "id": "ownership-deployment-replicaset",
+      "source_ref": "k8s-deployment-orders",
+      "target_ref": "k8s-replicaset-orders",
+      "kind": "ownership"
+    },
+    {
+      "id": "ownership-replicaset-pod-1",
+      "source_ref": "k8s-replicaset-orders",
+      "target_ref": "k8s-pod-orders-1",
+      "kind": "ownership"
+    },
+    {
+      "id": "ownership-replicaset-pod-2",
+      "source_ref": "k8s-replicaset-orders",
+      "target_ref": "k8s-pod-orders-2",
+      "kind": "ownership"
+    }
+  ],
+  "views": [
+    {
+      "id": "overview",
+      "title": "Five-environment hybrid overview",
+      "entity_refs": [
+        "onprem-trust-zone",
+        "aws-trust-zone",
+        "azure-trust-zone",
+        "gcp-trust-zone",
+        "huawei-trust-zone",
+        "onprem-router",
+        "onprem-firewall",
+        "aws-direct-connect",
+        "azure-vpn-gateway",
+        "gcp-interconnect",
+        "huawei-direct-connect",
+        "onprem-database",
+        "k8s-cluster",
+        "aws-web",
+        "aws-database",
+        "azure-web",
+        "azure-database",
+        "gcp-web",
+        "gcp-database",
+        "huawei-web",
+        "huawei-database"
+      ],
+      "relationship_refs": [
+        "link-aws-direct-connect",
+        "link-azure-vpn",
+        "link-gcp-interconnect",
+        "link-huawei-direct-connect",
+        "flow-aws-web-to-cluster",
+        "flow-cluster-to-order-database",
+        "flow-order-database-to-azure",
+        "flow-gcp-web-from-order-database",
+        "flow-order-database-to-huawei",
+        "flow-aws-web-to-database",
+        "flow-azure-web-to-database",
+        "flow-gcp-web-to-database",
+        "flow-huawei-web-to-database"
+      ],
+      "grouping": "provider",
+      "direction": "LR"
+    },
+    {
+      "id": "connectivity",
+      "title": "Connectivity endpoints and links",
+      "entity_refs": [
+        "onprem-network",
+        "aws-vpc",
+        "azure-vnet",
+        "gcp-vpc",
+        "huawei-vpc",
+        "onprem-router",
+        "onprem-firewall",
+        "aws-direct-connect",
+        "azure-vpn-gateway",
+        "gcp-interconnect",
+        "huawei-direct-connect"
+      ],
+      "relationship_refs": [
+        "link-aws-direct-connect",
+        "link-azure-vpn",
+        "link-gcp-interconnect",
+        "link-huawei-direct-connect"
+      ],
+      "grouping": "provider",
+      "direction": "LR"
+    },
+    {
+      "id": "data-flows",
+      "title": "Workloads and business data flows",
+      "entity_refs": [
+        "onprem-environment",
+        "onprem-site",
+        "onprem-network",
+        "aws-account",
+        "aws-region",
+        "aws-vpc",
+        "azure-subscription",
+        "azure-region",
+        "azure-vnet",
+        "gcp-project",
+        "gcp-region",
+        "gcp-vpc",
+        "huawei-account",
+        "huawei-project",
+        "huawei-region",
+        "huawei-vpc",
+        "onprem-database",
+        "k8s-cluster",
+        "aws-web",
+        "aws-database",
+        "azure-web",
+        "azure-database",
+        "gcp-web",
+        "gcp-database",
+        "huawei-web",
+        "huawei-database"
+      ],
+      "relationship_refs": [
+        "flow-aws-web-to-cluster",
+        "flow-cluster-to-order-database",
+        "flow-order-database-to-azure",
+        "flow-gcp-web-from-order-database",
+        "flow-order-database-to-huawei",
+        "flow-aws-web-to-database",
+        "flow-azure-web-to-database",
+        "flow-gcp-web-to-database",
+        "flow-huawei-web-to-database"
+      ],
+      "grouping": "provider",
+      "direction": "LR"
+    },
+    {
+      "id": "k8s-detail",
+      "title": "Kubernetes detail of the on-premises cluster",
+      "entity_refs": [
+        "k8s-cluster",
+        "k8s-node-1",
+        "k8s-node-2",
+        "k8s-namespace-orders",
+        "k8s-deployment-orders",
+        "k8s-replicaset-orders",
+        "k8s-pod-orders-1",
+        "k8s-pod-orders-2",
+        "k8s-service-orders",
+        "k8s-ingress-orders"
+      ],
+      "relationship_refs": [
+        "traffic-ingress-service",
+        "traffic-service-pod-1",
+        "traffic-service-pod-2",
+        "ownership-deployment-replicaset",
+        "ownership-replicaset-pod-1",
+        "ownership-replicaset-pod-2"
+      ],
+      "grouping": "namespace",
+      "direction": "TB"
+    }
+  ]
+}

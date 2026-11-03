@@ -19,6 +19,7 @@ from render_helpers import (
     codes,
     encode,
     graph_of,
+    icon_chain,
     icon_model,
     joined_text,
     large_model,
@@ -37,7 +38,12 @@ from cloud_architecture_diagrams.cli import capabilities
 from cloud_architecture_diagrams.models import Architecture
 from cloud_architecture_diagrams.render import BUNDLE_FILES, RenderResult, exit_status
 from cloud_architecture_diagrams.render.checks import DATA_PNG, HREF, SVG, check_png, png_scale
-from cloud_architecture_diagrams.render.draw import EDGE_STYLES, build_dot, literal
+from cloud_architecture_diagrams.render.draw import (
+    EDGE_STYLES,
+    GROUP_STYLES,
+    build_dot,
+    literal,
+)
 from cloud_architecture_diagrams.render.errors import MESSAGES
 from cloud_architecture_diagrams.render.execution import find_engine
 from cloud_architecture_diagrams.render.graph import GraphIcon, map_view, visible_width, wrap
@@ -53,6 +59,7 @@ SCENARIOS = [
             *FIXTURES.glob("*.json"),
             *(FIXTURES / "providers").glob("*.json"),
             *(FIXTURES / "kubernetes").glob("*.json"),
+            *(FIXTURES / "references").glob("*.json"),
         ]
     )
     for view in json.loads(path.read_text())["views"]
@@ -256,11 +263,11 @@ def test_fixture_views_keep_the_png_at_full_size(
         assert "RENDER_PNG_SCALED" not in {item.code for item in result.diagnostics}
 
 
-@pytest.mark.parametrize("entities", [123, 133, 140, 168, 197])
+@pytest.mark.parametrize("entities", [112, 116, 120, 124, 128])
 def test_a_tall_view_discloses_its_shrunken_png(entities: int, tmp_path: Path) -> None:
     # Cairo shrinks past 32767 pixels and exits 0, so only this comparison can say so. Sizes differ
-    # because it truncates the other side, and 168 lands the long side on 32766.
-    result = render(icon_model(entities, 0), tmp_path / "out")
+    # because it truncates the other side, and 124 lands the long side on 32766.
+    result = render(icon_chain(entities), tmp_path / "out")
     assert result.rendered and exit_status(result) == 0, codes(result)
     png = manifest_of(result)["png"]
     full_height = float(svg_root(result).get("height", "").removesuffix("pt")) * 96 / 72
@@ -758,7 +765,116 @@ def test_direction_legend_and_style_stay_bounded_view_choices() -> None:
     parsed = Architecture.model_validate(model)
     graph = map_view(parsed, parsed.views[0], "strict", LIMITS)
     dot = build_dot(graph, verified_icons(graph, LIMITS))
-    assert "rankdir=LR" in dot and "_legend" in dot and "#FFF8EE" in dot
+    assert "rankdir=LR" in dot and "_legend" in dot
+
+
+def dot_of(model: dict[str, Any], **view: str) -> str:
+    model["views"][0] |= view
+    parsed = Architecture.model_validate(model)
+    graph = map_view(parsed, parsed.views[0], "strict", LIMITS)
+    return build_dot(graph, verified_icons(graph, LIMITS))
+
+
+def test_a_tint_separates_providers_only_when_a_view_has_several() -> None:
+    assert "#FFF8EE" not in dot_of(load("providers/aws.json"))
+    assert "#FFF8EE" in dot_of(load("providers/hybrid.json"))
+    assert "#FFF8EE" not in dot_of(load("providers/hybrid.json"), style="neutral")
+
+
+def test_every_group_style_is_reached_and_a_neutral_view_uses_none() -> None:
+    seen = set()
+    for name in ("aws", "azure", "gcp", "huawei"):
+        model = load(f"providers/{name}.json")
+        parsed = Architecture.model_validate(model)
+        graph = map_view(parsed, parsed.views[0], "strict", LIMITS)
+        keys = {(item.provider, item.boundary_kind or item.scope_kind) for item in graph.groups}
+        seen |= keys
+        dot = dot_of(model)
+        neutral = dot_of(model, style="neutral")
+        for key, (pen, _, _) in GROUP_STYLES.items():
+            if key in keys:
+                assert f'pencolor="{pen}"' in dot, key
+                assert f'pencolor="{pen}"' not in neutral, key
+    assert set(GROUP_STYLES) <= seen
+
+
+def layout_edges(dot: str) -> list[str]:
+    return [line for line in dot.splitlines() if "->" in line and "style=invis" in line]
+
+
+def test_unconnected_members_form_rows_rather_than_one_column(tmp_path: Path) -> None:
+    # Four rows of four are three links each. One column would be about 4,800 pixels tall.
+    model = icon_model(16, 0)
+    assert len(layout_edges(dot_of(model))) == 12
+    result = render(model, tmp_path / "out")
+    assert result.rendered, codes(result)
+    assert manifest_of(result)["png"]["height"] < 2600
+    # A layout edge draws nothing, so the image holds only what the model states.
+    drawn = [item for item in svg_root(result).iter(f"{{{SVG}}}g") if item.get("class") == "edge"]
+    assert all(item.find(f"{{{SVG}}}path") is None for item in drawn)
+
+
+def test_a_declared_subnet_and_zone_stay_noted_when_their_boxes_are_left_out() -> None:
+    model = load("providers/aws.json")
+    kept = {"subnet", "zone", "network", "region"}
+    boxes = {item["id"] for item in model["boundaries"] if item["kind"] in kept}
+    model["views"][0]["entity_refs"] = [
+        item for item in model["views"][0]["entity_refs"] if item not in boxes - {"region"}
+    ]
+    parsed = Architecture.model_validate(model)
+    graph = map_view(parsed, parsed.views[0], "strict", LIMITS)
+    lines = " ".join(next(item for item in graph.nodes if item.id == "db").lines)
+    assert "subnet: Data A" in lines and "location:" in lines and "ap-southeast-1a" in lines
+
+
+def test_an_unselected_region_is_not_noted_on_everything() -> None:
+    model = load("providers/aws.json")
+    view = model["views"][0]
+    view["entity_refs"] = [item for item in view["entity_refs"] if item != "region"]
+    parsed = Architecture.model_validate(model)
+    graph = map_view(parsed, parsed.views[0], "strict", LIMITS)
+    assert not any("ap-southeast-1\n" in "\n".join(item.lines) + "\n" for item in graph.nodes)
+
+
+def test_the_legend_shows_an_arrow_only_for_a_kind_that_has_direction() -> None:
+    model = load("providers/aws.json")
+    dot = dot_of(model)
+    assert "_legend.traffic.a -> _legend.traffic.b" in dot.replace('"', "")
+    for line in dot.splitlines():
+        if "_legend.traffic.a" in line and "->" in line:
+            assert "dir=forward" in line
+    for edge in model["relationships"]:
+        edge["direction"] = "undirected"
+    for line in dot_of(model).splitlines():
+        if "_legend." in line and "->" in line and "invis" not in line:
+            assert "dir=forward" not in line
+
+
+def test_a_top_down_legend_stacks_flat_samples() -> None:
+    model = load("kubernetes/eks.json")
+    dot = dot_of(model, direction="TB")
+    samples = [line for line in dot.splitlines() if "_legend." in line and "->" in line]
+    assert any("constraint=false" in line for line in samples)
+    assert any("style=invis" in line for line in samples)
+    assert not any(
+        "constraint=false" in line for line in dot_of(model, direction="LR").splitlines()
+    )
+
+
+def test_a_left_right_icon_centers_on_its_node_so_edges_meet_the_icon() -> None:
+    dot = dot_of(icon_chain(3), direction="LR")
+    assert "imagepos=mc" in dot and "imagepos=tc" not in dot.split("node [", 1)[1].split("]", 1)[1]
+    assert "imagepos=tc" in dot_of(icon_chain(3), direction="TB")
+
+
+def test_connected_members_take_no_layout_edges() -> None:
+    assert layout_edges(dot_of(icon_chain(9))) == []
+
+
+def test_a_layout_edge_holds_no_model_text() -> None:
+    model = icon_model(9, 0)
+    for line in layout_edges(dot_of(model)):
+        assert "Resource number" not in line and "label" not in line
 
 
 def test_every_relationship_kind_has_one_edge_style(tmp_path: Path) -> None:
@@ -794,6 +910,9 @@ def test_wrapping_never_splits_a_mark_from_its_base() -> None:
     assert all(visible_width(line) <= 20 for line in lines)
     assert not any(line[0] in "ี่" for line in lines)
     assert wrap("one two", 20) == ["one two"]
+    assert wrap("PersistentVolumeClaim", 20) == ["PersistentVolumeClaim"]
+    assert wrap("a PersistentVolumeClaim b", 20) == ["a", "PersistentVolumeClaim", "b"]
+    assert [visible_width(line) for line in wrap("x" * 24, 20)] == [20, 4]
     assert wrap("", 20) == [""]
 
 

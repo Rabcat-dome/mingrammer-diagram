@@ -1,0 +1,238 @@
+{
+ "direction": "TB",
+ "draft": false,
+ "edges": [],
+ "fallbacks": [],
+ "grouping": "node",
+ "groups": [
+  {
+   "boundary_kind": null,
+   "entity": "resource",
+   "id": "aks-cluster",
+   "lines": [
+    "Spoke AKS cluster",
+    "Azure Kubernetes",
+    "Service cluster",
+    "subnet: AKS node",
+    "subnet"
+   ],
+   "memberships": {
+    "location": [
+     "region-southeastasia"
+    ],
+    "network": [
+     "vnet-spoke"
+    ],
+    "scope": [
+     "rg-spoke"
+    ],
+    "subnet": [
+     "subnet-spoke-aks"
+    ]
+   },
+   "parent": null,
+   "provider": "azure",
+   "scope_kind": null,
+   "type_id": "azure.containers.aks"
+  },
+  {
+   "boundary_kind": null,
+   "entity": "resource",
+   "id": "aks-node-pool",
+   "lines": [
+    "nodepool1",
+    "Node pool",
+    "subnet: AKS node",
+    "subnet"
+   ],
+   "memberships": {
+    "cluster": [
+     "aks-cluster"
+    ],
+    "location": [
+     "region-southeastasia"
+    ],
+    "network": [
+     "vnet-spoke"
+    ],
+    "scope": [
+     "rg-spoke"
+    ],
+    "subnet": [
+     "subnet-spoke-aks"
+    ]
+   },
+   "parent": "aks-cluster",
+   "provider": "azure",
+   "scope_kind": null,
+   "type_id": "azure.containers.aks_node_pool"
+  },
+  {
+   "boundary_kind": null,
+   "entity": "resource",
+   "id": "aks-node-1",
+   "lines": [
+    "node-1",
+    "Node"
+   ],
+   "memberships": {
+    "cluster": [
+     "aks-cluster"
+    ],
+    "node pool": [
+     "aks-node-pool"
+    ]
+   },
+   "parent": "aks-node-pool",
+   "provider": "azure",
+   "scope_kind": null,
+   "type_id": "k8s.node"
+  },
+  {
+   "boundary_kind": null,
+   "entity": "resource",
+   "id": "aks-node-2",
+   "lines": [
+    "node-2",
+    "Node"
+   ],
+   "memberships": {
+    "cluster": [
+     "aks-cluster"
+    ],
+    "node pool": [
+     "aks-node-pool"
+    ]
+   },
+   "parent": "aks-node-pool",
+   "provider": "azure",
+   "scope_kind": null,
+   "type_id": "k8s.node"
+  }
+ ],
+ "legend": [],
+ "nodes": [
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "aks-cluster",
+   "icon": {
+    "pack": "azure-architecture-icons",
+    "reference": "diagrams.azure.containers.KubernetesServices",
+    "source": "native_class"
+   },
+   "id": "aks-cluster",
+   "lines": [
+    "Azure Kubernetes",
+    "Service cluster"
+   ],
+   "memberships": {},
+   "provider": "azure",
+   "type_id": "azure.containers.aks"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "aks-node-1",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.infra.Node",
+    "source": "native_class"
+   },
+   "id": "aks-node-1",
+   "lines": [
+    "Node"
+   ],
+   "memberships": {},
+   "provider": "azure",
+   "type_id": "k8s.node"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "aks-node-2",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.infra.Node",
+    "source": "native_class"
+   },
+   "id": "aks-node-2",
+   "lines": [
+    "Node"
+   ],
+   "memberships": {},
+   "provider": "azure",
+   "type_id": "k8s.node"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "aks-node-1",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.compute.Pod",
+    "source": "native_class"
+   },
+   "id": "web-pod-1",
+   "lines": [
+    "web-frontend-pod-1",
+    "Pod",
+    "namespace: web"
+   ],
+   "memberships": {
+    "cluster": [
+     "aks-cluster"
+    ],
+    "namespace": [
+     "aks-namespace-web"
+    ],
+    "node": [
+     "aks-node-1"
+    ]
+   },
+   "provider": "azure",
+   "type_id": "k8s.pod"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "aks-node-2",
+   "icon": {
+    "pack": "kubernetes-community-icons",
+    "reference": "diagrams.k8s.compute.Pod",
+    "source": "native_class"
+   },
+   "id": "web-pod-2",
+   "lines": [
+    "web-frontend-pod-2",
+    "Pod",
+    "namespace: web"
+   ],
+   "memberships": {
+    "cluster": [
+     "aks-cluster"
+    ],
+    "namespace": [
+     "aks-namespace-web"
+    ],
+    "node": [
+     "aks-node-2"
+    ]
+   },
+   "provider": "azure",
+   "type_id": "k8s.pod"
+  }
+ ],
+ "notice_lines": [],
+ "style": "provider",
+ "title_lines": [
+  "Azure hub-and-spoke reference architecture",
+  "AKS worker placement (reference)"
+ ],
+ "view_id": "aks-nodes"
+}

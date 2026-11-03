@@ -30,6 +30,7 @@ from render_helpers import (
     codes,
     encode,
     graph_of,
+    icon_chain,
     icon_model,
     joined_text,
     large_model,
@@ -589,13 +590,16 @@ def test_png_scale_accepts_every_shrink_cairo_writes(tall: bool) -> None:
 
 
 def test_a_png_below_half_size_is_refused(tmp_path: Path) -> None:
-    # Without groups this view is 249 pixels wide, so it stays under the pixel limit at full size
-    # and would publish an 80-pixel-wide PNG at about a third of full size.
-    model = icon_model(197, 0)
+    # Without groups this line is about 300 pixels wide, so it stays under the pixel limit at full
+    # size and would publish a very narrow PNG at about 0.4 of full size.
+    model = icon_chain(197)
     for item in model["resources"]:
-        item["name"] = ("long name " * 26)[:256]
-    model["views"][0]["title"] = "M"
-    model["views"][0]["entity_refs"] = [item["id"] for item in model["resources"]]
+        item["name"] = ("long name " * 26)[:120]
+    model["views"][0] |= {
+        "title": "M",
+        "legend": False,
+        "entity_refs": [item["id"] for item in model["resources"]],
+    }
     output = tmp_path / "out"
     result = render(model, output)
     assert codes(result) == ["RENDER_PNG_SCALE_LIMIT"]
@@ -604,9 +608,9 @@ def test_a_png_below_half_size_is_refused(tmp_path: Path) -> None:
 
 
 def test_the_pixel_limit_applies_before_a_png_is_shrunk(tmp_path: Path) -> None:
-    # This PNG is about 9 Mpx after Cairo shrinks it, so only the full-size check can refuse it.
+    # This PNG is about 24 Mpx after Cairo shrinks it, so only the full-size check can refuse it.
     output = tmp_path / "out"
-    result = render(icon_model(197, 0), output, limits=replace(LIMITS, pixels=20_000_000))
+    result = render(icon_chain(124), output, limits=replace(LIMITS, pixels=25_000_000))
     assert codes(result) == ["RENDER_PIXEL_LIMIT"]
     assert renderer.exit_status(result) == 2 and tree(output) == []
 

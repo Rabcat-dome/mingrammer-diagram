@@ -1,0 +1,835 @@
+{
+  "schema_version": "1.0.0",
+  "metadata": {
+    "id": "huawei-web-reference",
+    "title": "Huawei Cloud web application with CCE detail",
+    "environment": "reference",
+    "description": "Synthetic reference architecture for scenario T-004: a Huawei Cloud web application with account, IAM project and region context, plus CCE namespace and node views drawn from the same model. It describes no deployed infrastructure.",
+    "assumptions": [
+      "Synthetic reference; nothing here describes deployed infrastructure, a live account or a live CCE cluster.",
+      "The brief names no region. AP-Bangkok (ap-southeast-2) is a placeholder, with an IAM project of the same name and the zone labels AZ1 and AZ2.",
+      "The one IAM project maps to the one region. No enterprise project is modeled because the brief names none.",
+      "OBS and IAM declare account scope only, because the catalog authorizes both globally rather than per IAM project. OBS still declares its region.",
+      "Subnet roles are a choice: App subnet holds the ELB, ECS, NAT Gateway and CCE cluster, and Data subnet holds RDS. No CIDR blocks, routes or ACLs are stated.",
+      "AZ placement is a choice: ECS and CCE node-1 in AZ1, RDS and node-2 in AZ2. The CCE node pool is declared at region level. No standby or extra instance is modeled.",
+      "The brief's single EIP is treated as the public address of the NAT Gateway egress path (ECS to NAT Gateway to EIP). No inbound EIP, Internet client or public ELB is modeled.",
+      "Only the web path (ELB to ECS to RDS) and the egress path are drawn as links, with no protocol or port. OBS, Cloud Eye and LTS carry no links because the brief names none.",
+      "The VPN stands for the connectivity service; Direct Connect is not modeled. API Gateway, FunctionGraph and the VPN declare project and region only, with no network attachment or link.",
+      "The CCE cluster is a standard cluster in the App subnet with a provider-managed control plane that is not drawn. Worker Nodes are Kubernetes Node entities; their underlying ECS instances are not modeled.",
+      "Workload names and counts are placeholders: one namespace, a Deployment of 2 replicas with a ReplicaSet and two Pods on one Node each. Ports, labels, images and the controller product are not stated.",
+      "The Secret is a reference by name and holds no value. The backing storage of the PersistentVolume is not stated.",
+      "Huawei icons are for the owner's private personal use only; the validator reports ASSET_PRIVATE_USE_ONLY and the rendered images carry that notice."
+    ]
+  },
+  "scopes": [
+    {
+      "id": "huawei-account",
+      "name": "Web application account",
+      "provider": "huawei",
+      "kind": "account"
+    },
+    {
+      "id": "project-ap-southeast-2",
+      "name": "ap-southeast-2",
+      "provider": "huawei",
+      "kind": "iam_project",
+      "parent_ref": "huawei-account"
+    }
+  ],
+  "boundaries": [
+    {
+      "id": "region-ap-southeast-2",
+      "name": "AP-Bangkok",
+      "provider": "huawei",
+      "kind": "region",
+      "scope_refs": [
+        "project-ap-southeast-2"
+      ]
+    },
+    {
+      "id": "az-1",
+      "name": "AZ1",
+      "provider": "huawei",
+      "kind": "zone",
+      "parent_ref": "region-ap-southeast-2"
+    },
+    {
+      "id": "az-2",
+      "name": "AZ2",
+      "provider": "huawei",
+      "kind": "zone",
+      "parent_ref": "region-ap-southeast-2"
+    },
+    {
+      "id": "vpc-web",
+      "name": "Web VPC",
+      "provider": "huawei",
+      "kind": "network",
+      "scope_refs": [
+        "project-ap-southeast-2"
+      ],
+      "parent_ref": "region-ap-southeast-2"
+    },
+    {
+      "id": "subnet-app",
+      "name": "App subnet",
+      "provider": "huawei",
+      "kind": "subnet",
+      "scope_refs": [
+        "project-ap-southeast-2"
+      ],
+      "parent_ref": "vpc-web"
+    },
+    {
+      "id": "subnet-data",
+      "name": "Data subnet",
+      "provider": "huawei",
+      "kind": "subnet",
+      "scope_refs": [
+        "project-ap-southeast-2"
+      ],
+      "parent_ref": "vpc-web"
+    },
+    {
+      "id": "sg-web",
+      "name": "Web tier",
+      "provider": "huawei",
+      "kind": "security_group",
+      "scope_refs": [
+        "project-ap-southeast-2"
+      ],
+      "relations": [
+        {
+          "kind": "located_in",
+          "target_ref": "region-ap-southeast-2"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "elb-web",
+      "name": "Web ELB",
+      "provider": "huawei",
+      "service_type": "huawei.network.elb",
+      "taxonomy": "network.load_balancing",
+      "placement": {
+        "scope_refs": [
+          "project-ap-southeast-2"
+        ],
+        "location": {
+          "region_ref": "region-ap-southeast-2"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc-web",
+            "subnet_refs": [
+              "subnet-app"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "ecs-web",
+      "name": "Web ECS",
+      "provider": "huawei",
+      "service_type": "huawei.compute.ecs",
+      "taxonomy": "compute.vm",
+      "placement": {
+        "scope_refs": [
+          "project-ap-southeast-2"
+        ],
+        "location": {
+          "zone_ref": "az-1"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc-web",
+            "subnet_refs": [
+              "subnet-app"
+            ]
+          }
+        ],
+        "security_boundaries": [
+          "sg-web"
+        ]
+      }
+    },
+    {
+      "id": "rds-web",
+      "name": "Web RDS",
+      "provider": "huawei",
+      "service_type": "huawei.database.rds",
+      "taxonomy": "data.relational",
+      "placement": {
+        "scope_refs": [
+          "project-ap-southeast-2"
+        ],
+        "location": {
+          "zone_ref": "az-2"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc-web",
+            "subnet_refs": [
+              "subnet-data"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "obs-web",
+      "name": "Web OBS",
+      "provider": "huawei",
+      "service_type": "huawei.storage.obs",
+      "taxonomy": "storage.object",
+      "placement": {
+        "scope_refs": [
+          "huawei-account"
+        ],
+        "location": {
+          "region_ref": "region-ap-southeast-2"
+        }
+      }
+    },
+    {
+      "id": "eip-egress",
+      "name": "Egress EIP",
+      "provider": "huawei",
+      "service_type": "huawei.network.eip",
+      "taxonomy": "network.connectivity",
+      "placement": {
+        "scope_refs": [
+          "project-ap-southeast-2"
+        ],
+        "location": {
+          "region_ref": "region-ap-southeast-2"
+        }
+      }
+    },
+    {
+      "id": "nat-egress",
+      "name": "Egress NAT",
+      "provider": "huawei",
+      "service_type": "huawei.network.nat_gateway",
+      "taxonomy": "network.routing",
+      "placement": {
+        "scope_refs": [
+          "project-ap-southeast-2"
+        ],
+        "location": {
+          "region_ref": "region-ap-southeast-2"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc-web",
+            "subnet_refs": [
+              "subnet-app"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "cloud-eye",
+      "name": "Cloud Eye",
+      "provider": "huawei",
+      "service_type": "huawei.observability.cloud_eye",
+      "taxonomy": "operations.observability",
+      "placement": {
+        "scope_refs": [
+          "project-ap-southeast-2"
+        ],
+        "location": {
+          "region_ref": "region-ap-southeast-2"
+        }
+      }
+    },
+    {
+      "id": "lts",
+      "name": "Log Tank Service",
+      "provider": "huawei",
+      "service_type": "huawei.observability.lts",
+      "taxonomy": "operations.observability",
+      "placement": {
+        "scope_refs": [
+          "project-ap-southeast-2"
+        ],
+        "location": {
+          "region_ref": "region-ap-southeast-2"
+        }
+      }
+    },
+    {
+      "id": "api-gateway",
+      "name": "API Gateway",
+      "provider": "huawei",
+      "service_type": "huawei.integration.api_gateway",
+      "taxonomy": "integration.messaging",
+      "placement": {
+        "scope_refs": [
+          "project-ap-southeast-2"
+        ],
+        "location": {
+          "region_ref": "region-ap-southeast-2"
+        }
+      }
+    },
+    {
+      "id": "functiongraph",
+      "name": "FunctionGraph",
+      "provider": "huawei",
+      "service_type": "huawei.compute.functiongraph",
+      "taxonomy": "compute.serverless",
+      "placement": {
+        "scope_refs": [
+          "project-ap-southeast-2"
+        ],
+        "location": {
+          "region_ref": "region-ap-southeast-2"
+        }
+      }
+    },
+    {
+      "id": "iam",
+      "name": "Identity and Access Management",
+      "provider": "huawei",
+      "service_type": "huawei.identity.iam",
+      "taxonomy": "identity.access",
+      "placement": {
+        "scope_refs": [
+          "huawei-account"
+        ]
+      }
+    },
+    {
+      "id": "vpn",
+      "name": "Virtual Private Network",
+      "provider": "huawei",
+      "service_type": "huawei.network.vpn",
+      "taxonomy": "network.connectivity",
+      "placement": {
+        "scope_refs": [
+          "project-ap-southeast-2"
+        ],
+        "location": {
+          "region_ref": "region-ap-southeast-2"
+        }
+      }
+    },
+    {
+      "id": "cce-cluster",
+      "name": "web-cluster",
+      "provider": "huawei",
+      "service_type": "huawei.containers.cce_standard",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "project-ap-southeast-2"
+        ],
+        "location": {
+          "region_ref": "region-ap-southeast-2"
+        },
+        "network_attachments": [
+          {
+            "network_ref": "vpc-web",
+            "subnet_refs": [
+              "subnet-app"
+            ]
+          }
+        ]
+      },
+      "kubernetes": {
+        "kind": "Cluster"
+      }
+    },
+    {
+      "id": "cce-node-pool",
+      "name": "web-pool",
+      "provider": "huawei",
+      "service_type": "huawei.containers.cce_node_pool",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "scope_refs": [
+          "project-ap-southeast-2"
+        ],
+        "location": {
+          "region_ref": "region-ap-southeast-2"
+        }
+      },
+      "kubernetes": {
+        "kind": "NodePool",
+        "cluster_ref": "cce-cluster"
+      }
+    },
+    {
+      "id": "node-1",
+      "name": "node-1",
+      "provider": "huawei",
+      "service_type": "k8s.node",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "location": {
+          "zone_ref": "az-1"
+        }
+      },
+      "kubernetes": {
+        "kind": "Node",
+        "cluster_ref": "cce-cluster",
+        "node_pool_ref": "cce-node-pool"
+      }
+    },
+    {
+      "id": "node-2",
+      "name": "node-2",
+      "provider": "huawei",
+      "service_type": "k8s.node",
+      "taxonomy": "compute.containers",
+      "placement": {
+        "location": {
+          "zone_ref": "az-2"
+        }
+      },
+      "kubernetes": {
+        "kind": "Node",
+        "cluster_ref": "cce-cluster",
+        "node_pool_ref": "cce-node-pool"
+      }
+    },
+    {
+      "id": "ns-web",
+      "name": "web",
+      "provider": "huawei",
+      "service_type": "k8s.namespace",
+      "taxonomy": "governance.scope",
+      "kubernetes": {
+        "kind": "Namespace",
+        "cluster_ref": "cce-cluster"
+      }
+    },
+    {
+      "id": "deploy-web",
+      "name": "web-app",
+      "provider": "huawei",
+      "service_type": "k8s.deployment",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Deployment",
+        "cluster_ref": "cce-cluster",
+        "namespace_ref": "ns-web",
+        "volume_claim_refs": [
+          "pvc-web"
+        ],
+        "secret_refs": [
+          "secret-web"
+        ],
+        "service_account_ref": "sa-web"
+      },
+      "properties": {
+        "replicas": 2
+      }
+    },
+    {
+      "id": "rs-web",
+      "name": "web-app-rs",
+      "provider": "huawei",
+      "service_type": "k8s.replicaset",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "ReplicaSet",
+        "cluster_ref": "cce-cluster",
+        "namespace_ref": "ns-web",
+        "owner_ref": "deploy-web"
+      }
+    },
+    {
+      "id": "pod-web-1",
+      "name": "web-app-pod-1",
+      "provider": "huawei",
+      "service_type": "k8s.pod",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Pod",
+        "cluster_ref": "cce-cluster",
+        "namespace_ref": "ns-web",
+        "owner_ref": "rs-web",
+        "node_ref": "node-1"
+      }
+    },
+    {
+      "id": "pod-web-2",
+      "name": "web-app-pod-2",
+      "provider": "huawei",
+      "service_type": "k8s.pod",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+        "kind": "Pod",
+        "cluster_ref": "cce-cluster",
+        "namespace_ref": "ns-web",
+        "owner_ref": "rs-web",
+        "node_ref": "node-2"
+      }
+    },
+    {
+      "id": "svc-web",
+      "name": "web-svc",
+      "provider": "huawei",
+      "service_type": "k8s.service",
+      "taxonomy": "network.load_balancing",
+      "kubernetes": {
+        "kind": "Service",
+        "cluster_ref": "cce-cluster",
+        "namespace_ref": "ns-web",
+        "target_refs": [
+          "pod-web-1",
+          "pod-web-2"
+        ]
+      }
+    },
+    {
+      "id": "ingress-web",
+      "name": "web-ingress",
+      "provider": "huawei",
+      "service_type": "k8s.ingress",
+      "taxonomy": "network.load_balancing",
+      "kubernetes": {
+        "kind": "Ingress",
+        "cluster_ref": "cce-cluster",
+        "namespace_ref": "ns-web",
+        "service_refs": [
+          "svc-web"
+        ]
+      }
+    },
+    {
+      "id": "ingress-controller",
+      "name": "ingress-controller",
+      "provider": "huawei",
+      "service_type": "k8s.ingresscontroller",
+      "taxonomy": "network.load_balancing",
+      "kubernetes": {
+        "kind": "IngressController",
+        "cluster_ref": "cce-cluster"
+      }
+    },
+    {
+      "id": "pvc-web",
+      "name": "web-data",
+      "provider": "huawei",
+      "service_type": "k8s.persistentvolumeclaim",
+      "taxonomy": "storage.block_file",
+      "kubernetes": {
+        "kind": "PersistentVolumeClaim",
+        "cluster_ref": "cce-cluster",
+        "namespace_ref": "ns-web",
+        "volume_ref": "pv-web",
+        "storage_class_ref": "sc-web"
+      }
+    },
+    {
+      "id": "pv-web",
+      "name": "web-volume",
+      "provider": "huawei",
+      "service_type": "k8s.persistentvolume",
+      "taxonomy": "storage.block_file",
+      "kubernetes": {
+        "kind": "PersistentVolume",
+        "cluster_ref": "cce-cluster",
+        "storage_class_ref": "sc-web"
+      }
+    },
+    {
+      "id": "sc-web",
+      "name": "web-storage",
+      "provider": "huawei",
+      "service_type": "k8s.storageclass",
+      "taxonomy": "storage.block_file",
+      "kubernetes": {
+        "kind": "StorageClass",
+        "cluster_ref": "cce-cluster"
+      }
+    },
+    {
+      "id": "sa-web",
+      "name": "web-sa",
+      "provider": "huawei",
+      "service_type": "k8s.serviceaccount",
+      "taxonomy": "identity.access",
+      "kubernetes": {
+        "kind": "ServiceAccount",
+        "cluster_ref": "cce-cluster",
+        "namespace_ref": "ns-web"
+      }
+    },
+    {
+      "id": "netpol-web",
+      "name": "web-netpol",
+      "provider": "huawei",
+      "service_type": "k8s.networkpolicy",
+      "taxonomy": "security.control",
+      "kubernetes": {
+        "kind": "NetworkPolicy",
+        "cluster_ref": "cce-cluster",
+        "namespace_ref": "ns-web"
+      }
+    },
+    {
+      "id": "secret-web",
+      "name": "web-secret",
+      "provider": "huawei",
+      "service_type": "k8s.secret",
+      "taxonomy": "security.secrets_keys",
+      "kubernetes": {
+        "kind": "Secret",
+        "cluster_ref": "cce-cluster",
+        "namespace_ref": "ns-web"
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "id": "t-elb-ecs",
+      "source_ref": "elb-web",
+      "target_ref": "ecs-web",
+      "kind": "traffic",
+      "label": "Application requests"
+    },
+    {
+      "id": "t-ecs-rds",
+      "source_ref": "ecs-web",
+      "target_ref": "rds-web",
+      "kind": "traffic",
+      "label": "Application to database"
+    },
+    {
+      "id": "t-ecs-nat",
+      "source_ref": "ecs-web",
+      "target_ref": "nat-egress",
+      "kind": "traffic",
+      "label": "Outbound traffic"
+    },
+    {
+      "id": "t-nat-eip",
+      "source_ref": "nat-egress",
+      "target_ref": "eip-egress",
+      "kind": "traffic",
+      "label": "Internet egress"
+    },
+    {
+      "id": "t-ingress-svc",
+      "source_ref": "ingress-web",
+      "target_ref": "svc-web",
+      "kind": "traffic"
+    },
+    {
+      "id": "t-svc-pod-1",
+      "source_ref": "svc-web",
+      "target_ref": "pod-web-1",
+      "kind": "traffic"
+    },
+    {
+      "id": "t-svc-pod-2",
+      "source_ref": "svc-web",
+      "target_ref": "pod-web-2",
+      "kind": "traffic"
+    },
+    {
+      "id": "m-controller-ingress",
+      "source_ref": "ingress-controller",
+      "target_ref": "ingress-web",
+      "kind": "management",
+      "label": "Controls Ingress"
+    },
+    {
+      "id": "own-deploy-rs",
+      "source_ref": "deploy-web",
+      "target_ref": "rs-web",
+      "kind": "ownership"
+    },
+    {
+      "id": "own-rs-pod-1",
+      "source_ref": "rs-web",
+      "target_ref": "pod-web-1",
+      "kind": "ownership"
+    },
+    {
+      "id": "own-rs-pod-2",
+      "source_ref": "rs-web",
+      "target_ref": "pod-web-2",
+      "kind": "ownership"
+    },
+    {
+      "id": "store-deploy-pvc",
+      "source_ref": "deploy-web",
+      "target_ref": "pvc-web",
+      "kind": "storage",
+      "label": "Claims"
+    },
+    {
+      "id": "store-pvc-pv",
+      "source_ref": "pvc-web",
+      "target_ref": "pv-web",
+      "kind": "storage",
+      "label": "Bound to"
+    },
+    {
+      "id": "store-pv-sc",
+      "source_ref": "pv-web",
+      "target_ref": "sc-web",
+      "kind": "storage",
+      "label": "Class"
+    },
+    {
+      "id": "conf-deploy-secret",
+      "source_ref": "deploy-web",
+      "target_ref": "secret-web",
+      "kind": "configuration",
+      "label": "Secret reference"
+    },
+    {
+      "id": "conf-deploy-sa",
+      "source_ref": "deploy-web",
+      "target_ref": "sa-web",
+      "kind": "configuration",
+      "label": "Service account"
+    },
+    {
+      "id": "policy-pod-1",
+      "source_ref": "netpol-web",
+      "target_ref": "pod-web-1",
+      "kind": "policy"
+    },
+    {
+      "id": "policy-pod-2",
+      "source_ref": "netpol-web",
+      "target_ref": "pod-web-2",
+      "kind": "policy"
+    }
+  ],
+  "views": [
+    {
+      "id": "overview",
+      "title": "Web application solution",
+      "entity_refs": [
+        "huawei-account",
+        "project-ap-southeast-2",
+        "region-ap-southeast-2",
+        "vpc-web",
+        "subnet-app",
+        "subnet-data",
+        "sg-web",
+        "elb-web",
+        "ecs-web",
+        "rds-web",
+        "obs-web",
+        "eip-egress",
+        "nat-egress",
+        "cloud-eye",
+        "lts",
+        "cce-cluster"
+      ],
+      "relationship_refs": [
+        "t-elb-ecs",
+        "t-ecs-rds",
+        "t-ecs-nat",
+        "t-nat-eip"
+      ],
+      "grouping": "provider",
+      "direction": "TB"
+    },
+    {
+      "id": "zones",
+      "title": "Web application by availability zone",
+      "entity_refs": [
+        "region-ap-southeast-2",
+        "az-1",
+        "az-2",
+        "elb-web",
+        "ecs-web",
+        "rds-web",
+        "nat-egress",
+        "eip-egress"
+      ],
+      "relationship_refs": [
+        "t-elb-ecs",
+        "t-ecs-rds",
+        "t-ecs-nat",
+        "t-nat-eip"
+      ],
+      "grouping": "physical",
+      "direction": "TB"
+    },
+    {
+      "id": "services",
+      "title": "API, serverless, identity and connectivity services",
+      "entity_refs": [
+        "huawei-account",
+        "project-ap-southeast-2",
+        "region-ap-southeast-2",
+        "api-gateway",
+        "functiongraph",
+        "iam",
+        "vpn"
+      ],
+      "relationship_refs": [],
+      "grouping": "provider",
+      "direction": "TB"
+    },
+    {
+      "id": "cce-namespaces",
+      "title": "CCE logical view by namespace",
+      "entity_refs": [
+        "cce-cluster",
+        "ns-web",
+        "deploy-web",
+        "rs-web",
+        "pod-web-1",
+        "pod-web-2",
+        "svc-web",
+        "ingress-web",
+        "ingress-controller",
+        "pvc-web",
+        "pv-web",
+        "sc-web",
+        "sa-web",
+        "netpol-web",
+        "secret-web"
+      ],
+      "relationship_refs": [
+        "t-ingress-svc",
+        "t-svc-pod-1",
+        "t-svc-pod-2",
+        "m-controller-ingress",
+        "own-deploy-rs",
+        "own-rs-pod-1",
+        "own-rs-pod-2",
+        "store-deploy-pvc",
+        "store-pvc-pv",
+        "store-pv-sc",
+        "conf-deploy-secret",
+        "conf-deploy-sa",
+        "policy-pod-1",
+        "policy-pod-2"
+      ],
+      "grouping": "namespace",
+      "direction": "TB"
+    },
+    {
+      "id": "cce-nodes",
+      "title": "CCE worker placement by node",
+      "entity_refs": [
+        "cce-cluster",
+        "cce-node-pool",
+        "node-1",
+        "node-2",
+        "pod-web-1",
+        "pod-web-2"
+      ],
+      "relationship_refs": [],
+      "grouping": "node",
+      "direction": "LR"
+    }
+  ]
+}

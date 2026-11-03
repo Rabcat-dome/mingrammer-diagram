@@ -1,0 +1,524 @@
+{
+ "benchmarks": [
+  {
+   "cold_seconds": {
+    "p50": 0.541,
+    "p95": 0.554,
+    "runs": [
+     0.554,
+     0.552,
+     0.538,
+     0.539,
+     0.55,
+     0.541,
+     0.541
+    ]
+   },
+   "entities": 30,
+   "name": "small",
+   "outcome": {
+    "codes": [],
+    "diagram.png_bytes": 328468,
+    "diagram.svg_bytes": 227926,
+    "exit": 0,
+    "full_megapixels": 7.8,
+    "full_size": [
+     3201,
+     2447
+    ],
+    "png": {
+     "height": 2447,
+     "scale": 1.0,
+     "width": 3202
+    },
+    "warnings": []
+   },
+   "relationships": 50,
+   "warm_seconds": {
+    "p50": 0.372,
+    "p95": 0.376,
+    "runs": [
+     0.372,
+     0.362,
+     0.375,
+     0.375,
+     0.369,
+     0.376,
+     0.372
+    ]
+   }
+  },
+  {
+   "cold_seconds": {
+    "p50": 0.949,
+    "p95": 0.975,
+    "runs": [
+     0.939,
+     0.975,
+     0.949,
+     0.941,
+     0.95,
+     0.953,
+     0.93
+    ]
+   },
+   "entities": 100,
+   "name": "medium",
+   "outcome": {
+    "codes": [],
+    "diagram.png_bytes": 1430572,
+    "diagram.svg_bytes": 740838,
+    "exit": 0,
+    "full_megapixels": 17.4,
+    "full_size": [
+     1345,
+     12900
+    ],
+    "png": {
+     "height": 12900,
+     "scale": 1.0,
+     "width": 1346
+    },
+    "warnings": []
+   },
+   "relationships": 150,
+   "warm_seconds": {
+    "p50": 0.775,
+    "p95": 0.804,
+    "runs": [
+     0.804,
+     0.771,
+     0.766,
+     0.78,
+     0.775,
+     0.795,
+     0.768
+    ]
+   }
+  },
+  {
+   "cold_seconds": {
+    "p50": 1.159,
+    "p95": 1.215,
+    "runs": [
+     1.167,
+     1.138,
+     1.159,
+     1.151,
+     1.149,
+     1.215,
+     1.168
+    ]
+   },
+   "entities": 150,
+   "name": "large",
+   "outcome": {
+    "codes": [],
+    "diagram.png_bytes": 1021857,
+    "diagram.svg_bytes": 1111158,
+    "exit": 0,
+    "full_megapixels": 23.3,
+    "full_size": [
+     3289,
+     7076
+    ],
+    "png": {
+     "height": 7076,
+     "scale": 1.0,
+     "width": 3290
+    },
+    "warnings": []
+   },
+   "relationships": 225,
+   "warm_seconds": {
+    "p50": 1.004,
+    "p95": 1.009,
+    "runs": [
+     1.009,
+     0.977,
+     1.004,
+     1.007,
+     0.974,
+     1.008,
+     0.98
+    ]
+   }
+  },
+  {
+   "cold_seconds": {
+    "p50": 1.813,
+    "p95": 1.832,
+    "runs": [
+     1.832,
+     1.813,
+     1.819,
+     1.807,
+     1.811,
+     1.823,
+     1.783
+    ]
+   },
+   "entities": 197,
+   "name": "upper",
+   "outcome": {
+    "codes": [
+     "RENDER_PIXEL_LIMIT"
+    ],
+    "exit": 2
+   },
+   "relationships": 300,
+   "warm_seconds": {
+    "p50": 1.649,
+    "p95": 1.669,
+    "runs": [
+     1.669,
+     1.631,
+     1.649,
+     1.617,
+     1.654,
+     1.62,
+     1.649
+    ]
+   }
+  }
+ ],
+ "catalog": "2026.11.0",
+ "cpu": "Apple M2 Max",
+ "engine": "dot - graphviz version 16.1.0 (20260904.0139)",
+ "labeled_scan": [
+  {
+   "codes": [],
+   "diagram.png_bytes": 1430572,
+   "diagram.svg_bytes": 740838,
+   "entities": 100,
+   "exit": 0,
+   "full_megapixels": 17.4,
+   "full_size": [
+    1345,
+    12900
+   ],
+   "png": {
+    "height": 12900,
+    "scale": 1.0,
+    "width": 1346
+   },
+   "relationships": 150,
+   "warnings": []
+  },
+  {
+   "codes": [],
+   "diagram.png_bytes": 854726,
+   "diagram.svg_bytes": 815365,
+   "entities": 110,
+   "exit": 0,
+   "full_megapixels": 27.3,
+   "full_size": [
+    5233,
+    5209
+   ],
+   "png": {
+    "height": 5209,
+    "scale": 1.0,
+    "width": 5234
+   },
+   "relationships": 165,
+   "warnings": []
+  },
+  {
+   "codes": [],
+   "diagram.png_bytes": 984663,
+   "diagram.svg_bytes": 889136,
+   "entities": 120,
+   "exit": 0,
+   "full_megapixels": 21.7,
+   "full_size": [
+    3281,
+    6628
+   ],
+   "png": {
+    "height": 6628,
+    "scale": 1.0,
+    "width": 3282
+   },
+   "relationships": 180,
+   "warnings": []
+  },
+  {
+   "codes": [],
+   "diagram.png_bytes": 1033457,
+   "diagram.svg_bytes": 963432,
+   "entities": 130,
+   "exit": 0,
+   "full_megapixels": 23.3,
+   "full_size": [
+    3289,
+    7076
+   ],
+   "png": {
+    "height": 7076,
+    "scale": 1.0,
+    "width": 3290
+   },
+   "relationships": 195,
+   "warnings": []
+  },
+  {
+   "codes": [],
+   "diagram.png_bytes": 2971177,
+   "diagram.svg_bytes": 1042892,
+   "entities": 140,
+   "exit": 0,
+   "full_megapixels": 26.3,
+   "full_size": [
+    1588,
+    16559
+   ],
+   "png": {
+    "height": 16559,
+    "scale": 1.0,
+    "width": 1589
+   },
+   "relationships": 210,
+   "warnings": []
+  },
+  {
+   "codes": [],
+   "diagram.png_bytes": 1021857,
+   "diagram.svg_bytes": 1111158,
+   "entities": 150,
+   "exit": 0,
+   "full_megapixels": 23.3,
+   "full_size": [
+    3289,
+    7076
+   ],
+   "png": {
+    "height": 7076,
+    "scale": 1.0,
+    "width": 3290
+   },
+   "relationships": 225,
+   "warnings": []
+  },
+  {
+   "codes": [],
+   "diagram.png_bytes": 1439113,
+   "diagram.svg_bytes": 1185902,
+   "entities": 160,
+   "exit": 0,
+   "full_megapixels": 24.5,
+   "full_size": [
+    2317,
+    10585
+   ],
+   "png": {
+    "height": 10585,
+    "scale": 1.0,
+    "width": 2318
+   },
+   "relationships": 240,
+   "warnings": []
+  },
+  {
+   "codes": [],
+   "diagram.png_bytes": 1106428,
+   "diagram.svg_bytes": 1258702,
+   "entities": 170,
+   "exit": 0,
+   "full_megapixels": 30.2,
+   "full_size": [
+    4261,
+    7076
+   ],
+   "png": {
+    "height": 7076,
+    "scale": 1.0,
+    "width": 4262
+   },
+   "relationships": 255,
+   "warnings": []
+  },
+  {
+   "codes": [
+    "RENDER_PIXEL_LIMIT"
+   ],
+   "entities": 180,
+   "exit": 2,
+   "relationships": 270
+  },
+  {
+   "codes": [
+    "RENDER_PIXEL_LIMIT"
+   ],
+   "entities": 190,
+   "exit": 2,
+   "relationships": 285
+  },
+  {
+   "codes": [
+    "RENDER_PIXEL_LIMIT"
+   ],
+   "entities": 197,
+   "exit": 2,
+   "relationships": 296
+  }
+ ],
+ "limits": {
+  "cpu_seconds": 45,
+  "file_bytes": 16777216,
+  "group_depth": 16,
+  "memory_bytes": 1073741824,
+  "minimum_png_scale": 0.5,
+  "pixels": 32000000,
+  "temporary_bytes": 268435456,
+  "view_entities": 200,
+  "view_relationships": 300,
+  "wall_seconds": 55
+ },
+ "line_scan": [
+  {
+   "codes": [],
+   "diagram.png_bytes": 1351069,
+   "diagram.svg_bytes": 693741,
+   "entities": 100,
+   "exit": 0,
+   "full_megapixels": 24.4,
+   "full_size": [
+    828,
+    29483
+   ],
+   "png": {
+    "height": 29483,
+    "scale": 1.0,
+    "width": 829
+   },
+   "warnings": []
+  },
+  {
+   "codes": [],
+   "diagram.png_bytes": 1492281,
+   "diagram.svg_bytes": 762825,
+   "entities": 110,
+   "exit": 0,
+   "full_megapixels": 26.8,
+   "full_size": [
+    828,
+    32364
+   ],
+   "png": {
+    "height": 32363,
+    "scale": 1.0,
+    "width": 829
+   },
+   "warnings": []
+  },
+  {
+   "codes": [],
+   "diagram.png_bytes": 1645213,
+   "diagram.svg_bytes": 831911,
+   "entities": 120,
+   "exit": 0,
+   "full_megapixels": 29.2,
+   "full_size": [
+    828,
+    35244
+   ],
+   "png": {
+    "height": 32767,
+    "scale": 0.929,
+    "width": 770
+   },
+   "warnings": [
+    "RENDER_PNG_SCALED"
+   ]
+  },
+  {
+   "codes": [],
+   "diagram.png_bytes": 1461004,
+   "diagram.svg_bytes": 900995,
+   "entities": 130,
+   "exit": 0,
+   "full_megapixels": 31.6,
+   "full_size": [
+    828,
+    38124
+   ],
+   "png": {
+    "height": 32767,
+    "scale": 0.859,
+    "width": 712
+   },
+   "warnings": [
+    "RENDER_PNG_SCALED"
+   ]
+  },
+  {
+   "codes": [
+    "RENDER_PIXEL_LIMIT"
+   ],
+   "entities": 140,
+   "exit": 2
+  },
+  {
+   "codes": [
+    "RENDER_PIXEL_LIMIT"
+   ],
+   "entities": 150,
+   "exit": 2
+  },
+  {
+   "codes": [
+    "RENDER_PIXEL_LIMIT"
+   ],
+   "entities": 160,
+   "exit": 2
+  },
+  {
+   "codes": [
+    "RENDER_PIXEL_LIMIT"
+   ],
+   "entities": 170,
+   "exit": 2
+  },
+  {
+   "codes": [
+    "RENDER_PIXEL_LIMIT"
+   ],
+   "entities": 180,
+   "exit": 2
+  },
+  {
+   "codes": [
+    "RENDER_PIXEL_LIMIT"
+   ],
+   "entities": 190,
+   "exit": 2
+  },
+  {
+   "codes": [
+    "RENDER_PIXEL_LIMIT"
+   ],
+   "entities": 197,
+   "exit": 2
+  }
+ ],
+ "macos": "27.2",
+ "memory_gib": 64,
+ "package": "0.5.0a1",
+ "python": "3.13.7",
+ "rejections": {
+  "over_entities": {
+   "codes": [
+    "RENDER_VIEW_TOO_LARGE"
+   ],
+   "exit": 2
+  },
+  "over_relationships": {
+   "codes": [
+    "RENDER_VIEW_TOO_LARGE"
+   ],
+   "exit": 2
+  }
+ },
+ "system": "Darwin 27.2.0 arm64"
+}

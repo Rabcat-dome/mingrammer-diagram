@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "cloud-architecture-diagrams"
-version = "0.4.0a4"
+version = "0.5.0a1"
 description = "Data-only architecture contracts, provider catalogs, deterministic validation and controlled rendering"
 requires-python = ">=3.13,<3.14"
 # Bundled Huawei icons are for private personal use only (D-017), and PyPI rejects this classifier.
@@ -20,7 +20,7 @@ packages = ["src/cloud_architecture_diagrams"]
 [tool.hatch.build.targets.sdist]
 # The Claude plugin links back to src, and hatchling walks each directory once. Entering that link
 # first would drop the real src from the sdist, so the walk must skip the plugin entirely.
-exclude = ["/plugins", "/.claude-plugin"]
+exclude = ["/plugins", "/.claude-plugin", "/tests/baselines"]
 skip-excluded-dirs = true
 
 [tool.ruff]

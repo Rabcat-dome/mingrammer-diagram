@@ -17,6 +17,7 @@ from .errors import RenderFailure
 from .limits import Limits
 
 LABEL_WIDTH = 20
+WORD_OVERRUN = 3
 EDGE_WIDTH = 28
 TITLE_WIDTH = 110
 ZERO_WIDTH = {"Mn", "Me", "Cf"}
@@ -53,8 +54,10 @@ NESTING: dict[str, frozenset[str]] = {
     "node": frozenset({"node", "node pool", "cluster"}),
     "physical": frozenset({"parent", "location"}),
 }
-# Namespace and worker placement are separate facts, so each stays visible in every grouping.
-ALWAYS_NOTED = {"namespace", "node"}
+# Namespace and worker placement are separate facts, so each stays visible in every grouping. So do
+# a declared subnet and location, which lets a view leave out their boxes and keep the fact. A region
+# is the exception: it applies to nearly everything, so it is noted only when the view selects it.
+ALWAYS_NOTED = {"namespace", "node", "subnet", "location"}
 
 
 class GraphModel(BaseModel):
@@ -86,6 +89,7 @@ class GraphGroup(GraphModel):
     provider: str
     type_id: str | None
     boundary_kind: str | None = None
+    scope_kind: str | None = None
     lines: tuple[str, ...]
     parent: str | None = None
     memberships: dict[str, tuple[str, ...]] = {}
@@ -147,13 +151,18 @@ def _split_word(word: str, width: int) -> list[str]:
 
 
 def wrap(text: str, width: int) -> list[str]:
-    """Thai has no spaces between words, so a long word breaks by width rather than overflowing."""
+    """Thai has no spaces between words, so a long word breaks by width rather than overflowing.
+
+    A word just past the width stays whole, as Kubernetes kind names do, and only that one line runs
+    wider. The node spacing in `draw` leaves room for it.
+    """
     lines: list[str] = []
     current = ""
     for word in text.split(" "):
-        for piece in _split_word(word, width):
+        whole = visible_width(word) <= width + WORD_OVERRUN
+        for piece in [word] if whole else _split_word(word, width):
             candidate = f"{current} {piece}" if current else piece
-            if visible_width(candidate) <= width:
+            if visible_width(candidate) <= width or not current:
                 current = candidate
             else:
                 lines.append(current)
@@ -290,6 +299,7 @@ class Mapper:
                 if target in self.group_ids
                 and target != entity.id
                 and entity.id not in self._chain(target)
+                and not self._implies_another_scope(entity, target)
             ]
             if len(found) == 1:
                 return found[0]
@@ -297,6 +307,27 @@ class Mapper:
                 if common := self._common_ancestor(found):
                     return common
         return None
+
+    def _implies_another_scope(self, entity: Entity, target: str) -> bool:
+        """A box reads as ownership, so a resource must not sit inside a scope it does not declare.
+
+        A regional service scoped to an account can have its region inside a project's box. It then
+        nests by its account, and the region stays a note.
+        """
+        if not isinstance(entity, Resource) or not entity.placement.scope_refs:
+            return False
+        allowed: set[str] = set()
+        for declared in entity.placement.scope_refs:
+            current: str | None = declared
+            while current is not None and current not in allowed:
+                allowed.add(current)
+                scope = self.entities[current]
+                current = scope.parent_ref if isinstance(scope, Scope) else None
+        return any(
+            isinstance(self.entities[group], Scope) and group not in allowed
+            for group in self._chain(target)
+            if group in self.entities
+        )
 
     def _notes(self, entity: Entity, parent: str | None) -> list[str]:
         chain = self._chain(parent)
@@ -307,7 +338,10 @@ class Mapper:
                 for target in targets
                 if target not in chain
                 and target != entity.id
-                and (target in self.selected_ids or dimension in ALWAYS_NOTED)
+                and (
+                    target in self.selected_ids
+                    or (dimension in ALWAYS_NOTED and not self._is_region(target))
+                )
             ]
             if shown:
                 names = ", ".join(self.entities[target].name for target in shown)
@@ -318,6 +352,10 @@ class Mapper:
             if entity.kubernetes.node_ref is None:
                 lines.append("node: unspecified")
         return lines
+
+    def _is_region(self, identifier: str) -> bool:
+        entity = self.entities[identifier]
+        return isinstance(entity, Boundary) and entity.kind == "region"
 
     def _declared(self, entity: Entity) -> dict[str, tuple[str, ...]]:
         return {name: tuple(targets) for name, targets in _memberships(entity) if targets}
@@ -511,6 +549,7 @@ class Mapper:
                 provider=entity.provider,
                 type_id=record.id,
                 boundary_kind=entity.kind if isinstance(entity, Boundary) else None,
+                scope_kind=entity.kind if isinstance(entity, Scope) else None,
                 lines=(
                     *wrap(entity.name, LABEL_WIDTH * 2),
                     *self._service_label(entity, record),

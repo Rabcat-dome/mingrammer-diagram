@@ -1,0 +1,657 @@
+{
+ "direction": "TB",
+ "draft": false,
+ "edges": [],
+ "fallbacks": [],
+ "grouping": "physical",
+ "groups": [
+  {
+   "boundary_kind": "site",
+   "entity": "boundary",
+   "id": "site-main",
+   "lines": [
+    "Reference site",
+    "Site"
+   ],
+   "memberships": {},
+   "parent": null,
+   "provider": "onprem",
+   "scope_kind": null,
+   "type_id": "onprem.location.site"
+  },
+  {
+   "boundary_kind": "data_center",
+   "entity": "boundary",
+   "id": "dc-1",
+   "lines": [
+    "Data center 1",
+    "Data center"
+   ],
+   "memberships": {
+    "parent": [
+     "site-main"
+    ]
+   },
+   "parent": "site-main",
+   "provider": "onprem",
+   "scope_kind": null,
+   "type_id": "onprem.location.data_center"
+  },
+  {
+   "boundary_kind": "room",
+   "entity": "boundary",
+   "id": "room-a",
+   "lines": [
+    "Room A",
+    "Room"
+   ],
+   "memberships": {
+    "parent": [
+     "dc-1"
+    ]
+   },
+   "parent": "dc-1",
+   "provider": "onprem",
+   "scope_kind": null,
+   "type_id": "onprem.location.room"
+  },
+  {
+   "boundary_kind": "rack",
+   "entity": "boundary",
+   "id": "rack-a",
+   "lines": [
+    "Rack A",
+    "Rack"
+   ],
+   "memberships": {
+    "parent": [
+     "room-a"
+    ]
+   },
+   "parent": "room-a",
+   "provider": "onprem",
+   "scope_kind": null,
+   "type_id": "onprem.location.rack"
+  },
+  {
+   "boundary_kind": "rack",
+   "entity": "boundary",
+   "id": "rack-b",
+   "lines": [
+    "Rack B",
+    "Rack"
+   ],
+   "memberships": {
+    "parent": [
+     "room-a"
+    ]
+   },
+   "parent": "room-a",
+   "provider": "onprem",
+   "scope_kind": null,
+   "type_id": "onprem.location.rack"
+  },
+  {
+   "boundary_kind": "rack",
+   "entity": "boundary",
+   "id": "rack-c",
+   "lines": [
+    "Rack C",
+    "Rack"
+   ],
+   "memberships": {
+    "parent": [
+     "room-a"
+    ]
+   },
+   "parent": "room-a",
+   "provider": "onprem",
+   "scope_kind": null,
+   "type_id": "onprem.location.rack"
+  }
+ ],
+ "legend": [],
+ "nodes": [
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "rack-a",
+   "icon": {
+    "pack": "diagrams-generic",
+    "reference": "diagrams.generic.network.Router",
+    "source": "native_class"
+   },
+   "id": "router-1",
+   "lines": [
+    "Router 1",
+    "Router",
+    "subnet:",
+    "10.20.120.0/24,",
+    "10.30.90.0/24"
+   ],
+   "memberships": {
+    "location": [
+     "rack-a"
+    ],
+    "network": [
+     "net-prod",
+     "net-mgmt"
+    ],
+    "subnet": [
+     "subnet-app",
+     "subnet-mgmt"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "onprem.network.router"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "rack-a",
+   "icon": {
+    "pack": "diagrams-generic",
+    "reference": "diagrams.generic.network.Firewall",
+    "source": "native_class"
+   },
+   "id": "firewall-1",
+   "lines": [
+    "Firewall 1",
+    "Firewall",
+    "subnet:",
+    "10.20.120.0/24,",
+    "10.20.130.0/24,",
+    "10.30.90.0/24"
+   ],
+   "memberships": {
+    "location": [
+     "rack-a"
+    ],
+    "network": [
+     "net-prod",
+     "net-mgmt"
+    ],
+    "security": [
+     "zone-app",
+     "zone-data",
+     "zone-mgmt"
+    ],
+    "subnet": [
+     "subnet-app",
+     "subnet-data",
+     "subnet-mgmt"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "onprem.security.firewall"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "rack-a",
+   "icon": {
+    "pack": "diagrams-generic",
+    "reference": "diagrams.generic.network.Switch",
+    "source": "native_class"
+   },
+   "id": "l3-switch-1",
+   "lines": [
+    "L3 switch 1",
+    "L3 switch",
+    "subnet:",
+    "10.20.120.0/24,",
+    "10.20.130.0/24,",
+    "10.30.90.0/24"
+   ],
+   "memberships": {
+    "location": [
+     "rack-a"
+    ],
+    "network": [
+     "net-prod",
+     "net-mgmt"
+    ],
+    "subnet": [
+     "subnet-app",
+     "subnet-data",
+     "subnet-mgmt"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "onprem.network.l3_switch"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "rack-a",
+   "icon": {
+    "pack": "diagrams-generic",
+    "reference": "diagrams.generic.network.Switch",
+    "source": "native_class"
+   },
+   "id": "l2-switch-1",
+   "lines": [
+    "L2 switch 1",
+    "L2 switch",
+    "subnet:",
+    "10.20.120.0/24,",
+    "10.20.130.0/24"
+   ],
+   "memberships": {
+    "location": [
+     "rack-a"
+    ],
+    "network": [
+     "net-prod"
+    ],
+    "subnet": [
+     "subnet-app",
+     "subnet-data"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "onprem.network.l2_switch"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "rack-b",
+   "icon": {
+    "pack": "drawio-network-2018",
+    "reference": "onprem-hypervisor",
+    "source": "custom_asset"
+   },
+   "id": "hypervisor-1",
+   "lines": [
+    "Hypervisor 1",
+    "Hypervisor",
+    "subnet:",
+    "10.20.120.0/24,",
+    "10.30.90.0/24"
+   ],
+   "memberships": {
+    "location": [
+     "rack-b"
+    ],
+    "network": [
+     "net-prod",
+     "net-mgmt"
+    ],
+    "security": [
+     "zone-mgmt"
+    ],
+    "subnet": [
+     "subnet-app",
+     "subnet-mgmt"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "onprem.compute.hypervisor"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "rack-b",
+   "icon": {
+    "pack": "diagrams-generic",
+    "reference": "diagrams.onprem.compute.Server",
+    "source": "native_class"
+   },
+   "id": "physical-server-1",
+   "lines": [
+    "Physical server 1",
+    "Physical server",
+    "subnet:",
+    "10.20.120.0/24"
+   ],
+   "memberships": {
+    "location": [
+     "rack-b"
+    ],
+    "network": [
+     "net-prod"
+    ],
+    "security": [
+     "zone-app"
+    ],
+    "subnet": [
+     "subnet-app"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "onprem.compute.physical_server"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "site-main",
+   "icon": {
+    "pack": "drawio-network-2018",
+    "reference": "onprem-vm",
+    "source": "custom_asset"
+   },
+   "id": "vm-1",
+   "lines": [
+    "VM 1",
+    "VM",
+    "subnet:",
+    "10.20.120.0/24,",
+    "10.30.90.0/24",
+    "deployment:",
+    "Hypervisor 1"
+   ],
+   "memberships": {
+    "deployment": [
+     "hypervisor-1"
+    ],
+    "location": [
+     "site-main"
+    ],
+    "network": [
+     "net-prod",
+     "net-mgmt"
+    ],
+    "security": [
+     "zone-app",
+     "zone-mgmt"
+    ],
+    "subnet": [
+     "subnet-app",
+     "subnet-mgmt"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "onprem.compute.virtual_machine"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "site-main",
+   "icon": {
+    "pack": "drawio-network-2018",
+    "reference": "onprem-vm",
+    "source": "custom_asset"
+   },
+   "id": "vm-2",
+   "lines": [
+    "VM 2",
+    "VM",
+    "subnet:",
+    "10.20.120.0/24",
+    "deployment:",
+    "Hypervisor 1"
+   ],
+   "memberships": {
+    "deployment": [
+     "hypervisor-1"
+    ],
+    "location": [
+     "site-main"
+    ],
+    "network": [
+     "net-prod"
+    ],
+    "security": [
+     "zone-app"
+    ],
+    "subnet": [
+     "subnet-app"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "onprem.compute.virtual_machine"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "rack-b",
+   "icon": {
+    "pack": "diagrams-generic",
+    "reference": "diagrams.generic.database.SQL",
+    "source": "native_class"
+   },
+   "id": "database-1",
+   "lines": [
+    "Database 1",
+    "Database",
+    "subnet:",
+    "10.20.130.0/24"
+   ],
+   "memberships": {
+    "location": [
+     "rack-b"
+    ],
+    "network": [
+     "net-prod"
+    ],
+    "security": [
+     "zone-data"
+    ],
+    "subnet": [
+     "subnet-data"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "onprem.database.database"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "rack-c",
+   "icon": {
+    "pack": "drawio-network-2018",
+    "reference": "onprem-nas",
+    "source": "custom_asset"
+   },
+   "id": "nas-1",
+   "lines": [
+    "NAS 1",
+    "NAS",
+    "subnet:",
+    "10.20.130.0/24"
+   ],
+   "memberships": {
+    "location": [
+     "rack-c"
+    ],
+    "network": [
+     "net-prod"
+    ],
+    "security": [
+     "zone-data"
+    ],
+    "subnet": [
+     "subnet-data"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "onprem.storage.nas"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "rack-c",
+   "icon": {
+    "pack": "drawio-network-2018",
+    "reference": "onprem-san",
+    "source": "custom_asset"
+   },
+   "id": "san-1",
+   "lines": [
+    "SAN 1",
+    "SAN",
+    "subnet:",
+    "10.20.130.0/24"
+   ],
+   "memberships": {
+    "location": [
+     "rack-c"
+    ],
+    "network": [
+     "net-prod"
+    ],
+    "security": [
+     "zone-data"
+    ],
+    "subnet": [
+     "subnet-data"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "onprem.storage.san"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "rack-c",
+   "icon": {
+    "pack": "drawio-network-2018",
+    "reference": "onprem-identity-service",
+    "source": "custom_asset"
+   },
+   "id": "identity-1",
+   "lines": [
+    "Identity service 1",
+    "Identity service",
+    "subnet:",
+    "10.30.90.0/24"
+   ],
+   "memberships": {
+    "location": [
+     "rack-c"
+    ],
+    "network": [
+     "net-mgmt"
+    ],
+    "security": [
+     "zone-mgmt"
+    ],
+    "subnet": [
+     "subnet-mgmt"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "onprem.identity.identity_service"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "rack-c",
+   "icon": {
+    "pack": "drawio-network-2018",
+    "reference": "onprem-backup-system",
+    "source": "custom_asset"
+   },
+   "id": "backup-1",
+   "lines": [
+    "Backup system 1",
+    "Backup system",
+    "subnet:",
+    "10.30.90.0/24"
+   ],
+   "memberships": {
+    "location": [
+     "rack-c"
+    ],
+    "network": [
+     "net-mgmt"
+    ],
+    "security": [
+     "zone-mgmt"
+    ],
+    "subnet": [
+     "subnet-mgmt"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "onprem.operations.backup_system"
+  },
+  {
+   "drawing": "icon",
+   "entity": "resource",
+   "fallback": false,
+   "group": "rack-c",
+   "icon": {
+    "pack": "drawio-network-2018",
+    "reference": "onprem-monitoring",
+    "source": "custom_asset"
+   },
+   "id": "monitoring-1",
+   "lines": [
+    "Monitoring 1",
+    "Monitoring",
+    "subnet:",
+    "10.30.90.0/24"
+   ],
+   "memberships": {
+    "location": [
+     "rack-c"
+    ],
+    "network": [
+     "net-mgmt"
+    ],
+    "security": [
+     "zone-mgmt"
+    ],
+    "subnet": [
+     "subnet-mgmt"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "onprem.operations.monitoring"
+  },
+  {
+   "drawing": "labeled_box",
+   "entity": "resource",
+   "fallback": false,
+   "group": "site-main",
+   "icon": null,
+   "id": "k8s-cluster",
+   "lines": [
+    "Kubernetes cluster 1",
+    "Kubernetes cluster",
+    "subnet:",
+    "10.20.120.0/24"
+   ],
+   "memberships": {
+    "location": [
+     "site-main"
+    ],
+    "network": [
+     "net-prod"
+    ],
+    "security": [
+     "zone-app"
+    ],
+    "subnet": [
+     "subnet-app"
+    ]
+   },
+   "provider": "onprem",
+   "type_id": "onprem.containers.kubernetes_cluster"
+  }
+ ],
+ "notice_lines": [
+  "Network 2018 shapes from draw.io (https://github.com/jgraph/drawio), copyright JGraph Ltd, licensed under CC",
+  "BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Converted and in two cases combined by this project."
+ ],
+ "style": "provider",
+ "title_lines": [
+  "On-premises physical and logical reference",
+  "Physical view: site, rooms, racks and devices (reference)"
+ ],
+ "view_id": "physical"
+}

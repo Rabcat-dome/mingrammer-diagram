@@ -1,5 +1,7 @@
 """RenderGraph to DOT through controlled `diagrams` classes. Nothing here runs Graphviz."""
 
+import math
+from itertools import pairwise
 from typing import Any
 
 from ..models import Relationship
@@ -44,6 +46,25 @@ PROVIDER_FILL = {
     "external": "#FAFAFA",
 }
 NESTED_FILLS = ("#FFFFFF", "#F7F9FA")
+# Border color, border style and fill, read from the official diagrams pinned in the S08
+# evidence. One closed table, keyed by provider and kind, so no model value can choose them.
+GROUP_STYLES: dict[tuple[str, str], tuple[str, str, str]] = {
+    ("aws", "region"): ("#147EBA", "solid", "#FFFFFF"),
+    ("aws", "zone"): ("#147EBA", "dashed", "#FFFFFF"),
+    ("aws", "network"): ("#7AA116", "solid", "#FFFFFF"),
+    ("aws", "subnet"): ("#7D8998", "solid", "#F2F6FA"),
+    ("aws", "security_group"): ("#DD344C", "solid", "#FFFFFF"),
+    ("azure", "network"): ("#0078D4", "dashed", "#FFFFFF"),
+    ("azure", "subnet"): ("#7F7F7F", "dotted", "#FFFFFF"),
+    ("gcp", "organization"): ("#80868B", "solid", "#FFFFFF"),
+    ("gcp", "folder"): ("#80868B", "dashed", "#FFFFFF"),
+    ("gcp", "project"): ("#80868B", "dashed", "#F1F3F4"),
+    ("gcp", "network"): ("#AECBFA", "solid", "#E8F0FE"),
+    ("gcp", "region"): ("#A8DAB5", "solid", "#E6F4EA"),
+    ("gcp", "subnet"): ("#C5B3E6", "solid", "#EDE7F6"),
+    ("huawei", "region"): ("#7F9CC0", "solid", "#FFFFFF"),
+    ("huawei", "zone"): ("#3B7DD8", "dashed", "#FFFFFF"),
+}
 
 
 def literal(lines: tuple[str, ...] | list[str], *, left: bool = False) -> Any:
@@ -79,6 +100,8 @@ class _Drawing:
             if endpoint not in self.node_ids
         }
         self.drawn: dict[str, Any] = {}
+        # A tinted box tells providers apart, which one alone does not need.
+        self.many_providers = sum(group.entity == "provider" for group in graph.groups) > 1
 
     def source(self) -> str:
         from diagrams import Diagram, setcluster, setdiagram
@@ -98,7 +121,9 @@ class _Drawing:
                 "fontsize": "12",
                 "fontcolor": TEXT_COLOR,
                 "bgcolor": "white",
-                "pad": "0.3",
+                # A label can pass its node's width by about half an inch each side, here and in a
+                # group's margin, so neither the canvas nor a border clips it.
+                "pad": "0.6",
                 "splines": "spline",
                 "compound": "true",
                 # Icon nodes keep a fixed width so that their icon keeps its size, and a wrapped
@@ -121,6 +146,7 @@ class _Drawing:
         try:
             self._emit(None, 0)
             self._legend()
+            self._arrange()
             self._edges()
         finally:
             setcluster(None)
@@ -167,16 +193,19 @@ class _Drawing:
             "pencolor": "#7B8894",
             "bgcolor": "white",
             "labelloc": "t",
-            "margin": "28",
+            "margin": "36",
         }
         if self.graph.style == "provider":
-            attributes["bgcolor"] = (
-                PROVIDER_FILL[group.provider]
-                if group.entity == "provider"
-                else NESTED_FILLS[depth % len(NESTED_FILLS)]
-            )
+            if group.entity != "provider":
+                attributes["bgcolor"] = NESTED_FILLS[depth % len(NESTED_FILLS)]
+            elif self.many_providers:
+                attributes["bgcolor"] = PROVIDER_FILL[group.provider]
         if group.boundary_kind in SECURITY_KINDS:
             attributes |= {"style": "rounded,dashed", "pencolor": "#C0392B"}
+        kind = group.boundary_kind or group.scope_kind
+        if self.graph.style == "provider" and kind and (group.provider, kind) in GROUP_STYLES:
+            pen, line, fill = GROUP_STYLES[group.provider, kind]
+            attributes |= {"pencolor": pen, "style": line, "bgcolor": fill}
         return attributes
 
     def _node(self, node: GraphNode) -> None:
@@ -186,10 +215,15 @@ class _Drawing:
         common: dict[str, str] = {"id": f"node:{node.id}"}
         if node.icon:
             icon = self.icons[node.icon.reference]
-            height = ICON_INCHES + ICON_GAP_INCHES + LINE_INCHES * len(node.lines)
+            text = ICON_GAP_INCHES + LINE_INCHES * len(node.lines)
+            # An edge meets a node at its middle. Left to right that would land on the label, which
+            # runs wider than the node, so an equal space above keeps the middle on the icon.
+            sideways = self.graph.direction == "LR"
+            height = ICON_INCHES + text * (2 if sideways else 1)
             attributes = common | {
                 "shape": "none",
                 "image": f"icons/{icon.file_name}",
+                "imagepos": "mc" if sideways else "tc",
                 "width": f"{ICON_INCHES:.2f}",
                 "height": f"{height:.2f}",
                 "fixedsize": "true",
@@ -236,7 +270,12 @@ class _Drawing:
             },
         )
         cluster.dot.graph_attr["label"] = literal(["Legend"])
+        # Across the ranks a label overprints a vertical sample, so top-down samples lie flat in one
+        # rank each, and invisible lines through both ends stack those ranks.
+        flat = self.graph.direction == "TB"
+        directed = {edge.kind for edge in self.graph.edges if edge.directed}
         with cluster:
+            previous: tuple[Any, Any] | None = None
             for kind in self.graph.legend:
                 color, style = EDGE_STYLES[kind]
                 start = Node(
@@ -246,14 +285,19 @@ class _Drawing:
                 start.connect(
                     end,
                     Edge(
-                        forward=True,
+                        forward=kind in directed,
                         label=literal([kind]),
                         color=color,
                         style=style,
                         fontname=FONT,
                         fontsize=EDGE_POINTS,
+                        **({"constraint": "false"} if flat else {}),
                     ),
                 )
+                if flat and previous is not None:
+                    previous[0].connect(start, Edge(style="invis"))
+                    previous[1].connect(end, Edge(style="invis"))
+                previous = start, end
 
     def _inside(self, identifier: str, group: str) -> bool:
         parent: str | None
@@ -266,6 +310,45 @@ class _Drawing:
                 return True
             parent = self.groups[parent].parent if parent in self.groups else None
         return False
+
+    def _touched(self) -> set[str]:
+        """Everything an edge reaches, with the groups around it, since those already have a rank."""
+        touched: set[str] = set()
+        nodes = {node.id: node for node in self.graph.nodes}
+        for edge in self.graph.edges:
+            for endpoint in (edge.source, edge.target):
+                touched.add(endpoint)
+                parent = nodes[endpoint].group if endpoint in nodes else endpoint
+                while parent is not None:
+                    touched.add(parent)
+                    parent = self.groups[parent].parent if parent in self.groups else None
+        return touched
+
+    def _contents(self, parent: str | None) -> list[str]:
+        nodes = [item.id for item in self.members.get(parent, [])]
+        return [*nodes, *(item.id for item in self.children.get(parent, []))]
+
+    def _representative(self, identifier: str) -> Any:
+        """The node that stands for a group in layout: its own, or the first one inside it."""
+        if identifier in self.drawn:
+            return self.drawn[identifier]
+        return self._representative(self._contents(identifier)[0])
+
+    def _arrange(self) -> None:
+        """Graphviz stacks unconnected members in one long column, so ask for rows of them instead."""
+        from diagrams import Edge
+
+        touched = self._touched()
+        for parent in [None, *self.groups]:
+            loose = [
+                item for item in self._contents(parent) if item not in touched and item != parent
+            ]
+            width = math.ceil(math.sqrt(len(loose)))
+            for start in range(0, len(loose), width or 1):
+                for first, second in pairwise(loose[start : start + width]):
+                    self._representative(first).connect(
+                        self._representative(second), Edge(style="invis")
+                    )
 
     def _edges(self) -> None:
         for edge in self.graph.edges:

@@ -1,0 +1,111 @@
+{
+ "accepted_on": "2026-11-03",
+ "engine": "dot - graphviz version 16.1.0 (20260904.0139)",
+ "reason": "First reviewed baseline: the six S08 reference scenarios at core 0.5.0a1.",
+ "views": {
+  "aws-three-tier--eks-namespaces": {
+   "png": "917353b23bdeafe5e56ad3fe240e6baff3d716d3ee96ec713dd970168f94d7e2",
+   "svg": "faf4c6b28e5c9b3709a5b8b76daac033ddca3b5e7be61a0d2af223bf96df481c"
+  },
+  "aws-three-tier--eks-nodes": {
+   "png": "cc7bae2a3cc2eac7e672ebd0ac3df86e018dfe8cb4b8905250f3195cd9e751fb",
+   "svg": "1eaebccbbc3dd37d383e8cd7bb9084f85af55f56b1044a61289be0a6b67736b5"
+  },
+  "aws-three-tier--overview": {
+   "png": "e3f4f360c5c1433be65271674cf8649e2aa23be2959d448a98947ceb0d418b0b",
+   "svg": "5e590cf9c92df8f2f03f5a93f1dec0f1c5d49ebd49ca9a2ea70776e73e63d493"
+  },
+  "aws-three-tier--zones": {
+   "png": "b338fb8ff8c14187d502a139a0683d56f5ca5952c229f46b0cc9ffd46dde370b",
+   "svg": "407456597b925b6e62af592121b416560bd6700e6fa1fcbea0b6c677e66b3a0a"
+  },
+  "azure-hub-spoke--aks-namespaces": {
+   "png": "f27625eb9075aa7f1a462b0fab719aa5b4095c6c11f63af642ae1fc93e254ec4",
+   "svg": "46254b32e48bfdd1851bc850a2914237faa80039e29f9e8429251960cda39896"
+  },
+  "azure-hub-spoke--aks-nodes": {
+   "png": "64a9a179f394cccdfce2f6a67c28e845f08c86eefd9f16b4eefd639d6a1057a8",
+   "svg": "0127cb501b0daafdc26c36ceee160c5fd8eef07b0e6cc46ef6b69e16bd315b14"
+  },
+  "azure-hub-spoke--overview": {
+   "png": "a48d783831589e4968d17c5d0289ff101e100d78ca110b73f68659d2e7a21c0f",
+   "svg": "3718db6576c759a776ad3af0a3b294e139aa28ef2cecdeea501beccaade0ace7"
+  },
+  "azure-hub-spoke--ownership": {
+   "png": "1c195299cdb0f19ea72a192be09e6b50b8f22f6e74c04f43b26aa1e0cbc6266a",
+   "svg": "0ff9ebe82ea0b8903e9d4f2948fa6565656c6768b3d14ac190e85ec783ba3812"
+  },
+  "gcp-shared-vpc--gke-namespaces": {
+   "png": "44660d98da437f5dfd4ab2a770deb954c796d135bee76022ba95a331542e5951",
+   "svg": "19597ffd71cd69f5a0ca41beac46b540c7ae82bd1fdd32c8335c71b74a192a80"
+  },
+  "gcp-shared-vpc--gke-nodes": {
+   "png": "743d6e21f41e97fa05ef491d99cc473a291f67085891d9ee4a11e41ef4726ac1",
+   "svg": "ef1ee96861f6c782f64b92464e096aa520fbfe081fdb95e23f0052345501d26b"
+  },
+  "gcp-shared-vpc--locations": {
+   "png": "a63f3ffbb3b1e90e448bb238e38282058164a079018fec6886818f777719a8eb",
+   "svg": "a193faac9eb7114d5957fbf9bba171d24400ccca2d97fcffc051e8bb1814c12e"
+  },
+  "gcp-shared-vpc--overview": {
+   "png": "7c10007abecbeb4f39d2a65e424922ecd1262019355c818a6846fa99a0dbcc4b",
+   "svg": "e02776514d547ba587b379f929693d0bfb14779146082dce8a8f908a9b9a9934"
+  },
+  "gcp-shared-vpc--projects": {
+   "png": "66bc09103a15e7038664ab45c341624870733803f8e8e5bb356d37e04f5f9cf9",
+   "svg": "1a0d5498f3e60c54176bc84ab8ee390c7a3527a071b406551a09948f4f777330"
+  },
+  "huawei-web--cce-namespaces": {
+   "png": "f4cb9c9a74c64ee04e9e1c68d434dfe2b7e8cb8aec36ad21d9a34616d1c8d1e2",
+   "svg": "26e9f5bbadc3a1633929452d951aaf359e6f41621ea0cee439e72f7208750f3c"
+  },
+  "huawei-web--cce-nodes": {
+   "png": "4fbc11f98f830d59c750536633d9e7331b72ca488fcfec6f96c86db63e095794",
+   "svg": "7b8f316b2ead836036aa72895f0596e36c3a16cd66885bf0afa46ff65f81d56a"
+  },
+  "huawei-web--overview": {
+   "png": "485ea31434427b84df2cebb270359995baae626484dba1921c4e8065e5f19ba7",
+   "svg": "d126c1bd9b2d2031e1a650979cb4ad50b8402ac1daa101e4b57e3bf42b8eba79"
+  },
+  "huawei-web--services": {
+   "png": "23f424caa0fd69e7b6f92922930df9508f05a9603ccd67c96e811c198f24d22e",
+   "svg": "4947f243236b0d8b52a0c091a502e363f0fc1d14bc2caebf6b6558c918a22ca6"
+  },
+  "huawei-web--zones": {
+   "png": "88dd621c5d153bbaa78b25617b1841a0da1ff1dd95292e011ba3ab6a8c4eca89",
+   "svg": "2a04cf1ca25a7bc3bc6a74bc1a9fbb237dbcda744d0dfdb2eda07539396d1920"
+  },
+  "hybrid-five--connectivity": {
+   "png": "419371595e0a5a086bf228e2083b746c54deb1374818b4da12536ff204cb3214",
+   "svg": "01e53e04955499493ebeb47fd1aa3d3d97ba8500ae4810ffca012799aa56f55e"
+  },
+  "hybrid-five--data-flows": {
+   "png": "4c81d2d4cf961827c9e9f0158debd7b1ea5a8682e2034753b0ca81e1a47e1bcf",
+   "svg": "5196f95ee6044c6470289397aa2ec197b34bd03d0c7f3fc28c25053b7a90ecfd"
+  },
+  "hybrid-five--k8s-detail": {
+   "png": "d89b66a4323b4ead51dfa475bb9b51a83dc57701fe4b97eb9df9becc1665dc12",
+   "svg": "d6c44b781df99b8799227936d24ce7c1e8e55e804875c8ba89f01315e4765ea0"
+  },
+  "hybrid-five--overview": {
+   "png": "dc4de9c8e37eb4a50254d50e09fb4ed5cfc0d87b82bcb1f8359200f5890bf2f0",
+   "svg": "aea59a5bf185aa5ca7c0633b23eed50435f56e683bcfb3f409add10e0139f11f"
+  },
+  "onprem-physical-logical--k8s-namespaces": {
+   "png": "ff6d9a5da8b94ebe18cfaff7737bce6a26df007f6b21c16c5911a000387e07e7",
+   "svg": "adf2321e6f679643f0f6afb04cb50aef4e8a7cbf9112c93c48f650383fe36bfd"
+  },
+  "onprem-physical-logical--k8s-nodes": {
+   "png": "a486437122eece02e23f172b363c5812955ec4a829529c267089919e679f0a2f",
+   "svg": "bf226150831f4668050c4817d251ebeec60125b1ef16d4d5db67c4bf5e301091"
+  },
+  "onprem-physical-logical--logical": {
+   "png": "8da847586ac44232ac29ec7702e02373f17cf1678d8dadeb252380a79496482b",
+   "svg": "92021d3ef24800885bf66dcdf8ae2c00d786f45731fdb992d10300a5153c58af"
+  },
+  "onprem-physical-logical--physical": {
+   "png": "2c4ed5d880f635c66e4e4f01af233e7ab03910df968cbc9475b5de4e512c59ab",
+   "svg": "a4906b3de85cf7dde0b43e556b727e2bdadecac0c0c3b9f075c8b8f87015d120"
+  }
+ }
+}
