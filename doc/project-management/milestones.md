@@ -1,6 +1,6 @@
 # Milestones and Work Breakdown
 
-Updated: 2026-11-03 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 complete on 2026-11-03 for the private personal release. S07 / M3 complete on 2026-11-03 under D-022. S08 / M4 is implemented on `codex/s08-reference-diagrams`, and it is not closed. Huawei rights are not cleared: D-018 allows private personal use only, D-019 settles the asset-rights exit item for that use, and O-002 blocks public distribution. M7 Claude Code preparation started early under D-015.
+Updated: 2026-11-03 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 complete on 2026-11-03 for the private personal release. S07 / M3 complete on 2026-11-03 under D-022. S08 / M4 is implemented on `codex/s08-reference-diagrams`, and Fable/High approved it; it stays open for the owner's inspection. Huawei rights are not cleared: D-018 allows private personal use only, D-019 settles the asset-rights exit item for that use, and O-002 blocks public distribution. M7 Claude Code preparation started early under D-015.
 
 Source of scope: [requirements](../requirements/requirements.md). Model abbreviations and review rules: [model strategy](model-strategy.md). Quality check definitions: [quality gate](quality-gate.md).
 
@@ -77,7 +77,7 @@ Exit: repeatable CLI render from a clean setup; invalid input cannot bypass vali
 
 ## M4 — Coverage and visual quality
 
-Status: Implemented on `codex/s08-reference-diagrams`, not closed. [Evidence](evidence/S08-reference-diagrams.md). The Fable/High review and the owner's inspection remain. Planned implementation: Sol/Medium; actual: Claude Opus 5.5, with Claude Sonnet 5.5 agents writing the models. Review: Fable/High for semantics; optional Terra/Medium for image inspection assistance.
+Status: Implemented on `codex/s08-reference-diagrams`, not closed. [Evidence](evidence/S08-reference-diagrams.md) records actual CI [run 41664850907](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41664850907) passing at `a407a7a`. [Fable/High approved](evidence/S08-fable-review.md) it there after three P2 findings were fixed, and the owner's inspection remains. Planned implementation: Sol/Medium; actual: Claude Opus 5.5, with Claude Sonnet 5.5 agents writing the models. Review: Fable/High for semantics; optional Terra/Medium for image inspection assistance.
 
 | Task | Work | Dependency / output |
 |---|---|---|

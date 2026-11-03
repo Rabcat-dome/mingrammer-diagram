@@ -2,7 +2,9 @@
 
 Date: 2026-11-03 (Asia/Bangkok). Reviewer: Claude Fable 5.1 (`claude-fable-5-1`) in a fresh agent with no prior project context, started from the owner's Claude Opus 5.5 session, which set its effort to High. The reviewer cannot read that setting, so it reports its effort as unverified from its side. This is the M4 review under [D-021](../decisions.md#confirmed-user-direction). Claude Opus 5.5 and Claude Sonnet 5.5 wrote the work, so reviewer and implementers share a vendor.
 
-**Disposition at `1ee4a58`: changes requested, on two P2 findings.** There are no P0 or P1 findings, and nine more are P3. The reviewer found the model semantics true to the briefs otherwise. The [recheck](#recheck-at-b00b90d) found that the first fix for P2-1 was incomplete, with a new P2 that is fixed in turn and needs a further recheck.
+**Final disposition: approved at `a407a7a`; see the [final recheck](#final-recheck-at-a407a7a). P3-2, the rest of P3-8, P3-12 and P3-13 stay open, and M4 stays open for the owner's inspection of the output.** The sections before it are the record at each commit.
+
+**Disposition at `1ee4a58`: changes requested, on two P2 findings.** There are no P0 or P1 findings, and nine more are P3. The reviewer found the model semantics true to the briefs otherwise. The [recheck](#recheck-at-b00b90d) found that the first fix for P2-1 was incomplete, with a new P2 that is fixed in turn.
 
 ## Identity and scope
 
@@ -38,6 +40,29 @@ The same reviewer checked `1ee4a58..b00b90d` and **requested changes on one new 
 | P3-10 | The GCP assumption denies a GKE-provided controller, while the model still named the controller `gke-ingress` and the edge "To the GKE Ingress" | Read only | Fixed: renamed and reworded, with a baseline update |
 | P3-11 | This record said a second pass made the result independent of order, which was false, recorded High although the reviewer could not confirm it, and said three sizes where the test adds four | Reviewer's reading | Fixed here |
 
+## Final recheck at `a407a7a`
+
+The same reviewer checked `b00b90d..a407a7a` and **approved** it. In its view the series `02dc709..a407a7a` can stand as M4's review disposition, with the P3 findings below left open. CI passed at that head, [run 41664850907](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41664850907), with 15 lanes and 1,250 tests. Its `gh run watch` command exited 1, while the run's own conclusion is success and its reports on the runner read 15 of 15 lanes.
+
+Its own scans compared the whole tree:
+
+| Shape | Orders | Differences |
+|---|---|---|
+| The P2-3 selection on `gcp-shared-vpc.json` | 302 | 0, against 166 of 300 at `b00b90d` |
+| An NSG in a region used by the other resource group | 5,040 | 0 |
+| A subnet owned by one group under a VNet owned by another | 5,040 | 0 |
+| A resource declaring only the subscription | 720 | 0 |
+| Every reference view | 40 each | 0 |
+
+Over 12,525 instrumented builds, the loop used at most three passes and never reached its bound, and every tree was free of loops.
+
+| ID | Finding | Evidence | Disposition |
+|---|---|---|---|
+| P3-12 | A nesting loop across two dimensions is broken in ID order, so the surviving box is deterministic but arbitrary | `vlan-120` and `zone-app` nesting each other: renaming them flips which box holds the other, and the other fact stays a note | The contract now says so. The owner can ask for a rule by dimension instead |
+| P3-13 | Reaching the pass bound would be silent | Never observed, and the reviewer could not construct it | Open for the owner |
+
+It did not check the one-pass sabotage, the timing numbers, the provider pages, the Thai image, a second machine, or the two re-accepted GCP images beyond their sizes and graph differences.
+
 ## What held
 
 Per the reviewer: all 26 view sizes and the measurement table match; invisible layout edges never reach the SVG; `_arrange` handled empty and nested groups in four groupings and both directions; no over-rejection from the wider subnet lookup; and every requested component is present with no link outside the briefs. It inspected ten images and found them consistent with the evidence.
@@ -47,7 +72,8 @@ Per the reviewer: all 26 view sizes and the measurement table match; invisible l
 | Findings | State |
 |---|---|
 | P2-1, P2-2, P3-1, P3-3 to P3-7, P3-9 | The recheck confirms them, with P2-1 completed by the P2-3 fix |
-| P2-3, P3-10, P3-11 | Fixed; further recheck pending |
-| P3-2, the rest of P3-8 | Open for the owner |
+| P2-3, P3-10, P3-11 | Fixed; the final recheck confirms them |
+| P3-2, the rest of P3-8, P3-13 | Open for the owner |
+| P3-12 | Stated in the contract; a different rule stays the owner's choice |
 
 The model strategy lets P3 findings wait, and this session fixed those that were cheap or that corrected its own record. This approves nothing beyond what it states, and it does not replace the owner's inspection of the output.

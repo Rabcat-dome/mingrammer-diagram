@@ -473,4 +473,10 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 
 - CI passed at `b00b90d` ([run 41662654248](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41662654248), 15 lanes and 1,241 tests, with the wheel matching the local build). The same reviewer confirmed the other fixes and requested changes on one new P2: the tree of a valid model still depended on selection order, and a node pool could land outside its cluster.
 - That also corrects this session's record, which said the second pass made the result independent of order. Claude Opus 5.5 now settles every group in ID order until none moves, and renamed the GCP controller to match its assumption. The `visual-regression` lane flagged only the two GCP views that rename touched, and their baselines were accepted after a look.
-- One sabotage change passed every test at first, which showed the ID order had no test. A shuffled nesting-loop test now catches it. The local gate passes 15 lanes and 1,250 tests. The same reviewer rechecks next, and M4 stays open.
+- One sabotage change passed every test at first, which showed the ID order had no test. A nesting-loop test over three orders now catches it. The local gate passes 15 lanes and 1,250 tests. The same reviewer rechecks next, and M4 stays open.
+
+## 2026-11-03 — Fable approves S08
+
+- CI passed at `a407a7a` ([run 41664850907](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41664850907), 15 lanes and 1,250 tests, with the wheel matching the local build). The same reviewer approved `b00b90d..a407a7a` after its own scans over thousands of selection orders found no difference, and said `02dc709..a407a7a` can stand as M4's review disposition.
+- P3-2, the rest of P3-8, P3-12 and P3-13 stay open for the owner. The contract now states P3-12's tie-break.
+- M4 still needs the owner's inspection. This branch is not merged, so `main` and the owner's plugin have none of it.

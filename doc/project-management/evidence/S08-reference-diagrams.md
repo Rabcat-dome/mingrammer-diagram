@@ -2,7 +2,7 @@
 
 Date: 2026-11-03 | Tasks: M4-01..05 | Branch: `codex/s08-reference-diagrams`, from `main` at `02dc709` | Package: `0.5.0a1`
 
-**Result: M4 is implemented and is not closed.** It still needs the [Fable/High review](#model-and-review) and the owner's inspection of the samples. The numbers below are from the local gate at the commit named in [validation](#validation).
+**Result: M4 is implemented and is not closed.** [Fable/High approved](S08-fable-review.md) it at `a407a7a`, which passes actual CI [run 41664850907](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41664850907) with 1,250 tests. It still needs the owner's inspection of the samples. The numbers below are from the local gate at the commit named in [validation](#validation).
 
 ## Task status
 
@@ -18,7 +18,7 @@ Date: 2026-11-03 | Tasks: M4-01..05 | Branch: `codex/s08-reference-diagrams`, fr
 
 | Criterion | State | Evidence |
 |---|---|---|
-| Six reference families and their Kubernetes subviews inspected by the owner and reviewer | **Open** | This session inspected the images. The owner's inspection and the Fable/High review remain |
+| Six reference families and their Kubernetes subviews inspected by the owner and reviewer | **Open** | This session and the reviewer inspected images, and [Fable/High approved](S08-fable-review.md) at `a407a7a`. The owner's inspection remains |
 | T-017 passes | Met in tests | [Kubernetes checks](#scenario-checks), together with the `provider-semantics` lane |
 | All required catalog entries have resolution and rule fixtures | Met | `provider-semantics` and `render-smoke`, which require every type and rule to have a fixture and a render |
 | Performance measurements recorded | Met | [Measurements](#measurements) and the [raw numbers](S08-render-measurements.json) |
@@ -202,10 +202,10 @@ Time is far from any limit: the slowest run is 1.83 s against 55 s.
 
 Claude Opus 5.5 (`claude-opus-5-5`) did the renderer, tests, baselines and records, in the session that started from the owner's request. Six Claude Sonnet 5.5 agents wrote the six models under its brief, and it then trimmed some view selections. The project policy names Sol/Medium for M4, so this is a recorded substitution, and no model setting changed.
 
-Under D-021, Claude Fable 5.1 / High [reviewed `02dc709..1ee4a58`](S08-fable-review.md) in a fresh agent and **requested changes on two P2 findings**. A recheck found the first fix incomplete and raised a third, on selection order. All three are fixed, and a further recheck is pending. It shares a vendor with the implementing models.
+Under D-021, Claude Fable 5.1 / High [reviewed `02dc709..1ee4a58`](S08-fable-review.md) in a fresh agent and **requested changes on two P2 findings**. A recheck found the first fix incomplete and raised a third, on selection order. All three are fixed, and it **approved `a407a7a`**. It shares a vendor with the implementing models.
 
 ## Next steps
 
-1. Fable/High reviews the semantics under D-021, and its findings are fixed and rechecked.
-2. The owner inspects the samples and settles the presentation choices in P-029 to P-031.
-3. Close M4 after both, then choose the next milestone.
+1. The owner inspects the samples and settles the presentation choices in P-029 to P-031.
+2. Close M4 after that. The open P3 findings stay open unless the owner wants them fixed first.
+3. Then choose the next milestone.
