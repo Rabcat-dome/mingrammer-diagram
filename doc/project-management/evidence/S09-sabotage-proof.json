@@ -1,0 +1,319 @@
+{
+ "commit": "5ac927d",
+ "lane": "package-contract",
+ "note": "First run. One sabotage passed the lane, which led to a better test.",
+ "results": [
+  {
+   "sabotage": "manifest: drops the local-execution requirement",
+   "file": "plugins/cloud-architecture-work/plugin.json",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 1,
+   "first_failures": [
+    "test_manifest_meets_the_host_format"
+   ],
+   "seconds": 33.7
+  },
+  {
+   "sabotage": "manifest: subtitle over the host's 30 characters",
+   "file": "plugins/cloud-architecture-work/plugin.json",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 1,
+   "first_failures": [
+    "test_manifest_meets_the_host_format"
+   ],
+   "seconds": 33.9
+  },
+  {
+   "sabotage": "manifest: version is not strict SemVer",
+   "file": "plugins/cloud-architecture-work/plugin.json",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 114,
+   "first_failures": [
+    "test_build_holds_exactly_the_allowlisted_tree",
+    "test_build_has_no_symbolic_links_because_the_host_drops_them",
+    "test_core_in_the_package_is_the_repository_copy",
+    "test_manifest_meets_the_host_format"
+   ],
+   "seconds": 6.3
+  },
+  {
+   "sabotage": "server config: runs without isolation",
+   "file": "plugins/cloud-architecture-work/mcp.json",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 1,
+   "first_failures": [
+    "test_server_config_starts_the_packaged_server_in_isolation"
+   ],
+   "seconds": 34.2
+  },
+  {
+   "sabotage": "skill: forgets the exact tool name",
+   "file": "plugins/cloud-architecture-work/skills/architecture-model/SKILL.md",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 1,
+   "first_failures": [
+    "test_skill_keeps_the_rules_a_live_session_depends_on"
+   ],
+   "seconds": 34.1
+  },
+  {
+   "sabotage": "skill: stops requiring every file",
+   "file": "plugins/cloud-architecture-work/skills/architecture-model/SKILL.md",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 1,
+   "first_failures": [
+    "test_skill_keeps_the_rules_a_live_session_depends_on"
+   ],
+   "seconds": 33.6
+  },
+  {
+   "sabotage": "skill: allows other drawing tools",
+   "file": "plugins/cloud-architecture-work/skills/architecture-model/SKILL.md",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 1,
+   "first_failures": [
+    "test_skill_keeps_the_rules_a_live_session_depends_on"
+   ],
+   "seconds": 33.8
+  },
+  {
+   "sabotage": "tools: accept unknown arguments",
+   "file": "plugins/cloud-architecture-work/server/work_adapter/tools.py",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 1,
+   "first_failures": [
+    "test_tools_list_is_the_closed_contract"
+   ],
+   "seconds": 34.0
+  },
+  {
+   "sabotage": "tools: skip verifying a published bundle",
+   "file": "plugins/cloud-architecture-work/server/work_adapter/tools.py",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 3,
+   "first_failures": [
+    "test_core_outcomes_map_onto_stable_statuses[tampered-artifact_unavailable-ARTIFACT_INTEGRITY]",
+    "test_core_outcomes_map_onto_stable_statuses[missing-file-artifact_unavailable-ARTIFACT_NOT_FOUND]",
+    "test_core_outcomes_map_onto_stable_statuses[short-list-artifact_unavailable-ARTIFACT_INCOMPLETE]"
+   ],
+   "seconds": 34.2
+  },
+  {
+   "sabotage": "tools: report a failed render as success",
+   "file": "plugins/cloud-architecture-work/server/work_adapter/tools.py",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 3,
+   "first_failures": [
+    "test_unsafe_output_root_is_a_runtime_failure_and_nothing_publishes",
+    "test_capabilities_name_an_unusable_output_root",
+    "test_core_outcomes_map_onto_stable_statuses[engine-failed-runtime_failure-RENDER_ENGINE_FAILED]"
+   ],
+   "seconds": 33.7
+  },
+  {
+   "sabotage": "tools: let a too-large file reach the host",
+   "file": "plugins/cloud-architecture-work/server/work_adapter/tools.py",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 1,
+   "first_failures": [
+    "test_a_file_over_the_transport_limit_stays_on_disk_by_path"
+   ],
+   "seconds": 33.8
+  },
+  {
+   "sabotage": "tools: run a host-supplied view name as an option",
+   "file": "plugins/cloud-architecture-work/server/work_adapter/tools.py",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 1,
+   "first_failures": [
+    "test_bad_arguments_are_refused_before_anything_runs[validate_model-arguments14]"
+   ],
+   "seconds": 34.3
+  },
+  {
+   "sabotage": "artifacts: accept any bundle name",
+   "file": "plugins/cloud-architecture-work/server/work_adapter/artifacts.py",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 7,
+   "first_failures": [
+    "test_artifact_names_outside_the_contract_are_refused[../../etc--passwd--0123456789abcdef-model.json-ARTIFACT_NAME_REFUSED]",
+    "test_artifact_names_outside_the_contract_are_refused[..-model.json-ARTIFACT_NAME_REFUSED]",
+    "test_artifact_names_outside_the_contract_are_refused[.request-0123456789abcdef0123456789abcdef-model.json-ARTIFACT_NAME_REFUSED]",
+    "test_artifact_names_outside_the_contract_are_refused[/etc/passwd-model.json-ARTIFACT_NAME_REFUSED]"
+   ],
+   "seconds": 33.6
+  },
+  {
+   "sabotage": "artifacts: follow symbolic links",
+   "file": "plugins/cloud-architecture-work/server/work_adapter/artifacts.py",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 1,
+   "first_failures": [
+    "test_a_linked_bundle_and_a_linked_root_are_not_followed"
+   ],
+   "seconds": 34.0
+  },
+  {
+   "sabotage": "artifacts: follow a linked file",
+   "file": "plugins/cloud-architecture-work/server/work_adapter/artifacts.py",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 1,
+   "first_failures": [
+    "test_symbolic_links_in_a_bundle_are_not_followed"
+   ],
+   "seconds": 33.9
+  },
+  {
+   "sabotage": "protocol: log the model",
+   "file": "plugins/cloud-architecture-work/server/work_adapter/protocol.py",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 1,
+   "first_failures": [
+    "test_model_content_reaches_no_log_and_no_runtime_file"
+   ],
+   "seconds": 33.9
+  },
+  {
+   "sabotage": "protocol: leave children running at shutdown",
+   "file": "plugins/cloud-architecture-work/server/work_adapter/protocol.py",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 2,
+   "first_failures": [
+    "test_shutdown_stops_a_running_core",
+    "test_a_signal_stops_a_running_core"
+   ],
+   "seconds": 73.9
+  },
+  {
+   "sabotage": "protocol: answer a cancelled call",
+   "file": "plugins/cloud-architecture-work/server/work_adapter/protocol.py",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 1,
+   "first_failures": [
+    "test_a_cancelled_call_stops_its_process_and_gets_no_answer"
+   ],
+   "seconds": 33.6
+  },
+  {
+   "sabotage": "runtime: sync without the lock",
+   "file": "plugins/cloud-architecture-work/server/work_adapter/runtime.py",
+   "lane_exit": 0,
+   "tests": 120,
+   "failing": 0,
+   "first_failures": [],
+   "seconds": 33.8
+  },
+  {
+   "sabotage": "runtime: never stop a timed-out core",
+   "file": "plugins/cloud-architecture-work/server/work_adapter/runtime.py",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 1,
+   "first_failures": [
+    "test_a_call_over_its_time_limit_is_stopped_and_reported"
+   ],
+   "seconds": 53.8
+  },
+  {
+   "sabotage": "runtime: forward the core's stderr",
+   "file": "plugins/cloud-architecture-work/server/work_adapter/runtime.py",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 1,
+   "first_failures": [
+    "test_core_outcomes_map_onto_stable_statuses[crash-runtime_failure-CORE_CRASHED]"
+   ],
+   "seconds": 33.9
+  },
+  {
+   "sabotage": "package: a stray file reaches the plugin",
+   "file": "plugins/cloud-architecture-work/notes.txt",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 1,
+   "first_failures": [
+    "test_build_holds_exactly_the_allowlisted_tree"
+   ],
+   "seconds": 33.8
+  },
+  {
+   "sabotage": "package: the core's version drifts",
+   "file": "src/cloud_architecture_diagrams/__init__.py",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 90,
+   "first_failures": [
+    "test_initialize_negotiates_the_protocol_version",
+    "test_tools_list_is_the_closed_contract",
+    "test_protocol_errors_do_not_stop_the_server",
+    "test_oversize_frame_is_refused_by_id_and_the_server_goes_on"
+   ],
+   "seconds": 4.2
+  },
+  {
+   "sabotage": "core: a host import creeps in",
+   "file": "src/cloud_architecture_diagrams/diagnostics.py",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 91,
+   "first_failures": [
+    "test_core_stays_free_of_the_host_adapter",
+    "test_initialize_negotiates_the_protocol_version",
+    "test_tools_list_is_the_closed_contract",
+    "test_protocol_errors_do_not_stop_the_server"
+   ],
+   "seconds": 4.3
+  },
+  {
+   "sabotage": "S04: the frozen fixture changes",
+   "file": "spikes/s04-local-plugin/README.md",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 1,
+   "first_failures": [
+    "test_s04_fixture_stays_frozen_and_separate"
+   ],
+   "seconds": 33.8
+  },
+  {
+   "sabotage": "S04: its marketplace entry moves",
+   "file": ".agents/plugins/marketplace.json",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 1,
+   "first_failures": [
+    "test_s04_fixture_stays_frozen_and_separate"
+   ],
+   "seconds": 34.0
+  },
+  {
+   "sabotage": "README: stops saying where data syncs",
+   "file": "plugins/cloud-architecture-work/README.md",
+   "lane_exit": 1,
+   "tests": 120,
+   "failing": 1,
+   "first_failures": [
+    "test_readme_states_the_modes_rights_and_the_whole_lifecycle"
+   ],
+   "seconds": 33.9
+  }
+ ]
+}

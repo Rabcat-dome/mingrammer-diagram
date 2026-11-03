@@ -1,0 +1,257 @@
+{
+  "scope": "The host's own engine and client, with a throwaway profile and no model or account. This is not the Work user interface.",
+  "host": "codex-cli 0.166.0-alpha.5.1",
+  "passed": true,
+  "checks": [
+    {
+      "check": "install keeps every built file, byte for byte",
+      "passed": true,
+      "version": "0.1.0-alpha.1+094f55bed664",
+      "files": 97,
+      "extra_in_cache": []
+    },
+    {
+      "check": "installed version is the stamped version",
+      "passed": true
+    },
+    {
+      "check": "install holds no symbolic links",
+      "passed": true
+    },
+    {
+      "check": "skill is offered in the model-visible prompt",
+      "passed": true
+    },
+    {
+      "check": "marketplace lists the plugin as installed and enabled",
+      "passed": true,
+      "display_name": "Cloud Architecture Diagrams"
+    },
+    {
+      "check": "host discovers exactly the expected tools",
+      "passed": true,
+      "tools": [
+        "get_capabilities",
+        "get_schema",
+        "list_bundles",
+        "read_artifact",
+        "render_model",
+        "search_catalog",
+        "setup_runtime",
+        "validate_model"
+      ],
+      "server_version": "0.1.0-alpha.1+094f55bed664"
+    },
+    {
+      "check": "a fresh machine reports not_installed and the version",
+      "passed": true,
+      "checks": [
+        {
+          "name": "host",
+          "ok": true,
+          "detail": "Darwin arm64"
+        },
+        {
+          "name": "uv",
+          "ok": true,
+          "detail": "/opt/homebrew/bin/uv"
+        },
+        {
+          "name": "graphviz",
+          "ok": true,
+          "detail": "/opt/homebrew/bin/dot"
+        },
+        {
+          "name": "sandbox",
+          "ok": true,
+          "detail": "/usr/bin/sandbox-exec"
+        },
+        {
+          "name": "output_root",
+          "ok": true,
+          "detail": "<scratch>/s09-host-tsc_ohkg/home/Documents/CloudArchitectureDiagrams/work"
+        }
+      ],
+      "server_python": "3.13.7"
+    },
+    {
+      "check": "a call before setup is runtime_unavailable, not a result about the model",
+      "passed": true
+    },
+    {
+      "check": "first setup from an empty uv cache finishes and can render",
+      "passed": true,
+      "seconds": 4.4,
+      "runtime": {
+        "state": "ready",
+        "environment": "<scratch>/s09-host-tsc_ohkg/home/.local/share/cloud-architecture-diagrams/work-plugin/env-7df586841f346fac",
+        "core_version": "0.5.0a1",
+        "python": "3.13.7",
+        "render_probe": {
+          "passed": true
+        }
+      },
+      "blockers": []
+    },
+    {
+      "check": "catalog search answers",
+      "passed": true
+    },
+    {
+      "check": "schema discovery answers",
+      "passed": true
+    },
+    {
+      "check": "invalid input is validation_failed with a stable code",
+      "passed": true,
+      "code": "REFERENCE_MISSING"
+    },
+    {
+      "check": "render publishes a bundle with an inline PNG",
+      "passed": true,
+      "seconds": 0.71,
+      "bundle_id": "aws-three-tier-reference--overview--ceeff3df3f994d62",
+      "content": [
+        "text",
+        "image"
+      ],
+      "png_bytes": 349219
+    },
+    {
+      "check": "all six files come back through the host and match their checksums",
+      "passed": true,
+      "files": {
+        "diagnostics.json": true,
+        "diagram.png": true,
+        "diagram.svg": true,
+        "manifest.json": true,
+        "model.json": true,
+        "view.json": true
+      }
+    },
+    {
+      "check": "another view renders from the earlier bundle without resending the model",
+      "passed": true,
+      "views": [
+        "overview",
+        "zones",
+        "eks-namespaces",
+        "eks-nodes"
+      ]
+    },
+    {
+      "check": "an edit keeps every ID, returns the updated source, and leaves the old bundle alone",
+      "passed": true,
+      "code": null,
+      "diagnostics": [
+        "VIEW_EXCLUSIONS",
+        "VIEW_EXCLUSIONS",
+        "VIEW_EXCLUSIONS",
+        "VIEW_EXCLUSIONS"
+      ]
+    },
+    {
+      "check": "every Kubernetes view renders",
+      "passed": true,
+      "views": {
+        "detail": "ok",
+        "compact": "ok"
+      }
+    },
+    {
+      "check": "a Thai model renders and keeps its text",
+      "passed": true
+    },
+    {
+      "check": "artifact scope refuses traversal",
+      "passed": true
+    },
+    {
+      "check": "artifact scope refuses missing bundle",
+      "passed": true
+    },
+    {
+      "check": "artifact scope refuses unlisted file",
+      "passed": true
+    },
+    {
+      "check": "bundles can be listed",
+      "passed": true,
+      "retention": "Bundles stay in this folder until you remove them. Nothing deletes them automatically, and no tool can delete them; the plugin's runtime script has a prune command."
+    },
+    {
+      "check": "the output root and each bundle are private",
+      "passed": true,
+      "root": "<work>/home/Documents/CloudArchitectureDiagrams/work"
+    },
+    {
+      "check": "an upgrade replaces the installed copy, and an open chat's process says so",
+      "passed": true,
+      "code": "PLUGIN_UPDATED"
+    },
+    {
+      "check": "a new chat runs the new version on the same runtime, with no second setup",
+      "passed": true,
+      "version": "0.1.0-alpha.1+000000000000",
+      "state": "ready"
+    },
+    {
+      "check": "the host's agent completes a turn against the stand-in model",
+      "passed": true,
+      "requests": 6
+    },
+    {
+      "check": "the skill reaches the model's first request",
+      "passed": true
+    },
+    {
+      "check": "every tool is callable from exec under the name the skill gives",
+      "passed": true,
+      "names": [
+        "mcp__cloud_architecture__get_capabilities",
+        "mcp__cloud_architecture__get_schema",
+        "mcp__cloud_architecture__list_bundles",
+        "mcp__cloud_architecture__read_artifact",
+        "mcp__cloud_architecture__render_model",
+        "mcp__cloud_architecture__search_catalog",
+        "mcp__cloud_architecture__setup_runtime",
+        "mcp__cloud_architecture__validate_model"
+      ]
+    },
+    {
+      "check": "the host asks before setup_runtime, because it reaches the network",
+      "passed": true,
+      "answer": "ipt completed\nWall time 0.0 seconds\nOutput:\n\n{\"content\":[{\"type\":\"text\",\"text\":\"MCP tool call requires approval, but approval policy is never\"}],\"isError\":true}"
+    },
+    {
+      "check": "a forwarded image reaches the model as an image",
+      "passed": true,
+      "output": [
+        "input_text",
+        "input_text",
+        "input_image"
+      ]
+    },
+    {
+      "check": "a failed call reaches the model with its status and isError",
+      "passed": true,
+      "answer": "Script completed\nWall time 0.2 seconds\nOutput:\n\n{\"status\":\"validation_failed\",\"code\":\"SCHEMA_VERSION_UNSUPPORTED\",\"isError\":true}"
+    },
+    {
+      "check": "a stored model survives between exec calls, so it is written once",
+      "passed": true
+    },
+    {
+      "check": "the runtime script removes the private runtime",
+      "passed": true
+    },
+    {
+      "check": "removing the runtime keeps bundles",
+      "passed": true
+    },
+    {
+      "check": "uninstall leaves no install and no config entry",
+      "passed": true
+    }
+  ]
+}

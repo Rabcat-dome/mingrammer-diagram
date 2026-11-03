@@ -486,3 +486,11 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - The owner passed the 26 reference views and the Thai sample, so D-023 closes M4. All 26 images on the page they inspected match the baselines byte for byte. P-029 to P-031 stand until the owner changes them.
 - At the owner's standing request to merge finished work in stages, `main` fast-forwards to this branch once this commit passes CI. It keeps every recorded SHA, and no branch is deleted.
 - Open: four M4, four M3 and three M7 P3 findings, a second machine, and M5, M6 and M7. The owner's installed plugin holds `02dc709`, so it gets the skill correction and the new rendering through the README's update commands.
+
+## 2026-11-04 — S09 builds the Work plugin
+
+- `plugins/cloud-architecture-work` adds the Work adapter, its runtime handling, the skill and a versioned build, on `codex/s09-work-plugin`. Nothing is merged, and the owner's profile, the S04 fixture and the Claude plugin's install are unchanged.
+- Host behavior was measured with a throwaway profile, then driven through the host's own client and agent with `scripts/work_host_check.py`, using no account and no model. A live Sonnet session rehearsed the skill.
+- Measuring changed the design: the host drops symbolic links, reaches tools through JavaScript, and hangs on a 16 MiB result. Rehearsal found the catalog has no AWS WAF, so the owner's check uses S3.
+- Sabotage caught 26 of 27 changes, and the one it missed led to a better test. A separate finding: the lint lane had been skipping the adapter while passing.
+- **M5 stays open.** Open: Fable/High review, actual CI on the final commit, and the owner's run in Work.
