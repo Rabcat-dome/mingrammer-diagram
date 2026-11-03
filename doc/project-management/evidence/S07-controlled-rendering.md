@@ -1,6 +1,6 @@
 # S07 — Controlled Rendering Vertical Slice
 
-Date: 2026-11-03 | Tasks: M3-01..04 | Branch: `codex/s07-controlled-rendering`, from `f3f0789` | Package: `0.4.0a1` at `cddb497`, then `0.4.0a2` with the [review fixes](S07-fable-review.md#fixes) | Code head: `cddb497` for everything below unless stated
+Date: 2026-11-03 | Tasks: M3-01..04 | Branch: `codex/s07-controlled-rendering`, from `f3f0789` | Package: `0.4.0a1` at `cddb497`, then `0.4.0a3` with the [review fixes](S07-fable-review.md#fixes) | Code head: `cddb497` for everything below unless stated
 
 **Result: the renderer is implemented and passes all 14 lanes and 959 tests locally and in [actual CI](#actual-ci) at `cddb497`. M3 is not closed.** [Fable/High requested changes](S07-fable-review.md) on three P2 findings, and the owner has not inspected the output. The contract is in the [core contract](../../design/core-contract.md#controlled-rendering).
 

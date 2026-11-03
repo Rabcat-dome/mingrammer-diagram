@@ -253,7 +253,7 @@ def _draw(
     tree = check_svg(svg, {icon.sha256 for icon in icons.values()})
     check_undistorted(tree)
     check_content(tree, graph, icons)
-    scale = png_scale(tree, size)
+    scale = png_scale(tree, size, limits)
     if scale < 1:
         warning = diagnostic("RENDER_PNG_SCALED", "/png", severity="warning")
         validation = validation.model_copy(

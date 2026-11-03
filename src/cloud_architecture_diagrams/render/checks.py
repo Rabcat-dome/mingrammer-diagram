@@ -3,6 +3,7 @@
 import base64
 import binascii
 import hashlib
+import math
 import re
 import struct
 import xml.etree.ElementTree as ET
@@ -184,16 +185,23 @@ def _full_size(root: ET.Element, key: str) -> float:
     return float(match["points"]) * PIXELS_PER_POINT
 
 
-def png_scale(root: ET.Element, size: tuple[int, int]) -> float:
-    """Cairo shrinks an image past its side limit and only warns, so compare it with the SVG."""
+def png_scale(root: ET.Element, size: tuple[int, int], limits: Limits) -> float:
+    """Cairo shrinks an image past its side limit and only warns, so compare it with the SVG.
+
+    The pixel limit applies at full size, or crossing the side limit would be a way past it.
+    """
     width, height = size
     full_width, full_height = _full_size(root, "width"), _full_size(root, "height")
+    if full_width * full_height > limits.pixels:
+        raise RenderFailure("RENDER_PIXEL_LIMIT", "/png")
     if abs(width - full_width) <= 1 and abs(height - full_height) <= 1:
         return 1.0
-    scale = min(1.0, width / full_width, height / full_height)
+    # Cairo scales by the longer side and truncates the other, so only the longer side gives it.
+    scale = min(1.0, max(width, height) / max(full_width, full_height))
     if abs(width - full_width * scale) > 2 or abs(height - full_height * scale) > 2:
         raise RenderFailure("RENDER_PNG_INVALID", "/png")
-    return round(scale, 3)
+    # Rounded down, so that any real shrink reads below 1 and gets its warning.
+    return math.floor(scale * 1000) / 1000
 
 
 def check_png(data: bytes, limits: Limits) -> tuple[int, int]:

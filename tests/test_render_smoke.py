@@ -36,9 +36,10 @@ from cloud_architecture_diagrams.catalog import catalog
 from cloud_architecture_diagrams.cli import capabilities
 from cloud_architecture_diagrams.models import Architecture
 from cloud_architecture_diagrams.render import BUNDLE_FILES, RenderResult, exit_status
-from cloud_architecture_diagrams.render.checks import DATA_PNG, HREF, SVG, check_png
+from cloud_architecture_diagrams.render.checks import DATA_PNG, HREF, SVG, check_png, png_scale
 from cloud_architecture_diagrams.render.draw import EDGE_STYLES, build_dot, literal
 from cloud_architecture_diagrams.render.errors import MESSAGES
+from cloud_architecture_diagrams.render.execution import find_engine
 from cloud_architecture_diagrams.render.graph import GraphIcon, map_view, visible_width, wrap
 from cloud_architecture_diagrams.render.icons import verified_fonts, verified_icon, verified_icons
 from cloud_architecture_diagrams.render.limits import LIMITS
@@ -255,19 +256,42 @@ def test_fixture_views_keep_the_png_at_full_size(
         assert "RENDER_PNG_SCALED" not in {item.code for item in result.diagnostics}
 
 
-def test_a_tall_view_discloses_its_shrunken_png(tmp_path: Path) -> None:
-    # Cairo shrinks past 32767 pixels and exits 0, so only this comparison can say so.
-    result = render(icon_model(197, 0), tmp_path / "out")
+@pytest.mark.parametrize("entities", [123, 133, 140, 168, 197])
+def test_a_tall_view_discloses_its_shrunken_png(entities: int, tmp_path: Path) -> None:
+    # Cairo shrinks past 32767 pixels and exits 0, so only this comparison can say so. Sizes differ
+    # because it truncates the other side, and 168 lands the long side on 32766.
+    result = render(icon_model(entities, 0), tmp_path / "out")
     assert result.rendered and exit_status(result) == 0, codes(result)
     png = manifest_of(result)["png"]
     full_height = float(svg_root(result).get("height", "").removesuffix("pt")) * 96 / 72
-    assert max(png["width"], png["height"]) == 32767
+    assert png["height"] in (32766, 32767)
     assert png["scale"] == pytest.approx(32767 / full_height, abs=0.001) and png["scale"] < 1
     assert [item.severity for item in result.diagnostics if item.code == "RENDER_PNG_SCALED"] == [
         "warning"
     ]
     recorded = json.loads(bundle_files(result)["diagnostics.json"])["diagnostics"]
     assert "RENDER_PNG_SCALED" in {item["code"] for item in recorded}
+
+
+@pytest.mark.parametrize(
+    ("width", "height"),
+    [(341.37, 3.0), (347.0, 3.0), (356.5, 3.0), (3.0, 341.37), (3.0, 347.0), (3.0, 356.5)],
+)
+def test_png_scale_reads_real_cairo_output(width: float, height: float, tmp_path: Path) -> None:
+    source = tmp_path / "shape.dot"
+    source.write_text(
+        f'digraph {{ a [shape=box, fixedsize=true, width={width}, height={height}, label=""]; }}'
+    )
+    svg, png = tmp_path / "shape.svg", tmp_path / "shape.png"
+    subprocess.run(
+        [find_engine().path, "-Tsvg", "-o", str(svg), "-Tpng", "-o", str(png), str(source)],
+        capture_output=True,
+        check=True,
+        timeout=60,
+    )
+    size = check_png(png.read_bytes(), LIMITS)
+    assert 32766 <= max(size) <= 32767
+    assert 0.8 < png_scale(ET.fromstring(svg.read_bytes()), size, LIMITS) < 1
 
 
 def test_a_large_icon_view_inside_the_limits_renders_at_full_size(tmp_path: Path) -> None:

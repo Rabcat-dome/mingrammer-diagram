@@ -14,6 +14,7 @@ import subprocess
 import sys
 import threading
 import time
+import xml.etree.ElementTree as ET
 import zlib
 from collections.abc import Callable
 from dataclasses import replace
@@ -561,6 +562,29 @@ def test_a_uniformly_smaller_png_is_disclosed(
     assert [item.severity for item in result.diagnostics if item.code == "RENDER_PNG_SCALED"] == [
         "warning"
     ]
+
+
+@pytest.mark.parametrize("tall", [True, False])
+def test_png_scale_accepts_every_shrink_cairo_writes(tall: bool) -> None:
+    # Cairo scales by the longer side and truncates the other to an integer, so the shorter side's
+    # ratio runs low and must not set the scale.
+    unlimited = replace(LIMITS, pixels=10**12)
+    for long_points in range(24_600, 60_000, 97):
+        for short_points in (120, 355, 747, 1000):
+            ratio = 32767 / (long_points * 96 / 72)
+            sides = (long_points, short_points) if tall else (short_points, long_points)
+            root = ET.Element("svg", {"height": f"{sides[0]}pt", "width": f"{sides[1]}pt"})
+            short = int(short_points * 96 / 72 * ratio)
+            size = (short, 32767) if tall else (32767, short)
+            assert checks.png_scale(root, size, unlimited) == pytest.approx(ratio, abs=0.001)
+
+
+def test_the_pixel_limit_applies_before_a_png_is_shrunk(tmp_path: Path) -> None:
+    # This PNG is about 9 Mpx after Cairo shrinks it, so only the full-size check can refuse it.
+    output = tmp_path / "out"
+    result = render(icon_model(197, 0), output, limits=replace(LIMITS, pixels=20_000_000))
+    assert codes(result) == ["RENDER_PIXEL_LIMIT"]
+    assert renderer.exit_status(result) == 2 and tree(output) == []
 
 
 @pytest.mark.parametrize("size", [b'width="100%"', b'width="0pt"'])

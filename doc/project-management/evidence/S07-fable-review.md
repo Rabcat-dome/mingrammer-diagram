@@ -2,7 +2,7 @@
 
 Date: 2026-11-03 (Asia/Bangkok). Reviewer: Claude Fable 5.1 (`claude-fable-5-1`) / High, in a fresh agent with no prior project context, started from the owner's Claude Opus 5.5 session. This is the M3 review under [D-021](../decisions.md#confirmed-user-direction). Claude Opus 5.5 wrote the renderer, so reviewer and implementer share a vendor.
 
-**Disposition at `6353ef1`: changes requested, on three P2 findings, all in output-size handling.** There are no P0 or P1 findings, and five more are P3. The P2 findings now have [fixes](#fixes), which need their own review. M3 stays open until that passes and the owner has inspected the output.
+**Disposition at `6353ef1`: changes requested, on three P2 findings, all in output-size handling.** There are no P0 or P1 findings, and five more are P3. The P2 findings now have [fixes](#fixes). Their [re-review](#re-review-at-93b7d11) found a regression, which is fixed in turn and needs a recheck. M3 stays open until that passes and the owner has inspected the output.
 
 ## Identity and scope
 
@@ -120,11 +120,42 @@ Each of these 10 changes went into the real source, ran the new and changed test
 | Skill says lenient bypasses every other error | 1 |
 | Skill drops the scaled warning | 1 |
 
+## Re-review at `93b7d11`
+
+A fresh Claude Fable 5.1 / High agent reviewed `0b30b02..93b7d11` and **requested changes**. P2-1, P2-2 and the [M7 P2](M7-fable-review.md) held. P2-3 was only partly fixed, and that fix had introduced a P1 regression. The root session reran the P1 and P2 below through the real CLI.
+
+| ID | Finding | Evidence | Fix in core `0.4.0a3` |
+|---|---|---|---|
+| R-P1 | `png_scale` gave a false `RENDER_PNG_INVALID` on about half of real shrinks. Cairo scales by the longer side and truncates the other, and the code took the smaller ratio. Views that published before this fix failed with exit 4 | 42 of 78 shrunken views between 120 and 197 entities failed. The root session saw exit 4 at 123, 133 and 140 entities and on a labeled 197-icon chain. The one size the test used, 197, passed | The scale comes from the longer side |
+| R-P2 | The pixel limit read only the PNG after Cairo shrank it, so crossing the side limit was a way past it. A chain of 36.7 Mpx at full size published, while a 38 Mpx fan was refused | Rerun: the unlabeled chain published at scale 0.89 | The limit applies at full size from the SVG, and the finished-file check stays |
+| R-P3 | The tall-view test used one size and required exactly 32767 pixels, which is why R-P1 was missed. Cairo gives 32766 at 168 entities | Measured | Tests cover five sizes through the renderer, a sweep of Cairo's arithmetic, and six real `dot` outputs in both directions |
+
+The root session also changed the scale to round down, because a shrink of a few pixels rounded to 1.0 and got no warning.
+
+Results at `0.4.0a3`, through the package or the real CLI:
+
+- All 78 shrunken views from 111 to 200 entities publish with the warning. The lowest scale with ordinary names is 0.608, at 197 entities.
+- With 256-character names, 130 entities publish at 0.487, the lowest seen, and 140 or more are refused with exit 2.
+- Labeled and unlabeled 197-icon chains are both refused with exit 2.
+- The local gate passes 14 lanes and 984 tests with none skipped.
+
+| Change | Tests failed |
+|---|---|
+| Smaller ratio sets the scale again | 7 |
+| Larger ratio sets the scale | 6 |
+| Pixel limit not applied at full size | 1 |
+| Scale rounded to nearest again | 2 |
+
+The reviewer also asked whether P-028 needs a floor, and suggested refusing below 0.5 if the owner wants an explicit rule. The full-size pixel limit leaves 0.487 as the lowest scale seen, so no explicit floor was added. The owner can still choose one.
+
+Not findings: when publication fails after a shrink, the result carries only the write failure, and nothing is published. The reviewer's weak-test notes on `test_skill_names_the_render_size_outcomes` and `test_a_uniformly_smaller_png_is_disclosed` stay as they are, since the new sweep covers what the second one cannot see.
+
 ## Disposition
 
 | Finding | State |
 |---|---|
-| P2-1, P2-2, P2-3 | Fixed in core `0.4.0a2`; re-review pending |
+| P2-1, P2-2 | Fixed in core `0.4.0a2`; the re-review confirms both |
+| P2-3, R-P1, R-P2, R-P3 | Fixed in core `0.4.0a3`; recheck pending |
 | P3-1 to P3-5 | Open for the owner; not fixed |
 
 A fix needs another review of the changed code. This approves nothing beyond what it states, and it does not replace the owner's inspection of the output.

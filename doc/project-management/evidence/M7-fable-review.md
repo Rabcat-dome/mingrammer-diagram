@@ -57,4 +57,4 @@ Edge observations, not findings: closed stdin gives a traceback and exit 3, clos
 
 ## Disposition
 
-On the owner's instruction, Claude Opus 5.5 corrected the P2 sentence to "bypasses no other error". A new test checks the core's behavior and the wording, and restoring the old wording fails it. The fix needs its own review, which runs with the [M3 fixes](S07-fable-review.md#fixes). The three P3 findings are not fixed and stay open for the owner.
+On the owner's instruction, Claude Opus 5.5 corrected the P2 sentence to "bypasses no other error". A new test checks the core's behavior and the wording, and restoring the old wording fails it. The [re-review](S07-fable-review.md#re-review-at-93b7d11) confirms the fix at `93b7d11`. The three P3 findings are not fixed and stay open for the owner.

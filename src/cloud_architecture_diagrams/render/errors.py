@@ -64,7 +64,7 @@ MESSAGES = {
         "No bundle was published. Check the Graphviz installation, then retry.",
     ),
     "RENDER_PIXEL_LIMIT": (
-        "The finished PNG exceeds the pixel limit, which a view can reach inside its entity limit.",
+        "The image exceeds the pixel limit at full size, which a view can do inside its entity limit.",
         "Split the view into smaller views.",
     ),
     "RENDER_PNG_SCALED": (

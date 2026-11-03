@@ -404,3 +404,9 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - The owner asked to fix the P2 findings and re-review. Claude Opus 5.5 fixed P2-1, P2-2 and P2-3 from the [M3 review](evidence/S07-fable-review.md#fixes) in core `0.4.0a2`, and corrected the skill's lenient-mode sentence from the [M7 review](evidence/M7-fable-review.md).
 - P2-2 changed the contract, the diagnostic and M4-04, not the limits or the layout. P-028 records why a shrunken PNG warns rather than fails.
 - The local gate passes 14 lanes and 971 tests with none skipped, and all 10 sabotage changes failed tests. The P3 findings are not fixed. M3 and M7 stay open.
+
+## 2026-11-03 — Re-review found a regression in the size fix
+
+- A fresh Claude Fable 5.1 / High agent reviewed `0b30b02..93b7d11` and requested changes. CI had passed there ([run 41585566124](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41585566124), 14 lanes and 971 tests, with the wheel matching the local build), yet about half of real PNG shrinks failed with a false exit 4. The only size the test used happened to pass.
+- Claude Opus 5.5 reran that through the real CLI and fixed it in core `0.4.0a3`: the scale comes from the longer side, the pixel limit applies at full size, and the scale rounds down. The local gate passes 14 lanes and 984 tests. See the [re-review](evidence/S07-fable-review.md#re-review-at-93b7d11).
+- The same reviewer rechecks the fix next. M3 and M7 stay open.

@@ -1,6 +1,6 @@
 # Core Contract v1.0.0
 
-S05 / M1, S06 / M2 and S07 / M3 implementation guide, subordinate to the single [requirements](../requirements/requirements.md). Package `0.4.0a2` is a core development version; installed Work plugin `0.1.0-alpha.3` remains the independent S04 fixture. This change does not replace that plugin. The renderer is an engineering slice, so coverage, visual quality and official-reference comparison stay with M4.
+S05 / M1, S06 / M2 and S07 / M3 implementation guide, subordinate to the single [requirements](../requirements/requirements.md). Package `0.4.0a3` is a core development version; installed Work plugin `0.1.0-alpha.3` remains the independent S04 fixture. This change does not replace that plugin. The renderer is an engineering slice, so coverage, visual quality and official-reference comparison stay with M4.
 
 ## Setup and discovery
 
@@ -119,10 +119,10 @@ Clusters form a tree, and these dimensions do not. Each entity therefore nests u
 | Memory | 1 GiB | Sampled process-group RSS, not a kernel cap |
 | Temporary storage | 256 MiB | Sampled request-directory bytes, not a quota |
 | Each file | 16 MiB | `RLIMIT_FSIZE`, then checked on read |
-| PNG pixels | 32,000,000 | Checked on the finished file; exit 2 |
+| PNG pixels | 32,000,000 | Checked at full size from the SVG and again on the finished file; exit 2 |
 | PNG side | 32,767 pixels | Cairo shrinks a larger image, which is compared with the SVG, recorded as `png.scale` and reported as `RENDER_PNG_SCALED` |
 
-The entity and relationship limit is an upper bound, not a promise that a view fits. The pixel limit is checked on the finished image, so it can refuse a view inside 200 / 300, most often one with many icons and labeled edges. M4-04 sizes these numbers from icon views. A file over 16 MiB also exits 2. Time, memory and temporary storage exit 4, because host load can move them.
+The entity and relationship limit is an upper bound, not a promise that a view fits. The pixel limit applies to the full-size image, so it can refuse a view inside 200 / 300, most often one with many icons and labeled edges, and a PNG cannot pass by being shrunk first. M4-04 sizes these numbers from icon views. A file over 16 MiB also exits 2. Time, memory and temporary storage exit 4, because host load can move them.
 
 **Publication (FR-043, NFR-003, NFR-010).** The output root must be a real directory owned by the user and not writable by group or others, and a symbolic link or `..` anywhere in its path is refused. Access is held by descriptor. A random-suffix bundle name means no render overwrites another. Scratch lives in a hidden `.request-*` directory, which is removed on success, failure and SIGTERM, SIGINT or SIGHUP. SIGKILL cannot run cleanup, so it can leave one behind. Nothing is published until these pass:
 
