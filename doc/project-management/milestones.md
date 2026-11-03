@@ -1,6 +1,6 @@
 # Milestones and Work Breakdown
 
-Updated: 2026-11-03 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 complete on 2026-11-03 for the private personal release. S07 / M3 is implemented and passes actual CI, and it is not closed. Huawei rights are not cleared: D-018 allows private personal use only, D-019 settles the asset-rights exit item for that use, and O-002 blocks public distribution. M7 Claude Code preparation started early under D-015.
+Updated: 2026-11-03 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 complete on 2026-11-03 for the private personal release. S07 / M3 is implemented and passes actual CI; Fable/High requested changes, so it is not closed. Huawei rights are not cleared: D-018 allows private personal use only, D-019 settles the asset-rights exit item for that use, and O-002 blocks public distribution. M7 Claude Code preparation started early under D-015.
 
 Source of scope: [requirements](../requirements/requirements.md). Model abbreviations and review rules: [model strategy](model-strategy.md). Quality check definitions: [quality gate](quality-gate.md).
 
@@ -64,7 +64,7 @@ Exit: all five hosting inventories and the shared Kubernetes detail catalog meet
 
 ## M3 — Controlled rendering vertical slice
 
-Status: Implemented on `codex/s07-controlled-rendering`, not closed. [Evidence](evidence/S07-controlled-rendering.md) records actual CI [run 41539921034](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41539921034) passing at `cddb497`. The Fable/High review under D-021 and the owner's inspection of the first output remain open. Planned implementation: Sol/High; actual implementation: Claude Opus 5.5 (`claude-opus-5-5`), the model of the session that ran S07. Review: Fable/High.
+Status: Implemented on `codex/s07-controlled-rendering`, not closed. [Evidence](evidence/S07-controlled-rendering.md) records actual CI [run 41539921034](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41539921034) passing at `cddb497`. Under D-021, [Fable/High requested changes](evidence/S07-fable-review.md) on three P2 findings. Those and the owner's inspection of the first output remain open. Planned implementation: Sol/High; actual implementation: Claude Opus 5.5 (`claude-opus-5-5`), the model of the session that ran S07. Review: Fable/High.
 
 | Task | Work | Dependency / output |
 |---|---|---|
@@ -117,7 +117,7 @@ Exit: all P0 pass; no unresolved Critical/High findings; justified Medium findin
 
 ## M7 — Claude Code adapter and later work
 
-Status: Adapter preparation started under D-015; not complete and not a first-release requirement. See [M7 evidence](evidence/M7-claude-plugin.md). Implementation: Claude Opus 5.5, the model of the owner's session rather than a project selection. A same-session review and a separate-session Claude review ran; all their findings are fixed. The Fable/High review that D-021 now names has not been performed.
+Status: Adapter preparation started under D-015; not complete and not a first-release requirement. See [M7 evidence](evidence/M7-claude-plugin.md). Implementation: Claude Opus 5.5, the model of the owner's session rather than a project selection. A same-session review and a separate-session Claude review ran; all their findings are fixed. Under D-021, [Fable/High approved `c5f74b4..c6a59e5`](evidence/M7-fable-review.md) and left one P2 at the head, from S06, and three P3 findings open.
 
 | Task | Work | Dependency / output |
 |---|---|---|

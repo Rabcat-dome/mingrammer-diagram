@@ -390,3 +390,11 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - The owner asked to move all reviewing from Astra to Fable. D-021 records that and lifts D-020's one-review limit.
 - Forward-looking rules changed in the model strategy, milestones, session plan, quality gate, core contract, S07 and M7 evidence, and the handoff. Reviews already done stay recorded under the model that ran them, and the Work runtime recommendation for Astra is unchanged because it is not a review.
 - Claude Opus 5.5 made this docs-only change. No review ran and no merge happened. M3 and M7 still need their reviews.
+
+## 2026-11-03 — Fable reviews of M3 and M7
+
+- The owner asked for the outstanding reviews to run on Fable. D-021 is at `6353ef1`, and actual [run 41579564625](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41579564625) passed there.
+- Two fresh Claude Fable 5.1 / High agents reviewed separately at `6353ef1`, with the rendering left to the first alone. Claude Opus 5.5 briefed them and reran their main findings through the real CLI.
+- [S07 / M3](evidence/S07-fable-review.md): changes requested on three P2 findings in output-size handling, with five P3 findings. The sandbox, escaping, publication, cleanup, mapping and strict and lenient behavior held. One number differed in the rerun: an unlabeled 197 / 300 view with traffic edges only measures 28.9 Mpx, under the limit, against the reviewer's 34 Mpx with mixed kinds.
+- [M7](evidence/M7-fable-review.md): `c5f74b4..c6a59e5` approved, including the Medium and Low fixes, with one P2 at the head from S06 and three P3 findings.
+- No finding is fixed, no code changed, and M3 and M7 stay open. The review worktrees were removed.

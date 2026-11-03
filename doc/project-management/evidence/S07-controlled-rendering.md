@@ -2,7 +2,7 @@
 
 Date: 2026-11-03 | Tasks: M3-01..04 | Branch: `codex/s07-controlled-rendering`, from `f3f0789` | Package: `0.4.0a1` | Code head: `cddb497`
 
-**Result: the renderer is implemented and passes all 14 lanes and 959 tests locally and in [actual CI](#actual-ci) at `cddb497`. M3 is not closed.** No reviewer has examined this code, and the owner has not inspected the output. The contract is in the [core contract](../../design/core-contract.md#controlled-rendering).
+**Result: the renderer is implemented and passes all 14 lanes and 959 tests locally and in [actual CI](#actual-ci) at `cddb497`. M3 is not closed.** [Fable/High requested changes](S07-fable-review.md) on three P2 findings, and the owner has not inspected the output. The contract is in the [core contract](../../design/core-contract.md#controlled-rendering).
 
 ## Task status
 
@@ -19,10 +19,10 @@ Date: 2026-11-03 | Tasks: M3-01..04 | Branch: `codex/s07-controlled-rendering`, 
 |---|---|---|
 | Repeatable CLI render from a clean setup | Met | A fresh environment from `uv.lock` and a clean wheel install outside the checkout both render; see [clean setup](#clean-setup). Two renders of one input produce identical SVG, PNG and graph bytes |
 | Invalid input cannot bypass validation | Met | `render_model` is the only entry point. 31 invalid and malformed inputs run in both modes, with every later render step replaced by a failing stub |
-| Usable SVG and PNG with a complete bundle | Met in tests; owner inspection pending | All 19 views of the existing fixtures render, together reaching all 148 catalog types. Each output's content is checked against the graph. This session inspected samples; see [inspection](#inspection) |
+| Usable SVG and PNG with a complete bundle | Met in tests for these views, but a tall or wide layout can publish a downscaled PNG ([P2-3](S07-fable-review.md#p2-3-a-tall-or-wide-layout-publishes-a-downscaled-png-as-complete)); owner inspection pending | All 19 views of the existing fixtures render, together reaching all 148 catalog types. The SVG's content is checked against the graph, and the PNG structurally. This session inspected samples; see [inspection](#inspection) |
 | Required security tests pass | Met | `render-security` covers path, symlink, isolation, timeout, code, Graphviz and SVG injection and resource limits; see [validation](#validation) |
 
-M3 also needs the Fable/High review under D-021 and the disposition of its findings. Those are open.
+M3 also needs the disposition of the [Fable/High review](S07-fable-review.md) under D-021. It requests changes, and its findings are open.
 
 ## Validation
 
@@ -85,7 +85,7 @@ All 19 changes failed their lane. The first version of the last case only added 
 
 ### Measured render time
 
-Three runs of each size on this Mac, with a connected synthetic graph of labeled nodes and no icons. This shows that the 55 s wall limit leaves a large margin at the view limit. It is not the NFR-007 benchmark, which M4-04 owns and which needs icon-heavy fixtures.
+Three runs of each size on this Mac, with a connected synthetic graph of labeled nodes and no icons. This shows that the 55 s wall limit leaves a large margin at the view limit, and the [review](S07-fable-review.md#p2-2-the-documented-200--300-bound-is-not-always-reachable-with-icons) confirmed that with icons, while finding that the pixel limit can reject those views first. It is not the NFR-007 benchmark, which M4-04 owns and which needs icon-heavy fixtures.
 
 | Entities / relationships | Seconds per run | SVG bytes | PNG bytes |
 |---|---|---|---|
@@ -111,7 +111,7 @@ These states were written from the local gate, and the same tests then passed in
 | FR-043 | Met locally | The result lists artifact paths and checksums, and `rendered` is true only after publication |
 | FR-044 | Not implemented | P1, by design |
 | FR-045 | Met locally | The closed schema, literal labels, and a read-back of the DOT through Graphviz. See P-026 on "reject" |
-| FR-046 | Met locally | View limits and nesting depth, with a suggestion to split. Automatic generation is P1 |
+| FR-046 | Partly; see P2-1 and P2-2 in the [review](S07-fable-review.md) | View limits and nesting depth, with a suggestion to split. Automatic generation is P1 |
 | FR-047 | Met locally | Manifest test against each named field |
 | FR-048 | Partly | Approved icons, native labels and grouping conventions. Reference comparison is M4 |
 | NFR-001 | Met on this Mac | Identical SVG, PNG and graph bytes across repeat renders. The wheel route matches the lock route, and two-machine comparison is M6 |
@@ -143,7 +143,7 @@ These would have shipped had the build trusted exit codes and upstream defaults.
 
 ## Limits and what this does not establish
 
-- **No review, and one machine.** Passing CI does not stand in for a review, and its runner is this same Mac.
+- **One machine.** The CI runner is this same Mac.
 - **FR-048 and T-016 are only partly addressed.** Icons, native labels and grouping conventions exist, but comparison with official references is M4 work.
 - **Layout is an engineering slice.** Members with no edges stack in one long column, notes can be verbose, and a long single word can wrap awkwardly, as `PersistentVolumeClaim` does at the label width. These are presentation choices for M4 and the owner, not defects in the bundle.
 - **macOS only.** Without `sandbox-exec`, `render` fails closed. Apple marks that tool deprecated, so a future macOS may need another route.
@@ -165,10 +165,10 @@ The session plan lists the owner's inspection of the first output. These proposa
 
 Implementation used **Claude Opus 5.5 (`claude-opus-5-5`)**, the model of the session started for S07. The project policy names Sol/High for this milestone, so this is a recorded substitution, and no model setting changed.
 
-D-021 names Fable/High for M3's review, replacing Astra/High. **That review has not happened.** Sabotage checks and self-review in this session are not a review.
+Under D-021, Claude Fable 5.1 / High [reviewed `f3f0789..cddb497`](S07-fable-review.md) in a fresh agent and **requested changes on three P2 findings**. It shares a vendor with the implementing model. Sabotage checks and self-review in the implementing session are not a review.
 
 ## Next steps
 
-1. Run the Fable/High review on `f3f0789..cddb497`, then dispose of its findings.
+1. Dispose of the [review's findings](S07-fable-review.md) and re-review any fixes.
 2. The owner inspects representative output and settles the presentation choices above.
 3. Close M3 only after those. M4 then builds reference scenarios on this renderer.

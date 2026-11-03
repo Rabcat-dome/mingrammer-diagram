@@ -101,7 +101,7 @@ The owner then asked for the six Low findings to be fixed too:
 | Gate digests omitted `pyproject.toml` | Digests include it and `uv.lock` | A test requires every plugin link target to be covered |
 | Spaces, hostile variables and project files had no test, the guide test ran one way, and the guide omitted the `ownership` rule | New tests cover these, 13 guide lists must now match the contract exactly, and the guide states the rule and adds the Service type and port protocol values | Tests |
 
-Removing or weakening any of 11 wrapper behaviors now fails a test: `--locked`, `--no-dev`, `--no-install-project`, `</dev/null`, `>&2`, `-I`, `-B`, the status mapping, the two absolute-path checks and the colon-safe import path. A relative `PATH` remains outside this protection, since control of the environment can already choose which programs run.
+Removing or weakening any of 11 wrapper behaviors now fails a test: `--locked`, `--no-dev`, `--no-install-project`, `</dev/null`, `>&2`, `-I`, `-B`, the status mapping, the two absolute-path checks and the colon-safe import path. A relative `PATH` remains outside this protection, since control of the environment can already choose which programs run. The [Fable review](M7-fable-review.md) found one exception to this count: weakening the `HOME` path check fails no test.
 
 The review also noted two M1 items outside this range: `field` echoes rejected key names, and `ID_DUPLICATE` does not name the duplicate ID.
 
@@ -115,11 +115,14 @@ These passed actual CI [run 41539921034](https://github.com/Rabcat-dome/mingramm
 
 S06 / M2 moved the core, and the checks built to catch that fired as intended. Five `claude-plugin` tests failed, and each was resolved by updating the skill, guide or expected contract, not by loosening a check. The caveat test now requires that `service_type` and `taxonomy` are rejected and no longer called unchecked. New tests cover catalog data in a clean copy, the Huawei warning, and the guide's type IDs and Kubernetes mappings. The plugin allowlist did not change, because catalogs and assets arrive through the `src` link, and the `catalog-license` lane covers them. The owner's installed plugin was not updated. See the [S06 evidence](S06-provider-catalogs.md).
 
+## Fable review
+
+Under D-021, Claude Fable 5.1 / High reviewed `c5f74b4..c6a59e5` in a fresh agent, with priority on the Medium and Low fixes, and [approved the range](M7-fable-review.md). It found one P2 at the head, in a skill sentence S06 changed, and three P3 findings. None is fixed yet. Claude Opus 5.5 wrote the code, so reviewer and implementer share a vendor.
+
 ## Not verified
 
 - A second machine, any other operating system, and first-run setup with an empty uv cache.
 - Interactive permission prompts, and how much `allowed-tools` admits at runtime, including whether a redirect such as `schema > file` prompts. Headless runs exercised `allowed-tools`, but the Code tab check ran under bypass permissions, so it did not.
 - Authoring a model from the Code tab.
-- The Fable/High review the model strategy now names under D-021. Implementation and both reviews above used Claude Opus 5.5, and the Medium and Low fixes have not been reviewed by any pass.
 
 Prompts were run once each, so trigger rates are observations rather than measurements. Provider semantics are unchanged from M1: a passing result does not establish that a service type exists or that a placement is legal.

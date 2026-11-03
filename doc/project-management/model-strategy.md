@@ -52,7 +52,7 @@ Under D-020, Claude Fable 5.1 (`claude-fable-5-1`) / High reviewed `5569459..dc5
 
 D-021 replaces Astra with Fable for every review from 2026-11-03, on the owner's request, and lifts D-020's one-review limit. Earlier reviews stay recorded under the models that ran them. The S06 and S07 implementation also ran on a Claude model, so a Fable review of that work shares a vendor with it. Name the implementing model in each review record so that limit stays visible.
 
-S07 / M3 used Claude Opus 5.5 (`claude-opus-5-5`), the model of the session that ran S07, rather than the planned Sol/High, with no model setting changed. This is a recorded substitution. D-021 makes the M3 review Fable/High. It has not happened, and no reviewer has examined this code. See the [S07 evidence](evidence/S07-controlled-rendering.md#model-and-review).
+S07 / M3 used Claude Opus 5.5 (`claude-opus-5-5`), the model of the session that ran S07, rather than the planned Sol/High, with no model setting changed. This is a recorded substitution. Under D-021, Fable/High [reviewed it](evidence/S07-fable-review.md) in a fresh agent and requested changes on three P2 findings. See the [S07 evidence](evidence/S07-controlled-rendering.md#model-and-review).
 
 ## Pipeline policy
 
@@ -68,7 +68,7 @@ The plugin uses the user's selected Work host model to interpret requests and au
 
 No mandatory second LLM service or model API key is needed for validation/rendering. Do not assume a Work subscription grants API credits or automated review access. Provider choices come from catalogs and context, with uncertainty disclosed; a more capable model does not replace semantic validation.
 
-For Claude Code support, reuse tool/model contracts and select the Claude model when the adapter's acceptance phase begins, using then-current official documentation and actual account availability. M7 preparation under D-015 used Claude Opus 5.5 (`claude-opus-5-5`), the model of the owner's session rather than a project selection, with Sonnet 5.5 and Haiku 5.5 for headless checks. A same-session high-effort review with that model found 10 issues, all fixed; it is not an independent pass. A later fresh Claude session reviewed the same work with the same model, which is a substitute of limited independence; the [Fable/High review D-021 names](evidence/M7-claude-plugin.md#separate-session-review) has not been performed.
+For Claude Code support, reuse tool/model contracts and select the Claude model when the adapter's acceptance phase begins, using then-current official documentation and actual account availability. M7 preparation under D-015 used Claude Opus 5.5 (`claude-opus-5-5`), the model of the owner's session rather than a project selection, with Sonnet 5.5 and Haiku 5.5 for headless checks. A same-session high-effort review with that model found 10 issues, all fixed; it is not an independent pass. A later fresh Claude session reviewed the same work with the same model, which is a substitute of limited independence; under D-021, [Fable/High approved `c5f74b4..c6a59e5`](evidence/M7-fable-review.md) and left one P2 at the head, from S06, and three P3 findings open.
 
 ## Token and cost discipline
 
