@@ -34,6 +34,12 @@ After that approval, the implementer found the README's build command failing on
 
 **Approve, and its approval carries to `82f14e0`.** It reproduced the failure on the earlier script and the fix on the new one, with a byte-identical archive from Python 3.9.6 and 3.13.7. It reran the lane (131 passed), lint, format and strict mypy. It did not rerun the host check, because no server code changed, though the implementer did at this commit, with 35 of 35.
 
+## Bounded check: `82f14e0..aa813ed`
+
+`main` had moved on with guidance on what a view selects, which fixes a flaw the rehearsal also showed, so `aa813ed` merged it in and added one sentence to the Work skill.
+
+**Approve, and its approval carries to `aa813ed`.** The same agent reproduced the merge independently, with only `ACTIVITY-LOG.md` conflicting and no hunk lost from either side. It checked the guide's new section against the core contract line by line, and found no wording that would mislead a session using `render_model`. It confirmed that the new request-ID test fails when `Runtime.cancel` is sabotaged. It reran both plugin lanes (192 passed), lint, format and strict mypy. It did not rerun the host check, because no server code changed, though the implementer did at this commit, with 35 of 35.
+
 ## What stays open
 
 | Finding | Why it stays |
@@ -44,4 +50,4 @@ After that approval, the implementer found the README's build command failing on
 
 ## After the approval
 
-One test changed, and no shipped code: `test_a_client_request_id_cannot_cancel_setup` replaces a check that the sabotage rerun showed proved nothing. It was confirmed to fail when the sabotage is applied. The reviewer has not seen this test.
+One sentence changed in the plugin README: the setup time now states the measured range of 2 seconds to almost 3 minutes, after a host check took 167 seconds. No code changed, but the README ships in the package, so the version is now `0.1.0-alpha.1+7a20877b00f0`. The reviewer has not seen this sentence.

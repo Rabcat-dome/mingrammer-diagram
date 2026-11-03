@@ -1,6 +1,6 @@
 # S09 — ChatGPT Work Plugin
 
-Dates: 2026-11-03 to 2026-11-04 (Asia/Bangkok) | Tasks: M5-01..04 | Branch: `codex/s09-work-plugin`, from `main` at `43b444d` | Plugin: `cloud-architecture-work` `0.1.0-alpha.1` plus a content digest | Core: `0.5.0a1`, unchanged
+Dates: 2026-11-03 to 2026-11-04 (Asia/Bangkok) | Tasks: M5-01..04 | Branch: `codex/s09-work-plugin`, from `main` at `43b444d`, with `main` at `88d0157` merged in at `aa813ed` | Plugin: `cloud-architecture-work` `0.1.0-alpha.1` plus a content digest | Core: `0.5.0a1`, unchanged
 
 **Result: M5 stays open. The plugin is built and passes everything that can run without the owner, including the host's own engine. Nothing here is a Work result: M5-04 needs the owner's run in actual Work, recorded in the [Work check](S09-Work-validation.md).**
 
@@ -66,28 +66,30 @@ OpenAI's pages describe local stdio plugins for the desktop app, Work mode inclu
 
 - **Install:** every built file arrives byte for byte, with no links. The version matches, the marketplace lists it as installed and enabled, and the skill is in the prompt a model would receive.
 - **Discovery:** exactly the eight tools.
-- **Setup:** a fresh machine reports `not_installed`, and a call before setup gets `RUNTIME_NOT_READY`. Setup then finished in under 5 seconds with an empty uv cache in each run (2.3 seconds in the recorded one), and can render. This Mac already had Python 3.13.7, so uv did not download Python.
+- **Setup:** a fresh machine reports `not_installed`, and a call before setup gets `RUNTIME_NOT_READY`. Setup then finished with an empty uv cache and can render. It took under 5 seconds in four runs and 167 seconds in the recorded one, whose cause was not investigated. Setup runs behind the call, so neither length times out. This Mac already had Python 3.13.7, so uv did not download Python.
 - **Tools:** catalog, schema, invalid input with its code, a render with an inline PNG, all six files back through the host matching their checksums, another view from an earlier bundle, an edit that keeps every ID and leaves the old bundle unchanged, every Kubernetes view, and Thai text.
 - **Scope:** traversal, a missing bundle and an unlisted file are refused, and the root and bundles are private to the user.
 - **Upgrade:** the old process reports `PLUGIN_UPDATED`, and a new session runs the new version on the same runtime with no second setup.
 - **The agent's path:** tool names, the approval refusal, image forwarding, a failed call, and a model kept between `exec` calls with `store`.
 - **Removal:** the runtime goes, bundles stay, and no install or config entry remains.
 
-The [proof](S09-host-check-proof.json) records each check at `82f14e0`, which passes 35 of 35, and the reviewer reproduced that result separately. This is the host's engine and not the Work user interface: it says nothing about what the Work page shows, whether its approval prompt appears, or what a real model does with the skill.
+The [proof](S09-host-check-proof.json) records each check at `aa813ed`, which passes 35 of 35, and the reviewer reproduced that result separately at earlier commits. This is the host's engine and not the Work user interface: it says nothing about what the Work page shows, whether its approval prompt appears, or what a real model does with the skill.
 
 As a second, independent client, the official MCP Python SDK 2.3.0, the version S04 pinned, negotiated protocol `2025-11-25` with the built server. It listed the eight tools, ran setup, rendered, read the files and got a validation failure, and its schema validation accepted every result shape. That was one run, kept outside the repository.
 
 ## Rehearsal with a live model
 
-A skill sentence no unit test had read once broke a live session of the Claude plugin, so this skill went through live sessions before the owner's time. These ran on Claude Code 2.1.309 with Sonnet 5.5 and the owner's existing login, over the built package's MCP server. **This is not the Work host and not the model Work would use.** It reaches tools directly instead of through `exec`, so it tests the skill's instructions and the tool contract, not the host. Only the MCP tools and Read were allowed, and each prompt ran once in a new session, so these are observations rather than rates. The [proof](S09-rehearsal-proof.json) keeps the start of each reply, for the build at `4466ace`. The one later change to the package is the error handling in `scripts/runtime.py`.
+A skill sentence no unit test had read once broke a live session of the Claude plugin, so this skill went through live sessions before the owner's time. These ran on Claude Code 2.1.309 with Sonnet 5.5 and the owner's existing login, over the built package's MCP server. **This is not the Work host and not the model Work would use.** It reaches tools directly instead of through `exec`, so it tests the skill's instructions and the tool contract, not the host. Only the MCP tools and Read were allowed, and each prompt ran once in a new session, so these are observations rather than rates. The [proof](S09-rehearsal-proof.json) keeps the start of each reply.
 
-| Prompt | Turns | Denials | Outcome |
-|---|---|---|---|
-| English: an AWS three-tier application, with the picture and all six files | 17 | 0 | Rendered and looked at the PNG. Showed the picture as a Markdown image and linked all six files |
-| English: add an S3 bucket both app servers read, and list IDs kept and added | 8 | 0 | Found the source through `list_bundles`. All 4 resources and 4 relationships unchanged, 1 resource and 2 relationships added, in a new bundle |
-| English: add a WAF to that diagram | 11 | 0 | Said the catalog has no AWS WAF, used a lenient draft under the real name, and marked it a draft. An earlier run on the same prompt stopped and asked instead. A headless session cannot wait for an answer, so the difference proves little |
-| English: validate a model with a dangling reference, without fixing it | 5 | 0 | `REFERENCE_MISSING`, changed nothing, drew nothing, and said the later layers had not run |
-| Thai: GKE with Deployment, Service, Ingress and PVC, overview and detail, Thai labels | 11 | 1 | Both views rendered, and it replied in Thai. The one denial was a Bash call to generate the JSON with a local script, which the rehearsal does not allow, and it then wrote the model itself |
+| Prompt | Build | Turns | Denials | Outcome |
+|---|---|---|---|---|
+| English: an AWS three-tier application, with the picture and all six files | `aa813ed` | 15 | 0 | Rendered and looked at the PNG. Showed the picture as a Markdown image and linked all six files. Region, VPC and subnets nest, and zones are notes, with no loose box |
+| English: add an S3 bucket both app servers read, and list IDs kept and added | `aa813ed` | 9 | 0 | Started from the earlier bundle's `model.json`. All 4 resources and 4 relationships unchanged, 1 resource and 2 relationships added, in a new bundle, and the old bundle untouched |
+| Thai: GKE with Deployment, Service, Ingress and PVC, overview and detail, Thai labels | `aa813ed` | 12 | 1 | Both views rendered with `namespace` grouping, and it replied in Thai. The one denial was a Bash call the rehearsal does not allow, and the session went on without it |
+| English: add a WAF to that diagram | `4466ace` | 11 | 0 | Said the catalog has no AWS WAF, used a lenient draft under the real name, and marked it a draft. An earlier run on the same prompt stopped and asked instead. A headless session cannot wait for an answer, so the difference proves little |
+| English: validate a model with a dangling reference, without fixing it | `4466ace` | 5 | 0 | `REFERENCE_MISSING`, changed nothing, drew nothing, and said the later layers had not run |
+
+An earlier run showed region and zones as loose boxes below the VPC. `main` had meanwhile fixed the same flaw in the shared model guide, for the Claude plugin, so `aa813ed` merged that in, and the Work skill now points to it. The AWS rehearsal above shows the result.
 
 The WAF result changed the plan. M7's earlier check used a WAF, and the owner's Work check would have hit the same gap, so it uses S3 instead, and the skill now names this case. WAF is outside the requirement baseline, so this is a coverage limit and not a defect.
 
@@ -106,11 +108,11 @@ Sabotage found a weak test both times, which is why it is worth repeating. It co
 
 | Check | Result |
 |---|---|
-| Local gate at `14a395c`, clean tree | All 16 lanes, with 1,382 tests: 91 schema-core, 76 catalog-license, 442 provider-semantics, 228 render-security, 293 render-smoke, 65 visual-regression, 55 claude-plugin and 132 package-contract |
-| [Actual CI run 41693401824](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41693401824), job 126117518612, at `14a395c` | All 16 lanes on `macbook-pro-m2-max-mingrammer`, with 1,382 tests, none skipped, and zero job annotations. Read from the run's report on the runner. `14a395c` differs from the approved code by the one test and these records |
-| [Actual CI run 41691896306](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41691896306), job 126112325770, at `82f14e0` | All 16 lanes, with 1,381 tests, none skipped, and zero job annotations. This is the commit Fable approved |
+| Local gate at `aa813ed`, clean tree | All 16 lanes, with 1,387 tests: 91 schema-core, 76 catalog-license, 442 provider-semantics, 228 render-security, 293 render-smoke, 65 visual-regression, 60 claude-plugin and 132 package-contract |
+| [Actual CI run 41695136756](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41695136756), job 126123553696, at `aa813ed` | All 16 lanes on `macbook-pro-m2-max-mingrammer`, with 1,387 tests, none skipped, and zero job annotations. Read from the run's report on the runner |
+| [Actual CI run 41691896306](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41691896306), job 126112325770, at `82f14e0` | All 16 lanes, with 1,381 tests, none skipped, and zero job annotations. This is the code as Fable first approved it, before the merge |
 | Core wheel | SHA-256 `1f4d7e474a6011a4ead8e464587e2565775c7d378f4093476e26a88dada30ebc`, the same in CI and locally. `src` has no change in this session |
-| Package at `82f14e0` and `14a395c` | `0.1.0-alpha.1+7ef5b5f31668`, 97 files, 1.6 MB, and a ZIP of 716 KB with SHA-256 `f09ad1b512f8f2bae61e27fe3eec99e191ece45a972fd337e1720b8fef5249d1`. Python 3.9.6 and 3.13.7 build the same archive, and the reviewer reproduced that digest |
+| Package for the owner | `0.1.0-alpha.1+7a20877b00f0`, 97 files, 1.6 MB, and a ZIP of 716 KB with SHA-256 `58e2eb190cff0f9f462e959f840d26144293bb533590d374df5774dcda6dda48`. Python 3.9.6 and 3.13.7 build the same archive |
 
 ## Findings from building it
 
@@ -152,7 +154,7 @@ Sabotage found a weak test both times, which is why it is worth repeating. It co
 
 Claude Opus 5.5 (`claude-opus-5-5`) did the implementation, tests and records, in a session started from the owner's main session. The project policy names Sol for M5, so this is a recorded substitution, and no model setting changed. Sonnet 5.5 ran the live rehearsal only.
 
-Under D-021, Claude Fable 5.1 / High [reviewed the code](S09-fable-review.md) in a fresh agent and requested changes on two P2 findings, then **approved `82f14e0`** after they and most P3 findings were fixed. Three P3 findings stay open. Fable and Opus share a vendor, so the review reduces some shared assumptions and does not remove them. It approves code only: the Work acceptance is the owner's.
+Under D-021, Claude Fable 5.1 / High [reviewed the code](S09-fable-review.md) in a fresh agent and requested changes on two P2 findings, then **approved `aa813ed`**, through two bounded rechecks, after they and most P3 findings were fixed. Three P3 findings stay open. Fable and Opus share a vendor, so the review reduces some shared assumptions and does not remove them. It approves code only: the Work acceptance is the owner's.
 
 ## Next steps
 

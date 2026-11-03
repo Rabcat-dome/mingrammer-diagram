@@ -52,7 +52,7 @@ codex plugin marketplace add ~/.local/share/cloud-architecture-diagrams/work-rel
 codex plugin add cloud-architecture-work@mingrammer-work
 ```
 
-Restart the ChatGPT app. In Work mode, open a new chat and select **Cloud Architecture Diagrams**. The first request asks the plugin to build its private runtime, and the app may ask you to approve that, because it reaches the network. It took under 5 seconds on the tested Mac, which already had Python 3.13.7, and it takes longer when uv has to download Python. The first use on a Mac can also bring up the system's request to let ChatGPT use your Documents folder, and rendering needs it. To build the runtime from a terminal instead, run this inside the installed copy:
+Restart the ChatGPT app. In Work mode, open a new chat and select **Cloud Architecture Diagrams**. The first request asks the plugin to build its private runtime, and the app may ask you to approve that, because it reaches the network. With an empty uv cache it took from 2 seconds to almost 3 minutes on the tested Mac, which already had Python 3.13.7, and it takes longer when uv has to download Python. It runs behind the call, so a long download does not time out. The first use on a Mac can also bring up the system's request to let ChatGPT use your Documents folder, and rendering needs it. To build the runtime from a terminal instead, run this inside the installed copy:
 
 ```bash
 python3 ~/.codex/plugins/cache/mingrammer-work/cloud-architecture-work/*/scripts/runtime.py setup
