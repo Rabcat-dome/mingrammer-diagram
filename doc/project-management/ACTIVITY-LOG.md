@@ -448,3 +448,9 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - At the owner's standing request to merge finished work in stages, Claude Opus 5.5 merged `main` into the S07 branch, because `main` had two record commits it lacked. Rebasing would have changed the SHAs the records name. Only the activity log and the handoff conflicted.
 - Merge commit `7c461b7` passes 14 lanes and 985 tests locally and in actual CI [run 41600668220](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41600668220), with the wheel unchanged. `main` then fast-forwarded to the S07 head, and no branch was deleted.
 - The owner's install still holds `3d235fa`, so it has no renderer until the plugin README's update commands run. The repository stays private.
+
+## 2026-11-03 — S08 starts; first live render through the plugin
+
+- The owner asked to start M4. S08 runs on `codex/s08-reference-diagrams`, from `main` at `02dc709`, on Claude Opus 5.5 rather than the planned Sol/Medium.
+- The owner updated the installed plugin from `f50e66d` to `02dc709`. The records said `3d235fa`, which was stale, and they now say `02dc709`. The two older commits differ only in records.
+- A live headless session on the installed copy got no image: the skill said the output root must exist, so it ran `mkdir`, was denied, and never tried `render`, which creates a missing root. The skill now says so, and P3-4 from the [S07 review](evidence/S07-fable-review.md) is fixed in the same sentence. A new session on the corrected copy through `--plugin-dir` rendered with no denials. See the [M7 evidence](evidence/M7-claude-plugin.md).

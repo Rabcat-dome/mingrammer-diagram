@@ -125,7 +125,7 @@ Clusters form a tree, and these dimensions do not. Each entity therefore nests u
 
 The entity and relationship limit is an upper bound, not a promise that a view fits. The pixel limit applies to the full-size image, so it can refuse a view inside 200 / 300, most often one with many icons and labeled edges, and a PNG cannot pass by being shrunk first. M4-04 sizes these numbers from icon views. A file over 16 MiB also exits 2. Time, memory and temporary storage exit 4, because host load can move them.
 
-**Publication (FR-043, NFR-003, NFR-010).** The output root must be a real directory owned by the user and not writable by group or others, and a symbolic link or `..` anywhere in its path is refused. Access is held by descriptor. A random-suffix bundle name means no render overwrites another. Scratch lives in a hidden `.request-*` directory, which is removed on success, failure and SIGTERM, SIGINT or SIGHUP. SIGKILL cannot run cleanup, so it can leave one behind. Nothing is published until these pass:
+**Publication (FR-043, NFR-003, NFR-010).** `render` creates a missing output root with mode 0700. An existing root must be a real directory owned by the user and not writable by group or others, and a symbolic link or `..` anywhere in its path is refused. Access is held by descriptor. A random-suffix bundle name means no render overwrites another. Scratch lives in a hidden `.request-*` directory, which is removed on success, failure and SIGTERM, SIGINT or SIGHUP. SIGKILL cannot run cleanup, so it can leave one behind. Nothing is published until these pass:
 
 - The PNG's chunks and checksums, and the pixel limit.
 - The PNG's size against the SVG's. A uniform shrink to at least half size is disclosed, and anything else fails.

@@ -298,6 +298,15 @@ def test_catalog_class_paths_stay_data_a_model_cannot_supply() -> None:
         assert forbidden not in fields
 
 
+def test_a_missing_output_root_is_created_private(tmp_path: Path) -> None:
+    # The plugin's skill relies on this, because its session may not run `mkdir`.
+    output = tmp_path / "missing/nested/out"
+    result = render(GOOD, output)
+    assert result.rendered, codes(result)
+    for path in (tmp_path / "missing", tmp_path / "missing/nested", output):
+        assert stat.S_IMODE(os.stat(path).st_mode) == 0o700, path
+
+
 def test_a_symlinked_output_root_is_rejected(tmp_path: Path) -> None:
     target = tmp_path / "elsewhere"
     target.mkdir(mode=0o700)

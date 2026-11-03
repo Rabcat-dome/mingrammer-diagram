@@ -232,6 +232,14 @@ def test_skill_names_the_render_size_outcomes() -> None:
         assert code in skill, code
 
 
+def test_skill_says_render_creates_its_output_root() -> None:
+    # The skill grants only the wrapper, so a session told the root must exist stops at `mkdir`.
+    skill = (SKILL / "SKILL.md").read_text()
+    assert "creates a missing output root itself" in skill
+    assert "run no `mkdir`" in skill
+    assert "`/tmp` and `$TMPDIR`" in skill
+
+
 def test_skill_discloses_the_huawei_icon_blocker() -> None:
     # A Huawei model validates, so the skill must still state both limits on its icons.
     blockers = capabilities()["release_blockers"]
