@@ -22,6 +22,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from .artifacts import BUNDLE
+
 PYTHON = "3.13.7"
 SANDBOX = "/usr/bin/sandbox-exec"
 # A host started from the desktop can have a short PATH, and uv and Graphviz usually live here.
@@ -105,6 +107,8 @@ def stop_group(popen: subprocess.Popen[bytes]) -> None:
 class Runtime:
     root: Path
     running: dict[Any, Process] = field(default_factory=dict)
+    # A cancel can arrive before its call has started a process.
+    cancelled_early: set[Any] = field(default_factory=set)
     guard: threading.Lock = field(default_factory=threading.Lock)
     stopping: bool = False
     setup_state: SetupState = field(default_factory=SetupState)
@@ -187,8 +191,8 @@ class Runtime:
         process = Process(popen)
         with self.guard:
             self.running[token] = process
-            stopping = self.stopping
-        if stopping:
+            stop = self.stopping or token in self.cancelled_early
+        if stop:
             process.cancelled = True
             stop_group(popen)
         return process
@@ -196,9 +200,15 @@ class Runtime:
     def cancel(self, token: Any) -> None:
         with self.guard:
             process = self.running.get(token)
+            if process is None:
+                self.cancelled_early.add(token)
         if process is not None:
             process.cancelled = True
             threading.Thread(target=stop_group, args=(process.popen,), daemon=True).start()
+
+    def finished(self, token: Any) -> None:
+        with self.guard:
+            self.cancelled_early.discard(token)
 
     def stop_all(self) -> None:
         with self.guard:
@@ -414,19 +424,24 @@ class Runtime:
         return {"ready": True, **marker}
 
     def render_probe(self) -> dict[str, Any]:
-        """One real render of a bundled example, which is the only proof the host allows it."""
+        """One real render of a bundled example where bundles really go, then remove that bundle.
+
+        Only this proves the sandbox, fonts and folder all work from this host process. It also
+        brings up the system's question about Documents during setup, not during a drawing.
+        """
         example = self.root / "skills/architecture-model/examples/core-valid.json"
-        target = self.data / "render-probe"
-        shutil.rmtree(target, ignore_errors=True)
         try:
             ran = self.run_core(
-                ["render", "--output=" + str(target)],
+                ["render", "--output=" + str(self.output)],
                 example.read_bytes(),
                 PROBE_SECONDS,
                 "setup-probe",
             )
             report = json.loads(ran.stdout)
             if report.get("rendered") is True:
+                bundle = str(report["bundle_id"])
+                if BUNDLE.fullmatch(bundle):
+                    shutil.rmtree(self.output / bundle, ignore_errors=True)
                 return {"passed": True}
             codes = [
                 d["code"] for d in report.get("diagnostics", []) if d.get("severity") == "error"
@@ -434,8 +449,6 @@ class Runtime:
             return {"passed": False, "codes": codes}
         except (OSError, ValueError, KeyError, TypeError):
             return {"passed": False, "codes": ["RENDER_PROBE_FAILED"]}
-        finally:
-            shutil.rmtree(target, ignore_errors=True)
 
     def remove(self) -> dict[str, Any]:
         """Delete only this adapter's runtime. Bundles and the core's Claude runtime stay."""

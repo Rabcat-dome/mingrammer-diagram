@@ -290,6 +290,15 @@ def body_of(result: dict[str, Any]) -> dict[str, Any]:
     return value
 
 
+def upgrade_release(report: dict[str, Any]) -> str:
+    """Stand in for the next build: the same content, under the version a change would give it."""
+    manifest_path = Path(report["marketplace_root"]) / "plugins" / PLUGIN / "plugin.json"
+    manifest = json.loads(manifest_path.read_text())
+    manifest["version"] = version = manifest["version"].split("+")[0] + "+000000000000"
+    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
+    return str(version)
+
+
 def run(codex: str, work: Path, check: Check) -> None:
     home = work / "home"
     profile = work / "codex-home"
@@ -593,8 +602,39 @@ def run(codex: str, work: Path, check: Check) -> None:
             ),
             root=listing["root"].replace(str(work), "<work>"),
         )
+        # An upgrade: the same folder gets a new version, while this chat's process keeps running.
+        new_version = upgrade_release(report)
+        upgraded = cli("plugin", "add", f"{PLUGIN}@{MARKETPLACE}", "--json")
+        new_cache = Path(upgraded["installedPath"])
+        stale = tool("get_capabilities")
+        check.record(
+            "an upgrade replaces the installed copy, and an open chat's process says so",
+            upgraded["version"] == new_version
+            and not cache.exists()
+            and new_cache.exists()
+            and body_of(stale).get("code") == "PLUGIN_UPDATED",
+            code=body_of(stale).get("code"),
+        )
     finally:
         host.close()
+
+    fresh_host = AppServer(codex, environment, work)
+    try:
+        thread = fresh_host.request("thread/start", {"cwd": str(work)})["thread"]["id"]
+        answer = fresh_host.request(
+            "mcpServer/tool/call",
+            {"threadId": thread, "server": SERVER, "tool": "get_capabilities", "arguments": {}},
+        )
+        after = body_of(answer)["result"]
+        check.record(
+            "a new chat runs the new version on the same runtime, with no second setup",
+            after["plugin"]["version"] == new_version and after["runtime"]["state"] == "ready",
+            version=after["plugin"]["version"],
+            state=after["runtime"]["state"],
+        )
+    finally:
+        fresh_host.close()
+    cache = new_cache
 
     model_path(codex, environment, work, check, valid)
 

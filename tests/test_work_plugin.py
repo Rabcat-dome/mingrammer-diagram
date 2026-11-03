@@ -500,6 +500,9 @@ def test_tools_list_is_the_closed_contract(client: Client) -> None:
 
 def test_protocol_errors_do_not_stop_the_server(client: Client) -> None:
     assert client.request("no/such/method")["error"]["code"] == -32601
+    # Some clients send null rather than an empty object for a tool with no arguments.
+    empty = client.request("tools/call", {"name": "list_bundles", "arguments": None})["result"]
+    assert text_of(empty)["status"] == "ok"
     client.write(b"{not json\n")
     assert client.next_frame()["error"]["code"] == -32700
     client.send({"jsonrpc": "2.0", "id": 7, "params": {}})
@@ -612,7 +615,25 @@ def test_setup_builds_the_locked_runtime_and_leaves_the_plugin_unchanged(
         r'^version = "([^"]+)"', (ROOT / "pyproject.toml").read_text(), re.MULTILINE
     ).group(1)  # type: ignore[union-attr]
     # Only dependencies go in, so no build backend runs and the wheel is not installed there.
-    assert not list(environment_path.glob("lib/python*/site-packages/cloud_architecture_diagrams"))
+    site = next(environment_path.glob("lib/python*/site-packages"))
+    assert not (site / "cloud_architecture_diagrams").exists()
+    assert (site / "pydantic").is_dir() and (site / "diagrams").is_dir()
+    # Development tools stay out of what ships to every machine.
+    assert not {"pytest", "ruff", "mypy", "build"} & {path.name for path in site.iterdir()}
+    version = subprocess.check_output(
+        [
+            environment_path / "bin/python",
+            "-I",
+            "-c",
+            "import platform;print(platform.python_version())",
+        ],
+        text=True,
+    )
+    assert version.strip() == "3.13.7"
+    # The probe renders where bundles go, then takes its bundle away again.
+    assert not list(
+        (Path(environment["HOME"]) / "Documents/CloudArchitectureDiagrams/work").iterdir()
+    )
 
 
 def test_a_changed_lock_needs_a_new_runtime_rather_than_using_the_old_one(
@@ -643,9 +664,12 @@ def wait_for_setup(server: Client, seconds: float = 120) -> dict[str, Any]:
 def test_a_stale_lock_is_a_reported_setup_failure(
     package: Path, home: dict[str, str], tmp_path: Path
 ) -> None:
+    # A lock that no longer matches the project must stop setup, and never be rewritten in place.
     copy = tmp_path.resolve() / "copy"
     shutil.copytree(package, copy)
-    (copy / "uv.lock").write_text((copy / "uv.lock").read_text() + "\n[[package]]\nname = 'x'\n")
+    project = copy / "pyproject.toml"
+    project.write_text(project.read_text().replace('"pydantic>=2.12,<3"', '"pydantic>=2.13,<3"'))
+    lock = (copy / "uv.lock").read_bytes()
     fresh = home | {"CLOUD_ARCHITECTURE_WORK_DATA": str(tmp_path.resolve() / "data")}
     server = Client(copy, fresh)
     report = wait_for_setup(server)
@@ -653,6 +677,7 @@ def test_a_stale_lock_is_a_reported_setup_failure(
     assert report["runtime"]["failure"]["code"] == "RUNTIME_SETUP_FAILED"
     assert report["runtime"]["failure"]["detail"]
     assert server.body("validate_model", model={})["status"] == "runtime_unavailable"
+    assert (copy / "uv.lock").read_bytes() == lock
     server.close()
 
 
@@ -782,6 +807,9 @@ def test_catalog_search_is_filterable_and_bounded(client: Client) -> None:
         ("search_catalog", {"limit": True}),
         ("search_catalog", {"query": 7}),
         ("search_catalog", {"query": "x" * 257}),
+        ("search_catalog", {"query": "nul\x00byte"}),
+        ("search_catalog", {"query": "line\nbreak"}),
+        ("search_catalog", {"query": "\ud800"}),
         ("search_catalog", {"kubernetes": "yes"}),
         ("search_catalog", {"unexpected": 1}),
         ("get_capabilities", {"unexpected": 1}),
@@ -1524,6 +1552,9 @@ def test_skill_keeps_the_rules_a_live_session_depends_on(skill: str) -> None:
         "`image(...)`",
         "`JSON.parse`",
         "`result.setup_command`",
+        "as a Markdown image",
+        # Measured in a live session: a missing service must stop the model guessing.
+        "such as AWS WAF",
     ):
         assert sentence in skill, sentence
 
@@ -1549,6 +1580,8 @@ def test_readme_states_the_modes_rights_and_the_whole_lifecycle(package: Path) -
         "scripts/runtime.py",
         "prune",
         "iCloud",
+        "~/.codex/sessions",
+        "approve",
         "Docker",
     ):
         assert needle in text, needle

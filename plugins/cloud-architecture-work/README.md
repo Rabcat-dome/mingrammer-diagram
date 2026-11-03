@@ -20,7 +20,7 @@ Each Mac needs its own setup, and nothing syncs between machines.
 - `python3`, version 3.9 or later, which starts the plugin's tool process. Apple's Command Line Tools provide one.
 - [uv](https://docs.astral.sh/uv/) and [Graphviz](https://graphviz.org/download/). Tested with uv 0.13.0 and Graphviz 16.1.0.
 - macOS `sandbox-exec`, which ships with macOS.
-- Network access for the first setup only. Setup builds a private Python 3.13.7 environment from the hash-locked `uv.lock`, including the pinned `diagrams` package and its icons, about 40 MB. Rendering itself downloads nothing and has no network access, so it works offline once setup has finished.
+- Network access for the first setup only. Setup builds a private Python 3.13.7 environment from the hash-locked `uv.lock`, including the pinned `diagrams` package and its icons, about 60 MB on disk. Rendering itself downloads nothing and has no network access, so it works offline once setup has finished.
 
 ```bash
 brew install uv graphviz
@@ -52,7 +52,7 @@ codex plugin marketplace add ~/.local/share/cloud-architecture-diagrams/work-rel
 codex plugin add cloud-architecture-work@mingrammer-work
 ```
 
-Restart the ChatGPT app. In Work mode, open a new chat and select **Cloud Architecture Diagrams**. The first request asks the plugin to build its private runtime, which takes a few seconds to a few minutes. The first use on a Mac can also bring up the system's request to let ChatGPT use your Documents folder, and rendering needs it. To build the runtime from a terminal instead, run this inside the installed copy:
+Restart the ChatGPT app. In Work mode, open a new chat and select **Cloud Architecture Diagrams**. The first request asks the plugin to build its private runtime, and the app may ask you to approve that, because it reaches the network. It took under 5 seconds on the tested Mac, which already had Python 3.13.7, and it takes longer when uv has to download Python. The first use on a Mac can also bring up the system's request to let ChatGPT use your Documents folder, and rendering needs it. To build the runtime from a terminal instead, run this inside the installed copy:
 
 ```bash
 python3 ~/.codex/plugins/cache/mingrammer-work/cloud-architecture-work/*/scripts/runtime.py setup
@@ -81,7 +81,7 @@ Each bundle holds `diagram.svg`, `diagram.png`, `model.json`, `view.json`, `diag
 
 Bundles live in `~/Documents/CloudArchitectureDiagrams/work`, private to your account. If you sync Documents with iCloud, they sync too. The runtime lives in `~/.local/share/cloud-architecture-diagrams/work-plugin`. The plugin's log holds tool names, status codes and timings, and never model content. Its tool process and its renderer send nothing anywhere.
 
-Tool calls and their results, including the model and local file paths, are part of the chat, like anything else sent to the model you selected in Work. So do not put secret values in a model; the model format has no field for them.
+Tool calls and their results, including the model and local file paths, are part of the chat, like anything else sent to the model you selected in Work. The app also keeps its own record of each chat, including those calls, under `~/.codex/sessions`. So do not put secret values in a model; the model format has no field for them.
 
 Bundles stay until you remove them. Nothing deletes them automatically, and no tool can delete them. To see what is older than 30 days, and then delete it:
 

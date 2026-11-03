@@ -299,6 +299,7 @@ class Toolbox:
         handler = self.handlers.get(name)
         if handler is None:
             return invalid("There is no such tool.")
+        arguments = {} if arguments is None else arguments
         if not isinstance(arguments, dict):
             return invalid("Arguments must be a JSON object.")
         if set(arguments) - self.allowed[name]:
@@ -492,7 +493,8 @@ class Toolbox:
         ):
             if key in arguments:
                 value = arguments[key]
-                if not isinstance(value, str) or len(value) > TEXT_LIMIT:
+                # A control character or an unpaired surrogate cannot pass as a process argument.
+                if not isinstance(value, str) or len(value) > TEXT_LIMIT or not value.isprintable():
                     return invalid(f"{key} must be text of at most {TEXT_LIMIT} characters.")
                 # The joined form keeps a value starting with a dash from reading as an option.
                 command.append(f"{option}={value}")

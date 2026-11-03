@@ -1,6 +1,6 @@
 # Core Contract v1.0.0
 
-S05 / M1, S06 / M2 and S07 / M3 implementation guide, subordinate to the single [requirements](../requirements/requirements.md). Package `0.5.0a1` is a core development version; installed Work plugin `0.1.0-alpha.3` remains the independent S04 fixture. This change does not replace that plugin. The renderer is an engineering slice, so coverage, visual quality and official-reference comparison stay with M4.
+S05 / M1, S06 / M2, S07 / M3 and S09 / M5 implementation guide, subordinate to the single [requirements](../requirements/requirements.md). Package `0.5.0a1` is a core development version; installed Work plugin `0.1.0-alpha.3` remains the independent S04 fixture, and the product's [Work adapter](#work-adapter) is a separate plugin that does not replace it. The renderer is an engineering slice, so coverage, visual quality and official-reference comparison stay with M4.
 
 ## Setup and discovery
 
@@ -152,10 +152,48 @@ The bundle is then written to a stage directory, read back and renamed into plac
 
 Bundled fonts are Noto Sans 2.015 and Noto Sans Thai 2.002 under the SIL Open Font License, recorded in `catalog_data/assets.json`. Rendering downloads nothing, and it needs no second model call.
 
+## Work adapter
+
+`plugins/cloud-architecture-work` is the ChatGPT Work adapter (M5). It adds a transport and nothing else: each tool runs one core subcommand in a new process, and the core has no code that knows about it (FR-065). See the [plugin README](../../plugins/cloud-architecture-work/README.md) for setup and the [S09 evidence](../project-management/evidence/S09-work-plugin.md) for what has been checked.
+
+**Transport.** A local stdio MCP server, started by the host as `python3 -I -B ${PLUGIN_ROOT}/server/main.py`. It speaks newline-delimited JSON-RPC, negotiates protocol versions 2025-11-25 down to 2024-11-05, and opens no port. It uses only the Python standard library and parses on Python 3.9, so it starts on a new Mac before the private runtime exists and can report what is missing. A frame over 4 MiB is refused without being parsed. A repeated JSON key is refused rather than losing a value silently, although the host may already have collapsed one.
+
+**Tools.** Arguments are closed, so an unknown one fails. Nothing the caller sends becomes a path, an option or an executable: a view must match the ID pattern, and options are passed in joined form.
+
+| Tool | Runs | Note |
+|---|---|---|
+| `get_capabilities` | `capabilities`, plus preflight | Answers even with no runtime. Reports versions, runtime state, blockers with their remedies, limits, the artifact root, retention and host modes |
+| `setup_runtime` | `uv sync`, behind the call | Marked as reaching the network, so the host asks before it runs |
+| `get_schema` | `schema` | |
+| `search_catalog` | `catalog` | Filters and limit match the CLI |
+| `validate_model` | `validate` | Takes the model as a JSON object |
+| `render_model` | `render` | Takes `model`, or `bundle_id` to draw another view of an earlier model |
+| `read_artifact` | Nothing from the core | Fixed file names, descriptor-anchored, no symbolic links |
+| `list_bundles` | Nothing from the core | Reads each bundle's manifest, never a model |
+
+**Results (FR-063).** Every result's first content item is JSON text with a `status`. `structuredContent` is left out, because a client may send only that to its model and drop the image. Anything but `ok` sets `isError` and carries a stable `code`, a `message` and a `remedy`.
+
+| `status` | Comes from |
+|---|---|
+| `ok` | Core exit 0, and for a render, every listed file read back with its size and checksum |
+| `validation_failed` | Core exit 2: an invalid model, or a view that cannot be drawn as asked |
+| `runtime_failure` | Core exit 4 other than a timeout, or a crash, meaning any other status or unreadable output |
+| `timeout` | `RENDER_TIMEOUT` from the core, or `CALL_TIMEOUT` from the adapter's own 58-second limit |
+| `artifact_unavailable` | A refused name, a missing or unsafe file, a file over the transport limit, or a bundle that did not read back |
+| `runtime_unavailable` | The runtime is missing, building or failed, or `PLUGIN_UPDATED`, when an old chat's process has outlived its files |
+| `invalid_arguments` | The call does not match the tool's schema. The rejected value is not echoed |
+| `busy` | A second render in one tool process, or more than eight calls at once |
+
+**Runtime and artifacts.** The private environment lives under `~/.local/share/cloud-architecture-diagrams/work-plugin`, named by the digest of `uv.lock`, so a release with new dependencies cannot run on old ones. Setup ends with one real render of a bundled example. Bundles go to `~/Documents/CloudArchitectureDiagrams/work`, through the core's output root checks. No tool can delete a bundle: `scripts/runtime.py prune` is for the owner. A cancel, a timeout, a signal or the end of input stops the running core, which cleans up after itself on SIGTERM.
+
+**Package.** `scripts/build_work_plugin.py` writes real files, because the host leaves symbolic links out of what it installs without saying so. The version is the manifest's plus a digest of the content, as in `0.1.0-alpha.1+d655ff8b4f86`, because the host caches by version and an open chat keeps its old process. The archive is deterministic.
+
+**Limits.** The adapter's own limits come from measuring the host: a tool result over 8 MiB is refused, because a 16 MiB file left the host's call hanging with no error, and a PNG over 5 MiB is left out of the render result. A larger file stays available by its path.
+
 ## Quality gate and trust
 
 [Workflow](../../.github/workflows/quality-gate.yml) runs only explicit owner actions on this repository's main/codex branches, plus owner-created same-repository PRs. Fork/external PR actions are not scheduled on the personal runner. Checkout/upload actions are pinned to verified upstream commits, repository permissions are read-only and checkout credentials are not persisted. Dependencies use the locked native environment; see [uv's CI guide](https://docs.astral.sh/uv/guides/integration/github/), [checkout](https://github.com/actions/checkout) and [upload-artifact](https://github.com/actions/upload-artifact).
 
-Portable documentation links must resolve inside the repository; historical host paths are provenance text, with repository-relative evidence copies for actual links. Every implemented lane runs: docs/traceability and frozen proof hashes, narrow credential patterns, Ruff lint/format, strict mypy, actionlint, schema/core tests, catalog and license checks, provider semantics, render security, render smoke, Claude plugin package contract, core package build and wheel contents. Missing tools, timeout or any failed lane fails the aggregate. Reports identify exact checkout SHA, dirty state, lock/source hashes and future checks as deferred, never passed. Report retention is 14 days. The per-run Python environment is removed after the job. This is a core package build, not M5 plugin-package acceptance. Read-only GitHub API verification found only the owner as collaborator and fork-PR workflows disabled at the S05 snapshot; these server-side access settings complement the actor guards. An editable workflow alone is not a tamper-resistant trust boundary.
+Portable documentation links must resolve inside the repository; historical host paths are provenance text, with repository-relative evidence copies for actual links. Every implemented lane runs: docs/traceability and frozen proof hashes, narrow credential patterns, Ruff lint/format, strict mypy, actionlint, schema/core tests, catalog and license checks, provider semantics, render security, render smoke, Claude plugin package contract, Work plugin package contract, core package build and wheel contents. Missing tools, timeout or any failed lane fails the aggregate. Reports identify exact checkout SHA, dirty state, lock/source hashes and future checks as deferred, never passed. Report retention is 14 days. The per-run Python environment is removed after the job. This is a core package build. The `package-contract` lane checks the Work plugin package, and acceptance in an actual Work session stays manual. Read-only GitHub API verification found only the owner as collaborator and fork-PR workflows disabled at the S05 snapshot; these server-side access settings complement the actor guards. An editable workflow alone is not a tamper-resistant trust boundary.
 
 Credential patterns are a narrow working-tree check, not an entropy/history scan or security audit. Static typing/lint cover implemented core/scripts/tests; historical S04 spike source remains frozen and separately reviewed. Tests/CI contain synthetic architectures. Current private-plan limitations still require manual review/merge discipline. Separate model review is recorded outside the pipeline without paid model API calls.

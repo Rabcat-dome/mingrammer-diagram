@@ -1,6 +1,6 @@
 # Milestones and Work Breakdown
 
-Updated: 2026-11-03 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 complete on 2026-11-03 for the private personal release. S07 / M3 complete on 2026-11-03 under D-022. S08 / M4 complete on 2026-11-03 under D-023. Huawei rights are not cleared: D-018 allows private personal use only, D-019 settles the asset-rights exit item for that use, and O-002 blocks public distribution. M7 Claude Code preparation started early under D-015.
+Updated: 2026-11-04 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 complete on 2026-11-03 for the private personal release. S07 / M3 complete on 2026-11-03 under D-022. S08 / M4 complete on 2026-11-03 under D-023. S09 / M5 is built and waits for the owner's run in Work. Huawei rights are not cleared: D-018 allows private personal use only, D-019 settles the asset-rights exit item for that use, and O-002 blocks public distribution. M7 Claude Code preparation started early under D-015.
 
 Source of scope: [requirements](../requirements/requirements.md). Model abbreviations and review rules: [model strategy](model-strategy.md). Quality check definitions: [quality gate](quality-gate.md).
 
@@ -91,7 +91,7 @@ Exit: six reference scenario families and their required Kubernetes detail subvi
 
 ## M5 — ChatGPT Work integration
 
-Status: Product integration not started; S04 feasibility pilot is separate. Implementation: Sol/High for local adapter/isolation; Sol/Medium for skill/docs; review: Fable/High.
+Status: **Open.** M5-01..03 are built on `codex/s09-work-plugin`, and M5-04's automated part passes through the host's real engine. See the [S09 evidence](evidence/S09-work-plugin.md). M5-04 itself needs the owner's run in an actual Work session, recorded in the [Work check](evidence/S09-Work-validation.md), so M5 cannot close before they answer. Planned implementation: Sol/High for local adapter/isolation, Sol/Medium for skill/docs; actual: Claude Opus 5.5. Review: Fable/High.
 
 | Task | Work | Dependency / output |
 |---|---|---|

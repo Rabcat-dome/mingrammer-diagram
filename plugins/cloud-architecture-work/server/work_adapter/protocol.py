@@ -61,7 +61,10 @@ def parse_frame(frame: bytes) -> tuple[Any, bool]:
 def log(event: str, **values: object) -> None:
     # Only names, codes and timings, so an architecture's content never reaches a log (T-014).
     fields = " ".join(f"{key}={value}" for key, value in values.items())
-    print(f"cloud-architecture-work {event} {fields}", file=sys.stderr, flush=True)
+    try:
+        print(f"cloud-architecture-work {event} {fields}", file=sys.stderr, flush=True)
+    except (OSError, ValueError):
+        pass
 
 
 class Server:
@@ -137,6 +140,7 @@ class Server:
             code=outcome.body.get("code", "-"),
             ms=round((time.monotonic() - started) * 1000),
         )
+        self.toolbox.runtime.finished(request_id)
         with self.calls_guard:
             self.calls.pop(request_id, None)
             cancelled = request_id in self.cancelled
