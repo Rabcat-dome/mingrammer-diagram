@@ -1,6 +1,6 @@
 # Cross-Machine Handoff
 
-Updated: 2026-11-03 | S01-S06 complete. M2 closed on 2026-11-03 for the private personal release, at `5f391eb` on `codex/s06-provider-catalogs`, which passes CI with 12 lanes and 652 tests. Claude Fable 5.1 / High approved the fixes under D-020 as a substitute for Astra/High, and D-019 settles the asset-rights exit item. **S07 / M3 is implemented on `codex/s07-controlled-rendering`, branched from `f3f0789`, and passes actual CI at `c8fc687`. Fable/High approved its P2 fixes there, and M3 stays open for the owner's inspection.** M7 Claude Code preparation started early under D-015. D-021 moves every remaining review from Astra to Claude Fable 5.1.
+Updated: 2026-11-03 | S01-S07 complete. M2 closed on 2026-11-03 for the private personal release, at `5f391eb` on `codex/s06-provider-catalogs`, which passes CI with 12 lanes and 652 tests. Claude Fable 5.1 / High approved the fixes under D-020 as a substitute for Astra/High, and D-019 settles the asset-rights exit item. **S07 / M3 closed on 2026-11-03 under D-022, on `codex/s07-controlled-rendering`, branched from `f3f0789`. Its code passes actual CI at `c8fc687`, Fable/High approved its P2 fixes there, and the owner passed three samples of its output.** M7 Claude Code preparation started early under D-015. D-021 moves every remaining review from Astra to Claude Fable 5.1.
 
 ## Goal and current source
 
@@ -38,9 +38,9 @@ Core changes reach the plugin through symlinks, so no copy step exists, and Clau
 ## Next steps
 
 1. M2 is closed. Its deferred P3 findings, N2-N4, are in the [Fable review](evidence/S06-fable-review.md#follow-up-n1-fix-and-deferrals). The [Fable review](evidence/M7-fable-review.md) now covers the earlier M7 Medium/Low fixes and leaves three P3 findings open.
-2. Kubernetes representations have not been shown to the owner; the session plan lists that inspection, but it is not an exit item.
+2. The owner passed one Kubernetes sample in S07. The full set of Kubernetes representations has not been shown to them, and M4 inspects it.
 3. Update the owner's installed plugin only if asked. It remains on `917f46f`, so it has none of the S06 work.
-4. S07 / M3: the [Fable review](evidence/S07-fable-review.md) approved the P2 fixes at `c8fc687` and leaves five P3 findings open. Have the owner inspect representative output. M3 closes only after those. Later M4 references/visuals, M5 full Work plugin and M6 two-machine release acceptance remain open.
+4. M3 is closed under D-022, and the [Fable review](evidence/S07-fable-review.md) leaves five P3 findings open. S08 / M4 reference diagrams come next. M5 full Work plugin and M6 two-machine release acceptance remain open.
 
 ## Resume prompt
 
@@ -50,10 +50,9 @@ status and the latest successful GitHub quality-gate SHA first. M2 is closed for
 the private personal release: D-019 settles its asset-rights exit item, and D-018 allows Huawei icons for private personal use only;
 it does not clear their rights.
 
-S07 / M3 is implemented on codex/s07-controlled-rendering and passes actual CI
-at c8fc687, but it is not closed. Fable/High approved its P2 fixes under D-021, and it still
-needs the owner's inspection. Read M3 in milestones.md and the core contract's Controlled
-rendering section. Keep the same checkout and a codex/ branch; keep docs English.
+S07 / M3 is closed under D-022, with code at c8fc687. Its five P3 findings stay open.
+S08 / M4 is next: read M4 in milestones.md and the core contract's Controlled
+rendering section. Use a codex/ branch; keep docs English.
 Huawei source availability is not redistribution permission: keep public
 distribution blocked under O-002, and draw no silent generic substitute for a
 type without an icon. Keep S04 alpha.3 and existing runner registrations

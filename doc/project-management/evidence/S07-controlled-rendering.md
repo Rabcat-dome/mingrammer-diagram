@@ -2,7 +2,7 @@
 
 Date: 2026-11-03 | Tasks: M3-01..04 | Branch: `codex/s07-controlled-rendering`, from `f3f0789` | Package: `0.4.0a1` at `cddb497`, then `0.4.0a4` with the [review fixes](S07-fable-review.md#fixes) | Code head: `cddb497` for everything below unless stated
 
-**Result: the renderer is implemented and passes all 14 lanes and 959 tests locally and in [actual CI](#actual-ci) at `cddb497`. M3 is not closed.** [Fable/High requested changes](S07-fable-review.md) on three P2 findings and approved their fixes at `c8fc687`, which passes 985 tests in actual CI [run 41589907300](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41589907300). The owner has not inspected the output. The contract is in the [core contract](../../design/core-contract.md#controlled-rendering).
+**Result: M3 closed on 2026-11-03 under D-022. The renderer passes all 14 lanes and 959 tests locally and in [actual CI](#actual-ci) at `cddb497`.** [Fable/High requested changes](S07-fable-review.md) on three P2 findings and approved their fixes at `c8fc687`, which passes 985 tests in actual CI [run 41589907300](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41589907300). The owner passed [three samples](#inspection) of its output. The contract is in the [core contract](../../design/core-contract.md#controlled-rendering).
 
 ## Task status
 
@@ -19,10 +19,10 @@ Date: 2026-11-03 | Tasks: M3-01..04 | Branch: `codex/s07-controlled-rendering`, 
 |---|---|---|
 | Repeatable CLI render from a clean setup | Met | A fresh environment from `uv.lock` and a clean wheel install outside the checkout both render; see [clean setup](#clean-setup). Two renders of one input produce identical SVG, PNG and graph bytes |
 | Invalid input cannot bypass validation | Met | `render_model` is the only entry point. 31 invalid and malformed inputs run in both modes, with every later render step replaced by a failing stub |
-| Usable SVG and PNG with a complete bundle | Met in tests; a tall or wide layout's shrunken PNG is now disclosed, and refused below half size ([P2-3](S07-fable-review.md#p2-3-a-tall-or-wide-layout-publishes-a-downscaled-png-as-complete)); owner inspection pending | All 19 views of the existing fixtures render, together reaching all 148 catalog types. The SVG's content is checked against the graph, and the PNG structurally. This session inspected samples; see [inspection](#inspection) |
+| Usable SVG and PNG with a complete bundle | Met in tests; a tall or wide layout's shrunken PNG is now disclosed, and refused below half size ([P2-3](S07-fable-review.md#p2-3-a-tall-or-wide-layout-publishes-a-downscaled-png-as-complete)); the owner passed three samples | All 19 views of the existing fixtures render, together reaching all 148 catalog types. The SVG's content is checked against the graph, and the PNG structurally. This session inspected samples; see [inspection](#inspection) |
 | Required security tests pass | Met | `render-security` covers path, symlink, isolation, timeout, code, Graphviz and SVG injection and resource limits; see [validation](#validation) |
 
-The [Fable/High review](S07-fable-review.md) under D-021 approved the fixes for its P2 findings at `c8fc687`, and five P3 findings stay open. M3 still needs the owner's inspection.
+The [Fable/High review](S07-fable-review.md) under D-021 approved the fixes for its P2 findings at `c8fc687`, and five P3 findings stay open. The owner passed the samples, so M3 closes under D-022.
 
 ## Validation
 
@@ -83,6 +83,8 @@ All 19 changes failed their lane. The first version of the last case only added 
 | Built wheel installed into a new environment, run from outside the checkout | Passed: `cloud_architecture_diagrams-0.4.0a1-py3-none-any.whl` rendered the same fixture from a directory outside the checkout, and its SVG, PNG and graph bytes match the route above |
 | Plugin clean copy under the `claude-plugin` lane | Renders with its own locked runtime packages and a separate data directory |
 
+The first two routes ran again at core `0.4.0a4`, just before closure. Both exit 0 from outside the checkout with identical SVG and PNG bytes, and the wheel's SHA-256, `a174e651ec3b4b095203949702062446ce917e639acdc4f05ad54595b442bcf6`, matches actual CI at `c8fc687`.
+
 ### Measured render time
 
 Three runs of each size on this Mac, with a connected synthetic graph of labeled nodes and no icons. This shows that the 55 s wall limit leaves a large margin at the view limit, and the [review](S07-fable-review.md#p2-2-the-documented-200--300-bound-is-not-always-reachable-with-icons) confirmed that with icons, while finding that the pixel limit can reject those views first. It is not the NFR-007 benchmark, which M4-04 owns and which needs icon-heavy fixtures.
@@ -104,9 +106,11 @@ The table above has no icons. After the [review](S07-fable-review.md), the root 
 
 ### Inspection
 
-This session looked at the PNG output of the hybrid, AWS, on-premises, EKS and Kubernetes fixtures and at a Thai sample. Icons, cluster nesting, edges, the legend, DRAFT lines and the Thai text with its marks are present and legible. An independent renderer, `rsvg-convert` 2.63.4, also rasterized the Azure and Thai SVGs, showing the embedded icons with no file beside them. These are engineering checks, not owner acceptance. T-014 Thai inspection and the owner's review remain open.
+This session looked at the PNG output of the hybrid, AWS, on-premises, EKS and Kubernetes fixtures and at a Thai sample. Icons, cluster nesting, edges, the legend, DRAFT lines and the Thai text with its marks are present and legible. An independent renderer, `rsvg-convert` 2.63.4, also rasterized the Azure and Thai SVGs, showing the embedded icons with no file beside them. These are engineering checks, not owner acceptance.
 
-Samples for the owner's inspection, regenerated from the final code: [AWS catalog view](S07-sample-aws.png), [Kubernetes grouped by worker Node, with one Pod left unspecified](S07-sample-kubernetes-by-node.png) and [Thai labels as a lenient draft with one generic fallback](S07-sample-thai-lenient-draft.png).
+Samples the owner inspected: [AWS catalog view](S07-sample-aws.png), [Kubernetes grouped by worker Node, with one Pod left unspecified](S07-sample-kubernetes-by-node.png) and [Thai labels as a lenient draft with one generic fallback](S07-sample-thai-lenient-draft.png).
+
+**Owner inspection:** on 2026-11-03 the owner passed all three and asked for no change (D-022). They were drawn at `cddb497`. Rendered again at core `0.4.0a4`, all three match these files byte for byte, because the review fixes changed the output checks and not the drawing. The acceptance covers these three images. T-014, T-016, T-017 and the other Kubernetes and provider views stay with M4 and M6.
 
 ## Requirement coverage
 
@@ -129,7 +133,7 @@ These states were written from the local gate, and the same tests then passed in
 | NFR-006 | Met locally | Every selected element must appear in the finished SVG, and empty groups still draw |
 | NFR-009 | Met locally; numbers refine in M4 | Wall, CPU, memory, temporary storage, file and pixel limits, with cleanup on failure and signal |
 | NFR-010 | Met locally | Stage, read back, then rename, with the manifest written last |
-| NFR-014 | Inspected by this session only | Thai labels with bundled fonts; owner inspection is open |
+| NFR-014 | One Thai sample passed by the owner | Thai labels with bundled fonts; T-014 stays open for M4 and M5 |
 | T-007 | Met locally | Strict failure, and a lenient draft that keeps provider, type and name |
 | T-009 | M3 part met locally | Code, path and symlink escape, remote icon, SVG and Graphviz injection, oversize input and timeout. M5 adds its own part |
 
@@ -165,7 +169,7 @@ These would have shipped had the build trusted exit codes and upstream defaults.
 
 ## Decisions for the owner
 
-The session plan lists the owner's inspection of the first output. These proposals are recorded in [decisions](../decisions.md) and take effect until changed:
+The owner's inspection asked for no change, so these proposals in [decisions](../decisions.md) stand until the owner changes them:
 
 - P-025: a `blocked` type refuses to render rather than drawing a text-only box. No type is blocked today.
 - P-026: HTML-like label text is drawn literally, not rejected. The review agrees.
@@ -179,6 +183,5 @@ Under D-021, Claude Fable 5.1 / High [reviewed `f3f0789..cddb497`](S07-fable-rev
 
 ## Next steps
 
-1. The owner inspects representative output and settles the presentation choices above.
-2. Close M3 after that. The [review's](S07-fable-review.md) five P3 findings stay open unless the owner wants them fixed first.
-3. M4 then builds reference scenarios on this renderer.
+1. M3 is closed under D-022. The [review's](S07-fable-review.md) five P3 findings stay open unless the owner wants them fixed.
+2. S08 / M4 builds reference scenarios on this renderer.

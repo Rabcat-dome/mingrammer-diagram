@@ -1,6 +1,6 @@
 # Milestones and Work Breakdown
 
-Updated: 2026-11-03 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 complete on 2026-11-03 for the private personal release. S07 / M3 is implemented and passes actual CI, and Fable/High approved its review fixes; it stays open for the owner's inspection. Huawei rights are not cleared: D-018 allows private personal use only, D-019 settles the asset-rights exit item for that use, and O-002 blocks public distribution. M7 Claude Code preparation started early under D-015.
+Updated: 2026-11-03 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 complete on 2026-11-03 for the private personal release. S07 / M3 complete on 2026-11-03 under D-022. Huawei rights are not cleared: D-018 allows private personal use only, D-019 settles the asset-rights exit item for that use, and O-002 blocks public distribution. M7 Claude Code preparation started early under D-015.
 
 Source of scope: [requirements](../requirements/requirements.md). Model abbreviations and review rules: [model strategy](model-strategy.md). Quality check definitions: [quality gate](quality-gate.md).
 
@@ -64,7 +64,7 @@ Exit: all five hosting inventories and the shared Kubernetes detail catalog meet
 
 ## M3 — Controlled rendering vertical slice
 
-Status: Implemented on `codex/s07-controlled-rendering`, not closed. [Evidence](evidence/S07-controlled-rendering.md) records actual CI [run 41539921034](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41539921034) passing at `cddb497`. Under D-021, [Fable/High requested changes](evidence/S07-fable-review.md) on three P2 findings and approved their fixes at `c8fc687`, which passes actual CI [run 41589907300](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41589907300). Five P3 findings stay open, and the owner's inspection of the first output remains. Planned implementation: Sol/High; actual implementation: Claude Opus 5.5 (`claude-opus-5-5`), the model of the session that ran S07. Review: Fable/High.
+Status: Complete on 2026-11-03 under D-022, with code at `c8fc687`. [Evidence](evidence/S07-controlled-rendering.md) records actual CI [run 41539921034](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41539921034) passing at `cddb497`. Under D-021, [Fable/High requested changes](evidence/S07-fable-review.md) on three P2 findings and approved their fixes at `c8fc687`, which passes actual CI [run 41589907300](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41589907300). Five P3 findings stay open, and the owner passed three samples of the first output. Planned implementation: Sol/High; actual implementation: Claude Opus 5.5 (`claude-opus-5-5`), the model of the session that ran S07. Review: Fable/High.
 
 | Task | Work | Dependency / output |
 |---|---|---|

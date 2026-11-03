@@ -422,3 +422,9 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - CI passed at `c8fc687` ([run 41589907300](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41589907300), 14 lanes and 985 tests, with the wheel matching the local build), and the same Fable/High reviewer approved `e4d9761..c8fc687`. In its view `0b30b02..c8fc687` can stand as M3's and M7's disposition of the P2 findings.
 - Five M3 and three M7 P3 findings stay open. M3 still needs the owner's inspection of the output, and M7 still needs a second machine and interactive permission prompts.
 - This branch is not merged, so the owner's plugin on `main` has none of this.
+
+## 2026-11-03 — M3 closed
+
+- The owner passed the three S07 samples and said to go on, so D-022 closes M3. The samples were drawn at `cddb497` and match core `0.4.0a4` byte for byte.
+- The lock and wheel routes ran again from outside the checkout at `0.4.0a4`. Both give identical SVG and PNG bytes, and the wheel matches actual CI at `c8fc687`.
+- Five M3 P3 findings stay open. The acceptance covers those three images, so T-014, T-016, T-017 and the owner's M4 and M6 inspections remain. M7 stays open.

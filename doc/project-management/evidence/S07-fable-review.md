@@ -2,7 +2,7 @@
 
 Date: 2026-11-03 (Asia/Bangkok). Reviewer: Claude Fable 5.1 (`claude-fable-5-1`) / High, in a fresh agent with no prior project context, started from the owner's Claude Opus 5.5 session. This is the M3 review under [D-021](../decisions.md#confirmed-user-direction). Claude Opus 5.5 wrote the renderer, so reviewer and implementer share a vendor.
 
-**Final disposition: the P2 fixes are approved at `c8fc687`; see the [final recheck](#final-recheck-at-c8fc687). Five P3 findings stay open, and M3 stays open for the owner's inspection of the output.** The sections before it are the record at each commit.
+**Final disposition: the P2 fixes are approved at `c8fc687`; see the [final recheck](#final-recheck-at-c8fc687). Five P3 findings stay open. The owner then inspected the output, and M3 closed under D-022.** The sections before it are the record at each commit.
 
 **Disposition at `6353ef1`: changes requested, on three P2 findings, all in output-size handling.** There are no P0 or P1 findings, and five more are P3. The P2 findings now have [fixes](#fixes). Their [re-review](#re-review-at-93b7d11) found a regression, and the [recheck](#recheck-at-e4d9761) of that fix found the PNG could still shrink out of reading. Both are fixed.
 
