@@ -66,6 +66,9 @@ STATUSES = {
 # S04 alpha.3 stays a separate frozen fixture, so a change here has to be a deliberate decision.
 S04_TREE_SHA256 = "8cacd3df60940216ea12f0d562f0d903636cb58268b87686c2922a673a3f4e2d"
 BUNDLE_NAME = re.compile(r"[a-z][a-z0-9._-]*--[a-z][a-z0-9._-]*--[0-9a-f]{16}")
+# The host starts whatever `python3` it finds, which on a new Mac is this one. Everything runs on it,
+# because a parse check says nothing about the standard library: `rmtree(dir_fd=)` got past one.
+APPLE_PYTHON = "/usr/bin/python3"
 
 
 def builder() -> ModuleType:
@@ -101,7 +104,7 @@ def fixture(name: str) -> dict[str, Any]:
 class Client:
     """The host's side of the stdio transport, reduced to what these tests need."""
 
-    def __init__(self, root: Path, environment: dict[str, str], python: str = "python3") -> None:
+    def __init__(self, root: Path, environment: dict[str, str], python: str = APPLE_PYTHON) -> None:
         self.process = subprocess.Popen(
             [python, "-I", "-B", str(root / "server/main.py")],
             stdin=subprocess.PIPE,
@@ -464,8 +467,13 @@ def test_adapter_uses_only_the_standard_library(package: Path) -> None:
                 assert str(node.module).split(".")[0] in allowed, path
 
 
-def test_server_answers_under_the_apple_python(package: Path, home: dict[str, str]) -> None:
-    server = Client(package, home, python="/usr/bin/python3")
+def test_the_oldest_python_is_what_these_tests_really_run() -> None:
+    version = subprocess.check_output([APPLE_PYTHON, "--version"], text=True).split()[1]
+    assert version.startswith("3.9."), "the suite must exercise the oldest supported interpreter"
+
+
+def test_server_also_answers_on_a_current_python(package: Path, home: dict[str, str]) -> None:
+    server = Client(package, home, python=sys.executable)
     version = server.request("initialize", {"protocolVersion": "2025-06-18"})
     assert version["result"]["serverInfo"]["name"] == PLUGIN
     assert server.body("get_capabilities")["status"] == "ok"
@@ -554,7 +562,7 @@ def test_hostile_environment_and_working_directory_change_nothing(
     (planted / "json.py").write_text(f"open({str(marker)!r}, 'w').close()\n")
     hostile = home | {"PYTHONPATH": str(planted), "PYTHONHOME": str(planted)}
     process = subprocess.run(
-        ["python3", "-I", "-B", str(installed / "server/main.py")],
+        [APPLE_PYTHON, "-I", "-B", str(installed / "server/main.py")],
         input=b'{"jsonrpc":"2.0","id":1,"method":"ping"}\n',
         capture_output=True,
         cwd=planted,
@@ -611,9 +619,7 @@ def test_setup_builds_the_locked_runtime_and_leaves_the_plugin_unchanged(
     marker = load(data / f"env-{digest[:16]}.ready.json")
     assert marker["lock_sha256"] == digest
     assert marker["render_probe"] == {"passed": True}
-    assert marker["core_version"] == re.search(
-        r'^version = "([^"]+)"', (ROOT / "pyproject.toml").read_text(), re.MULTILINE
-    ).group(1)  # type: ignore[union-attr]
+    assert marker["probed_with"] == load(installed / "plugin.json")["version"]
     # Only dependencies go in, so no build backend runs and the wheel is not installed there.
     site = next(environment_path.glob("lib/python*/site-packages"))
     assert not (site / "cloud_architecture_diagrams").exists()
@@ -735,7 +741,7 @@ def test_runtime_script_covers_preflight_and_removal(
 ) -> None:
     # This one uses the real location under a throwaway home, which removal must clean exactly.
     fresh = {key: value for key, value in home.items() if key != "CLOUD_ARCHITECTURE_WORK_DATA"}
-    script = ["python3", "-I", "-B", str(package / "scripts/runtime.py")]
+    script = [APPLE_PYTHON, "-I", "-B", str(package / "scripts/runtime.py")]
     parent = Path(fresh["HOME"]) / ".local/share/cloud-architecture-diagrams"
     sibling = parent / "claude-plugin"
     sibling.mkdir(parents=True)
@@ -752,6 +758,105 @@ def test_runtime_script_covers_preflight_and_removal(
     assert removed.returncode == 0
     assert not (parent / "work-plugin").exists()
     assert sibling.is_dir(), "the Claude plugin's runtime is not this adapter's to remove"
+
+
+def test_setup_clears_the_runtime_of_an_earlier_lock_and_removal_only_what_it_made(
+    package: Path, home: dict[str, str], tmp_path: Path
+) -> None:
+    data = tmp_path.resolve() / "data"
+    old = data / "env-0000000000000000"
+    (old / "bin").mkdir(parents=True)
+    (data / "env-0000000000000000.ready.json").write_text("{}")
+    (data / "notes.txt").write_text("not the plugin's")
+    fresh = home | {"CLOUD_ARCHITECTURE_WORK_DATA": str(data)}
+    script = [APPLE_PYTHON, "-I", "-B", str(package / "scripts/runtime.py")]
+    done = subprocess.run([*script, "setup"], env=fresh, capture_output=True, check=False)
+    assert json.loads(done.stdout)["ready"] is True, done.stdout
+    assert not old.exists()
+    assert not (data / "env-0000000000000000.ready.json").exists()
+    removed = subprocess.run([*script, "remove"], env=fresh, capture_output=True, check=False)
+    report = json.loads(removed.stdout)
+    assert report["kept"] is True
+    assert [path.name for path in data.iterdir()] == ["notes.txt"]
+
+
+def fake_uv(package: Path, home: dict[str, str], tmp_path: Path) -> tuple[Path, dict[str, str]]:
+    """A copy whose setup hangs in a stand-in for uv, to see what stopping it leaves behind."""
+    copy = tmp_path.resolve() / "copy"
+    shutil.copytree(package, copy)
+    source = copy / "server/work_adapter/runtime.py"
+    source.write_text(
+        source.read_text().replace(
+            'TOOL_DIRECTORIES = ("/opt/homebrew/bin", "/usr/local/bin")', "TOOL_DIRECTORIES = ()"
+        )
+    )
+    tools = tmp_path.resolve() / "bin"
+    tools.mkdir()
+    uv = tools / "uv"
+    uv.write_text('#!/bin/sh\necho $$ > "$HOME/uv.pid"\nexec sleep 300\n')
+    uv.chmod(0o755)
+    return copy, home | {
+        "CLOUD_ARCHITECTURE_WORK_DATA": str(tmp_path.resolve() / "data"),
+        "PATH": f"{tools}:/usr/bin:/bin",
+    }
+
+
+def wait_for_file(path: Path) -> int:
+    deadline = time.monotonic() + 20
+    while time.monotonic() < deadline:
+        if path.exists() and path.read_text().strip():
+            return int(path.read_text())
+        time.sleep(0.02)
+    raise AssertionError(f"{path} never appeared")
+
+
+def test_stopping_during_setup_records_no_false_cause(
+    package: Path, home: dict[str, str], tmp_path: Path
+) -> None:
+    copy, environment = fake_uv(package, home, tmp_path)
+    server = Client(copy, environment)
+    assert server.body("setup_runtime")["result"]["started"] is True
+    pid = wait_for_file(Path(home["HOME"]) / "uv.pid")
+    report = server.body("get_capabilities")["result"]
+    assert report["runtime"]["state"] == "installing"
+    # While setup runs, the answer is to wait, never to start it again.
+    assert "RUNTIME_INSTALLING" in {item["code"] for item in report["blockers"]}
+    assert "RUNTIME_NOT_READY" not in {item["code"] for item in report["blockers"]}
+    assert server.body("validate_model", model={})["code"] == "RUNTIME_INSTALLING"
+    # A client's request ID cannot name setup, however it is spelled.
+    server.send(
+        {"jsonrpc": "2.0", "method": "notifications/cancelled", "params": {"requestId": "setup"}}
+    )
+    assert server.request("ping")["result"] == {}
+    assert not pid_stopped(pid)
+    assert server.close() == 0
+    wait_until_stopped(pid)
+    assert not (tmp_path / "data/setup-failure.json").exists()
+    next_chat = Client(copy, environment)
+    state = next_chat.body("get_capabilities")["result"]["runtime"]
+    assert state == {"state": "not_installed"}
+    assert next_chat.body("validate_model", model={})["code"] == "RUNTIME_NOT_READY"
+    next_chat.close()
+
+
+def test_stopping_during_the_setup_probe_writes_no_marker(
+    package: Path, home: dict[str, str], tmp_path: Path
+) -> None:
+    copy = tmp_path.resolve() / "copy"
+    shutil.copytree(package, copy)
+    write_stand_in(copy)
+    (copy / "skills/architecture-model/examples/core-valid.json").write_text(
+        json.dumps(behaving("sleep"))
+    )
+    data = tmp_path.resolve() / "data"
+    fresh = home | {"CLOUD_ARCHITECTURE_WORK_DATA": str(data)}
+    server = Client(copy, fresh)
+    server.body("setup_runtime")
+    pid = wait_for_file(Path(home["HOME"]) / "stand-in.pid")
+    assert server.close() == 0
+    wait_until_stopped(pid)
+    assert not list(data.glob("*.ready.json"))
+    assert not (data / "setup-failure.json").exists()
 
 
 # Discovery.
@@ -1059,7 +1164,26 @@ def test_capabilities_name_an_unusable_output_root(client: Client, home: dict[st
     assert report["render_available"] is False
     assert [item["code"] for item in report["blockers"]] == ["OUTPUT_ROOT_UNAVAILABLE"]
     assert client.body("render_model", model=fixture("core-valid.json"))["status"] != "ok"
+    # An unusable root must not read as an empty one, which would look like nothing to do.
+    assert client.body("list_bundles")["code"] == "ARTIFACT_UNSAFE"
     root.unlink()
+
+
+@pytest.mark.parametrize("command", [["list"], ["prune", "--older-than-days", "1"]])
+def test_runtime_script_reports_an_unusable_root_rather_than_nothing(
+    installed: Path, home: dict[str, str], command: list[str]
+) -> None:
+    root = output_root(home)
+    root.parent.mkdir(parents=True)
+    root.symlink_to(root.parent)
+    done = subprocess.run(
+        [APPLE_PYTHON, "-I", "-B", str(installed / "scripts/runtime.py"), *command],
+        env=home,
+        capture_output=True,
+        check=False,
+    )
+    assert done.returncode == 1
+    assert json.loads(done.stdout)["code"] == "OUTPUT_ROOT_UNAVAILABLE"
 
 
 # Artifact scope.
@@ -1196,7 +1320,7 @@ def test_prune_reports_first_and_removes_only_old_bundles(
     outside = tmp_path / "outside--view--0123456789abcdef"
     outside.mkdir()
     (root / "link--view--0123456789abcdef").symlink_to(outside)
-    script = ["python3", "-I", "-B", str(installed / "scripts/runtime.py"), "prune"]
+    script = [APPLE_PYTHON, "-I", "-B", str(installed / "scripts/runtime.py"), "prune"]
     arguments = ["--older-than-days", "7"]
     report = subprocess.run([*script, *arguments], env=home, capture_output=True, check=True)
     assert json.loads(report.stdout) == {"removed": [old], "applied": False}
@@ -1267,16 +1391,19 @@ def main():
 """
 
 
+def write_stand_in(copy: Path) -> None:
+    found = re.search(r'^version = "([^"]+)"', (copy / "pyproject.toml").read_text(), re.MULTILINE)
+    assert found
+    (copy / "src/cloud_architecture_diagrams/cli.py").write_text(
+        STAND_IN.replace("VERSION", found.group(1))
+    )
+
+
 @pytest.fixture
 def stand_in(installed: Path, home: dict[str, str], tmp_path: Path) -> Iterator[Client]:
     copy = tmp_path.resolve() / "copy"
     shutil.copytree(installed, copy)
-    version = re.search(
-        r'^version = "([^"]+)"', (copy / "pyproject.toml").read_text(), re.MULTILINE
-    ).group(1)  # type: ignore[union-attr]
-    (copy / "src/cloud_architecture_diagrams/cli.py").write_text(
-        STAND_IN.replace("VERSION", version)
-    )
+    write_stand_in(copy)
     tools = copy / "server/work_adapter/tools.py"
     tools.write_text(tools.read_text().replace("CALL_SECONDS = 58", "CALL_SECONDS = 3"))
     runtime = copy / "server/work_adapter/runtime.py"
@@ -1441,11 +1568,14 @@ def test_real_core_leaves_no_scratch_when_the_server_stops_mid_render(
             },
         }
     )
-    time.sleep(0.15)
-    assert client.close() == 0
     root = output_root(home)
-    if root.exists():
-        assert not [item.name for item in root.iterdir() if item.name.startswith(".")]
+    deadline = time.monotonic() + 30
+    scratch: list[Path] = []
+    while not scratch and time.monotonic() < deadline:
+        scratch = list(root.glob(".request-*")) if root.exists() else []
+    assert scratch, "the render never reached Graphviz, so this would prove nothing"
+    assert client.close() == 0
+    assert not [item.name for item in root.iterdir() if item.name.startswith(".")]
 
 
 # T-014 privacy.
@@ -1553,6 +1683,9 @@ def test_skill_keeps_the_rules_a_live_session_depends_on(skill: str) -> None:
         "`JSON.parse`",
         "`result.setup_command`",
         "as a Markdown image",
+        "On any other status there is no `content[1]`",
+        "Only setup reaches the network",
+        "`result.runtime.render_probe.passed`",
         # Measured in a live session: a missing service must stop the model guessing.
         "such as AWS WAF",
     ):

@@ -12,7 +12,7 @@ Turn an architecture request into a reviewable JSON model, check it, and draw it
 These are MCP tools on the server `cloud-architecture`. In a chat where tools run through the JavaScript `exec` tool, call them as `tools.mcp__cloud_architecture__render_model({model})`, and the same way for the others. They may be left out of `exec`'s description, but they are always in `ALL_TOOLS`. Each returns `{content, isError}`:
 
 - `content[0].text` is the JSON answer, so parse it with `JSON.parse` and print what you need with `text(...)`.
-- After `render_model`, or `read_artifact` on the PNG, `content[1]` is the image. Pass it to `image(...)`, or you will not see the picture.
+- After `render_model` with `status` `ok`, `content[1]` is the image, unless `preview` says it was left out because it is too large. `read_artifact` on the PNG returns it the same way. Pass it to `image(...)`, or you will not see the picture. On any other status there is no `content[1]`.
 - After `read_artifact` on a JSON file, `content[1].resource.text` is the file.
 
 Writing a model takes many tokens, so write it once: keep it with `store("model", model)` and read it back with `load("model")` in later `exec` calls.
@@ -47,7 +47,7 @@ If a type returns `ICON_UNAVAILABLE`, it has no usable icon, and `render_model` 
 ## Workflow
 
 1. **Check the runtime.** Call `get_capabilities` once, and report `result.plugin.version` when the user asks about setup or versions. Read `result.runtime.state`:
-   - `ready`: continue, and look at `result.blockers`. A blocker with a remedy, such as installing Graphviz, stops drawing but not validation. Relay it.
+   - `ready`: continue, and look at `result.blockers`. A blocker with a remedy, such as installing Graphviz, stops drawing but not validation. Relay it. If `result.runtime.render_probe.passed` is false, rendering failed when setup last ran: relay its `codes`, and call `setup_runtime` again once their cause is fixed.
    - `not_installed`, or `failed` once its cause is fixed: tell the user the first run downloads Python packages, call `setup_runtime` once, and then call `get_capabilities` every 15 to 30 seconds until the state changes. The app may ask the user to approve the call, because it reaches the network. If the call is refused, give the user `result.setup_command` to run in Terminal, and check again when they say it has finished. Do not install anything yourself.
    - `installing`: keep checking in the same way.
    - `failed`: relay `result.runtime.failure`.
@@ -68,4 +68,4 @@ Start from the bundle's source: call `read_artifact` with its `bundle_id` and `f
 
 Do not place secret values, credentials or real tokens anywhere in the model. A Kubernetes `Secret` resource is a reference marker with no properties; the name is fine, the payload is not.
 
-The tool calls and their results, including the model and local file paths, are part of this chat, like anything else sent to the model the user selected. The plugin itself sends nothing anywhere: rendering has no network access, and bundles stay in the folder `get_capabilities` names.
+The tool calls and their results, including the model and local file paths, are part of this chat, like anything else sent to the model the user selected. The plugin sends none of this anywhere else. Only setup reaches the network, to download packages. Rendering has no network access, and bundles stay in the folder `get_capabilities` names.

@@ -79,7 +79,7 @@ Each bundle holds `diagram.svg`, `diagram.png`, `model.json`, `view.json`, `diag
 
 ## Where your data goes
 
-Bundles live in `~/Documents/CloudArchitectureDiagrams/work`, private to your account. If you sync Documents with iCloud, they sync too. The runtime lives in `~/.local/share/cloud-architecture-diagrams/work-plugin`. The plugin's log holds tool names, status codes and timings, and never model content. Its tool process and its renderer send nothing anywhere.
+Bundles live in `~/Documents/CloudArchitectureDiagrams/work`, private to your account. If you sync Documents with iCloud, they sync too. The runtime lives in `~/.local/share/cloud-architecture-diagrams/work-plugin`. The plugin's log holds tool names, status codes and timings, and never model content. Only setup reaches the network, to download packages. Its tool process sends none of your data anywhere, and its renderer has no network access.
 
 Tool calls and their results, including the model and local file paths, are part of the chat, like anything else sent to the model you selected in Work. The app also keeps its own record of each chat, including those calls, under `~/.codex/sessions`. So do not put secret values in a model; the model format has no field for them.
 
@@ -105,7 +105,7 @@ python3 scripts/build_work_plugin.py --output ~/.local/share/cloud-architecture-
 codex plugin add cloud-architecture-work@mingrammer-work
 ```
 
-Restart the app and open a new chat. A chat left open keeps its old tool process, and the plugin reports `PLUGIN_UPDATED` when that process's files are gone. A version with the same dependencies reuses the runtime, and one with new dependencies asks to build it again.
+Restart the app and open a new chat. A chat left open keeps its old tool process, and the plugin reports `PLUGIN_UPDATED` when that process's files are gone. A version with the same dependencies reuses the runtime. One with new dependencies asks to build it again, and that build removes the old one.
 
 ## Remove
 

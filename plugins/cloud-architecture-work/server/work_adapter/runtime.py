@@ -53,6 +53,17 @@ HOST_MODES = {
 }
 
 
+# Internal calls get their own keys, so no client's request ID can name one and cancel it.
+SETUP_TOKEN = object()
+SETUP_CHECK_TOKEN = object()
+SETUP_PROBE_TOKEN = object()
+ENVIRONMENT_FILE = re.compile(r"env-[0-9a-f]{16}(\.ready\.json)?")
+
+
+class SetupInterrupted(Exception):
+    """The tool process is stopping, which says nothing about whether setup would have worked."""
+
+
 @dataclass
 class Completed:
     status: int
@@ -340,6 +351,15 @@ class Runtime:
             return self._setup_locked()
 
     def _setup_locked(self) -> dict[str, Any]:
+        self.failure_path.unlink(missing_ok=True)
+        try:
+            return self._build()
+        except SetupInterrupted:
+            # Finished downloads are kept, so the next attempt resumes. Recording a failure here
+            # would send the next chat looking for a cause that does not exist.
+            return {"ready": False, "code": "RUNTIME_SETUP_INTERRUPTED"}
+
+    def _build(self) -> dict[str, Any]:
         uv = self.find_tool("uv")
         if uv is None:
             return self._record_failure(
@@ -381,7 +401,7 @@ class Runtime:
                 "Check that uv runs from a terminal, then call setup_runtime again.",
                 type(error).__name__,
             )
-        process = self._register("setup", sync)
+        process = self._register(SETUP_TOKEN, sync)
         try:
             output, _ = sync.communicate(timeout=SETUP_SECONDS)
         except subprocess.TimeoutExpired:
@@ -393,8 +413,10 @@ class Runtime:
             )
         finally:
             with self.guard:
-                self.running.pop("setup", None)
-        if sync.returncode != 0 or process.cancelled:
+                self.running.pop(SETUP_TOKEN, None)
+        if process.cancelled:
+            raise SetupInterrupted
+        if sync.returncode != 0:
             return self._record_failure(
                 "RUNTIME_SETUP_FAILED",
                 "uv could not build the private environment from the locked dependencies.",
@@ -402,7 +424,9 @@ class Runtime:
                 _tail(output),
             )
         # The environment holds dependencies only, so this is the first real run of the core.
-        checked = self.run_core(["capabilities"], None, PROBE_SECONDS, "setup-capabilities")
+        checked = self.run_core(["capabilities"], None, PROBE_SECONDS, SETUP_CHECK_TOKEN)
+        if checked.cancelled:
+            raise SetupInterrupted
         try:
             version = json.loads(checked.stdout)["package_version"]
         except (ValueError, KeyError, TypeError):
@@ -416,12 +440,24 @@ class Runtime:
         marker = {
             "lock_sha256": self.lock_digest(),
             "python": PYTHON,
-            "core_version": version,
+            # A later release with the same lock reuses this runtime, so name what this describes.
+            "probed_with": self.version,
             "render_probe": self.render_probe(),
         }
         self._write_json(self.marker_path, marker)
         self.failure_path.unlink(missing_ok=True)
+        self._remove_old_environments()
         return {"ready": True, **marker}
+
+    def _remove_old_environments(self) -> None:
+        # Only one version of the plugin is ever installed, so only one lock's runtime is in use.
+        current = {self.environment_path.name, self.marker_path.name}
+        for path in self.data.iterdir():
+            if ENVIRONMENT_FILE.fullmatch(path.name) and path.name not in current:
+                if path.is_dir() and not path.is_symlink():
+                    shutil.rmtree(path, ignore_errors=True)
+                else:
+                    path.unlink(missing_ok=True)
 
     def render_probe(self) -> dict[str, Any]:
         """One real render of a bundled example where bundles really go, then remove that bundle.
@@ -435,8 +471,10 @@ class Runtime:
                 ["render", "--output=" + str(self.output)],
                 example.read_bytes(),
                 PROBE_SECONDS,
-                "setup-probe",
+                SETUP_PROBE_TOKEN,
             )
+            if ran.cancelled:
+                raise SetupInterrupted
             report = json.loads(ran.stdout)
             if report.get("rendered") is True:
                 bundle = str(report["bundle_id"])
@@ -451,10 +489,25 @@ class Runtime:
             return {"passed": False, "codes": ["RENDER_PROBE_FAILED"]}
 
     def remove(self) -> dict[str, Any]:
-        """Delete only this adapter's runtime. Bundles and the core's Claude runtime stay."""
-        existed = self.data.is_dir()
-        shutil.rmtree(self.data, ignore_errors=True)
-        return {"removed": str(self.data), "existed": existed}
+        """Delete only what setup made, by name. Bundles and the Claude plugin's runtime stay."""
+        removed = []
+        if self.data.is_dir():
+            for path in sorted(self.data.iterdir()):
+                if ENVIRONMENT_FILE.fullmatch(path.name) or path.name in (
+                    "setup.lock",
+                    "setup-failure.json",
+                ):
+                    if path.is_dir() and not path.is_symlink():
+                        shutil.rmtree(path, ignore_errors=True)
+                    else:
+                        path.unlink(missing_ok=True)
+                    removed.append(path.name)
+            # A folder holding anything this code did not make stays, and says so by still existing.
+            try:
+                self.data.rmdir()
+            except OSError:
+                pass
+        return {"runtime": str(self.data), "removed": removed, "kept": self.data.exists()}
 
     # Preflight.
     def _sandbox_works(self) -> bool:

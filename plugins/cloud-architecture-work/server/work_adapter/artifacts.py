@@ -6,7 +6,6 @@ import hashlib
 import json
 import os
 import re
-import shutil
 import stat
 import time
 from datetime import datetime, timezone
@@ -134,11 +133,20 @@ def _summary(directory: int, name: str, modified: float) -> dict[str, Any]:
     return entry
 
 
+def _open_for_listing(root: Path) -> int | None:
+    """None when there is nothing yet; a root that cannot be used must not read as empty."""
+    try:
+        return open_root(root)
+    except FileNotFoundError:
+        return None
+    except OSError as error:
+        raise ArtifactError("ARTIFACT_UNSAFE") from error
+
+
 def list_bundles(root: Path, limit: int) -> list[dict[str, Any]]:
     """Newest first. A listing reads only each bundle's manifest, and never a model."""
-    try:
-        directory = open_root(root)
-    except OSError:
+    directory = _open_for_listing(root)
+    if directory is None:
         return []
     try:
         found = []
@@ -152,12 +160,26 @@ def list_bundles(root: Path, limit: int) -> list[dict[str, Any]]:
         os.close(directory)
 
 
+def _remove_tree(parent: int, name: str) -> None:
+    """By descriptor, so a link cannot redirect it. shutil.rmtree takes dir_fd only from 3.11."""
+    folder = os.open(name, DIRECTORY, dir_fd=parent)
+    try:
+        for entry in os.listdir(folder):
+            info = os.stat(entry, dir_fd=folder, follow_symlinks=False)
+            if stat.S_ISDIR(info.st_mode):
+                _remove_tree(folder, entry)
+            else:
+                os.unlink(entry, dir_fd=folder)
+    finally:
+        os.close(folder)
+    os.rmdir(name, dir_fd=parent)
+
+
 def prune(root: Path, older_than_days: float, *, apply: bool) -> dict[str, Any]:
     """Remove old bundles on request. A model has no tool for this, so only the owner can do it."""
     cutoff = time.time() - older_than_days * 86400
-    try:
-        directory = open_root(root)
-    except OSError:
+    directory = _open_for_listing(root)
+    if directory is None:
         return {"removed": [], "applied": apply}
     try:
         selected = []
@@ -170,7 +192,7 @@ def prune(root: Path, older_than_days: float, *, apply: bool) -> dict[str, Any]:
                 selected.append(name)
         if apply:
             for name in selected:
-                shutil.rmtree(name, dir_fd=directory)
+                _remove_tree(directory, name)
         return {"removed": sorted(selected), "applied": apply}
     finally:
         os.close(directory)

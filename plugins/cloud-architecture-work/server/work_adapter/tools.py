@@ -426,11 +426,15 @@ class Toolbox:
                 report = self._report(done)
                 core = report if isinstance(report, dict) else None
         if core is None:
+            # The same answer a tool would give, so that installing never reads as "call setup".
+            blocked = self._not_ready()
             blockers.append(
-                {
-                    "code": "RUNTIME_NOT_READY",
-                    "message": "The private runtime is not ready.",
-                    "remedy": "Call setup_runtime, then check get_capabilities again.",
+                {key: str(blocked.body[key]) for key in ("code", "message", "remedy")}
+                if blocked
+                else {
+                    "code": "CORE_CRASHED",
+                    "message": "The core did not report its capabilities.",
+                    "remedy": "Call setup_runtime to repair the runtime, then check again.",
                 }
             )
         ready = core is not None and bool(core.get("render_available")) and not blockers
@@ -689,12 +693,12 @@ class Toolbox:
             return invalid("limit must be a whole number.")
         if not 1 <= limit <= artifacts.MAX_LISTED:
             return invalid(f"limit must be from 1 to {artifacts.MAX_LISTED}.")
+        try:
+            bundles = artifacts.list_bundles(self.runtime.output, limit)
+        except artifacts.ArtifactError as error:
+            return self._artifact_failure(error.code)
         return success(
-            {
-                "root": str(self.runtime.output),
-                "retention": RETENTION,
-                "bundles": artifacts.list_bundles(self.runtime.output, limit),
-            }
+            {"root": str(self.runtime.output), "retention": RETENTION, "bundles": bundles}
         )
 
 

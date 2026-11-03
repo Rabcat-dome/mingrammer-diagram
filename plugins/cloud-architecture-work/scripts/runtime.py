@@ -28,6 +28,23 @@ def main() -> int:
     args = parser.parse_args()
 
     runtime = Runtime(ROOT)
+    try:
+        return run(args, runtime)
+    except artifacts.ArtifactError:
+        print(
+            json.dumps(
+                {
+                    "code": "OUTPUT_ROOT_UNAVAILABLE",
+                    "message": f"{runtime.output} cannot be read safely, so nothing was done.",
+                    "remedy": "Keep symbolic links out of its path, and let this process read it.",
+                },
+                indent=2,
+            )
+        )
+        return 1
+
+
+def run(args: argparse.Namespace, runtime: Runtime) -> int:
     report: object
     status = 0
     if args.command == "preflight":
