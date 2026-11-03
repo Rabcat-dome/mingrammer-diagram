@@ -366,6 +366,20 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - Closed M2 for the private personal release, as the owner's choice to fix and recheck N1 provided. Inventories and rule evidence are met, D-019 settles the asset-rights item, and D-020 records Fable as the substitute reviewer of the fixes.
 - Still true: Huawei rights are not cleared and O-002 blocks public distribution. N2-N4 are deferred P3 findings. Kubernetes representations have not been shown to the owner, the owner's plugin stays on `917f46f`, main is not merged, and review of the earlier M7 Medium/Low fixes is outstanding.
 
+## 2026-11-03 — Unmerged branches merged into main
+
+- At the owner's request, Claude Opus 5.5 merged the unmerged work into `main` in stages. The four branches form one linear stack, so each step was a fast-forward with no merge commit, and `main` holds the same SHAs that the CI and review records name.
+- `ff53a88` (S04) has no quality gate in its tree, so no CI ran. `c5f74b4` (S05) passed [run 41493541387](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41493541387), `c6a59e5` (M7) passed [run 41493655229](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41493655229) and `f3f0789` (S06) passed [run 41493822820](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41493822820), each on `main`.
+- M7 went in without being closed, because S06 is stacked on it. Its Astra/High review and a review of its Medium and Low fixes remain outstanding, and a second machine and interactive permission prompts remain unverified.
+- The plugin README now installs from the default branch. The owner's install stays pinned to `codex/m7-claude-plugin` at `917f46f`, and no branch was deleted. The repository stays private.
+
+
+## 2026-11-03 — Owner's plugin moved to main
+
+- At the owner's request, Claude Opus 5.5 removed the `mingrammer-local` marketplace and added it again from the default branch, then reinstalled the plugin. The install moved from `917f46f` to `3d235fa`, so it now has the S06 catalogs and semantic rules. Rendering is still unavailable.
+- `settings.json` lost only the branch ref, apart from one key's position. On the installed copy, run from a folder outside the repository, a valid AWS model exits 0, and a self-managed node group in another VPC exits 2 with its expected diagnostic in both modes. A new headless session on Haiku 5.5 lists the skill. See the [M7 evidence](evidence/M7-claude-plugin.md).
+- Sessions already running keep the copy they loaded. A second machine and interactive permission prompts remain unverified.
+
 ## 2026-11-03 — S07 / M3 controlled rendering implemented locally
 
 - Started from a parent session's brief. Verified `f3f0789` as the latest successful gate head and branched `codex/s07-controlled-rendering` from it. The brief left committing and pushing to the owner, who asked for both after this work was reported.

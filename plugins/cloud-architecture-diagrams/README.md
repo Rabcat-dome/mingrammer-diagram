@@ -17,10 +17,10 @@ Docker, a central server and a model API key are not required.
 
 These commands need the `claude` CLI on `PATH`; the CLI bundled with the desktop app is not on it by default.
 
-The repository is private. Installing from GitHub uses your own Git credentials, for example after `gh auth login` and `gh auth setup-git`. The default branch does not contain the plugin yet, so name its branch until it merges:
+The repository is private. Installing from GitHub uses your own Git credentials, for example after `gh auth login` and `gh auth setup-git`.
 
 ```bash
-claude plugin marketplace add 'Rabcat-dome/mingrammer-diagram#codex/m7-claude-plugin'
+claude plugin marketplace add Rabcat-dome/mingrammer-diagram
 ```
 
 ```bash
