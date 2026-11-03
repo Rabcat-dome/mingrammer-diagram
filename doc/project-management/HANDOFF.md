@@ -1,12 +1,12 @@
 # Cross-Machine Handoff
 
-Updated: 2026-11-03 | S01-S07 complete, and **S08 / M4 is implemented on `codex/s08-reference-diagrams`, passes actual CI at `a407a7a`, and Fable/High approved it there. It stays open for the owner's inspection.** M2 closed on 2026-11-03 for the private personal release, at `5f391eb` on `codex/s06-provider-catalogs`, which passes CI with 12 lanes and 652 tests. Claude Fable 5.1 / High approved the fixes under D-020 as a substitute for Astra/High, and D-019 settles the asset-rights exit item. **S07 / M3 closed on 2026-11-03 under D-022, on `codex/s07-controlled-rendering`, branched from `f3f0789`. Its code passes actual CI at `c8fc687`, Fable/High approved its P2 fixes there, and the owner passed three samples of its output.** M7 Claude Code preparation started early under D-015. D-021 moves every remaining review from Astra to Claude Fable 5.1.
+Updated: 2026-11-03 | S01-S08 complete. **S08 / M4 closed on 2026-11-03 under D-023 and is in `main`. Its code passes actual CI at `a407a7a`, Fable/High approved it there, and the owner passed the images.** M2 closed on 2026-11-03 for the private personal release, at `5f391eb` on `codex/s06-provider-catalogs`, which passes CI with 12 lanes and 652 tests. Claude Fable 5.1 / High approved the fixes under D-020 as a substitute for Astra/High, and D-019 settles the asset-rights exit item. **S07 / M3 closed on 2026-11-03 under D-022, on `codex/s07-controlled-rendering`, branched from `f3f0789`. Its code passes actual CI at `c8fc687`, Fable/High approved its P2 fixes there, and the owner passed three samples of its output.** M7 Claude Code preparation started early under D-015. D-021 moves every remaining review from Astra to Claude Fable 5.1.
 
 ## Goal and current source
 
 Personal ChatGPT Work-first plugin on mingrammer/diagrams + Graphviz for AWS/Azure/GCP/Huawei/on-premises, with detailed Kubernetes and provider-reference visuals. Claude Code acceptance is later; D-015 started its preparation early. Keep English docs and one [requirements baseline v0.12](../requirements/requirements.md).
 
-Branch: `codex/s05-core-quality-gate`. M1 executable/workflow source reviewed and CI-tested at `785e1eecb646476691859f14dd4399ac564011ca`, milestone base `ff53a88944e981be2bbbab171e0ccf8cecdb4e41`. Later closure commits are docs/evidence only. M7 preparation is on `codex/m7-claude-plugin`, stacked on the S05 head; its prefix keeps the existing workflow trigger. S06 branched from `c6a59e5` on `codex/m7-claude-plugin`, so it inherits the S05 core and the gate, which now has 12 lanes. The CI-tested S06 code head is `5f391eb`, including the F1-F5, N1 and N5 fixes and the owner's D-016 to D-020. S04, S05, M7 and S06 were fast-forwarded into `main` in that order on 2026-11-03. S07 followed after M3 closed: `main` had two record commits it lacked, so merge commit `7c461b7` joined them, keeping every recorded SHA, and passes actual CI [run 41600668220](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41600668220). `main` then fast-forwarded to the S07 head. Every branch remains. Verify HEAD and the latest CI before resuming.
+Branch: `codex/s05-core-quality-gate`. M1 executable/workflow source reviewed and CI-tested at `785e1eecb646476691859f14dd4399ac564011ca`, milestone base `ff53a88944e981be2bbbab171e0ccf8cecdb4e41`. Later closure commits are docs/evidence only. M7 preparation is on `codex/m7-claude-plugin`, stacked on the S05 head; its prefix keeps the existing workflow trigger. S06 branched from `c6a59e5` on `codex/m7-claude-plugin`, so it inherits the S05 core and the gate, which now has 12 lanes. The CI-tested S06 code head is `5f391eb`, including the F1-F5, N1 and N5 fixes and the owner's D-016 to D-020. S04, S05, M7 and S06 were fast-forwarded into `main` in that order on 2026-11-03. S07 followed after M3 closed: `main` had two record commits it lacked, so merge commit `7c461b7` joined them, keeping every recorded SHA, and passes actual CI [run 41600668220](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41600668220). `main` then fast-forwarded to the S07 head. S08 fast-forwarded in the same way after M4 closed. Every branch remains. Verify HEAD and the latest CI before resuming.
 
 D-013/D-014 select per-machine native Python/Graphviz in the separate ChatGPT Work page. Docker, central hosting, public renderer and renderer/model API keys are unnecessary. S04's installed alpha.3 three-node plugin remains separate from M1 core package 0.2.0a1; this activity did not upgrade that plugin/runtime.
 
@@ -41,7 +41,7 @@ Core changes reach the plugin through symlinks, so no copy step exists, and Clau
 1. M2 is closed. Its deferred P3 findings, N2-N4, are in the [Fable review](evidence/S06-fable-review.md#follow-up-n1-fix-and-deferrals). The [Fable review](evidence/M7-fable-review.md) now covers the earlier M7 Medium/Low fixes and leaves three P3 findings open.
 2. The owner passed one Kubernetes sample in S07. The full set of Kubernetes representations has not been shown to them, and M4 inspects it.
 3. Update the owner's installed plugin only if asked. It follows `main` and holds `02dc709`, which has the renderer. The skill correction from S08 reaches it after the next merge.
-4. M3 is closed under D-022, and four of its P3 findings stay open. S08 / M4 needs the owner's inspection of the samples, and [its review](evidence/S08-fable-review.md) leaves four P3 findings open. M5 full Work plugin and M6 two-machine release acceptance remain open.
+4. M3 is closed under D-022, and four of its P3 findings stay open. M4 is closed under D-023, and [its review](evidence/S08-fable-review.md) leaves four P3 findings open. S09 / M5 is next in the delivery order, and the owner chooses. M5 full Work plugin and M6 two-machine release acceptance remain open.
 
 ## Resume prompt
 
@@ -52,9 +52,9 @@ the private personal release: D-019 settles its asset-rights exit item, and D-01
 it does not clear their rights.
 
 S07 / M3 is closed under D-022, with code at c8fc687. Its five P3 findings stay open.
-S08 / M4 is implemented on codex/s08-reference-diagrams, and Fable/High approved it at
-a407a7a. It stays open for the owner's inspection. Read M4 in milestones.md, the S08 evidence and the
-core contract's Controlled rendering section. Keep docs English.
+S08 / M4 is closed under D-023 and in main. S09 / M5 is next in the delivery order: read M5 in
+milestones.md, the S08 evidence and the core contract's Controlled rendering section. Branch
+from main with a codex/ prefix; keep docs English.
 Huawei source availability is not redistribution permission: keep public
 distribution blocked under O-002, and draw no silent generic substitute for a
 type without an icon. Keep S04 alpha.3 and existing runner registrations

@@ -2,7 +2,7 @@
 
 Date: 2026-11-03 | Tasks: M4-01..05 | Branch: `codex/s08-reference-diagrams`, from `main` at `02dc709` | Package: `0.5.0a1`
 
-**Result: M4 is implemented and is not closed.** [Fable/High approved](S08-fable-review.md) it at `a407a7a`, which passes actual CI [run 41664850907](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41664850907) with 1,250 tests. It still needs the owner's inspection of the samples. The numbers below are from the local gate at the commit named in [validation](#validation).
+**Result: M4 closed on 2026-11-03 under D-023, after the [owner's inspection](#owner-inspection).** [Fable/High approved](S08-fable-review.md) it at `a407a7a`, which passes actual CI [run 41664850907](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41664850907) with 1,250 tests. The numbers below are from the local gate at the commit named in [validation](#validation).
 
 ## Task status
 
@@ -10,7 +10,7 @@ Date: 2026-11-03 | Tasks: M4-01..05 | Branch: `codex/s08-reference-diagrams`, fr
 |---|---|---|
 | M4-01 | Implemented | AWS, Azure, GCP, Huawei and on-premises models under `tests/fixtures/references`, with expected semantics in `tests/test_references.py` |
 | M4-02 | Implemented | `hybrid-five.json` holds all five environments, with typed links and a trust zone in each |
-| M4-03 | Implemented; owner inspection pending | TB and LR, legends, English and Thai labels, disclosed omissions, [provider references and deviations](#provider-references) |
+| M4-03 | Implemented; the owner passed the images | TB and LR, legends, English and Thai labels, disclosed omissions, [provider references and deviations](#provider-references) |
 | M4-04 | Implemented | The `visual-regression` lane, reviewed baselines, and [measurements](#measurements) with icon views |
 | M4-05 | Implemented | A namespace view and a worker-placement view for EKS, AKS, GKE, CCE and on-premises in the same models as their cloud views, with one namespace view in the hybrid |
 
@@ -18,11 +18,17 @@ Date: 2026-11-03 | Tasks: M4-01..05 | Branch: `codex/s08-reference-diagrams`, fr
 
 | Criterion | State | Evidence |
 |---|---|---|
-| Six reference families and their Kubernetes subviews inspected by the owner and reviewer | **Open** | This session and the reviewer inspected images, and [Fable/High approved](S08-fable-review.md) at `a407a7a`. The owner's inspection remains |
+| Six reference families and their Kubernetes subviews inspected by the owner and reviewer | Met | This session and the reviewer inspected images, [Fable/High approved](S08-fable-review.md) at `a407a7a`, and the [owner passed them](#owner-inspection) |
 | T-017 passes | Met in tests | [Kubernetes checks](#scenario-checks), together with the `provider-semantics` lane |
 | All required catalog entries have resolution and rule fixtures | Met | `provider-semantics` and `render-smoke`, which require every type and rule to have a fixture and a render |
 | Performance measurements recorded | Met | [Measurements](#measurements) and the [raw numbers](S08-render-measurements.json) |
 | P1 automatic splitting and 200 / 300 stress deferred explicitly | Met | Automatic splitting is not implemented. [P-031](../decisions.md#recommendations-and-disposition) records what 200 / 300 means now |
+
+## Owner inspection
+
+On 2026-11-03 the owner passed all 26 reference views and the Thai sample on a local page, and asked for no change (D-023). Before this was recorded, all 26 images on that page matched the baselines byte for byte, and the `visual-regression` lane passed. P-029 to P-031 stand until the owner changes them, including the [deviations](#deviations).
+
+The acceptance covers these images for M4. T-016 repeats in M6, T-014's privacy part stays with M5, and acceptance in an actual Work session stays with M5 and M6.
 
 ## Reference scenarios
 
@@ -174,17 +180,17 @@ Time is far from any limit: the slowest run is 1.83 s against 55 s.
 
 | ID | State | Where it is checked |
 |---|---|---|
-| T-001..006 | Met in tests; owner inspection open | [Scenario checks](#scenario-checks) |
+| T-001..006 | Met in tests; the owner passed the images. Acceptance in an actual Work session stays with M5 and M6 | [Scenario checks](#scenario-checks) |
 | T-012 | P0 rejection met; P1 deferred | [Measurements](#measurements) |
-| T-014 | English and Thai rendering checked here; owner inspection open; M5 adds the privacy part | `test_thai_labels_render_strictly_with_the_same_ids` |
-| T-016 | Compared with the pinned references; owner acceptance open; M6 repeats it | [Provider references](#provider-references) |
+| T-014 | English and Thai labels passed by the owner; M5 adds the privacy part | `test_thai_labels_render_strictly_with_the_same_ids` |
+| T-016 | Compared with the pinned references and passed by the owner for M4; M6 repeats it | [Provider references](#provider-references) |
 | T-017 | Met in tests for M4; M5 adds its part | [Scenario checks](#scenario-checks) |
 | FR-018, FR-029 | Met in tests | The same, with `provider-semantics` |
-| FR-042 | Met in tests; owner inspection open | Direction, legend, grouping and labels |
-| FR-048 | Implemented with recorded deviations; owner acceptance open | [Deviations](#deviations) |
+| FR-042 | Met in tests; the owner passed the images | Direction, legend, grouping and labels |
+| FR-048 | Implemented with recorded deviations; the owner passed the images for M4 | [Deviations](#deviations) |
 | NFR-006 | Met in tests | Each view draws exactly what it selects, and each left-out ID is disclosed |
 | NFR-007 | Measured on one machine | [Measurements](#measurements) |
-| NFR-014 | Thai variant rendered; one more sample for the owner | T-014 above |
+| NFR-014 | Thai variant rendered and passed by the owner | T-014 above |
 
 ## Limits and what this does not establish
 
@@ -196,7 +202,7 @@ Time is far from any limit: the slowest run is 1.83 s against 55 s.
 - **A subnet with no path to any network accepts any `network_ref`**, which predates this work and which the [review](S08-fable-review.md) lists as P3.
 - **A live session rendered only through `--plugin-dir`** on this branch. The installed copy gets the skill correction after a merge.
 - Four P3 findings from the [S07 review](S07-fable-review.md) stay open: P3-1, P3-2, P3-3 and P3-5. P3-4 is fixed here. Three M7 P3 findings also stay open.
-- Nothing is merged or released, and `main` still holds `02dc709`.
+- This branch fast-forwards into `main` once M4's closing commit passes CI, and nothing is released. The owner's installed plugin needs its update commands to pick this up.
 
 ## Model and review
 
@@ -206,6 +212,5 @@ Under D-021, Claude Fable 5.1 / High [reviewed `02dc709..1ee4a58`](S08-fable-rev
 
 ## Next steps
 
-1. The owner inspects the samples and settles the presentation choices in P-029 to P-031.
-2. Close M4 after that. The open P3 findings stay open unless the owner wants them fixed first.
-3. Then choose the next milestone.
+1. M4 is closed under D-023. The open P3 findings stay open unless the owner wants them fixed.
+2. The owner chooses the next milestone. S09 / M5 is next in the delivery order.

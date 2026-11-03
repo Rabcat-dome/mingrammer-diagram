@@ -1,6 +1,6 @@
 # Session Plan and Starter Prompts
 
-Updated: 2026-11-03 | Status: S01-S07 complete; M2 and M3 closed on 2026-11-03 for the private personal release. S08 is implemented and reviewed, and it stays open for the owner's inspection. Two authorized S04 chats completed; no new S05 chat has been created.
+Updated: 2026-11-03 | Status: S01-S08 complete; M2, M3 and M4 closed on 2026-11-03 for the private personal release. Two authorized S04 chats completed; no new S05 chat has been created.
 
 This is an execution index for the existing [milestones](milestones.md), not a second requirement baseline. Use the [requirements](../requirements/requirements.md) for product scope and the [decision log](decisions.md) for confirmed choices. The deliverable remains an installable cross-machine plugin with a bundled skill.
 
@@ -20,7 +20,7 @@ S05 result: [core/CI evidence](evidence/S05-core-and-ci.md), [contract/setup](..
 
 S07 result: [controlled rendering](evidence/S07-controlled-rendering.md). M3-01..04 are implemented on `codex/s07-controlled-rendering` and pass the 14-lane gate in actual CI at `cddb497`, including new `render-security` and `render-smoke` lanes. [Fable/High requested changes](evidence/S07-fable-review.md) on three P2 findings and approved their fixes at `c8fc687`. The owner passed three samples of the first output, and M3 closed under D-022 with five P3 findings left open.
 
-S08 result: [reference diagrams](evidence/S08-reference-diagrams.md). M4-01..05 are implemented on `codex/s08-reference-diagrams`, with six reference models, 26 views, a `visual-regression` lane with reviewed baselines, and measurements. [Fable/High approved](evidence/S08-fable-review.md) it at `a407a7a`. The owner's inspection remains, so M4 is not closed.
+S08 result: [reference diagrams](evidence/S08-reference-diagrams.md). M4-01..05 are complete, with six reference models, 26 views, a `visual-regression` lane with reviewed baselines, and measurements. [Fable/High approved](evidence/S08-fable-review.md) it at `a407a7a`, and the owner passed the images, so M4 closed under D-023.
 
 S06 result: [catalogs, rules and rights](evidence/S06-provider-catalogs.md). M2-01, 02, 04, 05 and 06 are complete, with catalogs, rules, on-premises assets and two gate lanes passing actual CI at `6929253`. Under the owner's D-018, all 15 Huawei items that need an icon have one, for private personal use only. The owner accepted the on-premises and Huawei icon sheets. Astra/High reviewed `5569459` and requested changes. After the fixes, Claude Fable 5.1 / High approved `5f391eb` under D-020, and CI passes there. D-019 closes the asset-rights exit item for the private personal release, and M2 is closed.
 

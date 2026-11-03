@@ -2,7 +2,7 @@
 
 Date: 2026-11-03 (Asia/Bangkok). Reviewer: Claude Fable 5.1 (`claude-fable-5-1`) in a fresh agent with no prior project context, started from the owner's Claude Opus 5.5 session, which set its effort to High. The reviewer cannot read that setting, so it reports its effort as unverified from its side. This is the M4 review under [D-021](../decisions.md#confirmed-user-direction). Claude Opus 5.5 and Claude Sonnet 5.5 wrote the work, so reviewer and implementers share a vendor.
 
-**Final disposition: approved at `a407a7a`; see the [final recheck](#final-recheck-at-a407a7a). P3-2, the rest of P3-8, P3-12 and P3-13 stay open, and M4 stays open for the owner's inspection of the output.** The sections before it are the record at each commit.
+**Final disposition: approved at `a407a7a`; see the [final recheck](#final-recheck-at-a407a7a). P3-2, the rest of P3-8, P3-12 and P3-13 stay open. The owner then inspected the output, and M4 closed under D-023.** The sections before it are the record at each commit.
 
 **Disposition at `1ee4a58`: changes requested, on two P2 findings.** There are no P0 or P1 findings, and nine more are P3. The reviewer found the model semantics true to the briefs otherwise. The [recheck](#recheck-at-b00b90d) found that the first fix for P2-1 was incomplete, with a new P2 that is fixed in turn.
 
