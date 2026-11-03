@@ -421,4 +421,4 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 
 - CI passed at `c8fc687` ([run 41589907300](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41589907300), 14 lanes and 985 tests, with the wheel matching the local build), and the same Fable/High reviewer approved `e4d9761..c8fc687`. In its view `0b30b02..c8fc687` can stand as M3's and M7's disposition of the P2 findings.
 - Five M3 and three M7 P3 findings stay open. M3 still needs the owner's inspection of the output, and M7 still needs a second machine and interactive permission prompts.
-- This branch is not merged, so the owner's plugin on `main` has none of this. The review worktree was removed.
+- This branch is not merged, so the owner's plugin on `main` has none of this.
