@@ -866,8 +866,12 @@ def test_nesting_at_the_limit_renders(tmp_path: Path) -> None:
     assert result.rendered, codes(result)
 
 
-def test_memberships_that_only_loop_across_dimensions_terminate(tmp_path: Path) -> None:
+@pytest.mark.parametrize("selected", [["a", "b", "app"], ["b", "a", "app"], ["app", "b", "a"]])
+def test_memberships_that_only_loop_across_dimensions_terminate(
+    selected: list[str], tmp_path: Path
+) -> None:
     # Each dimension is acyclic alone, so validation passes, and only the mapper can catch this.
+    # Which direction stays nested must not depend on the order the view lists them.
     model = single_resource_model()
     model["boundaries"] = [
         {
@@ -885,7 +889,7 @@ def test_memberships_that_only_loop_across_dimensions_terminate(tmp_path: Path) 
             "relations": [{"kind": "deployment_member_of", "target_ref": "a"}],
         },
     ]
-    model["views"][0]["entity_refs"] = ["a", "b", "app"]
+    model["views"][0]["entity_refs"] = selected
     result = render(model, tmp_path / "out")
     assert result.rendered, codes(result)
     groups = {group["id"]: group for group in graph_of(result)["groups"]}

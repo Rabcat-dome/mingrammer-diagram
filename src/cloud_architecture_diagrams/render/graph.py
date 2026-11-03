@@ -335,15 +335,22 @@ class Mapper:
             if group in self.entities
         )
 
-    def _settle_scopes(self) -> None:
-        """A group can come before the one that nests it, so recheck with every parent known."""
-        groups = [entity for entity in self.selected if entity.id in self.group_ids]
-        for _ in groups:
+    def _nest_groups(self) -> None:
+        """A group's place depends on where its candidates sit, so repeat until none moves.
+
+        Working in ID order means the order a view lists its entities cannot choose the tree. Every
+        move keeps the tree free of loops, so stopping at the bound still leaves a valid one.
+        """
+        groups = sorted(
+            (entity for entity in self.selected if entity.id in self.group_ids),
+            key=lambda entity: entity.id,
+        )
+        for _ in range(len(groups) + 1):
             moved = False
             for entity in groups:
-                parent = self.parents.get(entity.id)
-                if parent and self._implies_another_scope(entity, parent):
-                    self.parents[entity.id] = self._container(entity)
+                parent = self._container(entity)
+                if parent != self.parents.get(entity.id):
+                    self.parents[entity.id] = parent
                     moved = True
             if not moved:
                 return
@@ -443,10 +450,7 @@ class Mapper:
             if record.representation.kind == "blocked":
                 raise RenderFailure("RENDER_TYPE_BLOCKED", "/views", entity.id)
             records[entity.id] = record
-        for entity in self.selected:
-            if entity.id in self.group_ids:
-                self.parents[entity.id] = self._container(entity)
-        self._settle_scopes()
+        self._nest_groups()
         self._check_depth()
         for entity in self.selected:
             if entity.id not in self.group_ids:

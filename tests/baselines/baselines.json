@@ -1,7 +1,7 @@
 {
  "accepted_on": "2026-11-03",
  "engine": "dot - graphviz version 16.1.0 (20260904.0139)",
- "reason": "First reviewed baseline: the six S08 reference scenarios at core 0.5.0a1.",
+ "reason": "S08 review fixes: the GCP ingress controller's name and the load balancer edge's purpose changed in the model. Other views are unchanged.",
  "views": {
   "aws-three-tier--eks-namespaces": {
    "png": "917353b23bdeafe5e56ad3fe240e6baff3d716d3ee96ec713dd970168f94d7e2",
@@ -36,8 +36,8 @@
    "svg": "0ff9ebe82ea0b8903e9d4f2948fa6565656c6768b3d14ac190e85ec783ba3812"
   },
   "gcp-shared-vpc--gke-namespaces": {
-   "png": "44660d98da437f5dfd4ab2a770deb954c796d135bee76022ba95a331542e5951",
-   "svg": "19597ffd71cd69f5a0ca41beac46b540c7ae82bd1fdd32c8335c71b74a192a80"
+   "png": "2a55eb7fb4265aba9c4f20d442aed6886c4079f40173f95cb41afe9f5e6431d9",
+   "svg": "fcd04effe5f1108350c8a19bf7488317a82b0eb391526f4ca2b610b42f5638d9"
   },
   "gcp-shared-vpc--gke-nodes": {
    "png": "743d6e21f41e97fa05ef491d99cc473a291f67085891d9ee4a11e41ef4726ac1",
@@ -48,8 +48,8 @@
    "svg": "a193faac9eb7114d5957fbf9bba171d24400ccca2d97fcffc051e8bb1814c12e"
   },
   "gcp-shared-vpc--overview": {
-   "png": "7c10007abecbeb4f39d2a65e424922ecd1262019355c818a6846fa99a0dbcc4b",
-   "svg": "e02776514d547ba587b379f929693d0bfb14779146082dce8a8f908a9b9a9934"
+   "png": "dde71e059c0a0aef6bacd594b8016320183f754ffd1c3a0daf7b18253fe932ca",
+   "svg": "b87b136802c8b330dc96ded26c630f1b27e55ba4f111843a7c3dd5433a0d1eb1"
   },
   "gcp-shared-vpc--projects": {
    "png": "66bc09103a15e7038664ab45c341624870733803f8e8e5bb356d37e04f5f9cf9",

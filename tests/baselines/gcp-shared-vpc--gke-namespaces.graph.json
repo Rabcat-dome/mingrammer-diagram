@@ -8,7 +8,8 @@
    "kind": "traffic",
    "lines": [
     "HTTPS",
-    "To the GKE Ingress"
+    "To the ingress controller's",
+    "standalone NEG"
    ],
    "source": "lb-global-external",
    "target": "gke-cluster"
@@ -224,7 +225,8 @@
    "icon": null,
    "id": "ing-controller",
    "lines": [
-    "gke-ingress",
+    "in-cluster ingress",
+    "controller",
     "Ingress controller"
    ],
    "memberships": {

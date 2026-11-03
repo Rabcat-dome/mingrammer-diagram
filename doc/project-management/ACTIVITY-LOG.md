@@ -468,3 +468,9 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - CI passed at `1ee4a58` ([run 41658114802](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41658114802), 15 lanes and 1,228 tests, with the wheel matching the local build). A fresh Claude Fable 5.1 / High agent reviewed `02dc709..1ee4a58` and requested changes on two P2 findings: a boundary could nest in a scope it does not declare, and the T-004 edit test was a tautology.
 - One P3 corrects this session's record: "about 2300x3800" for the AWS fixture was stale, and the head measures 2803x4785.
 - Claude Opus 5.5 fixed both P2 findings and seven P3 findings. The local gate passes 15 lanes and 1,241 tests, and three more sabotage changes fail their tests. See the [review](evidence/S08-fable-review.md). The same reviewer rechecks next, and M4 stays open.
+
+## 2026-11-03 — Fable recheck found the first fix incomplete
+
+- CI passed at `b00b90d` ([run 41662654248](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41662654248), 15 lanes and 1,241 tests, with the wheel matching the local build). The same reviewer confirmed the other fixes and requested changes on one new P2: the tree of a valid model still depended on selection order, and a node pool could land outside its cluster.
+- That also corrects this session's record, which said the second pass made the result independent of order. Claude Opus 5.5 now settles every group in ID order until none moves, and renamed the GCP controller to match its assumption. The `visual-regression` lane flagged only the two GCP views that rename touched, and their baselines were accepted after a look.
+- One sabotage change passed every test at first, which showed the ID order had no test. A shuffled nesting-loop test now catches it. The local gate passes 15 lanes and 1,250 tests. The same reviewer rechecks next, and M4 stays open.

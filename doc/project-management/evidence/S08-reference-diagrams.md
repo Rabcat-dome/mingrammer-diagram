@@ -32,7 +32,7 @@ Every model is synthetic, sets `metadata.environment` to `reference` and lists e
 |---|---|---|---|
 | T-001 | `aws-three-tier.json` | 40 / 21 | `overview` 3163x3100, `zones` 1333x1654, `eks-namespaces` 1687x1741, `eks-nodes` 833x1341 |
 | T-002 | `azure-hub-spoke.json` | 38 / 17 | `overview` 1949x2018, `ownership` 1342x2015, `aks-namespaces` 1687x1797, `aks-nodes` 833x1257 |
-| T-003 | `gcp-shared-vpc.json` | 33 / 18 | `overview` 1593x1353, `locations` 1075x1339, `projects` 1493x1522, `gke-namespaces` 1631x1909, `gke-nodes` 833x1194 |
+| T-003 | `gcp-shared-vpc.json` | 33 / 18 | `overview` 1593x1372, `locations` 1075x1339, `projects` 1493x1522, `gke-namespaces` 1631x1928, `gke-nodes` 833x1194 |
 | T-004 | `huawei-web.json` | 39 / 18 | `overview` 1958x2329, `zones` 950x1625, `services` 950x1398, `cce-namespaces` 1631x1809, `cce-nodes` 950x1489 |
 | T-005 | `onprem-physical-logical.json` | 50 / 13 | `physical` 1745x1981, `logical` 2153x3139, `k8s-namespaces` 1519x1836, `k8s-nodes` 616x1087 |
 | T-006 | `hybrid-five.json` | 46 / 19 | `overview` 2078x3261, `connectivity` 950x2901, `data-flows` 2724x3293, `k8s-detail` 1117x1197 |
@@ -97,7 +97,7 @@ The contract's [presentation paragraph](../../design/core-contract.md) states th
 | A left-right icon sits at its node's middle | Edges landed on label text, as a live session and this session's inspection both found |
 | A top-down legend lies flat, and an arrowhead appears only for a kind with a directed edge | Labels overprinted the vertical samples, and the legend showed arrows on undirected kinds |
 | A declared subnet, zone or rack is noted even when not selected | A view can drop those boxes and keep the fact, which also removed the repeated boxes |
-| A resource or boundary does not nest in a scope it does not declare or inherit | OBS was drawn inside an IAM project although its scope is the account, and the [review](S08-fable-review.md) showed a boundary could do the same |
+| A resource or boundary does not nest in a scope it does not declare or inherit, and groups settle in ID order until none moves | OBS was drawn inside an IAM project although its scope is the account, and the [review](S08-fable-review.md) showed a boundary could do the same and that selection order could change the tree |
 | A word up to three characters past the label width stays whole | `PersistentVolumeClaim` broke before its last letter |
 | More canvas and group margin | A wide label touched the canvas edge in `logical` |
 
@@ -114,12 +114,12 @@ The contract's [presentation paragraph](../../design/core-contract.md) states th
 
 ## Validation
 
-The local gate passes **15 lanes and 1,241 tests with none skipped**, at Python 3.13.7, uv 0.13.0 and Graphviz 16.1.0. Actual CI [run 41658114802](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41658114802), job 125993790820, passed the same 15 lanes and tests at `1ee4a58` from a clean checkout on the runner, which is this same Mac, and its wheel matches the local build at SHA-256 `143ea72aed4e7a13e03d01a93dab3a8a2a0f96a711c78092831fb659413713e3`. That run had 1,228 tests, before the [review fixes](S08-fable-review.md) added 13.
+The local gate passes **15 lanes and 1,250 tests with none skipped**, at Python 3.13.7, uv 0.13.0 and Graphviz 16.1.0. Actual CI [run 41658114802](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41658114802), job 125993790820, passed the same 15 lanes and tests at `1ee4a58` from a clean checkout on the runner, which is this same Mac, and its wheel matches the local build at SHA-256 `143ea72aed4e7a13e03d01a93dab3a8a2a0f96a711c78092831fb659413713e3`. That run had 1,228 tests, before the [review fixes](S08-fable-review.md) added 22. Actual CI [run 41662654248](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41662654248) also passed at `b00b90d` with 1,241.
 
 | Lane | Tests | Work done |
 |---|---|---|
-| `render-security` | 226 | Tall views rebuilt, and a test that `render` creates a missing root privately |
-| `render-smoke` | 286 | Adds `tests/test_references.py`, every reference view, and the presentation tests |
+| `render-security` | 228 | Tall views rebuilt, and a test that `render` creates a missing root privately |
+| `render-smoke` | 293 | Adds `tests/test_references.py`, every reference view, and the presentation tests |
 | `visual-regression` (new) | 65 | One structural and one image comparison per view, a check on the engine, and tests of the comparison itself |
 | `claude-plugin` | 55 | The skill's sentence on the output root |
 | Others | Unchanged in purpose | `schema-core` 91, `catalog-license` 76, `provider-semantics` 442 |
@@ -153,7 +153,7 @@ Each change went into the real source, ran its tests and was restored, and the f
 | Baseline image edited by hand | `visual-regression` | 1 |
 | The skill says the root must exist again | `claude-plugin` | 1 |
 
-All 14 failed their lane. The first try at the one-hop case left broken indentation, so its failure proved nothing. Repeated with valid code, `test_t005_rejects_a_subnet_paired_with_a_network_it_reaches_only_elsewhere` is the test that fails. The review fixes add three more: a boundary left out of the scope rule fails 3 tests, the second pass removed fails 2, and a web-view node that changes when CCE is added fails 1.
+All 14 failed their lane. The first try at the one-hop case left broken indentation, so its failure proved nothing. Repeated with valid code, `test_t005_rejects_a_subnet_paired_with_a_network_it_reaches_only_elsewhere` is the test that fails. The review fixes add three more: a boundary left out of the scope rule fails 3 tests, the second pass removed fails 2, and a web-view node that changes when CCE is added fails 1. The fix for selection order adds two more: settling in one pass fails 4, and working in selection order fails 2. That second change first passed every test, because a fixed point alone settles those shapes, so a shuffled test over nesting loops was added and now catches it.
 
 ## Measurements
 
@@ -202,7 +202,7 @@ Time is far from any limit: the slowest run is 1.83 s against 55 s.
 
 Claude Opus 5.5 (`claude-opus-5-5`) did the renderer, tests, baselines and records, in the session that started from the owner's request. Six Claude Sonnet 5.5 agents wrote the six models under its brief, and it then trimmed some view selections. The project policy names Sol/Medium for M4, so this is a recorded substitution, and no model setting changed.
 
-Under D-021, Claude Fable 5.1 / High [reviewed `02dc709..1ee4a58`](S08-fable-review.md) in a fresh agent and **requested changes on two P2 findings**. They are fixed, and the recheck is pending. It shares a vendor with the implementing models.
+Under D-021, Claude Fable 5.1 / High [reviewed `02dc709..1ee4a58`](S08-fable-review.md) in a fresh agent and **requested changes on two P2 findings**. A recheck found the first fix incomplete and raised a third, on selection order. All three are fixed, and a further recheck is pending. It shares a vendor with the implementing models.
 
 ## Next steps
 

@@ -3,6 +3,7 @@
 import base64
 import hashlib
 import json
+import random
 import re
 import shutil
 import subprocess
@@ -897,6 +898,60 @@ def test_a_boundary_does_not_nest_in_a_scope_it_does_not_declare(selected: list[
     assert "Southeast Asia" in " ".join(groups["nsg"].lines) or "location:" in " ".join(
         groups["nsg"].lines
     )
+
+
+def group_tree(model: dict[str, Any], view: int = 0) -> dict[str, str | None]:
+    parsed = Architecture.model_validate(model)
+    graph = map_view(parsed, parsed.views[view], "strict", LIMITS)
+    return {item.id: item.parent for item in graph.groups} | {
+        item.id: item.group for item in graph.nodes if item.id not in {g.id for g in graph.groups}
+    }
+
+
+def test_a_node_pool_stays_in_its_cluster_whatever_the_selection_order() -> None:
+    # The cluster's subnet sits in another project's box, so the cluster moves out of it. A pool
+    # that looked before the move would otherwise leave its cluster for good.
+    model = load("references/gcp-shared-vpc.json")
+    selected = [
+        "org-example",
+        "project-network-host",
+        "project-app-service",
+        "vpc-shared",
+        "subnet-gke",
+        "gke-cluster",
+        "gke-node-pool",
+        "gke-node-a",
+        "region-asia-southeast2",
+    ]
+    model["views"][0] |= {"entity_refs": selected, "relationship_refs": [], "grouping": "provider"}
+    expected = group_tree(model)
+    assert expected["gke-node-pool"] == "gke-cluster"
+    assert expected["gke-cluster"] == "region-asia-southeast2"
+    rng = random.Random(8)
+    for _ in range(60):
+        rng.shuffle(selected)
+        assert group_tree(model) == expected, selected
+
+
+@pytest.mark.parametrize(
+    "name",
+    [
+        "aws-three-tier",
+        "azure-hub-spoke",
+        "gcp-shared-vpc",
+        "huawei-web",
+        "onprem-physical-logical",
+        "hybrid-five",
+    ],
+)
+def test_a_reference_tree_does_not_depend_on_selection_order(name: str) -> None:
+    model = load(f"references/{name}.json")
+    rng = random.Random(name)
+    for index, view in enumerate(model["views"]):
+        expected = group_tree(model, index)
+        for _ in range(12):
+            rng.shuffle(view["entity_refs"])
+            assert group_tree(model, index) == expected, (view["id"], view["entity_refs"])
 
 
 def test_a_boundary_keeps_a_parent_in_the_same_scope() -> None:

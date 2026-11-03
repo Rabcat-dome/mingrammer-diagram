@@ -28,7 +28,8 @@
    "kind": "traffic",
    "lines": [
     "HTTPS",
-    "To the GKE Ingress"
+    "To the ingress controller's",
+    "standalone NEG"
    ],
    "source": "lb-global-external",
    "target": "gke-cluster"
