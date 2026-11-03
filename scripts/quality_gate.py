@@ -15,12 +15,20 @@ from repository_checks import source_digests
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORTS = ROOT / "reports"
+PYTHON_SOURCES = (
+    "src",
+    "scripts",
+    "tests",
+    "plugins/cloud-architecture-work/server",
+    "plugins/cloud-architecture-work/scripts",
+)
 # A test lane passes only when it really ran tests, so an empty selection cannot look green.
 TEST_LANES = {
     "schema-core": "tests.xml",
     "catalog-license": "catalog-license-tests.xml",
     "provider-semantics": "provider-semantics-tests.xml",
     "claude-plugin": "claude-plugin-tests.xml",
+    "package-contract": "package-contract-tests.xml",
     "render-security": "render-security-tests.xml",
     "render-smoke": "render-smoke-tests.xml",
     "visual-regression": "visual-regression-tests.xml",
@@ -49,8 +57,8 @@ def main() -> int:
     commands = {
         "docs-contract": [python, "scripts/repository_checks.py", "docs"],
         "secrets": [python, "scripts/repository_checks.py", "secrets"],
-        "lint": [python, "-m", "ruff", "check", "src", "scripts", "tests"],
-        "format": [python, "-m", "ruff", "format", "--check", "src", "scripts", "tests"],
+        "lint": [python, "-m", "ruff", "check", *PYTHON_SOURCES],
+        "format": [python, "-m", "ruff", "format", "--check", *PYTHON_SOURCES],
         "types": [python, "-m", "mypy"],
         "workflow": ["actionlint"],
         "schema-core": [
@@ -64,6 +72,7 @@ def main() -> int:
             "--ignore=tests/test_render_smoke.py",
             "--ignore=tests/test_references.py",
             "--ignore=tests/test_visual_regression.py",
+            "--ignore=tests/test_work_plugin.py",
             "--junitxml=reports/tests.xml",
             "-q",
         ],
@@ -107,6 +116,14 @@ def main() -> int:
             "pytest",
             "tests/test_claude_plugin.py",
             "--junitxml=reports/claude-plugin-tests.xml",
+            "-q",
+        ],
+        "package-contract": [
+            python,
+            "-m",
+            "pytest",
+            "tests/test_work_plugin.py",
+            "--junitxml=reports/package-contract-tests.xml",
             "-q",
         ],
         "package-build": [python, "-m", "build", "--no-isolation", "--outdir", "reports/dist"],
@@ -154,7 +171,7 @@ def main() -> int:
     commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     dirty = bool(subprocess.check_output(["git", "status", "--porcelain"], cwd=ROOT))
     report = {
-        "scope": "M1 core, M2 catalogs and semantics, M3 controlled rendering and M7 Claude plugin package contract",
+        "scope": "M1 core, M2 catalogs and semantics, M3 controlled rendering, M4 reference diagrams, M5 Work plugin package contract and M7 Claude plugin package contract",
         "passed": passed,
         "checks": results,
         # A passing gate does not clear these; they block packaging and release until resolved.
@@ -171,8 +188,7 @@ def main() -> int:
         "machine": platform.machine(),
         "engine": graphviz_version(),
         "deferred": {
-            "visual-regression": "M4",
-            "plugin-package": "M5",
+            "work-host-acceptance": "M5 and M6 (recorded manually; CI has no account or model)",
             "claude-host-acceptance": "M7 (recorded manually; no Claude CLI or model call in CI)",
         },
         "review": "Recorded separately; no paid model API call in CI",

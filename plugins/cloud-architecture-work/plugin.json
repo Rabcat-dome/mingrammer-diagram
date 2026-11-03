@@ -1,0 +1,42 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "cloud-architecture-work",
+  "version": "0.1.0-alpha.1",
+  "description": "Author, validate and render canonical cloud architecture models to SVG and PNG on this Mac, for private personal use.",
+  "author": {
+    "name": "Visarut"
+  },
+  "repository": "https://github.com/Rabcat-dome/mingrammer-diagram",
+  "keywords": [
+    "architecture",
+    "cloud",
+    "kubernetes",
+    "diagrams",
+    "aws",
+    "azure",
+    "gcp",
+    "huawei-cloud",
+    "on-premises"
+  ],
+  "extensions": {
+    "com.openai": {
+      "requires_local_executor": true,
+      "interface": {
+        "displayName": "Cloud Architecture Diagrams",
+        "shortDescription": "Validated cloud diagrams",
+        "longDescription": "Turns an architecture request into a versioned JSON model, checks it against provider catalogs and placement rules, and draws one view at a time to SVG and PNG with a controlled local Graphviz renderer. Covers AWS, Azure, GCP, Huawei Cloud, on-premises and detailed Kubernetes. Runs on this Mac. No Docker, central server or extra API key. For private personal use only, because its Huawei Cloud icons have no cleared rights.",
+        "developerName": "Visarut",
+        "category": "Productivity",
+        "capabilities": [
+          "Read",
+          "Write"
+        ],
+        "defaultPrompt": [
+          "Draw an AWS three-tier web architecture",
+          "Draw a GKE app with Ingress, Service and storage",
+          "Check that this plugin's runtime is ready"
+        ]
+      }
+    }
+  }
+}

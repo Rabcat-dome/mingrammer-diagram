@@ -1,0 +1,1 @@
+../../../../cloud-architecture-diagrams/skills/architecture-model/references/model-guide.md

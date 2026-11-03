@@ -1,6 +1,6 @@
 # Model guide (schema 1.0.0)
 
-A working summary of the contract. The plugin command's `schema` subcommand prints the full JSON Schema and is authoritative when this guide and the validator disagree. It is about 22 KB, so read it only when this guide is not enough.
+A working summary of the contract. The plugin's schema discovery (the `schema` subcommand, or the `get_schema` tool in ChatGPT Work) returns the full JSON Schema and is authoritative when this guide and the validator disagree. It is about 22 KB, so read it only when this guide is not enough.
 
 ## Top level
 
@@ -46,7 +46,7 @@ A boundary's provider and kind resolve to one catalog type, so a boundary needs 
 
 `{id, name, provider, service_type, taxonomy, placement?, properties?, kubernetes?}`
 
-- `service_type` is an exact ID from the `catalog` subcommand, for example `aws.compute.ec2`. It must belong to the resource's provider, and no provider is ever substituted. Keep the provider's native service name in `name`. Strict mode rejects an unknown ID; lenient mode warns and marks a draft.
+- `service_type` is an exact ID from the plugin's catalog search (the `catalog` subcommand, or the `search_catalog` tool in ChatGPT Work), for example `aws.compute.ec2`. It must belong to the resource's provider, and no provider is ever substituted. Keep the provider's native service name in `name`. Strict mode rejects an unknown ID; lenient mode warns and marks a draft.
 - `taxonomy` is the one primary ID the catalog shows for that type, and a mismatch fails in both modes. The frozen IDs are: `governance.scope`, `location.site`, `onprem.facility`, `network.boundary`, `network.subnet`, `network.routing`, `network.connectivity`, `network.load_balancing`, `edge.delivery`, `compute.vm`, `compute.physical`, `compute.containers`, `compute.serverless`, `application.platform`, `data.relational`, `data.nosql_cache`, `data.analytics_ai`, `storage.object`, `storage.block_file`, `integration.messaging`, `identity.access`, `security.control`, `security.secrets_keys`, `operations.observability`, `operations.backup_dr`, `external.entity`. A shared category never makes two services equivalent.
 - External parties use `provider: external` with `external.people.user`, `external.network.internet`, `external.organization.partner`, `external.service.saas` or `external.system.other`.
 - `properties` is closed: `replicas`, `labels`, `service_type` (Kubernetes Service type: `ClusterIP`, `NodePort`, `LoadBalancer` or `ExternalName`), `ports` (`{port, target_port?, protocol?}`, with `protocol` one of `TCP`, `UDP` or `SCTP`).

@@ -26,7 +26,17 @@ skip-excluded-dirs = true
 [tool.ruff]
 target-version = "py313"
 line-length = 100
-include = ["src/**/*.py", "tests/**/*.py", "scripts/**/*.py"]
+include = [
+    "src/**/*.py",
+    "tests/**/*.py",
+    "scripts/**/*.py",
+    "plugins/cloud-architecture-work/server/**/*.py",
+    "plugins/cloud-architecture-work/scripts/**/*.py",
+]
+
+[tool.ruff.per-file-target-version]
+# The Work tool process runs on whatever python3 a Mac has, which can be Apple's 3.9.
+"plugins/cloud-architecture-work/**/*.py" = "py39"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
@@ -35,7 +45,15 @@ ignore = ["E501"] # Formatter controls layout; diagnostic text may exceed the so
 [tool.mypy]
 python_version = "3.13"
 strict = true
-files = ["src", "scripts", "tests"]
+files = [
+    "src",
+    "scripts",
+    "tests",
+    "plugins/cloud-architecture-work/server/main.py",
+    "plugins/cloud-architecture-work/server/work_adapter",
+    "plugins/cloud-architecture-work/scripts/runtime.py",
+]
+mypy_path = "plugins/cloud-architecture-work/server"
 
 [[tool.mypy.overrides]]
 # Neither package ships type information, so the renderer treats both as untyped at this edge.
