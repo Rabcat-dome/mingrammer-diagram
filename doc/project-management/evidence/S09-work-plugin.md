@@ -2,6 +2,8 @@
 
 Dates: 2026-11-03 to 2026-11-04 (Asia/Bangkok) | Tasks: M5-01..04 | Branch: `codex/s09-work-plugin`, from `main` at `43b444d`, with `main` at `88d0157` merged in at `aa813ed` | Plugin: `cloud-architecture-work` `0.1.0-alpha.1` plus a content digest | Core: `0.5.0a1`, unchanged
 
+**Status since this was written: D-024 parks the owner's run in Work, and S09 merged into `main` without closing M5.**
+
 **Result: M5 stays open. The plugin is built and passes everything that can run without the owner, including the host's own engine. Nothing here is a Work result: M5-04 needs the owner's run in actual Work, recorded in the [Work check](S09-Work-validation.md).**
 
 ## Task status

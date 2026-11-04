@@ -2,7 +2,7 @@
 
 Target: the separate ChatGPT Work page or mode, not Codex (D-014). Automated checks and rehearsals stay in the [S09 evidence](S09-work-plugin.md), and only what the owner reports below counts as a Work result.
 
-**Status: waiting for the owner. Nothing below has been run in Work yet, so M5 stays open.**
+**Status: parked under D-024. Nothing below has been run in Work yet, so M5 stays open.**
 
 ## What the owner runs
 

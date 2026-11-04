@@ -1,6 +1,6 @@
 # Session Plan and Starter Prompts
 
-Updated: 2026-11-04 | Status: S01-S08 complete; M2, M3 and M4 closed on 2026-11-03 for the private personal release. S09 is built and waits for the owner's run in Work. Two authorized S04 chats completed; no new S05 chat has been created.
+Updated: 2026-11-04 | Status: S01-S08 complete; M2, M3 and M4 closed on 2026-11-03 for the private personal release. S09 is built and merged, and D-024 parks the owner's run in Work. Two authorized S04 chats completed; no new S05 chat has been created.
 
 This is an execution index for the existing [milestones](milestones.md), not a second requirement baseline. Use the [requirements](../requirements/requirements.md) for product scope and the [decision log](decisions.md) for confirmed choices. The deliverable remains an installable cross-machine plugin with a bundled skill.
 

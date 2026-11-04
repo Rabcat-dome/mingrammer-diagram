@@ -500,3 +500,8 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - Sabotage caught 26 of 27 changes and later 31 of 32, and each miss led to a better test. A separate finding: the lint lane had been skipping the adapter while passing.
 - [Fable/High](evidence/S09-fable-review.md) requested changes on two P2 findings, both reproduced: `prune --apply` crashed on Apple's Python 3.9, and stopping setup recorded a false cause. It approved `aa813ed` after the fixes and after `main` merged in for the shared view guidance. That commit passes actual CI [run 41695136756](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41695136756), with 16 lanes and 1,387 tests. Three P3 findings stay open.
 - **M5 stays open** until the owner has run the [Work check](evidence/S09-Work-validation.md).
+
+## 2026-11-04 — M5-04 parked; S09 merged
+
+- The owner chose to leave the Work testing for now and go on with the parts of M6 that do not need it, which D-024 records. M5 stays open, and there is no release or tag until the owner comes back to Work.
+- `main` fast-forwards to this branch once this commit passes CI, so the next checks cover the Work plugin. S09 is reviewed and passes CI, and nothing in it has been run in Work. No branch is deleted.
