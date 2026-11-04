@@ -551,16 +551,23 @@ def test_protocol_errors_do_not_stop_the_server(client: Client) -> None:
 
 @pytest.mark.parametrize(
     "request_id",
-    [b"[1]", b'{"a":1}', b"true", b"null"],
-    ids=["array", "object", "boolean", "null"],
+    [b"[1]", b'{"a":1}', b"true", b"null", b"1e400", b"-1e400"],
+    ids=["array", "object", "boolean", "null", "overflow", "negative-overflow"],
 )
 def test_an_id_that_is_not_a_string_or_number_is_refused(client: Client, request_id: bytes) -> None:
     client.write(
         b'{"jsonrpc":"2.0","id":' + request_id + b',"method":"tools/call",'
         b'"params":{"name":"list_bundles","arguments":{}}}\n'
     )
-    assert client.next_frame()["error"]["code"] == -32600
+    reply = client.next_frame()
+    assert reply["error"]["code"] == -32600 and reply["id"] is None
     assert client.request("ping")["result"] == {}
+
+
+def test_an_ordinary_fractional_id_still_works(client: Client) -> None:
+    client.write(b'{"jsonrpc":"2.0","id":1.5,"method":"ping"}\n')
+    reply = client.next_frame()
+    assert reply["id"] == 1.5 and reply["result"] == {}
 
 
 def test_a_control_character_in_an_unparsable_frame_id_does_not_stop_the_server(

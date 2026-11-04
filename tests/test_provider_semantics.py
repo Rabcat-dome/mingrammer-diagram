@@ -465,3 +465,46 @@ def test_a_parent_and_a_location_in_one_region_stay_valid() -> None:
     spoke["relations"].pop(0)
     assert "BOUNDARY_LOCATION_MULTIPLE" not in codes(model)["error"]
     assert codes(model)["error"] == set()
+
+
+def spanning_boundary(kind: str, reverse: bool) -> dict[str, Any]:
+    """A boundary of this kind in the Azure reference's region and in a second one."""
+    model: dict[str, Any] = json.loads(
+        (Path(__file__).parent / "fixtures/references/azure-hub-spoke.json").read_text()
+    )
+    home = next(item for item in model["boundaries"] if item["kind"] == "region")
+    relations = [
+        {"kind": "located_in", "target_ref": home["id"]},
+        {"kind": "located_in", "target_ref": "region-other"},
+    ]
+    model["boundaries"] += [
+        {**home, "id": "region-other", "name": "other"},
+        {
+            "id": "probe",
+            "name": "Probe",
+            "provider": "azure",
+            "kind": kind,
+            "relations": relations[::-1] if reverse else relations,
+        },
+    ]
+    return model
+
+
+@pytest.mark.parametrize("reverse", [False, True])
+@pytest.mark.parametrize("kind", ["environment", "security_zone", "cluster"])
+def test_a_kind_whose_region_nothing_reads_may_span_regions(kind: str, reverse: bool) -> None:
+    assert codes(spanning_boundary(kind, reverse))["error"] == set()
+
+
+@pytest.mark.parametrize("reverse", [False, True])
+def test_a_production_environment_across_regions_keeps_its_members(reverse: bool) -> None:
+    model = spanning_boundary("environment", reverse)
+    member = next(item for item in model["resources"] if item["id"] == "aks-cluster")
+    member["placement"]["deployment_context"] = ["probe"]
+    assert codes(model)["error"] == set()
+
+
+@pytest.mark.parametrize("reverse", [False, True])
+@pytest.mark.parametrize("kind", ["network", "security_group", "zone"])
+def test_a_kind_whose_region_is_read_may_not_span_regions(kind: str, reverse: bool) -> None:
+    assert "BOUNDARY_LOCATION_MULTIPLE" in codes(spanning_boundary(kind, reverse))["error"]

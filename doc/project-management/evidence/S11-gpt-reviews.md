@@ -2,7 +2,7 @@
 
 Date: 2026-11-04 (Asia/Bangkok) | Base `5569459` | Head `aefcdbc` | Decision: D-025
 
-**Result: both reviewers requested changes. The Claude session reproduced or confirmed all 15 findings, and fixed them at `9fb199d`. Those fixes have no independent review yet, so they are not merged.** Neither reviewer found a way for a hostile model alone to write outside the output root, follow a symbolic link or put active content in the SVG. That is what they looked for and did not find, and it is not a proof.
+**Result: both reviewers requested changes. The Claude session reproduced or confirmed all 15 findings, and fixed them at `9fb199d`. [Fable requested changes](S11-fable-review.md) on those fixes at `3aa566d`, so they are not merged.** Neither reviewer found a way for a hostile model alone to write outside the output root, follow a symbolic link or put active content in the SVG. That is what they looked for and did not find, and it is not a proof.
 
 ## Why this ran
 
@@ -75,7 +75,20 @@ No deterministic test covers a cancel's check and set being under one lock, beca
 
 ### Validation
 
-Actual CI [run 41856283191](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41856283191) passed 17 lanes and 1,527 tests with 0 skipped at `b862506`, on the runner, which is this same Mac. Its wheel has the digest the reproduction proof records. Its artifact is 42 KB, where earlier runs' were about 21 MiB, so G1's fix took effect from the first push of this branch. [Run 41855686612](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41855686612) at `9fb199d` failed as expected, on the proof test alone, because the proof binds to the source and came in the next commit.
+Actual CI [run 41856283191](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41856283191) passed 17 lanes and 1,527 tests with 0 skipped at `b862506`, on the runner, which is this same Mac. Its wheel has the digest the reproduction proof records. Its artifact is 42 KB, where earlier runs' were about 21 MiB, so G1's fix took effect from the first push of this branch. The artifact from that first push holds 29 text files, with no PNG data or `<svg` in any of them. [Run 41855686612](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41855686612) at `9fb199d` failed as expected, on the proof test alone, because the proof binds to the source and came in the next commit.
+
+## Fable recheck
+
+On the owner's word, Claude Fable 5.1 rechecked `aefcdbc..3aa566d` in a fresh agent, with its effort set to High, and [requested changes](S11-fable-review.md). It found G1 to G15 each fixed for the case the reviewers named, and four new findings. It shares a vendor with the implementer. The Claude session reproduced each one, except the contract row, which it read.
+
+| Rank | Finding | Check |
+|---|---|---|
+| P2 | G5's fix over-reaches. It refuses an `environment`, `security_zone` or `cluster` in two regions, which was valid in either order at the base, and nothing reads their region | Reproduced at the head, for each of the three kinds |
+| P3 | The audit matches required names by suffix, so `tests/README.md` satisfies `README.md` | Reproduced |
+| P3 | A request ID of `1e400` is echoed as `Infinity`, which is not JSON | Reproduced on a build of this head |
+| P3 | The contract's limits row does not say that the provider box counts | Read |
+
+None of these is fixed yet.
 
 ## Report states these affect
 

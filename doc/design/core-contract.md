@@ -51,7 +51,7 @@ The context rules use the concepts in [Kubernetes namespaces](https://kubernetes
 
 A resource resolves by `service_type`. A scope or boundary resolves by provider and kind, so it needs no type field. A resource's type must belong to its provider, so no provider is substituted, and its taxonomy must be the type's one primary ID.
 
-Placement rules apply to what a model declares, so an unspecified zone or subnet stays valid while a contradictory one fails. A subnet's network is found through its parent and through any VLAN and VRF in between. A boundary whose parent and `located_in` relations reach more than one region is refused, because which one applied would otherwise depend on their order. Scope kind, location scope, network form, subnet counts and zones, security-group scope and host type are data on each record, with a few provider-specific checks for Azure subscriptions, GCP Shared VPC and Huawei projects. `catalog_data/rules.json` gives every diagnostic code its message, remedy and sources. A test requires each code to have a negative case, and each type to appear in a passing fixture.
+Placement rules apply to what a model declares, so an unspecified zone or subnet stays valid while a contradictory one fails. A subnet's network is found through its parent and through any VLAN and VRF in between. A network, subnet, zone or security group whose parent and `located_in` relations reach more than one region is refused, because which one applied would otherwise depend on their order. An `environment`, `security_zone` or `cluster` may span regions, because no rule reads a region from those. Scope kind, location scope, network form, subnet counts and zones, security-group scope and host type are data on each record, with a few provider-specific checks for Azure subscriptions, GCP Shared VPC and Huawei projects. `catalog_data/rules.json` gives every diagnostic code its message, remedy and sources. A test requires each code to have a negative case, and each type to appear in a passing fixture.
 
 Subnet network membership resolves both `parent_ref` and `network_member_of`; cloud subnets permit one network, while on-premises logical overlaps remain supported. ALB subnet attachments stay in one VPC. Singleton ownership kinds are checked across scope ancestry, independent of reference order; repeating a compatible ancestor does not create a second owner. IAM and enterprise-project dimensions remain separate.
 
@@ -115,7 +115,7 @@ Clusters form a tree, and these dimensions do not. Each entity therefore nests u
 | Render bound | Value | Enforcement |
 |---|---|---|
 | Entities / relationships per view | 200 / 300 | Rejected before Graphviz, with a suggestion to split |
-| Group nesting | 16 levels | Rejected before Graphviz |
+| Group nesting | 16 levels drawn, so 15 model levels in a `provider` view, whose provider box counts | Rejected before Graphviz |
 | Wall time | 55 s | Process group killed |
 | CPU time | 45 s soft, 50 s hard | `RLIMIT_CPU` |
 | Memory | 1 GiB | Sampled process-group RSS, not a kernel cap |

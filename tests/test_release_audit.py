@@ -62,18 +62,14 @@ def test_an_ordinary_path_is_not_forbidden() -> None:
 
 
 def test_a_missing_notice_is_found() -> None:
-    assert release_audit.missing_names(["a/assets/NOTICE.md"], ("assets/NOTICE.md",)) == []
+    assert release_audit.missing_names(["assets/NOTICE.md"], ("assets/NOTICE.md",)) == []
     assert release_audit.missing_names(["a/b.md"], ("assets/NOTICE.md",)) == ["assets/NOTICE.md"]
 
 
-@pytest.mark.parametrize("required", release_audit.PACKAGE_REQUIRED)
+@pytest.mark.parametrize("required", release_audit.WHEEL_REQUIRED)
 def test_a_package_without_a_required_notice_is_found(required: str) -> None:
-    names = [
-        name
-        for name in release_audit.wheel_names(ROOT / "reports/dist")
-        if not name.endswith(required)
-    ]
-    assert release_audit.missing_names(names, release_audit.PACKAGE_REQUIRED) == [required]
+    names = [name for name in release_audit.wheel_names(ROOT / "reports/dist") if name != required]
+    assert release_audit.missing_names(names, release_audit.WHEEL_REQUIRED) == [required]
 
 
 def test_the_reproduction_proof_passes_and_still_describes_this_source() -> None:
@@ -262,7 +258,10 @@ def test_what_a_source_archive_must_hold_stays_required() -> None:
     }
     assert set(release_audit.WHEEL_REQUIRED) == {
         "cloud_architecture_diagrams/cli.py",
-        *release_audit.PACKAGE_REQUIRED,
+        *(f"cloud_architecture_diagrams/{item}" for item in release_audit.PACKAGE_REQUIRED),
+    }
+    assert set(release_audit.PLUGIN_REQUIRED) == {
+        f"src/cloud_architecture_diagrams/{item}" for item in release_audit.PACKAGE_REQUIRED
     }
 
 
@@ -312,8 +311,27 @@ def test_a_source_archive_of_empty_files_fails_the_audit(tmp_path: Path) -> None
     assert {f"sdist: {name} is empty" for name in release_audit.SDIST_REQUIRED} == set(errors)
 
 
-def test_a_name_that_only_ends_alike_does_not_count() -> None:
-    assert release_audit.missing_names(["xREADME.md"], ("README.md",)) == ["README.md"]
+@pytest.mark.parametrize("name", ["xREADME.md", "tests/README.md", "extra/README.md"])
+def test_a_file_somewhere_else_does_not_count(name: str) -> None:
+    assert release_audit.missing_names([name], ("README.md",)) == ["README.md"]
+
+
+def test_an_empty_file_is_not_hidden_by_a_full_one_of_the_same_name_elsewhere() -> None:
+    sizes = {"README.md": 0, "tests/README.md": 5}
+    assert release_audit.empty_required(sizes, ("README.md",)) == ["README.md"]
+
+
+def test_a_source_archive_with_only_a_misplaced_file_fails_the_audit(tmp_path: Path) -> None:
+    sdist = full_sdist()
+    del sdist["README.md"]
+    sdist["tests/README.md"] = b"x"
+    assert audit_errors(archives(tmp_path, sdist, full_wheel())) == ["sdist: lacks README.md"]
+
+
+def test_a_wheel_with_its_package_in_another_folder_fails_the_audit(tmp_path: Path) -> None:
+    wheel = {f"extra/{name}": b"x" for name in release_audit.WHEEL_REQUIRED}
+    errors = audit_errors(archives(tmp_path, full_sdist(), wheel))
+    assert {f"wheel: lacks {name}" for name in release_audit.WHEEL_REQUIRED} == set(errors)
 
 
 def test_the_audit_passes_when_each_archive_is_whole(tmp_path: Path) -> None:

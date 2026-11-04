@@ -23,6 +23,9 @@ LOCATION_FIELDS: dict[str, set[str]] = {
     "physical": {"site_ref", "rack_ref"},
     "any": {"region_ref", "zone_ref", "site_ref", "rack_ref"},
 }
+# The location forms whose region other rules compare. An environment, trust zone or cluster may span
+# regions, because nothing reads a region from those.
+REGION_READ = {"regional", "zonal"}
 LOCATED_IN: dict[str, set[str]] = {
     "none": set(),
     "global": set(),
@@ -289,8 +292,8 @@ class Semantics:
                     "security_group",
                 }:
                     self.emit("BOUNDARY_RELATION_KIND_INVALID", field, boundary.id)
-            if (record.placement.location == "zonal" and len(located) > 1) or self.spans_regions(
-                boundary
+            if (record.placement.location == "zonal" and len(located) > 1) or (
+                record.placement.location in REGION_READ and self.spans_regions(boundary)
             ):
                 self.emit("BOUNDARY_LOCATION_MULTIPLE", path + "/relations", boundary.id)
             if boundary.kind == "subnet":

@@ -539,3 +539,7 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - The owner said to fix the findings. Claude Opus 5.5 fixed all 15 at `9fb199d` on `codex/s11-review-fixes`, with the skill's `busy` row. G1's fix went in before the first push, so that push uploaded no Huawei icons. No reference image changed. See [S11](evidence/S11-gpt-reviews.md#fixes).
 - All 47 sabotage changes now fail a named test. Four passed at first, and each gained a test.
 - The core reproduction passes again at `9fb199d`, and the Work plugin's version is now `0.1.0-alpha.1+4e035b4d7e69`. Nothing is merged, and an independent recheck comes next.
+
+## 2026-11-04 — Fable requests changes on the S11 fixes
+
+- The owner chose Fable for this recheck in place of Astra. Claude Fable 5.1 / High found G1 to G15 fixed for the cases named, and requested changes on one P2 and three P3 findings. The P2 is a side effect of the G5 fix. See the [review](evidence/S11-fable-review.md). Nothing is merged.

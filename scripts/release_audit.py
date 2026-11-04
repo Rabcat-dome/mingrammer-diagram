@@ -31,7 +31,11 @@ PACKAGE_REQUIRED = (
     "assets/fonts/NotoSansThai-OFL.txt",
     "catalog_data/assets.json",
 )
-WHEEL_REQUIRED = ("cloud_architecture_diagrams/cli.py", *PACKAGE_REQUIRED)
+# Exact paths, so that a file somewhere else in an archive does not stand in for the real one.
+WHEEL_REQUIRED = tuple(
+    f"cloud_architecture_diagrams/{item}" for item in ("cli.py", *PACKAGE_REQUIRED)
+)
+PLUGIN_REQUIRED = tuple(f"src/cloud_architecture_diagrams/{item}" for item in PACKAGE_REQUIRED)
 # What a build from this archive needs, so that an archive holding nothing forbidden is not enough.
 SDIST_REQUIRED = (
     "README.md",
@@ -59,22 +63,13 @@ def forbidden_names(names: list[str]) -> list[str]:
     return sorted(name for name in names if FORBIDDEN.search(name))
 
 
-def _is(name: str, item: str) -> bool:
-    return name == item or name.endswith("/" + item)
-
-
 def missing_names(names: list[str], required: tuple[str, ...]) -> list[str]:
-    return [item for item in required if not any(_is(name, item) for name in names)]
+    return [item for item in required if item not in names]
 
 
 def empty_required(sizes: dict[str, int], required: tuple[str, ...]) -> list[str]:
     """A required path holding nothing is as absent as a missing one, though its name is there."""
-    return [
-        item
-        for item in required
-        if any(_is(name, item) for name in sizes)
-        and not any(size for name, size in sizes.items() if _is(name, item))
-    ]
+    return [item for item in required if item in sizes and not sizes[item]]
 
 
 def wheel_sizes(dist: Path) -> dict[str, int]:
@@ -126,8 +121,8 @@ def audit(dist: Path) -> dict[str, Any]:
     packages = {
         "wheel": (list(archives["wheel"]), WHEEL_REQUIRED),
         "sdist": (list(archives["sdist"]), SDIST_REQUIRED),
-        "claude-plugin": (claude_plugin_names(), PACKAGE_REQUIRED),
-        "work-plugin": (work_plugin_names(), PACKAGE_REQUIRED),
+        "claude-plugin": (claude_plugin_names(), PLUGIN_REQUIRED),
+        "work-plugin": (work_plugin_names(), PLUGIN_REQUIRED),
     }
     errors: list[str] = []
     counts = {}

@@ -1711,6 +1711,11 @@
     "lane": "provider-semantics",
     "file": "tests/test_provider_semantics.py",
     "test": "test_a_boundary_in_two_regions_fails_in_either_order"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_a_kind_whose_region_nothing_reads_may_span_regions"
    }
   ],
   "evidence": [

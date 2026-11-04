@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 import os
 import re
 import signal
@@ -59,8 +60,10 @@ def parse_frame(frame: bytes) -> tuple[Any, bool]:
 
 
 def _valid_id(value: Any) -> bool:
-    """A JSON-RPC ID is a string or a number. Anything else cannot key a call or be trusted back."""
-    return isinstance(value, (str, int, float)) and not isinstance(value, bool)
+    """A JSON-RPC ID is a string or a finite number, or it could not key a call or be sent back."""
+    if isinstance(value, float):
+        return math.isfinite(value)
+    return isinstance(value, (str, int)) and not isinstance(value, bool)
 
 
 def _recovered_id(frame: bytes) -> Any:
