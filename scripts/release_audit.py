@@ -22,6 +22,8 @@ FORBIDDEN = re.compile(
     r"(^|/)(__pycache__|\.claude|\.git|\.venv|\.env|reports|spikes|baselines|assets-source)(/|$)"
     r"|\.pyc$|\.DS_Store$|settings\.local\.json$"
 )
+# A source archive may hold tests and scripts, and not these parts of the repository.
+SDIST_FORBIDDEN = re.compile(r"^(\.agents|\.claude-plugin|\.git|doc|plugins)(/|$)")
 PACKAGE_REQUIRED = (
     "assets/NOTICE.md",
     "assets/THIRD-PARTY-PYTHON.md",
@@ -94,6 +96,10 @@ def audit(dist: Path) -> dict[str, Any]:
     for label, (names, required) in packages.items():
         counts[label] = len(names)
         errors += [f"{label}: must not ship {name}" for name in forbidden_names(names)]
+        if label == "sdist":
+            errors += [
+                f"sdist: must not ship {name}" for name in names if SDIST_FORBIDDEN.search(name)
+            ]
         errors += [f"{label}: lacks {name}" for name in missing_names(names, required)]
     for path in (
         CLAUDE_PLUGIN / "README.md",
@@ -127,6 +133,13 @@ def trace_errors(records: list[dict[str, Any]], root: Path = ROOT) -> list[str]:
     from repository_checks import anchors
 
     expected = sum(requirement_ids((root / REQUIREMENTS.relative_to(ROOT)).read_text()), [])
+    decisions = set(
+        re.findall(
+            r"^\| (D-\d+) \|",
+            (root / "doc/project-management/decisions.md").read_text(),
+            re.M,
+        )
+    )
     found = [record["id"] for record in records]
     errors = [f"{item}: not in the report" for item in expected if item not in found]
     errors += [
@@ -137,14 +150,16 @@ def trace_errors(records: list[dict[str, Any]], root: Path = ROOT) -> list[str]:
         name = record["id"]
         if record["state"] not in STATES:
             errors.append(f"{name}: unknown state {record['state']}")
-        if record["state"] == "met" and not record["checks"]:
+        if record["state"].startswith("met") and not record["checks"]:
             errors.append(f"{name}: met with no check")
         if record["state"].startswith("met") and record["open"]:
             errors.append(f"{name}: met, yet something is open")
         if not record["state"].startswith("met") and not record["open"]:
             errors.append(f"{name}: not met, and nothing says what is open")
-        if record["state"] == "met_with_owner" and not re.search(r"\bD-\d+\b", record["owner"]):
+        named = set(re.findall(r"\bD-\d+\b", record["owner"]))
+        if record["state"] == "met_with_owner" and not named:
             errors.append(f"{name}: an owner's acceptance must name its decision")
+        errors += [f"{name}: no decision {item}" for item in sorted(named - decisions)]
         for check in record["checks"]:
             path = root / check["file"]
             if not path.is_file() or check["test"] not in test_names(path):

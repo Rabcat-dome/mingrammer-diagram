@@ -2,6 +2,8 @@
 
 This inventory covers NFR-004 for the Python packages the core installs at runtime. `uv.lock` pins each one by hash, and setup installs it from there, so none is copied into this package. Each package's own license file arrives with it. `scripts/build_third_party.py` writes this file, and the `catalog-license` lane fails if it differs from the lock.
 
+The list follows the lock for this platform. Many rows, such as `pre-commit` and `virtualenv`, are here only because `diagrams` declares `pre-commit` as a runtime dependency, and the core does not use them.
+
 Graphviz is a separate program that each machine installs, under the Eclipse Public License 1.0. It is not bundled either.
 
 Icons delivered by `diagrams` and the assets bundled here are in [NOTICE.md](NOTICE.md).

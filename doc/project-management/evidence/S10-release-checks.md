@@ -21,7 +21,7 @@ Date: 2026-11-04 | Tasks: part of M6-01, and M6-02 | Branch: `codex/s10-release-
 
 `scripts/reproduce_core.py` clones the repository from GitHub at one commit, and points `HOME` and every cache at a new folder. It downloads its own Python 3.13.7 and packages, and takes two routes to the core: the lock with no development tools, and a wheel built with the locked tools and installed from hash-locked requirements. Each route renders all 26 reference views from outside the clone, and each result is compared with that commit's baselines. [The proof](S10-core-reproduction-proof.json) holds the results.
 
-This proves a clean runtime on one machine. It shares Graphviz and macOS with this Mac, and T-010's second machine stays open. NFR-001 does not promise byte-identical images across platforms, so what a second machine must match is M6's to decide.
+The proof binds to a digest of the source, the lock, the references and the baselines, because it is committed after the commit it reproduced, and a test fails if that source changes without a new proof. This proves a clean Python runtime on one machine. It shares Graphviz, Homebrew's other tools, uv, macOS and the sandbox with this Mac, and the clone uses the owner's Git credentials. Both routes compare with baselines made here, so T-010's second machine stays open. NFR-001 does not promise byte-identical images across platforms, so what a second machine must match is M6's to decide.
 
 ## Distribution contents
 
@@ -38,10 +38,10 @@ The Claude plugin's README and skill, the Work plugin's README and `NOTICE.md` m
 
 | Finding | Effect | Fix |
 |---|---|---|
-| A local sdist held `.claude/settings.local.json` and every agent worktree, including whole copies of the repository. S07 had noted the settings file and left it | Anyone given that archive would get local permission settings and unrelated copies. CI's sdist did not have this, because its checkout has no such folder | The sdist now leaves out `.claude`, `.agents`, `doc`, `spikes` and `assets-source`, and the lane fails if any return |
+| A local sdist held `.claude/settings.local.json` and every agent worktree, including whole copies of the repository. S07 had noted the settings file and left it | Anyone given that archive would get local permission settings and unrelated copies. CI's sdist did not have this, because its checkout has no such folder | The sdist now leaves out `.claude`, `.agents`, `doc`, `spikes` and `assets-source`, and the lane fails if any of them returns or a `.git` reference ships, which a build inside a worktree would otherwise do |
 | No license inventory for the 20 Python packages installed at runtime, while `NOTICE.md` said it covered NFR-004 | A P0 requirement was unmet while a record said otherwise | `assets/THIRD-PARTY-PYTHON.md` is generated from the lock and package metadata. The `catalog-license` lane fails if a package, version or stated license differs |
 | Deleting the `diagrams` icon terms from `NOTICE.md` passed every check | FR-052's dependency notices could vanish unnoticed | The lane requires the terms for each icon source |
-| Nothing checked that the core makes no network or model call, and `model_api_required` is a literal | NFR-015 rested on reading the code | A test reads the imports of everything in `src`, and another refuses any connection during a render |
+| Nothing checked that the core makes no network or model call, and `model_api_required` is a literal | NFR-015 rested on reading the code | A test reads the imports of everything in `src`, and another refuses any in-process TCP connection during a render. The Graphviz subprocess is covered by the sandbox test. UDP, DNS and C-level sockets are not |
 | Setting the command line's default mode to lenient passed every test | FR-006 could regress for both plugins | A test runs `validate` and `render` with no mode |
 | Removing the relationship endpoint checks passed every test | FR-004's dangling edges were unguarded, though the code was right | A test covers both endpoints in both modes |
 | Giving two relationship kinds one style passed every test | FR-029's "distinguish" was unguarded | A test requires every kind's style to be unique and to reach the drawing |
@@ -50,7 +50,7 @@ The Claude plugin's README and skill, the Work plugin's README and `NOTICE.md` m
 | The core's independence check caught only one word | FR-065's guard was narrow | It reads the imports, and refuses either host's settings by name |
 | Nothing pinned the Work skill's lookup, assumption and validation steps | FR-061's steps could vanish unnoticed | A test pins each step |
 
-Adding the inventory to `src` changes the Work plugin's version to `0.1.0-alpha.1+0dbbe40dc6c5`, because that version identifies its content. The [Work check](S09-Work-validation.md) now says so. Fable/High approved S09's code before this, and the only change to what the plugin ships is the added inventory file.
+Adding the inventory to `src` and these changes to `pyproject.toml` change the Work plugin's version digest, because that version identifies its content. The [Work check](S09-Work-validation.md) names the current one. Fable/High approved S09's code before this, and the changes to what the plugin ships are the added inventory file and that packaging setting.
 
 The audit also corrected records. S08 said "host-independent" and "met in tests" for more than its tests showed, S08's provider section still said the owner had not inspected, and the M7 header still said the plugin cannot render. A test named "across runs and hosts" ran one process, and it is renamed.
 
@@ -58,7 +58,7 @@ The audit also corrected records. S08 said "host-independent" and "met in tests"
 
 Three fresh Claude Opus 5.5 agents read each requirement's exact text, opened the test that claims it, and ran it. They were told a document's claim counts for nothing, and they ran their own sabotage to see whether tests really fail. The root session then re-judged the 14 records that later fixes changed, and merged them into [the JSON](S10-p0-traceability.json).
 
-The guard in `release-audit` fails if an ID is missing or extra, a named test is gone, a link is broken, a claim has no check, or an owner's acceptance names no decision. **It cannot tell whether a test checks enough.** That judgment came from reading, and the review below is its only second opinion.
+The guard in `release-audit` fails if an ID is missing or extra, a named test is gone, a link is broken, a claim has no check, or an owner's acceptance names no decision or one that does not exist. **It cannot tell whether a test checks enough.** That judgment came from reading, and the review below is its only second opinion. It also does not check a test's lane against its file, and a caveat on an owner's acceptance sits in that record's owner note, where FR-042, FR-045 and FR-048 show theirs.
 
 ### Gaps the owner may want to decide
 
@@ -102,7 +102,7 @@ The local gate passes 17 lanes and 1,453 tests with 0 skipped, at Python 3.13.7,
 
 All 14 sabotage changes to the new checks failed a named test: a package dropped from the inventory, a changed license, deleted icon terms, an audit that stops looking for local folders or requiring notices, a report guard that ignores a gone test or a missing ID, a page that differs from its JSON, a removed report entry, a lenient default, unchecked relationship endpoints, two kinds sharing a style, a network import in the core, and a Work skill losing its lookup step. "The audit stops requiring notices" passed every test at first, which showed the list itself had no test, so one now pins it.
 
-Actual CI: CI_RESULT
+Actual CI [run 41783171328](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41783171328) passed 17 lanes and 1,453 tests at `65d800b`, on the runner, which is this same Mac, and its wheel matched the local build. A first watch of that run ended before the run did, so its digest was empty, and the script now refuses an empty one. CI for the review fixes is in the [review](S10-fable-review.md).
 
 ## Limits and what this does not establish
 
@@ -115,7 +115,7 @@ Actual CI: CI_RESULT
 
 Claude Opus 5.5 (`claude-opus-5-5`) did this work, including the three audit agents. The strategy names Sol/Medium for M6, so this is a recorded substitution, and no model setting changed.
 
-The Fable/High review under D-021 has not run yet.
+Under D-021, Claude Fable 5.1 / High [reviewed `b6997c6..65d800b`](S10-fable-review.md) in a fresh agent, sampling 33 of the 71 IDs. It found no state too generous and **requested changes** on the record and one sdist exclusion. They are fixed, and its recheck is pending. It shares a vendor with the implementing models.
 
 ## Next steps
 

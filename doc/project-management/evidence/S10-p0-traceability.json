@@ -1166,7 +1166,8 @@
    "doc/project-management/evidence/S08-reference-diagrams.md#scenario-checks"
   ],
   "open": "",
-  "owner": ""
+  "owner": "",
+  "note": "Rests on literal-text proofs and the T-006 legend. No test asserts that a VPN or replication label's text reaches the image."
  },
  {
   "id": "FR-029",
@@ -2978,7 +2979,8 @@
    "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage"
   ],
   "open": "",
-  "owner": ""
+  "owner": "",
+  "note": "The remote-execution half does not apply under D-013, which selects local installation. The local half is what these tests check."
  },
  {
   "id": "NFR-014",

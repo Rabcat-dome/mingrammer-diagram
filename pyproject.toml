@@ -25,6 +25,7 @@ exclude = [
   "/.claude-plugin",
   "/.claude",
   "/.agents",
+  "/.git",
   "/assets-source",
   "/doc",
   "/spikes",

@@ -26,6 +26,22 @@ def digest(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def source_digest(root: Path) -> str:
+    """What a proof depends on, so a later commit that changes none of it keeps the proof valid."""
+    paths = [root / "uv.lock", root / "pyproject.toml", root / "tests/baselines/baselines.json"]
+    paths += sorted(
+        path
+        for folder in ("src", "tests/fixtures/references")
+        for path in (root / folder).rglob("*")
+        if path.is_file() and "__pycache__" not in path.parts
+    )
+    state = hashlib.sha256()
+    for path in paths:
+        state.update(path.relative_to(root).as_posix().encode())
+        state.update(path.read_bytes())
+    return state.hexdigest()
+
+
 def run(command: list[str], *, env: dict[str, str], cwd: Path, stdin: bytes | None = None) -> bytes:
     result = subprocess.run(
         command, env=env, cwd=cwd, input=stdin, capture_output=True, timeout=600, check=False
@@ -93,10 +109,10 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--commit", required=True, help="Full commit SHA to reproduce")
     parser.add_argument("--output", required=True, type=Path, help="Where to write the proof")
-    parser.add_argument(
-        "--expected-wheel", help="SHA-256 of the wheel that actual CI built at this commit"
-    )
+    parser.add_argument("--expected-wheel", help="SHA-256 of the wheel this commit should build")
     arguments = parser.parse_args()
+    if arguments.expected_wheel == "":
+        parser.error("--expected-wheel is empty, so nothing would be compared")
     # The renderer refuses a root with a symbolic link in its path, as $TMPDIR has on macOS.
     base = ROOT / "reports/reproduction"
     shutil.rmtree(base, ignore_errors=True)
@@ -176,6 +192,7 @@ def main() -> int:
     checks = ("rendered", "svg_matches", "png_matches", "graph_matches", "model_matches")
     report = {
         "commit": arguments.commit,
+        "source_digest": source_digest(clone),
         "system": f"{platform.system()} {platform.release()} {platform.machine()}",
         "python": python.replace(str(base), "<new folder>"),
         "python_version": run([python, "--version"], env=env, cwd=base).decode().strip(),
@@ -187,7 +204,7 @@ def main() -> int:
         "catalog": capabilities["catalog_version"],
         "wheel": wheels[0].name,
         "wheel_sha256": wheel_digest,
-        "wheel_matches_ci": None
+        "wheel_matches_expected": None
         if arguments.expected_wheel is None
         else wheel_digest == arguments.expected_wheel,
         "installed_packages": len(packages),
@@ -201,7 +218,7 @@ def main() -> int:
     }
     arguments.output.write_text(json.dumps(report, indent=1, sort_keys=True) + "\n")
     print(json.dumps(report, indent=1, sort_keys=True))
-    return 0 if not report["mismatches"] and report["wheel_matches_ci"] is not False else 1
+    return 0 if not report["mismatches"] and report["wheel_matches_expected"] is not False else 1
 
 
 if __name__ == "__main__":

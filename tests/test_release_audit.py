@@ -73,6 +73,29 @@ def test_a_package_without_a_required_notice_is_found(required: str) -> None:
     assert release_audit.missing_names(names, release_audit.PACKAGE_REQUIRED) == [required]
 
 
+def test_the_reproduction_proof_passes_and_still_describes_this_source() -> None:
+    # A proof is committed after the commit it reproduced, so it is bound to the source instead.
+    from reproduce_core import source_digest
+
+    proof = json.loads(
+        (ROOT / "doc/project-management/evidence/S10-core-reproduction-proof.json").read_text()
+    )
+    assert proof["locked_route_all_match"] and proof["wheel_route_all_match"]
+    assert proof["routes_agree"] and proof["mismatches"] == [] and proof["views"] >= 26
+    assert proof["wheel_matches_expected"] is True
+    assert proof["source_digest"] == source_digest(ROOT)
+
+
+@pytest.mark.parametrize("name", [".agents/plugins/x.json", "doc/x.md", ".git", "plugins/a/b.md"])
+def test_the_source_archive_keeps_out_the_rest_of_the_repository(name: str) -> None:
+    assert release_audit.SDIST_FORBIDDEN.search(name)
+
+
+def test_the_source_archive_keeps_what_a_build_needs() -> None:
+    names = ["pyproject.toml", "src/a.py", "tests/test_a.py", "scripts/b.py", "docs.txt"]
+    assert not [name for name in names if release_audit.SDIST_FORBIDDEN.search(name)]
+
+
 def test_the_notices_stay_required() -> None:
     # A shorter list would pass every check above, so the list itself is pinned.
     assert set(release_audit.PACKAGE_REQUIRED) == {
@@ -195,6 +218,8 @@ def test_an_unknown_id_is_found() -> None:
         ({"open": "something"}, "met, yet something is open"),
         ({"state": "partly"}, "not met, and nothing says what is open"),
         ({"state": "met_with_owner", "owner": "the owner said so"}, "must name its decision"),
+        ({"state": "met_with_owner", "owner": "D-999 says so"}, "no decision D-999"),
+        ({"state": "met_with_owner", "owner": "D-023", "checks": []}, "met with no check"),
         (
             {"checks": [{"lane": "x", "file": "tests/test_release_audit.py", "test": "test_gone"}]},
             "no test test_gone",

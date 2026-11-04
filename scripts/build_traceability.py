@@ -26,7 +26,7 @@ No release SHA exists: D-024 parks actual Work, so M6-03 and M6-04 are blocked, 
 
 
 def cell(text: str) -> str:
-    return text.replace("|", "\\\\|").replace("\n", " ").strip()
+    return text.replace("|", "\\|").replace("\n", " ").strip()
 
 
 def render(records: list[dict[str, Any]]) -> str:
@@ -48,7 +48,7 @@ def render(records: list[dict[str, Any]]) -> str:
             state += f" ({record['owner']})"
         lines.append(
             f"| {record['id']} | {cell(record['summary'])} | {state} | {checks} | {evidence} "
-            f"| {cell(record['open'])} |"
+            f"| {cell(record['open'] or record.get('note', ''))} |"
         )
     return "\n".join(lines) + "\n"
 
