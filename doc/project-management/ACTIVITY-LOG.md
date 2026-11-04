@@ -543,3 +543,8 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 ## 2026-11-04 — Fable requests changes on the S11 fixes
 
 - The owner chose Fable for this recheck in place of Astra. Claude Fable 5.1 / High found G1 to G15 fixed for the cases named, and requested changes on one P2 and three P3 findings. The P2 is a side effect of the G5 fix. See the [review](evidence/S11-fable-review.md). Nothing is merged.
+
+## 2026-11-04 — Fixes for the Fable findings, and an Astra recheck
+
+- The owner said to fix the findings and send them to Astra, and asked whether Codex CLI could do it. Claude Opus 5.5 fixed the four at `f62394a`. The rule from G5 now binds only regional and zonal kinds. All 8 sabotage changes for them failed a named test.
+- The Work plugin's version is now `0.1.0-alpha.1+03840aacc866`. Nothing is merged.

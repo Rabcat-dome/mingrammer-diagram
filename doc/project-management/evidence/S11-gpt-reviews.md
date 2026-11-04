@@ -2,7 +2,7 @@
 
 Date: 2026-11-04 (Asia/Bangkok) | Base `5569459` | Head `aefcdbc` | Decision: D-025
 
-**Result: both reviewers requested changes. The Claude session reproduced or confirmed all 15 findings, and fixed them at `9fb199d`. [Fable requested changes](S11-fable-review.md) on those fixes at `3aa566d`, so they are not merged.** Neither reviewer found a way for a hostile model alone to write outside the output root, follow a symbolic link or put active content in the SVG. That is what they looked for and did not find, and it is not a proof.
+**Result: both reviewers requested changes. The Claude session reproduced or confirmed all 15 findings, and fixed them at `9fb199d`. [Fable requested changes](S11-fable-review.md) on those fixes at `3aa566d`, and those are fixed at `f62394a`. An Astra recheck comes next, so nothing is merged.** Neither reviewer found a way for a hostile model alone to write outside the output root, follow a symbolic link or put active content in the SVG. That is what they looked for and did not find, and it is not a proof.
 
 ## Why this ran
 
@@ -41,7 +41,7 @@ The [`busy` answers](S09-Work-validation.md#busy-answers) from the Work run are 
 
 ## Fixes
 
-Claude Opus 5.5 made these on `codex/s11-review-fixes`. No reference image changed: `visual-regression` passes against the baselines the owner passed, which are untouched. One thing does change for a model: a boundary that reaches two regions used to depend on their order, and now always fails.
+Claude Opus 5.5 made these on `codex/s11-review-fixes`. No reference image changed: `visual-regression` passes against the baselines the owner passed, which are untouched. One thing does change for a model: a network, subnet, zone or security group that reaches two regions used to depend on their order, and now always fails.
 
 | ID | Fix | A test that fails without it |
 |---|---|---|
@@ -49,22 +49,22 @@ Claude Opus 5.5 made these on `codex/s11-review-fixes`. No reference image chang
 | G2 | `check_png` decodes the stream in bounded pieces. It checks each row's filter byte and the exact size, requires one stream in adjacent chunks, and refuses a second header, interlacing and palette images, which the engine does not write | `test_pixels_that_do_not_decode_block_the_bundle` |
 | G3 | The README says that previews and files read through a tool reach the host (D-026) | `test_the_readme_says_what_reaches_the_host` |
 | G4 | Starting a child and registering it are one step under the lock, so shutdown waits for a start in progress, and nothing starts once stopping | `test_shutdown_stops_a_core_caught_between_its_start_and_its_registration`, and the same for setup |
-| G5 | A boundary whose parent and `located_in` relations reach two regions gets `BOUNDARY_LOCATION_MULTIPLE`, in either order | `test_a_boundary_in_two_regions_fails_in_either_order` |
+| G5 | A regional or zonal boundary whose parent and `located_in` relations reach two regions gets `BOUNDARY_LOCATION_MULTIPLE`, in either order. An `environment`, `security_zone` or `cluster` may span regions | `test_a_boundary_in_two_regions_fails_in_either_order`, `test_a_kind_whose_region_nothing_reads_may_span_regions` |
 | G6 | A `scheduling` edge to a Node gives a Pod with no `node_ref` its Node, for nesting and notes. An edge to a NodePool does not | `test_a_scheduling_edge_alone_places_a_pod_on_its_node` |
 | G7 | In `provider` grouping nothing nests inside another provider's group, and the membership stays as a note | `test_a_foreign_security_zone_keeps_a_resource_in_its_own_provider` |
 | G8 | A failed sync after the rename removes the bundle, so failure still means nothing was published, and a retry works | `test_a_failed_sync_after_the_rename_leaves_nothing_published` |
 | G9 | The limit counts the provider box, so a provider view takes 15 model levels | `test_the_depth_limit_counts_the_provider_box` |
 | G10 | A bundle file with more than one link is refused | `test_a_hard_link_in_a_bundle_is_not_read` |
 | G11 | A finishing call leaves `calls` before its token clears, and a cancel checks and sets under one lock | `test_a_cancel_arriving_as_a_call_ends_leaves_no_token` |
-| G12 | An ID that is not a string or number gets `-32600`, a cancel naming one is ignored, and any other failure on a frame gets `-32603` with only its type logged | `test_an_id_that_is_not_a_string_or_number_is_refused`, `test_an_unexpected_failure_on_a_frame_is_answered_and_the_server_goes_on` |
+| G12 | An ID that is not a string or finite number gets `-32600`, a cancel naming one is ignored, and any other failure on a frame gets `-32603` with only its type logged | `test_an_id_that_is_not_a_string_or_number_is_refused`, `test_an_unexpected_failure_on_a_frame_is_answered_and_the_server_goes_on` |
 | G13 | Setup passes `--no-build`, and the real setup in `package-contract` shows the lock still installs | `test_setup_refuses_a_source_build` |
-| G14 | The audit requires named files in each archive, and refuses a required file that is empty | `test_an_empty_source_archive_fails_the_audit`, `test_a_wheel_of_empty_files_fails_the_audit` |
+| G14 | The audit requires files at exact paths in each package, and refuses a required file in an archive that is empty | `test_an_empty_source_archive_fails_the_audit`, `test_a_wheel_of_empty_files_fails_the_audit` |
 | G15 | `reproduce_core.py` fails with no views or with routes that disagree | `test_a_reproduction_proof_fails_unless_it_proved_something` |
 | `busy` | The skill's row names both causes, and the cap has a test | `test_too_many_calls_at_once_get_a_stable_busy_answer` |
 
 ### Sabotage
 
-Undoing or weakening a fix, one change at a time, gave 47 changes, and each now fails a named test. Four passed at first, and each showed a real gap:
+Undoing or weakening a fix, one change at a time, gave 55 changes, 8 of them for Fable's findings, and each now fails a named test. Four passed at first, and each showed a real gap:
 
 - An illegal bit depth was refused only because its size came out wrong, so a test now uses one whose size adds up.
 - Dropping the check for a cancel that arrives before its child starts passed every test, and has done since S09. It now has a test.
@@ -75,7 +75,7 @@ No deterministic test covers a cancel's check and set being under one lock, beca
 
 ### Validation
 
-Actual CI [run 41856283191](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41856283191) passed 17 lanes and 1,527 tests with 0 skipped at `b862506`, on the runner, which is this same Mac. Its wheel has the digest the reproduction proof records. Its artifact is 42 KB, where earlier runs' were about 21 MiB, so G1's fix took effect from the first push of this branch. The artifact from that first push holds 29 text files, with no PNG data or `<svg` in any of them. [Run 41855686612](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41855686612) at `9fb199d` failed as expected, on the proof test alone, because the proof binds to the source and came in the next commit.
+At the first set of fixes, actual CI [run 41856283191](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41856283191) passed 17 lanes and 1,527 tests with 0 skipped at `b862506`, on the runner, which is this same Mac. Its wheel has the digest the reproduction proof records. Its artifact is 42 KB, where earlier runs' were about 21 MiB, so G1's fix took effect from the first push of this branch. The artifact from that first push holds 29 text files, with no PNG data or `<svg` in any of them. [Run 41855686612](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41855686612) at `9fb199d` failed as expected, on the proof test alone, because the proof binds to the source and came in the next commit.
 
 ## Fable recheck
 
@@ -88,7 +88,7 @@ On the owner's word, Claude Fable 5.1 rechecked `aefcdbc..3aa566d` in a fresh ag
 | P3 | A request ID of `1e400` is echoed as `Infinity`, which is not JSON | Reproduced on a build of this head |
 | P3 | The contract's limits row does not say that the provider box counts | Read |
 
-None of these is fixed yet.
+All four are fixed at `f62394a`. The P2 came from this session's fix for G5, which applied the rule to every kind and said every kind depended on order. The rule now binds only the kinds whose region other rules read.
 
 ## Report states these affect
 
@@ -112,8 +112,8 @@ D-026 records two defaults the owner can still change:
 
 ## Limits
 
-- These fixes changed the Work plugin's version to `0.1.0-alpha.1+4e035b4d7e69`, so the [Work check](S09-Work-validation.md) must run on that version.
-- The reproduction proof is now at `9fb199d`, and all 26 views match in both routes. It keeps the [limits S10 states](S10-release-checks.md#core-reproduction).
+- These fixes changed the Work plugin's version to `0.1.0-alpha.1+03840aacc866`, so the [Work check](S09-Work-validation.md) must run on that version.
+- The reproduction proof is now at `f62394a`, and all 26 views match in both routes. It keeps the [limits S10 states](S10-release-checks.md#core-reproduction).
 - G2's and G4's consequences need a fault or an exact timing, and neither was seen happening on its own.
 - Neither reviewer ran real Work, a second machine or the fresh-clone reproduction, and neither audited all 71 report records.
 - Both reviewers share a vendor with each other, and neither shows the code is correct.
