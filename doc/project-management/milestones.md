@@ -91,7 +91,7 @@ Exit: six reference scenario families and their required Kubernetes detail subvi
 
 ## M5 — ChatGPT Work integration
 
-Status: **Open, with M5-04 parked under D-024.** M5-01..03 are built and merged into `main`, and M5-04's automated part passes through the host's real engine. See the [S09 evidence](evidence/S09-work-plugin.md). [Fable/High approved](evidence/S09-fable-review.md) the code at `aa813ed`, which passes actual CI [run 41695136756](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41695136756). M5-04 itself needs the owner's run in an actual Work session, recorded in the [Work check](evidence/S09-Work-validation.md), so M5 cannot close before they answer. Planned implementation: Sol/High for local adapter/isolation, Sol/Medium for skill/docs; actual: Claude Opus 5.5. Review: Fable/High.
+Status: **Open. D-024 parked M5-04, and the owner's [first run in Work](evidence/S09-Work-validation.md) passed check 5, with checks 2 to 4 not run.** M5-01..03 are built and merged into `main`, and M5-04's automated part passes through the host's real engine. See the [S09 evidence](evidence/S09-work-plugin.md). [Fable/High approved](evidence/S09-fable-review.md) the code at `aa813ed`, which passes actual CI [run 41695136756](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41695136756). M5-04 itself needs the owner's run in an actual Work session, recorded in the [Work check](evidence/S09-Work-validation.md), so M5 cannot close before they answer. Planned implementation: Sol/High for local adapter/isolation, Sol/Medium for skill/docs; actual: Claude Opus 5.5. Review: Fable/High.
 
 | Task | Work | Dependency / output |
 |---|---|---|

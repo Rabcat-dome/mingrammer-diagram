@@ -19,7 +19,7 @@ Dates: 2026-11-03 to 2026-11-04 (Asia/Bangkok) | Tasks: M5-01..04 | Branch: `cod
 
 | Criterion | Status |
 |---|---|
-| Installed plugin works in the selected Work mode | Not yet known. The host's engine runs it, and only the owner can run the Work page |
+| Installed plugin works in the selected Work mode | Partly shown. The owner's [Work check](S09-Work-validation.md) has check 5 passed and checks 2 to 4 not run |
 | Artifacts are retrievable | Through the host's engine, all six files read back and match their checksums. In the Work user interface: not yet known |
 | Supported host modes are stated accurately | Done in the [plugin README](../../../plugins/cloud-architecture-work/README.md#where-it-runs) and in `get_capabilities`. Work is named as selected, and the README sends the reader here for what has been checked |
 | Local CLI or protocol tests alone do not satisfy M5-04 | Respected: nothing here claims M5-04 |
@@ -143,7 +143,7 @@ Sabotage found a weak test both times, which is why it is worth repeating. It co
 
 ## Limits and what this does not establish
 
-- **Nothing has run in the Work page.** Its user interface, approval prompts, image display and file opening are all unknown until the owner reports them. S04 alpha.3 gives feasibility on the same Mac, and it was a different plugin.
+- **Nothing had run in the Work page when this was written.** The [Work check](S09-Work-validation.md) holds the owner's first run and what it still does not show. S04 alpha.3 gives feasibility on the same Mac, and it was a different plugin.
 - **No real model has used this skill on the Work host.** GPT models reach tools through `exec`, and only a scripted stand-in has done that here. The Claude rehearsal reaches tools directly.
 - One Mac only: macOS 27 on Apple silicon, with Python 3.13.7 already present. Another Mac, a Python download and the system's Documents permission prompt are M6.
 - Host behavior is measured on one version and can change with an app update.

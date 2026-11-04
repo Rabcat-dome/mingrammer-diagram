@@ -522,3 +522,14 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 
 - CI passed at `debd754` ([run 41787236496](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41787236496), 17 lanes and 1,461 tests, with the wheel matching the proof). The same reviewer approved `65d800b..debd754`, and said `b6997c6..debd754` can stand as the review disposition for this part of M6.
 - `main` fast-forwards here once this commit passes CI. M5 and M6 stay open, with no release or tag. Three P3 findings from this review stay open, and the owner's gaps are [listed](evidence/S10-release-checks.md#gaps-the-owner-may-want-to-decide).
+
+## 2026-11-04 — First run in actual Work
+
+- The owner installed the Work plugin at `0.1.0-alpha.1+f242304382f3` and ran check 5 in a Work chat, with GPT-6.1 Sol / High. Both views drew with Thai labels, and the owner said to record it as passed. Checks 2, 3 and 4 have not run, so M5 stays open. See the [Work check](evidence/S09-Work-validation.md).
+- The chat recorded its own run as Codex. The owner corrected that, and the host's session record agrees. Its 12 file reads at once hit the server's cap of 8, which is an open P3.
+- The owner offered an Astra review, and the Claude session gave them a brief for `5569459..aefcdbc`.
+
+## 2026-11-04 — GPT reviews of everything after S06
+
+- GPT-6.1 Sol / High and then GPT-6 Astra / High reviewed `5569459..aefcdbc` under D-025, and both requested changes. Together they gave 15 findings: one P1, six P2 and eight P3. Two P2 findings came from both.
+- The Claude session reproduced or confirmed each one and ranks the P1 as P2. Nothing is fixed, and G3 and the existing CI artifacts wait for the owner. See [S11](evidence/S11-gpt-reviews.md).
