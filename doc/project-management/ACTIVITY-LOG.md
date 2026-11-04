@@ -512,3 +512,8 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - That audit and a new package check found real gaps, now fixed: no license inventory for the Python dependencies, a local sdist holding `.claude` and every agent worktree, and several checks that would have passed with the behavior removed. See the [fixes](evidence/S10-release-checks.md#fixes-this-found).
 - A new `release-audit` lane reads the wheel, sdist and both plugins, installs the wheel alone, and holds the report to the baseline. `scripts/reproduce_core.py` reproduces the core from a new clone and runtime.
 - Gaps that are the owner's to decide are [listed](evidence/S10-release-checks.md#gaps-the-owner-may-want-to-decide). M6 stays open, with no release or tag.
+
+## 2026-11-04 — Fable requests changes on S10
+
+- CI passed at `65d800b` ([run 41783171328](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41783171328), 17 lanes and 1,453 tests). A fresh Claude Fable 5.1 / High agent sampled 33 of the 71 P0 IDs and found no state too generous. It requested changes on one P1 and three P2 findings, mostly in this session's record: an empty reproduction proof, a claim about the sdist that was not true, an unfilled placeholder, and an sdist that shipped `.git` from a worktree.
+- Claude Opus 5.5 fixed them. The proof now binds to a digest of its source, and it passes at `7a42e97`. The local gate passes 17 lanes and 1,461 tests. See the [review](evidence/S10-fable-review.md). The same reviewer rechecks next, and M6 stays open.

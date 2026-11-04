@@ -19,7 +19,7 @@ Date: 2026-11-04 | Tasks: part of M6-01, and M6-02 | Branch: `codex/s10-release-
 
 ## Core reproduction
 
-`scripts/reproduce_core.py` clones the repository from GitHub at one commit, and points `HOME` and every cache at a new folder. It downloads its own Python 3.13.7 and packages, and takes two routes to the core: the lock with no development tools, and a wheel built with the locked tools and installed from hash-locked requirements. Each route renders all 26 reference views from outside the clone, and each result is compared with that commit's baselines. [The proof](S10-core-reproduction-proof.json) holds the results.
+`scripts/reproduce_core.py` clones the repository from GitHub at one commit, and points `HOME` and every cache at a new folder. It downloads its own Python 3.13.7 and packages, and takes two routes to the core: the lock with no development tools, and a wheel built with the locked tools and installed from hash-locked requirements. Each route renders all 26 reference views from outside the clone, and each result is compared with that commit's baselines. [The proof](S10-core-reproduction-proof.json) holds the results, at `7a42e97`: all 26 views match in both routes, and the routes agree.
 
 The proof binds to a digest of the source, the lock, the references and the baselines, because it is committed after the commit it reproduced, and a test fails if that source changes without a new proof. This proves a clean Python runtime on one machine. It shares Graphviz, Homebrew's other tools, uv, macOS and the sandbox with this Mac, and the clone uses the owner's Git credentials. Both routes compare with baselines made here, so T-010's second machine stays open. NFR-001 does not promise byte-identical images across platforms, so what a second machine must match is M6's to decide.
 
@@ -86,7 +86,7 @@ These pass and do not fail for the reasons their names suggest. Behavior is cove
 
 ## Validation
 
-The local gate passes 17 lanes and 1,453 tests with 0 skipped, at Python 3.13.7, uv 0.13.0 and Graphviz 16.1.0.
+The local gate passes 17 lanes and 1,461 tests with 0 skipped, at Python 3.13.7, uv 0.13.0 and Graphviz 16.1.0.
 
 | Lane | Tests |
 |---|---|
@@ -98,7 +98,7 @@ The local gate passes 17 lanes and 1,453 tests with 0 skipped, at Python 3.13.7,
 | `visual-regression` | 65 |
 | `claude-plugin` | 60 |
 | `package-contract` | 137 |
-| `release-audit` | 31 |
+| `release-audit` | 39 |
 
 All 14 sabotage changes to the new checks failed a named test: a package dropped from the inventory, a changed license, deleted icon terms, an audit that stops looking for local folders or requiring notices, a report guard that ignores a gone test or a missing ID, a page that differs from its JSON, a removed report entry, a lenient default, unchecked relationship endpoints, two kinds sharing a style, a network import in the core, and a Work skill losing its lookup step. "The audit stops requiring notices" passed every test at first, which showed the list itself had no test, so one now pins it.
 
