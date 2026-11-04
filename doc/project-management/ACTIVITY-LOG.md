@@ -505,3 +505,10 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 
 - The owner chose to leave the Work testing for now and go on with the parts of M6 that do not need it, which D-024 records. M5 stays open, and there is no release or tag until the owner comes back to Work.
 - `main` fast-forwards to this branch once this commit passes CI, so the next checks cover the Work plugin. S09 is reviewed and passes CI, and nothing in it has been run in Work. No branch is deleted.
+
+## 2026-11-04 — S10 release checks without Work
+
+- Three fresh Claude Opus 5.5 agents audited all 71 P0 requirements and scenarios by reading and running each test. The [report](evidence/S10-p0-traceability.md) finds 30 met, 14 met with the owner's acceptance, 17 partly met, 7 blocked on Work and 3 blocked on a second machine.
+- That audit and a new package check found real gaps, now fixed: no license inventory for the Python dependencies, a local sdist holding `.claude` and every agent worktree, and several checks that would have passed with the behavior removed. See the [fixes](evidence/S10-release-checks.md#fixes-this-found).
+- A new `release-audit` lane reads the wheel, sdist and both plugins, installs the wheel alone, and holds the report to the baseline. `scripts/reproduce_core.py` reproduces the core from a new clone and runtime.
+- Gaps that are the owner's to decide are [listed](evidence/S10-release-checks.md#gaps-the-owner-may-want-to-decide). M6 stays open, with no release or tag.

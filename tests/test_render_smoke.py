@@ -247,7 +247,10 @@ def test_manifest_records_what_fr_047_requires(
     assert manifest["view"]["id"] == "detail"
     assert manifest["isolation"]["network"] == "denied"
     assert manifest["limits"]["wall_seconds"] == LIMITS.wall_seconds
-    assert {font["family"] for font in manifest["fonts"]} == {"Noto Sans", "Noto Sans Thai"}
+    assert {font["family"]: font["version"] for font in manifest["fonts"]} == {
+        "Noto Sans": "2.015",
+        "Noto Sans Thai": "2.002",
+    }
     assert {font["sha256"] for font in manifest["fonts"]} == {
         font.sha256 for font, _ in verified_fonts(LIMITS)
     }
@@ -978,6 +981,21 @@ def test_a_layout_edge_holds_no_model_text() -> None:
         assert "Resource number" not in line and "label" not in line
 
 
+def test_each_relationship_kind_draws_differently() -> None:
+    # FR-029: a reader tells management, membership, scheduling and traffic apart by the line alone.
+    assert len(set(EDGE_STYLES.values())) == len(EDGE_STYLES)
+    model = boundaries_model()
+    model["relationships"] = [
+        {"id": f"edge-{kind}", "source_ref": "vm-a", "target_ref": "vm-b", "kind": kind}
+        for kind in EDGE_STYLES
+    ]
+    model["views"][0]["relationship_refs"] = [item["id"] for item in model["relationships"]]
+    dot = dot_of(model)
+    for kind, (color, style) in EDGE_STYLES.items():
+        line = next(item for item in dot.splitlines() if f"edge:edge-{kind}" in item)
+        assert color in line and f"style={style}" in line, kind
+
+
 def test_every_relationship_kind_has_one_edge_style(tmp_path: Path) -> None:
     model = boundaries_model()
     model["relationships"] = [
@@ -1029,7 +1047,7 @@ def test_identical_input_renders_identical_output(tmp_path: Path) -> None:
     assert one == two
 
 
-def test_the_normalized_graph_is_stable_across_runs_and_hosts(tmp_path: Path) -> None:
+def test_the_normalized_graph_is_stable_across_runs_and_holds_no_host_path(tmp_path: Path) -> None:
     parsed = Architecture.model_validate(load("providers/aws.json"))
     first = map_view(parsed, parsed.views[0], "strict", LIMITS).model_dump(mode="json")
     second = map_view(parsed, parsed.views[0], "strict", LIMITS).model_dump(mode="json")

@@ -449,3 +449,43 @@ def test_administrative_cluster_owner_remains_separate(mode: Mode, provider: str
     assert result.valid == (provider == "gcp")
     if provider == "aws":
         assert "SCOPE_PROVIDER_MISMATCH" in {item.code for item in result.diagnostics}
+
+
+@pytest.mark.parametrize("field", ["source_ref", "target_ref"])
+@pytest.mark.parametrize("mode", ["strict", "lenient"])
+def test_a_relationship_endpoint_must_exist(field: str, mode: Mode) -> None:
+    # FR-004: a dangling edge would otherwise draw from nothing, and no mode may excuse it.
+    model = fixture("core-valid")
+    model["relationships"] = [
+        {
+            "id": "edge",
+            "source_ref": model["resources"][0]["id"],
+            "target_ref": model["resources"][0]["id"],
+            "kind": "traffic",
+        }
+    ]
+    assert validate_json(json.dumps(model).encode(), mode=mode).valid
+    model["relationships"][0][field] = "nothing-here"
+    result = validate_json(json.dumps(model).encode(), mode=mode)
+    assert not result.valid
+    assert "REFERENCE_MISSING" in {item.code for item in result.diagnostics}
+
+
+@pytest.mark.parametrize("arguments", [["validate"], ["render", "--output", "out"]])
+def test_the_command_line_is_strict_unless_told_otherwise(
+    arguments: list[str], tmp_path: Path
+) -> None:
+    # FR-006: the plugins reach the core through this command, so its own default must hold too.
+    model = fixture("core-valid")
+    model["resources"][0]["service_type"] = "external.system.madeup"
+    result = subprocess.run(
+        ["cloud-diagrams", *arguments],
+        input=json.dumps(model).encode(),
+        cwd=tmp_path,
+        capture_output=True,
+        timeout=120,
+        check=False,
+    )
+    report = json.loads(result.stdout)
+    assert result.returncode == 2 and report["mode"] == "strict" and not report["draft"]
+    assert "CATALOG_TYPE_UNKNOWN" in {item["code"] for item in report["diagnostics"]}

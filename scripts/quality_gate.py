@@ -29,6 +29,7 @@ TEST_LANES = {
     "provider-semantics": "provider-semantics-tests.xml",
     "claude-plugin": "claude-plugin-tests.xml",
     "package-contract": "package-contract-tests.xml",
+    "release-audit": "release-audit-tests.xml",
     "render-security": "render-security-tests.xml",
     "render-smoke": "render-smoke-tests.xml",
     "visual-regression": "visual-regression-tests.xml",
@@ -71,6 +72,7 @@ def main() -> int:
             "--ignore=tests/test_render_security.py",
             "--ignore=tests/test_render_smoke.py",
             "--ignore=tests/test_references.py",
+            "--ignore=tests/test_release_audit.py",
             "--ignore=tests/test_visual_regression.py",
             "--ignore=tests/test_work_plugin.py",
             "--junitxml=reports/tests.xml",
@@ -128,6 +130,7 @@ def main() -> int:
         ],
         "package-build": [python, "-m", "build", "--no-isolation", "--outdir", "reports/dist"],
         "package-contents": [python, "scripts/repository_checks.py", "package"],
+        "release-audit": [python, "scripts/release_audit.py"],
     }
     # A stale wheel must not stand in for a build that failed or changed version.
     shutil.rmtree(REPORTS / "dist", ignore_errors=True)

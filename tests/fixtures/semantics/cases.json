@@ -2548,6 +2548,17 @@
      ]
     }
    ]
+  },
+  {
+   "id": "core-service-account-ref-is-a-configmap",
+   "base": "kubernetes/*",
+   "expect": "K8S_REFERENCE_KIND_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:deploy/kubernetes/service_account_ref",
+     "value": "cm"
+    }
+   ]
   }
  ],
  "warnings": [

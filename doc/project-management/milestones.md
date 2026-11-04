@@ -104,7 +104,7 @@ Exit: installed plugin works in the selected Work mode, artifacts are retrievabl
 
 ## M6 — Reproduction and personal release
 
-Status: Partly started under D-024: the clean-runtime core reproduction in M6-01 and the checks in M6-02 run without Work. The two-machine Work run, M6-03 and M6-04 stay blocked. Implementation: Sol/Medium; final review: Fable/High and owner inspection.
+Status: Open. Under D-024, [S10](evidence/S10-release-checks.md) did the clean-runtime core reproduction in M6-01 and all of M6-02, including the [P0 report](evidence/S10-p0-traceability.md). The two-machine Work run, M6-03 and M6-04 stay blocked, so nothing is released. Implementation: Sol/Medium; final review: Fable/High and owner inspection.
 
 | Task | Work | Dependency / output |
 |---|---|---|

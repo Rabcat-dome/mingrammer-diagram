@@ -59,13 +59,13 @@ All 26 views publish at PNG scale 1.0, and the largest is 9.8 megapixels against
 | T-006 | All five environments in the overview; links are the four stated ones, each touching on-premises, so no mesh; the legend tells link kinds from data flows; a trust zone per environment; the cluster stays compact, and its detail is disclosed | Covered by the generic check that a view draws exactly what it selects | Add a stated link; every other edge stays identical |
 | T-017 | Ingress to Service to Pod, Deployment to ReplicaSet to Pod, and PVC to PV; each Pod sits in its namespace in one view and on its Node in the other, with the other fact as a note; a Pod with no Node reads `node: unspecified`; the cluster keeps its ID and provider across views | A namespace from another cluster: `K8S_NAMESPACE_MISMATCH`. A Secret with a value: `SCHEMA_FIELD_INVALID` | Covered above; each view keeps the same IDs |
 
-Checks on every reference: strict validation with only the expected warnings, each view draws exactly what it selects, each left-out ID is disclosed, the first view draws in both directions with a matching legend, and every view stays at full PNG size. A Thai variant of the AWS overview renders strictly with the same IDs and uses Noto Sans Thai.
+Checks on every reference: strict validation with only the expected warnings, each view draws exactly what it selects, each left-out ID is disclosed, the first view draws in both directions with a matching legend, and every view stays at full PNG size. A Thai variant of the AWS overview renders strictly with the same IDs, and `check_fonts_used` fails a render that skips the bundled fonts.
 
 T-006's edit check differs from S01 in one way. The model already has an on-premises to Huawei link, so the test removes it and adds it back.
 
 ## Provider references
 
-Pages opened on 2026-11-03 in the built-in browser. Official images are compared by eye and not stored here, because their copyright belongs to the providers. Border and fill colors in `GROUP_STYLES` are approximated from these images, and are not taken from a published specification. This is the T-016 comparison so far; the owner's acceptance is still open.
+Pages opened on 2026-11-03 in the built-in browser. Official images are compared by eye and not stored here, because their copyright belongs to the providers. Border and fill colors in `GROUP_STYLES` are approximated from these images, and are not taken from a published specification. This is the T-016 comparison for M4, which the owner passed under D-023. M6 repeats it.
 
 | Provider | Reference | What it shows | Used here |
 |---|---|---|---|
@@ -134,7 +134,7 @@ The local gate passes **15 lanes and 1,250 tests with none skipped**, at Python 
 
 Each view's normalized graph must equal its [baseline](../../../tests/baselines), and its SVG and PNG must match the digests in `baselines.json`, which also records the engine and the reason for the last acceptance. A failure leaves before, after and diff images in `reports/visual-regression`. `scripts/update_visual_baselines.py --reason` is the only way to accept a change, and it should run only after someone has looked.
 
-The graph is host-independent, so it should hold on any machine. The image comparison is exact, and NFR-001 does not promise byte-identical images across platforms, so another Graphviz build or a second machine will fail it. Its engine check names that cause, and M6 decides what tolerance two machines need.
+The graph holds no host path, so it should hold on any machine, though no second machine has shown it. The image comparison is exact, and NFR-001 does not promise byte-identical images across platforms, so another Graphviz build or a second machine will fail it. Its engine check names that cause, and M6 decides what tolerance two machines need.
 
 The baselines hold Huawei icons, under the same private-use limit as the fixtures and `reports/`. They are excluded from the sdist, are not in the wheel, and stay in this private repository's history.
 
@@ -185,7 +185,7 @@ Time is far from any limit: the slowest run is 1.83 s against 55 s.
 | T-014 | English and Thai labels passed by the owner; M5 adds the privacy part | `test_thai_labels_render_strictly_with_the_same_ids` |
 | T-016 | Compared with the pinned references and passed by the owner for M4; M6 repeats it | [Provider references](#provider-references) |
 | T-017 | Met in tests for M4; M5 adds its part | [Scenario checks](#scenario-checks) |
-| FR-018, FR-029 | Met in tests | The same, with `provider-semantics` |
+| FR-018, FR-029 | Partly, per the [S10 audit](S10-p0-traceability.md) | The same, with `provider-semantics` |
 | FR-042 | Met in tests; the owner passed the images | Direction, legend, grouping and labels |
 | FR-048 | Implemented with recorded deviations; the owner passed the images for M4 | [Deviations](#deviations) |
 | NFR-006 | Met in tests | Each view draws exactly what it selects, and each left-out ID is disclosed |

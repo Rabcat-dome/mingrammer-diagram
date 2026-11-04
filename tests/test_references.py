@@ -654,6 +654,32 @@ def test_t017_a_view_invents_no_placement(
             assert "node: unspecified" in node_of(found, pod["id"])["lines"]
 
 
+@pytest.mark.parametrize(("name", "logical", "_nodes"), KUBERNETES)
+def test_t017_an_edit_keeps_every_id_and_link_it_does_not_touch(
+    name: str, logical: str, _nodes: str | None, tmp_path: Path
+) -> None:
+    model = model_of(name)
+    before = graph(name, logical, tmp_path)
+    pod = next(item for item in model["resources"] if item["service_type"] == "k8s.pod")
+    added = copy.deepcopy(pod) | {"id": "edit-added-pod", "name": "edit-added-pod"}
+    model["resources"].append(added)
+    deployment = next(
+        item for item in model["resources"] if item["service_type"] == "k8s.deployment"
+    )
+    deployment["name"] = "renamed-deployment"
+    view_of(model, logical)["entity_refs"].append("edit-added-pod")
+    assert validated(model).valid
+    after = graph(name, logical, tmp_path, model)
+    assert after["edges"] == before["edges"]
+    earlier = {item["id"]: item for item in before["nodes"]}
+    assert {item["id"] for item in after["nodes"]} == set(earlier) | {"edit-added-pod"}
+    for node in after["nodes"]:
+        if node["id"] not in {"edit-added-pod", deployment["id"]}:
+            assert node == earlier[node["id"]], node["id"]
+    assert "renamed-deployment" in node_of(after, deployment["id"])["lines"]
+    assert node_of(after, deployment["id"])["type_id"] == earlier[deployment["id"]]["type_id"]
+
+
 def other_cluster(model: dict[str, Any], cluster: str, namespace: str) -> None:
     """A second cluster and namespace, so that a reference can wrongly cross between them."""
     twin = copy.deepcopy(resource(model, cluster)) | {"id": "other-cluster", "name": "Other"}

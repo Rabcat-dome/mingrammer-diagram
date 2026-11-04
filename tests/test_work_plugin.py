@@ -436,7 +436,15 @@ def test_core_stays_free_of_the_host_adapter() -> None:
     # FR-065: a later adapter reuses the core, so nothing in it may know about this host.
     for path in (ROOT / "src").rglob("*.py"):
         text = path.read_text(encoding="utf-8")
-        assert "work_adapter" not in text and "mcp" not in text.lower().split(), path
+        for node in ast.walk(ast.parse(text)):
+            names: list[str] = []
+            if isinstance(node, ast.Import):
+                names = [item.name for item in node.names]
+            elif isinstance(node, ast.ImportFrom) and node.module:
+                names = [node.module]
+            assert not {item.split(".")[0] for item in names} & {"mcp", "work_adapter"}, path
+        for host in ("work_adapter", "CODEX_HOME", "CLAUDE_PLUGIN_ROOT", "PLUGIN_ROOT"):
+            assert host not in text, (path, host)
 
 
 # The server's own interpreter.
@@ -1694,6 +1702,21 @@ def test_the_adapter_opens_no_network_connection(package: Path) -> None:
 @pytest.fixture(scope="module")
 def skill(package: Path) -> str:
     return (package / "skills/architecture-model/SKILL.md").read_text(encoding="utf-8")
+
+
+@pytest.mark.parametrize(
+    "phrase",
+    [
+        "Understand the request",
+        "Look up exact types",
+        "metadata.assumptions",
+        "Call `validate_model`",
+        "Fix by diagnostic",
+    ],
+)
+def test_skill_guides_each_step_of_the_workflow(package: Path, phrase: str) -> None:
+    # FR-061: requirement gathering, lookup, assumptions, validation and repair are the skill's job.
+    assert phrase in (package / "skills/architecture-model/SKILL.md").read_text()
 
 
 def test_skill_metadata_is_what_the_host_reads(package: Path, skill: str) -> None:

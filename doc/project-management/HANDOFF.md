@@ -43,7 +43,7 @@ Core changes reach the plugin through symlinks, so no copy step exists, and Clau
 1. M2 is closed. Its deferred P3 findings, N2-N4, are in the [Fable review](evidence/S06-fable-review.md#follow-up-n1-fix-and-deferrals). The [Fable review](evidence/M7-fable-review.md) now covers the earlier M7 Medium/Low fixes and leaves three P3 findings open.
 2. The owner passed one Kubernetes sample in S07. The full set of Kubernetes representations has not been shown to them, and M4 inspects it.
 3. Update the owner's installed plugin only if asked. It follows `main` and holds `43b444d`, which has the renderer and the skill correction from S08. The first render through the installed plugin in a live session is done, on one Mac, in headless mode; see the [M7 evidence](evidence/M7-claude-plugin.md). A second machine and interactive permission prompts stay open.
-4. M3 is closed under D-022, and four of its P3 findings stay open. M4 is closed under D-023, and [its review](evidence/S08-fable-review.md) leaves four P3 findings open. D-024 parks the owner's [Work check](evidence/S09-Work-validation.md), so M5 stays open. M6's two-machine acceptance, final review and release stay blocked on it, and the parts that do not need Work go on.
+4. M3 is closed under D-022, and four of its P3 findings stay open. M4 is closed under D-023, and [its review](evidence/S08-fable-review.md) leaves four P3 findings open. D-024 parks the owner's [Work check](evidence/S09-Work-validation.md), so M5 stays open. [S10](evidence/S10-release-checks.md) did what M6 can do without it, and its [P0 report](evidence/S10-p0-traceability.md) lists the gaps the owner can decide. M6's two-machine acceptance, final review and release stay blocked.
 
 ## Keeping the Work plugin in step
 
@@ -58,8 +58,9 @@ the private personal release: D-019 settles its asset-rights exit item, and D-01
 it does not clear their rights.
 
 S07 / M3 is closed under D-022, with code at c8fc687. Its five P3 findings stay open.
-S08 / M4 is closed under D-023 and in main. S09 / M5 is next in the delivery order: read M5 in
-milestones.md, the S08 evidence and the core contract's Controlled rendering section. Branch
+S08 / M4 is closed under D-023. S09 / M5 is built and in main, and D-024 parks its run in Work.
+S10 did what M6 can do without Work. Read the S10 evidence and its P0 report, and M5 and M6 in
+milestones.md. Branch
 from main with a codex/ prefix; keep docs English.
 Huawei source availability is not redistribution permission: keep public
 distribution blocked under O-002, and draw no silent generic substitute for a

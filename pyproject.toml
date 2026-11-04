@@ -20,7 +20,16 @@ packages = ["src/cloud_architecture_diagrams"]
 [tool.hatch.build.targets.sdist]
 # The Claude plugin links back to src, and hatchling walks each directory once. Entering that link
 # first would drop the real src from the sdist, so the walk must skip the plugin entirely.
-exclude = ["/plugins", "/.claude-plugin", "/tests/baselines"]
+exclude = [
+  "/plugins",
+  "/.claude-plugin",
+  "/.claude",
+  "/.agents",
+  "/assets-source",
+  "/doc",
+  "/spikes",
+  "/tests/baselines",
+]
 skip-excluded-dirs = true
 
 [tool.ruff]

@@ -1,5 +1,6 @@
 """M3 render-security lane: T-009, FR-045, NFR-002, NFR-003, NFR-006, NFR-009 and NFR-010."""
 
+import ast
 import base64
 import hashlib
 import json
@@ -306,6 +307,40 @@ def test_a_missing_output_root_is_created_private(tmp_path: Path) -> None:
     assert result.rendered, codes(result)
     for path in (tmp_path / "missing", tmp_path / "missing/nested", output):
         assert stat.S_IMODE(os.stat(path).st_mode) == 0o700, path
+
+
+def test_the_core_imports_no_network_or_model_client() -> None:
+    # NFR-015: the host model authors the data, and validation and rendering call nothing else.
+    source = Path(renderer.__file__).resolve().parents[1]
+    banned = {"socket", "ssl", "urllib", "http", "ftplib", "requests", "httpx", "aiohttp"}
+    banned |= {"anthropic", "openai"}
+    found = set()
+    for path in source.rglob("*.py"):
+        for node in ast.walk(ast.parse(path.read_text())):
+            names = []
+            if isinstance(node, ast.Import):
+                names = [item.name for item in node.names]
+            elif isinstance(node, ast.ImportFrom) and node.module:
+                names = [node.module]
+            found |= {f"{path.name}:{item}" for item in names if item.split(".")[0] in banned}
+    assert not found
+
+
+def test_a_render_opens_no_network_connection(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # A dependency could still connect, so the attempt itself must never happen in-process.
+    attempts: list[object] = []
+
+    def refuse(_: socket.socket, address: object) -> None:
+        attempts.append(address)
+        raise OSError("network is not allowed here")
+
+    monkeypatch.setattr(socket.socket, "connect", refuse)
+    monkeypatch.setattr(socket.socket, "connect_ex", refuse)
+    result = render(GOOD, tmp_path / "out")
+    assert result.rendered, codes(result)
+    assert attempts == []
 
 
 def test_a_symlinked_output_root_is_rejected(tmp_path: Path) -> None:

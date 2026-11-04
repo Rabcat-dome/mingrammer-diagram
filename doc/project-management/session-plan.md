@@ -1,6 +1,6 @@
 # Session Plan and Starter Prompts
 
-Updated: 2026-11-04 | Status: S01-S08 complete; M2, M3 and M4 closed on 2026-11-03 for the private personal release. S09 is built and merged, and D-024 parks the owner's run in Work. Two authorized S04 chats completed; no new S05 chat has been created.
+Updated: 2026-11-04 | Status: S01-S08 complete; M2, M3 and M4 closed on 2026-11-03 for the private personal release. S09 is built and merged, and D-024 parks the owner's run in Work. S10 did what M6 can do without it, and its release stays blocked. Two authorized S04 chats completed; no new S05 chat has been created.
 
 This is an execution index for the existing [milestones](milestones.md), not a second requirement baseline. Use the [requirements](../requirements/requirements.md) for product scope and the [decision log](decisions.md) for confirmed choices. The deliverable remains an installable cross-machine plugin with a bundled skill.
 
@@ -19,6 +19,8 @@ S04 result: [M0/S04 closeout](evidence/S04-closeout.md), [native proof](evidence
 S05 result: [core/CI evidence](evidence/S05-core-and-ci.md), [contract/setup](../design/core-contract.md) and [Astra review](evidence/S05-astra-review.md). M1-01..04 are complete at code head 785e1ee: 82 tests, eight real runner lanes, clean CI wheel and both initial P2 findings confirmed fixed. This is core-only validation; provider catalogs/rules/assets remain S06 and full rendering/Work/release acceptance remains later work.
 
 S07 result: [controlled rendering](evidence/S07-controlled-rendering.md). M3-01..04 are implemented on `codex/s07-controlled-rendering` and pass the 14-lane gate in actual CI at `cddb497`, including new `render-security` and `render-smoke` lanes. [Fable/High requested changes](evidence/S07-fable-review.md) on three P2 findings and approved their fixes at `c8fc687`. The owner passed three samples of the first output, and M3 closed under D-022 with five P3 findings left open.
+
+S10 result, in part: [release checks](evidence/S10-release-checks.md). The core reproduces from a new clone and runtime on this Mac, the packages hold what they should, and the [P0 report](evidence/S10-p0-traceability.md) covers all 71 IDs. The two-machine Work run, the final review and the release stay blocked under D-024.
 
 S08 result: [reference diagrams](evidence/S08-reference-diagrams.md). M4-01..05 are complete, with six reference models, 26 views, a `visual-regression` lane with reviewed baselines, and measurements. [Fable/High approved](evidence/S08-fable-review.md) it at `a407a7a`, and the owner passed the images, so M4 closed under D-023.
 

@@ -1,6 +1,7 @@
 """M2-05 catalog-license lane: FR-050..055, NFR-004. Each check must reject what it guards against."""
 
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -531,6 +532,65 @@ def test_linked_asset_fails(package: Path, tmp_path: Path) -> None:
     target.unlink()
     target.symlink_to(outside)
     assert any("symbolic link" in error for error in asset_errors(catalog().manifest, package))
+
+
+def test_the_python_inventory_matches_the_lock() -> None:
+    assert catalog_checks.third_party_errors(catalog_checks.PACKAGE) == []
+
+
+def test_the_python_inventory_states_what_each_package_declares() -> None:
+    # The rows are generated, so this fails if a package's license changes under the same lock.
+    from build_third_party import license_of
+
+    text = (catalog_checks.PACKAGE / "assets/THIRD-PARTY-PYTHON.md").read_text()
+    rows = re.findall(r"^\| ([a-z0-9._-]+) \| [^ |]+ \| ([^|]+) \|$", text, re.M)
+    assert len(rows) >= 20
+    for name, stated in rows:
+        assert stated.strip() == license_of(name), name
+
+
+def edited_inventory(package: Path, old: str, new: str) -> None:
+    inventory = package / "assets/THIRD-PARTY-PYTHON.md"
+    text = inventory.read_text()
+    assert old in text
+    inventory.write_text(text.replace(old, new))
+
+
+def test_a_missing_python_inventory_fails(package: Path) -> None:
+    (package / "assets/THIRD-PARTY-PYTHON.md").unlink()
+    assert catalog_checks.third_party_errors(package) == [
+        "assets: THIRD-PARTY-PYTHON.md is missing from the package"
+    ]
+
+
+def test_a_package_left_out_of_the_inventory_fails(package: Path) -> None:
+    edited_inventory(package, "| pydantic | ", "| not-a-package | ")
+    errors = catalog_checks.third_party_errors(package)
+    assert "pydantic: installed at runtime but not in the inventory" in errors
+    assert "not-a-package: in the inventory but not installed at runtime" in errors
+
+
+def test_a_stale_version_in_the_inventory_fails(package: Path) -> None:
+    edited_inventory(package, "| diagrams | 0.25.1 |", "| diagrams | 0.24.0 |")
+    assert catalog_checks.third_party_errors(package) == [
+        "diagrams: inventory says 0.24.0, lock says 0.25.1"
+    ]
+
+
+@pytest.mark.parametrize(
+    "source", ["AWS", "Azure", "Google Cloud", "Kubernetes", "mingrammer/diagrams"]
+)
+def test_notice_must_state_the_terms_for_dependency_icons(source: str, package: Path) -> None:
+    notice = package / "assets/NOTICE.md"
+    lines = [
+        line
+        for line in notice.read_text().splitlines()
+        if not (line.startswith("|") and source in line)
+    ]
+    notice.write_text("\n".join(lines) + "\n")
+    assert any(
+        f"terms for {source} icons" in error for error in asset_errors(catalog().manifest, package)
+    )
 
 
 def test_missing_notice_fails(package: Path) -> None:

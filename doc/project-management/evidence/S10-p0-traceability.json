@@ -1,0 +1,4030 @@
+[
+ {
+  "id": "FR-001",
+  "state": "met",
+  "summary": "Accept UTF-8 JSON input; YAML stays a P1 adapter.",
+  "checks": [
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_bounded_parser"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_results_are_utf8_whatever_the_output_encoding"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_cli_exit_codes_and_discovery"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_thai_and_english_labels_survive_literally"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_malformed_input_never_creates_output"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S05-core-and-ci.md#delivered-and-verified"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "FR-002",
+  "state": "met",
+  "summary": "Validate a versioned schema before rendering; reject unsupported versions clearly.",
+  "checks": [
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_bounded_parser"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_published_schema_matches_discovery"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_invalid_input_cannot_reach_the_renderer"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_console_script_exit_codes"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S05-core-and-ci.md#delivered-and-verified"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "FR-003",
+  "state": "met",
+  "summary": "Represent scopes, boundaries, resources, placement, relationships, metadata and selected views.",
+  "checks": [
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_schema_and_core_agree_on_valid_fixtures"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_published_schema_matches_discovery"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_positive_fixture_is_fully_valid"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_fixture_view_produces_a_complete_bundle"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_selected_entity_and_relationship_is_in_the_image"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_relationship_kind_has_one_edge_style"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t005_memberships_that_overlap_all_stay_on_the_node"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_hostile_text_stays_literal_text"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S05-core-and-ci.md#delivered-and-verified"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "FR-004",
+  "state": "partly",
+  "summary": "Require stable IDs; reject duplicates, dangling references and containment cycles.",
+  "checks": [
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_core_errors_remain_fatal_in_both_modes"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_published_schema_matches_discovery"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_ownership_cycles_fail_but_traffic_cycles_are_valid"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_mixed_controller_ownership_cycle_is_fatal"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t001_edit_renames_a_tier_and_adds_an_instance_keeping_ids"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_edit_keeps_ids_and_the_earlier_bundle"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_a_relationship_endpoint_must_exist"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S05-core-and-ci.md#delivered-and-verified"
+  ],
+  "open": "Duplicates, dangling references and cycles are covered. ID stability across a host's edits cannot be enforced by the core, which validates one model at a time, so it rests on the skills and on T-013 in actual Work.",
+  "owner": ""
+ },
+ {
+  "id": "FR-005",
+  "state": "blocked_on_work",
+  "summary": "Authoring produces data; never execute user or LLM-authored code.",
+  "checks": [
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_core_errors_remain_fatal_in_both_modes"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_invalid_input_cannot_reach_the_renderer"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_hostile_text_stays_literal_text"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_module_path_as_a_type_is_only_ever_an_unknown_type"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_catalog_class_paths_stay_data_a_model_cannot_supply"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_class_outside_the_lock_is_never_imported"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_tools_list_is_the_closed_contract"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_skill_keeps_the_rules_a_live_session_depends_on"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S09-work-plugin.md#rehearsal-with-a-live-model",
+   "doc/project-management/evidence/S09-work-plugin.md#limits-and-what-this-does-not-establish",
+   "doc/project-management/evidence/S09-Work-validation.md#result"
+  ],
+  "open": "The never-execute half is met by the listed checks. The natural-language half is not checked: test_skill_keeps_the_rules_a_live_session_depends_on only finds sentences in the skill, and live authoring was rehearsed on Claude Code, not Work. No model has authored through this skill on the Work host (D-024).",
+  "owner": ""
+ },
+ {
+  "id": "FR-006",
+  "state": "met",
+  "summary": "Strict by default; lenient draft allows only declared fallbacks, labeled draft.",
+  "checks": [
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_core_errors_remain_fatal_in_both_modes"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_kubernetes_scope_and_typed_references"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_negative_case_fails_with_its_code"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_lenient_mode_discloses_unknown_type_without_substitution"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_lenient_mode_cannot_excuse_a_bad_provider_or_a_core_error"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_strict_mode_rejects_an_unknown_type_and_draws_nothing"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_lenient_mode_draws_a_marked_draft_and_keeps_provider_type_and_label"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_lenient_rendering_of_a_clean_model_is_still_marked_draft"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_lenient_mode_still_rejects_every_other_error"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_invalid_input_cannot_reach_the_renderer"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_lenient_turns_only_an_unknown_type_into_a_draft"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_the_command_line_is_strict_unless_told_otherwise"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S05-core-and-ci.md#delivered-and-verified",
+   "doc/project-management/evidence/S07-controlled-rendering.md#requirement-coverage"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "FR-008",
+  "state": "met",
+  "summary": "Export the canonical model and selected view with each render.",
+  "checks": [
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_fixture_view_produces_a_complete_bundle"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_manifest_records_what_fr_047_requires"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_every_view_draws_exactly_what_it_selects"
+   },
+   {
+    "lane": "visual-regression",
+    "file": "tests/test_visual_regression.py",
+    "test": "test_the_normalized_graph_matches_its_baseline"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_each_file_reads_back_through_the_tool"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S07-controlled-rendering.md#task-status"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "FR-010",
+  "state": "partly",
+  "summary": "AWS catalog and approved native icons for section 6 coverage.",
+  "checks": [
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_repository_passes_every_catalog_and_license_check"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_a_missing_required_item_fails_inventory"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_an_item_from_another_provider_fails_inventory"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_every_catalog_type_appears_in_a_passing_fixture"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_every_rule_has_a_negative_case_and_every_emitted_code_is_declared"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_all_fixture_views_draw_every_catalog_type"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_each_record_is_drawn_through_its_representation"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_native_class_outside_the_pinned_package_fails"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_changed_native_icon_digest_fails"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_catalog_icon_resolves_to_its_locked_bytes"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t001_requested_services_and_security_groups_stay_visible"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S06-provider-catalogs.md#catalog-design",
+   "doc/project-management/evidence/S06-provider-catalogs.md#icon-rights"
+  ],
+  "open": "The catalog and icon clauses are covered. Section 6 also says a supported item needs positive and negative fixtures. Positives are per type, but negatives are per rule, and no negative case targets RDS, Site-to-Site VPN, Direct Connect or CloudWatch.",
+  "owner": ""
+ },
+ {
+  "id": "FR-011",
+  "state": "partly",
+  "summary": "Azure catalog and approved native icons for section 6 coverage.",
+  "checks": [
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_repository_passes_every_catalog_and_license_check"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_a_missing_required_item_fails_inventory"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_an_item_from_another_provider_fails_inventory"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_every_catalog_type_appears_in_a_passing_fixture"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_every_rule_has_a_negative_case_and_every_emitted_code_is_declared"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_all_fixture_views_draw_every_catalog_type"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_each_record_is_drawn_through_its_representation"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_native_class_outside_the_pinned_package_fails"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_changed_native_icon_digest_fails"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_catalog_icon_resolves_to_its_locked_bytes"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_azure_icons_are_embedded_byte_for_byte_and_never_distorted"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t002_nic_and_security_are_explicit"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S06-provider-catalogs.md#catalog-design",
+   "doc/project-management/evidence/S06-provider-catalogs.md#icon-rights"
+  ],
+  "open": "The catalog and icon clauses are covered. Section 6 also says a supported item needs positive and negative fixtures. Positives are per type, but negatives are per rule, and no negative case targets Azure SQL Database, Blob Storage, NSG, NAT Gateway, VPN Gateway, ExpressRoute or Azure Monitor.",
+  "owner": ""
+ },
+ {
+  "id": "FR-012",
+  "state": "partly",
+  "summary": "GCP catalog and approved native icons for section 6 coverage.",
+  "checks": [
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_repository_passes_every_catalog_and_license_check"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_a_missing_required_item_fails_inventory"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_an_item_from_another_provider_fails_inventory"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_every_catalog_type_appears_in_a_passing_fixture"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_every_rule_has_a_negative_case_and_every_emitted_code_is_declared"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_all_fixture_views_draw_every_catalog_type"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_each_record_is_drawn_through_its_representation"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_native_class_outside_the_pinned_package_fails"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_changed_native_icon_digest_fails"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_catalog_icon_resolves_to_its_locked_bytes"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t003_ownership_is_not_flattened_into_the_network"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S06-provider-catalogs.md#catalog-design",
+   "doc/project-management/evidence/S06-provider-catalogs.md#icon-rights"
+  ],
+  "open": "The catalog and icon clauses are covered, and the icons' approval rests on owner decision D-016 with no license text. Section 6 also says a supported item needs positive and negative fixtures. Positives are per type, but negatives are per rule, and no negative case targets Cloud SQL, Cloud Storage, IAM, Cloud NAT, Cloud VPN, Cloud Interconnect or Cloud Monitoring/Logging.",
+  "owner": ""
+ },
+ {
+  "id": "FR-013",
+  "state": "partly",
+  "summary": "Huawei catalog and curated service icons through controlled custom nodes.",
+  "checks": [
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_repository_passes_every_catalog_and_license_check"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_a_missing_required_item_fails_inventory"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_an_item_from_another_provider_fails_inventory"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_every_catalog_type_appears_in_a_passing_fixture"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_every_rule_has_a_negative_case_and_every_emitted_code_is_declared"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_all_fixture_views_draw_every_catalog_type"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_each_record_is_drawn_through_its_representation"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_huawei_generic_substitution_fails"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_huawei_icons_map_only_exact_titles"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_required_huawei_items_are_reported_by_name"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_the_only_blocker_is_public_distribution"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t004_each_required_service_uses_its_approved_huawei_icon"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_tampered_asset_digest_is_refused"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S06-provider-catalogs.md#huawei-cloud-icons-under-d-018",
+   "doc/project-management/evidence/S06-provider-catalogs.md#exit-criteria"
+  ],
+  "open": "The catalog, curated-title mapping and controlled custom nodes are covered. The icons are not approved: they rest on owner risk acceptance under D-018 and D-019, rights are not cleared, and O-002 blocks public distribution. Section 6 also says a supported item needs positive and negative fixtures. Positives are per type, but negatives are per rule, and no negative case targets NAT Gateway, RDS, API Gateway, FunctionGraph, Direct Connect, Cloud Eye or LTS.",
+  "owner": ""
+ },
+ {
+  "id": "FR-014",
+  "state": "partly",
+  "summary": "On-premises catalog, native icons, draw.io-type symbols for eight gaps, with attribution.",
+  "checks": [
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_repository_passes_every_catalog_and_license_check"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_a_missing_required_item_fails_inventory"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_an_item_from_another_provider_fails_inventory"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_every_catalog_type_appears_in_a_passing_fixture"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_every_rule_has_a_negative_case_and_every_emitted_code_is_declared"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_all_fixture_views_draw_every_catalog_type"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_each_record_is_drawn_through_its_representation"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_native_class_outside_the_pinned_package_fails"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_changed_native_icon_digest_fails"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_catalog_icon_resolves_to_its_locked_bytes"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_bundled_svgs_are_safe_and_eight_concepts_stay_distinct"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_catalog_records_use_only_their_required_label"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_drawio_symbols_keep_their_attribution"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t005_rejects_a_subnet_paired_with_a_network_it_reaches_only_elsewhere"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S06-provider-catalogs.md#on-premises-representations",
+   "doc/project-management/evidence/S06-provider-catalogs.md#icon-rights"
+  ],
+  "open": "The catalog, eight symbols, labels and attribution are covered. The pack's source conditions reach the manifest and NOTICE, but no test asserts their content. Section 6 also says a supported item needs positive and negative fixtures. Positives are per type, but negatives are per rule, and no negative case targets router, L2/L3 switch, firewall, database, SAN, identity service, backup system or monitoring.",
+  "owner": ""
+ },
+ {
+  "id": "FR-015",
+  "state": "met",
+  "summary": "Combine all five environments in one model and selected views.",
+  "checks": [
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_positive_fixture_is_fully_valid"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t006_the_overview_shows_all_five_environments"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t006_links_are_the_stated_ones_and_never_a_mesh"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t006_the_legend_tells_connectivity_from_data_flow"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_every_view_draws_exactly_what_it_selects"
+   },
+   {
+    "lane": "visual-regression",
+    "file": "tests/test_visual_regression.py",
+    "test": "test_the_normalized_graph_matches_its_baseline"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S08-reference-diagrams.md#scenario-checks"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "FR-018",
+  "state": "partly",
+  "summary": "Detailed Kubernetes inventory across five hosts, with detail views preserving IDs.",
+  "checks": [
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_kubernetes_catalog_covers_every_kind_with_its_namespace_scope"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_every_catalog_type_appears_in_a_passing_fixture"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_kubernetes_overview_and_detail_share_stable_ids"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_fixture_view_produces_a_complete_bundle"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_kubernetes_overview_and_details_select_separately_with_stable_ids"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t017_namespace_view_draws_the_service_and_storage_paths"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t017_the_cluster_keeps_its_id_and_provider_across_views"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t017_a_secret_cannot_carry_a_value"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_secret_markers_show_no_payload"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S08-reference-diagrams.md#requirement-coverage",
+   "doc/project-management/evidence/S08-reference-diagrams.md#scenario-checks",
+   "doc/project-management/evidence/S06-provider-catalogs.md#task-status"
+  ],
+  "open": "Kinds, hosts, and IDs and provider across views are covered. Section 6.1 items do not reach the drawing, and no test asks: (1) the renderer never reads properties, so replica counts, labels, Service type and ports stay only in model.json; a Deployment with replicas 2 draws as its name and kind. (2) Typed references such as secret_refs, config_refs, volume_claim_refs, service_account_ref and target_refs are validated but draw only if a relationship repeats them, with no diagnostic: the detail view of kubernetes-valid.json declares them and draws one edge. Section 6.1 says the detail view must retain supplied security, configuration and storage relationships. (3) No test requires each host to hold all 22 kinds; each does at this commit.",
+  "owner": ""
+ },
+ {
+  "id": "FR-020",
+  "state": "met",
+  "summary": "Separate ownership, geography, networking, security, deployment and physical placement.",
+  "checks": [
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_namespace_and_node_are_independent_dimensions"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_administrative_cluster_owner_remains_separate"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_scope_and_network_dimensions_stay_independent"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_onprem_overlapping_logical_memberships_remain_valid"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_a_membership_that_nesting_cannot_show_stays_a_note"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t002_ownership_stays_apart_from_network_attachment"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t003_ownership_is_not_flattened_into_the_network"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t004_a_box_does_not_imply_a_scope_the_service_lacks"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t005_physical_and_logical_nest_differently_for_one_identity"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t005_memberships_that_overlap_all_stay_on_the_node"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S08-reference-diagrams.md#scenario-checks",
+   "doc/project-management/evidence/S05-core-and-ci.md#delivered-and-verified"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "FR-021",
+  "state": "met_with_owner",
+  "summary": "Render provider, account, region, network, security, site, cluster and environment groups.",
+  "checks": [
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_all_fixture_views_draw_every_catalog_type"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_each_record_is_drawn_through_its_representation"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_group_style_is_reached_and_a_neutral_view_uses_none"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_groups_with_one_display_name_stay_separate"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t002_ownership_stays_apart_from_network_attachment"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t003_ownership_is_not_flattened_into_the_network"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t005_physical_and_logical_nest_differently_for_one_identity"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t006_the_overview_shows_all_five_environments"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t006_each_trust_boundary_is_labeled_and_holds_its_workloads"
+   },
+   {
+    "lane": "visual-regression",
+    "file": "tests/test_visual_regression.py",
+    "test": "test_the_normalized_graph_matches_its_baseline"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S08-reference-diagrams.md#owner-inspection",
+   "doc/project-management/evidence/S08-reference-diagrams.md#scenario-checks"
+  ],
+  "open": "",
+  "owner": "Whether the groups are appropriate is the owner's judgment: D-023 accepted the 26 reference views for M4 only, and T-016 repeats in M6."
+ },
+ {
+  "id": "FR-022",
+  "state": "partly",
+  "summary": "Enforce documented constraints; visual nesting never redefines ownership or attachment.",
+  "checks": [
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_negative_case_fails_with_its_code"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_every_rule_has_a_negative_case_and_every_emitted_code_is_declared"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_a_boundary_does_not_nest_in_a_scope_it_does_not_declare"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_a_membership_that_nesting_cannot_show_stays_a_note"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t001_rejects_an_instance_whose_subnet_is_in_another_zone"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t002_rejects_an_attachment_to_a_subnet_of_another_vnet"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t002_ownership_stays_apart_from_network_attachment"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t003_rejects_a_workload_zone_outside_its_subnet_region"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t005_rejects_a_subnet_paired_with_a_network_it_reaches_only_elsewhere"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S08-fable-review.md#findings",
+   "doc/project-management/evidence/S08-reference-diagrams.md#limits-and-what-this-does-not-establish",
+   "doc/project-management/evidence/S06-fable-review.md#follow-up-n1-fix-and-deferrals"
+  ],
+  "open": "The nesting clause and the listed rules are covered. S08 P3-8 stays open and is reproduced at this commit: an AWS subnet with no path to a network, attached under a different VPC, validates, so PLACEMENT_SUBNET_NETWORK_MISMATCH does not fire. The owner deferred N2 to N4 in the S06 review, and relation-only mismatch cases for Azure, GCP and Huawei remain a recorded coverage gap.",
+  "owner": ""
+ },
+ {
+  "id": "FR-023",
+  "state": "met",
+  "summary": "Typed directed or undirected relationships carry label, protocol, purpose, security metadata.",
+  "checks": [
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_a_relationship_between_groups_is_drawn_to_their_borders"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_relationship_kind_has_one_edge_style"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t001_edges_keep_direction_and_the_named_labels"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t002_only_the_stated_links_join_hub_and_spoke"
+   },
+   {
+    "lane": "visual-regression",
+    "file": "tests/test_visual_regression.py",
+    "test": "test_the_normalized_graph_matches_its_baseline"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S08-reference-diagrams.md#scenario-checks",
+   "doc/project-management/evidence/S05-core-and-ci.md#delivered-and-verified"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "FR-024",
+  "state": "met",
+  "summary": "Represent users, Internet, partners, SaaS and external systems.",
+  "checks": [
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_positive_fixture_is_fully_valid"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_every_catalog_type_appears_in_a_passing_fixture"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_all_fixture_views_draw_every_catalog_type"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_each_record_is_drawn_through_its_representation"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_selected_entity_and_relationship_is_in_the_image"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S06-provider-catalogs.md#catalog-design"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "FR-025",
+  "state": "met",
+  "summary": "Keep requested components, disclose excluded IDs, never silently drop for layout.",
+  "checks": [
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_partial_view_discloses_every_excluded_id_without_mutation"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_every_partial_view_is_disclosed_whichever_view_is_selected"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_selected_entity_and_relationship_is_in_the_image"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_an_empty_group_is_still_drawn"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_kubernetes_overview_and_details_select_separately_with_stable_ids"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_every_view_draws_exactly_what_it_selects"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_a_left_out_id_is_disclosed_for_every_view"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t001_requested_services_and_security_groups_stay_visible"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_lost_or_distorted_element_blocks_the_bundle"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_view_size_limits_reject_with_a_split_suggestion"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S08-reference-diagrams.md#requirement-coverage",
+   "doc/project-management/evidence/S07-controlled-rendering.md#requirement-coverage",
+   "doc/project-management/evidence/M7-claude-plugin.md#separate-session-review"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "FR-028",
+  "state": "met",
+  "summary": "Display supplied HTTPS/port, VPN, peering, replication and flow labels unchanged.",
+  "checks": [
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_a_relationship_between_groups_is_drawn_to_their_borders"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t001_edges_keep_direction_and_the_named_labels"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t006_links_are_the_stated_ones_and_never_a_mesh"
+   },
+   {
+    "lane": "visual-regression",
+    "file": "tests/test_visual_regression.py",
+    "test": "test_the_normalized_graph_matches_its_baseline"
+   },
+   {
+    "lane": "visual-regression",
+    "file": "tests/test_visual_regression.py",
+    "test": "test_the_image_matches_its_baseline"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_hostile_text_stays_literal_text"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S08-reference-diagrams.md#scenario-checks"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "FR-029",
+  "state": "partly",
+  "summary": "Validate Kubernetes references separately; distinguish relationship kinds; invent no live state.",
+  "checks": [
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_kubernetes_scope_and_typed_references"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_ownership_edges_use_the_same_context_rules_as_owner_ref"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_mixed_controller_ownership_cycle_is_fatal"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_negative_case_fails_with_its_code"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_missing_pod_placement_stays_unspecified"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_concrete_pod_assignments_and_broader_scheduling"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_namespace_grouping_does_not_assign_pods_to_nodes"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_node_grouping_places_only_declared_pods_and_keeps_the_namespace"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_relationship_kind_has_one_edge_style"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t017_a_view_invents_no_placement"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t017_namespace_and_placement_stay_separate_for_one_pod"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t017_rejects_a_namespace_from_another_cluster"
+   },
+   {
+    "lane": "visual-regression",
+    "file": "tests/test_visual_regression.py",
+    "test": "test_the_normalized_graph_matches_its_baseline"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_each_relationship_kind_draws_differently"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S08-reference-diagrams.md#requirement-coverage",
+   "doc/project-management/evidence/S08-reference-diagrams.md#scenario-checks",
+   "doc/project-management/evidence/S06-provider-catalogs.md#task-status"
+  ],
+  "open": "`management` edges have no rule or negative case, so any endpoints pass, and invented controller availability is caught only by the exact baseline. Kinds now draw differently and a wrong `service_account_ref` is refused.",
+  "owner": ""
+ },
+ {
+  "id": "FR-040",
+  "state": "met",
+  "summary": "Valid SVG and PNG; SVG self-contained with embedded icons.",
+  "checks": [
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_fixture_view_produces_a_complete_bundle"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_bundle_is_portable_and_free_of_host_details"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_azure_icons_are_embedded_byte_for_byte_and_never_distorted"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_an_unsafe_svg_blocks_the_bundle"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_an_invalid_png_blocks_the_bundle"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_lost_icon_blocks_the_bundle"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_svg_embeds_only_verified_icon_bytes"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S07-controlled-rendering.md#requirement-coverage",
+   "doc/project-management/evidence/S07-controlled-rendering.md#limits-and-what-this-does-not-establish"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "FR-041",
+  "state": "met",
+  "summary": "Controlled renderer code, allowlisted classes and assets, and Graphviz.",
+  "checks": [
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_class_outside_the_lock_is_never_imported"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_tampered_asset_path_is_refused"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_tampered_asset_digest_is_refused"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_model_cannot_name_an_image_for_the_engine"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_catalog_class_paths_stay_data_a_model_cannot_supply"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_real_engine_run_uses_only_the_request_directory"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_missing_graphviz_fails_closed_with_a_remedy"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_catalog_icon_resolves_to_its_locked_bytes"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_native_class_outside_the_pinned_package_fails"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_unlisted_asset_under_src_fails"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S07-controlled-rendering.md#requirement-coverage",
+   "doc/project-management/evidence/S06-provider-catalogs.md#icon-rights"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "FR-042",
+  "state": "met_with_owner",
+  "summary": "TB/LR layouts, nested groups, readable labels, legends, basic edge styles.",
+  "checks": [
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_the_first_view_draws_in_both_directions"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_every_view_keeps_the_png_at_full_size"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_direction_legend_and_style_stay_bounded_view_choices"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_each_grouping_nests_only_its_own_dimension"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_multiple_subnets_nest_under_their_network_and_are_named"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_relationship_kind_has_one_edge_style"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_thai_and_english_labels_survive_literally"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_wrapping_never_splits_a_mark_from_its_base"
+   },
+   {
+    "lane": "visual-regression",
+    "file": "tests/test_visual_regression.py",
+    "test": "test_the_image_matches_its_baseline"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S07-controlled-rendering.md#requirement-coverage",
+   "doc/project-management/evidence/S08-reference-diagrams.md#requirement-coverage",
+   "doc/project-management/evidence/S08-reference-diagrams.md#owner-inspection"
+  ],
+  "open": "",
+  "owner": "Readable labels have no automated check: the tests find a missing label, not an unreadable one. That part rests on D-023, which accepts the 26 reference views and the Thai sample for M4 only, and the owner's M6 inspection has not happened."
+ },
+ {
+  "id": "FR-043",
+  "state": "met",
+  "summary": "Structured diagnostics, usable artifact references, no success on partial output.",
+  "checks": [
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_console_script_renders_from_stdin_and_reports_artifacts"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_fixture_view_produces_a_complete_bundle"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_console_script_exit_codes"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_output_links_and_missing_files_block_the_bundle"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_engine_with_no_output_is_reported"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_bundle_is_complete_or_absent_when_publication_fails"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_manifest_comes_last_and_only_on_success"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_negative_case_fails_with_its_code"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_core_outcomes_map_onto_stable_statuses"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S07-controlled-rendering.md#requirement-coverage"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "FR-045",
+  "state": "met_with_owner",
+  "summary": "Bounded style values; reject Graphviz attributes, HTML labels, paths, directives.",
+  "checks": [
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_invalid_input_cannot_reach_the_renderer"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_hostile_text_stays_literal_text"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_hostile_text_cannot_add_to_the_dot_source"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_model_cannot_name_an_image_for_the_engine"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_catalog_class_paths_stay_data_a_model_cannot_supply"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_direction_legend_and_style_stay_bounded_view_choices"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_literal_keeps_markup_out_of_dot"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_core_errors_remain_fatal_in_both_modes"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S07-controlled-rendering.md#requirement-coverage",
+   "doc/project-management/evidence/S07-fable-review.md#p-026"
+  ],
+  "open": "",
+  "owner": "The literal 'reject HTML labels' is not met: HTML-like label text validates and is drawn as literal characters. P-026 reads 'reject' as refusing the mechanism, and D-022 lets P-026 stand until the owner changes it. Review finding P3-2, Unicode bidi and format controls passing validation, stays open."
+ },
+ {
+  "id": "FR-046",
+  "state": "met",
+  "summary": "Enforce input and graph limits; oversize gets actionable error or split.",
+  "checks": [
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_view_size_limits_reject_with_a_split_suggestion"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_deep_nesting_is_rejected_before_graphviz"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_an_in_bound_view_over_the_pixel_limit_asks_for_a_split"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_an_oversize_output_blocks_the_bundle"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_malformed_input_never_creates_output"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_console_script_exit_codes"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_bounded_parser"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_long_chain_and_combined_entity_bound"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_oversize_and_unencodable_models_get_a_core_diagnostic"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_view_that_cannot_be_drawn_is_a_validation_failure"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S07-controlled-rendering.md#requirement-coverage",
+   "doc/project-management/evidence/S08-reference-diagrams.md#measurements"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "FR-047",
+  "state": "met",
+  "summary": "Manifest records engine, schema, catalog, asset/font versions, digests, validation mode.",
+  "checks": [
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_manifest_records_what_fr_047_requires"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_fixture_view_produces_a_complete_bundle"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S07-controlled-rendering.md#requirement-coverage"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "FR-048",
+  "state": "met_with_owner",
+  "summary": "Provider-aware visuals near official references; deviations recorded; semantics preserved.",
+  "checks": [
+   {
+    "lane": "visual-regression",
+    "file": "tests/test_visual_regression.py",
+    "test": "test_the_normalized_graph_matches_its_baseline"
+   },
+   {
+    "lane": "visual-regression",
+    "file": "tests/test_visual_regression.py",
+    "test": "test_the_image_matches_its_baseline"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_group_style_is_reached_and_a_neutral_view_uses_none"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_each_record_is_drawn_through_its_representation"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t004_each_required_service_uses_its_approved_huawei_icon"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t002_ownership_stays_apart_from_network_attachment"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t003_ownership_is_not_flattened_into_the_network"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t005_physical_and_logical_nest_differently_for_one_identity"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S08-reference-diagrams.md#provider-references",
+   "doc/project-management/evidence/S08-reference-diagrams.md#deviations",
+   "doc/project-management/evidence/S08-reference-diagrams.md#owner-inspection"
+  ],
+  "open": "",
+  "owner": "Closeness to the official references has no automated check: the comparison is by eye against one page per provider, with approximate colors, and the baselines only detect change. It rests on D-023, which is for M4 only; T-016 repeats in M6 and has not. The references record a URL and the date opened, and no page version beyond Huawei's update date."
+ },
+ {
+  "id": "FR-050",
+  "state": "partly",
+  "summary": "Resolve provider/type/version through catalog to allowed asset or native class.",
+  "checks": [
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_catalog_icon_resolves_to_its_locked_bytes"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_each_record_is_drawn_through_its_representation"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_class_outside_the_lock_is_never_imported"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_blocked_or_unknown_pack_is_refused"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_native_class_outside_the_pinned_package_fails"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_changed_native_icon_digest_fails"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_negative_case_fails_with_its_code"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S06-provider-catalogs.md#catalog-design",
+   "doc/project-management/evidence/S06-provider-catalogs.md#icon-rights"
+  ],
+  "open": "Version is not part of resolution. A model cannot state a type or catalog version, so provider and type resolve against the one bundled catalog, whose version is only reported. The renderer's and the lane's refusals of a diagrams version other than the lock have no test: with each removed in a scratch copy, the lanes still pass. Provider, type and the allowlist are covered.",
+  "owner": ""
+ },
+ {
+  "id": "FR-051",
+  "state": "met_with_owner",
+  "summary": "Package approved Huawei and on-premises assets; no render-time icon downloads.",
+  "checks": [
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_repository_passes_every_catalog_and_license_check"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_required_huawei_items_are_reported_by_name"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_the_only_blocker_is_public_distribution"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_every_bundled_asset_is_used_by_a_catalog_type"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_missing_asset_fails"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t004_each_required_service_uses_its_approved_huawei_icon"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_catalog_icon_resolves_to_its_locked_bytes"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_sandbox_denies_network_while_the_same_command_can_connect"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_real_engine_run_uses_only_the_request_directory"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_svg_embeds_only_verified_icon_bytes"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_build_holds_exactly_the_allowlisted_tree"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_repository_checks.py",
+    "test": "test_wheel_check_compares_contents_not_only_names"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S06-provider-catalogs.md#icon-rights",
+   "doc/project-management/evidence/S06-provider-catalogs.md#huawei-cloud-icons-under-d-018",
+   "doc/project-management/evidence/S06-provider-catalogs.md#on-premises-representations",
+   "doc/project-management/evidence/S07-controlled-rendering.md#task-status"
+  ],
+  "open": "",
+  "owner": "'Approved' for Huawei is the owner's risk acceptance for private personal use under D-018 and D-019, not permission from a rights holder. Rights are not cleared, the pack is private_use_only, and O-002 blocks public distribution."
+ },
+ {
+  "id": "FR-052",
+  "state": "met_with_owner",
+  "summary": "Record provenance, terms, evidence, attribution, version, checksum; preserve dependency notices.",
+  "checks": [
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_repository_passes_every_catalog_and_license_check"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_terms_without_a_source_fail"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_bundled_pack_needs_license_and_pinned_source"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_approving_a_pack_without_evidence_fails"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_private_use_pack_cannot_read_as_cleared"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_tampered_asset_fails_its_hash"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_changed_native_icon_digest_fails"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_missing_notice_fails"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_notice_must_disclose_the_private_limit"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_drawio_symbols_keep_their_attribution"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_huawei_bundle_carries_the_private_use_limit"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_notice_must_state_the_terms_for_dependency_icons"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_the_python_inventory_matches_the_lock"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S06-provider-catalogs.md#icon-rights",
+   "doc/project-management/evidence/S06-provider-catalogs.md#huawei-cloud-icons-under-d-018"
+  ],
+  "open": "",
+  "owner": "D-018: the Huawei pack has no redistribution evidence, which the owner accepts for private personal use only."
+ },
+ {
+  "id": "FR-053",
+  "state": "met",
+  "summary": "Strict rejects unknown types; lenient warns; bad providers and paths fail.",
+  "checks": [
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_strict_mode_rejects_an_unknown_type_and_draws_nothing"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_lenient_mode_draws_a_marked_draft_and_keeps_provider_type_and_label"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_lenient_fallback_never_borrows_a_provider_icon"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_lenient_mode_still_rejects_every_other_error"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_lenient_mode_discloses_unknown_type_without_substitution"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_lenient_mode_cannot_excuse_a_bad_provider_or_a_core_error"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_core_errors_remain_fatal_in_both_modes"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_invalid_input_cannot_reach_the_renderer"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_tampered_asset_path_is_refused"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_parent_traversal_is_rejected_not_resolved"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S07-controlled-rendering.md#task-status",
+   "doc/project-management/evidence/S07-controlled-rendering.md#requirement-coverage"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "FR-055",
+  "state": "met",
+  "summary": "Schema, catalog and capability discovery for host and CLI; bounded search.",
+  "checks": [
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_cli_exit_codes_and_discovery"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_published_schema_matches_discovery"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_catalog_discovery_is_bounded_and_filterable"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_cli_catalog_and_capabilities_report_the_blocker"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_capabilities_describe_the_renderer"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_tools_list_is_the_closed_contract"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_capabilities_state_the_runtime_limits_and_host_modes"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_schema_tool_returns_the_core_schema"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_catalog_search_is_filterable_and_bounded"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage",
+   "doc/project-management/evidence/S09-work-plugin.md#through-the-real-host"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "FR-060",
+  "state": "blocked_on_work",
+  "summary": "Install and invoke the plugin in actual Work; test discovery, delivery.",
+  "checks": [
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_manifest_meets_the_host_format"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_marketplace_entry_has_the_fields_the_host_requires"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_server_config_starts_the_packaged_server_in_isolation"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_tools_list_is_the_closed_contract"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_render_publishes_a_verified_bundle_with_a_preview"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S09-Work-validation.md#result",
+   "doc/project-management/evidence/S09-work-plugin.md#through-the-real-host",
+   "doc/project-management/evidence/S09-work-plugin.md#limits-and-what-this-does-not-establish"
+  ],
+  "open": "Nothing has run in actual Work (D-024), and every row of the S09 Work result table is Pending. Install and selection in Work mode, tool discovery, invocation and output delivery there are unverified. scripts/work_host_check.py passed 35 of 35 in this audit, but it drives the host's engine with no account or model, so it is not a Work session.",
+  "owner": ""
+ },
+ {
+  "id": "FR-061",
+  "state": "partly",
+  "summary": "Skill guides lookup, assumptions, validation, rendering and ID-preserving edits.",
+  "checks": [
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_skill_keeps_the_rules_a_live_session_depends_on"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_skill_names_every_tool_and_no_other"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_skill_explains_every_result_status"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_skill_links_resolve_in_the_package"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_guide_describes_this_host_too"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_skill_guides_each_step_of_the_workflow"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage",
+   "doc/project-management/evidence/S09-work-plugin.md#rehearsal-with-a-live-model",
+   "doc/project-management/evidence/S09-Work-validation.md#result"
+  ],
+  "open": "No real model has used this skill in Work. The one rehearsal ran on Claude Sonnet on another host, and no lane shows a model following the skill. The text of each workflow step is now pinned.",
+  "owner": ""
+ },
+ {
+  "id": "FR-062",
+  "state": "blocked_on_work",
+  "summary": "Preview and retrievable files, verified through actual Work access and export.",
+  "checks": [
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_render_publishes_a_verified_bundle_with_a_preview"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_each_file_reads_back_through_the_tool"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_a_png_too_large_to_preview_stays_a_success_without_an_image"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_a_file_over_the_transport_limit_stays_on_disk_by_path"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S09-Work-validation.md#result",
+   "doc/project-management/evidence/S09-work-plugin.md#exit-criteria",
+   "doc/project-management/evidence/S09-work-plugin.md#through-the-real-host"
+  ],
+  "open": "Nothing verifies actual Work: whether the preview appears, whether the six files open from Work, and attachment or export there are all Pending in the S09 Work result table (D-024). The tool contract, the inline PNG and the read-back of all six files are covered over pipes and, outside any lane, through the host's engine.",
+  "owner": ""
+ },
+ {
+  "id": "FR-063",
+  "state": "met",
+  "summary": "Tool results separate five outcomes, with stable codes and actionable messages.",
+  "checks": [
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_core_outcomes_map_onto_stable_statuses"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_a_call_over_its_time_limit_is_stopped_and_reported"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_valid_model_passes_through_the_core_result"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_invalid_model_is_a_validation_failure_with_its_diagnostics"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_unsafe_output_root_is_a_runtime_failure_and_nothing_publishes"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_artifact_names_outside_the_contract_are_refused"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_a_file_over_the_transport_limit_stays_on_disk_by_path"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_fresh_machine_reports_setup_rather_than_failing"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_bad_arguments_are_refused_before_anything_runs"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_a_second_render_while_one_runs_is_busy"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "FR-064",
+  "state": "blocked_on_work",
+  "summary": "Native runtime setup on each machine, verified permissions and transport, documented.",
+  "checks": [
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_setup_builds_the_locked_runtime_and_leaves_the_plugin_unchanged"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_runtime_script_covers_preflight_and_removal"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_fresh_machine_reports_setup_rather_than_failing"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_missing_tools_are_named_with_their_fix"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_capabilities_state_the_runtime_limits_and_host_modes"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_capabilities_name_an_unusable_output_root"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_readme_states_the_modes_rights_and_the_whole_lifecycle"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage",
+   "doc/project-management/evidence/S09-work-plugin.md#what-the-host-really-does",
+   "doc/project-management/evidence/S09-work-plugin.md#limits-and-what-this-does-not-establish"
+  ],
+  "open": "Local Work transport and the app's approval prompt are unverified without a Work session (D-024). 'Each supported machine' has also run on one Mac only, with Python already present, so a Python download and the system's Documents permission prompt are unseen and need a second machine too. The README states first-install downloads and offline behavior, and this audit read it, but with that line removed in a scratch copy the README test still passes.",
+  "owner": ""
+ },
+ {
+  "id": "FR-065",
+  "state": "partly",
+  "summary": "Core stays free of Work APIs so Claude adapter reuses it.",
+  "checks": [
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_core_stays_free_of_the_host_adapter"
+   },
+   {
+    "lane": "claude-plugin",
+    "file": "tests/test_claude_plugin.py",
+    "test": "test_core_is_linked_not_copied"
+   },
+   {
+    "lane": "claude-plugin",
+    "file": "tests/test_claude_plugin.py",
+    "test": "test_copy_runs_its_own_core"
+   },
+   {
+    "lane": "claude-plugin",
+    "file": "tests/test_claude_plugin.py",
+    "test": "test_copy_renders_a_complete_bundle"
+   },
+   {
+    "lane": "claude-plugin",
+    "file": "tests/test_claude_plugin.py",
+    "test": "test_copy_serves_catalog_data_and_assets_from_its_own_tree"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage",
+   "doc/project-management/evidence/M7-claude-plugin.md#s07-follow-up"
+  ],
+  "open": "The Claude plugin's clean copy reuses the model, catalogs and renderer, and the core imports neither host's APIs nor reads their settings. Reuse of the tests has no check of its own.",
+  "owner": ""
+ },
+ {
+  "id": "FR-066",
+  "state": "blocked_on_second_machine",
+  "summary": "Versioned plugin route; full Work workflow shown on two machines.",
+  "checks": [
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_version_is_strict_semver_stamped_with_the_content"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_changing_any_file_changes_the_version"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_the_same_source_builds_the_same_archive"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_archive_holds_the_marketplace_and_its_checksum_is_recorded"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_manifest_meets_the_host_format"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_marketplace_entry_has_the_fields_the_host_requires"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_readme_states_the_modes_rights_and_the_whole_lifecycle"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage",
+   "doc/project-management/evidence/S09-work-plugin.md#limits-and-what-this-does-not-establish",
+   "doc/project-management/evidence/S09-Work-validation.md#result"
+  ],
+  "open": "The complete Work workflow from two machines with independently installed runtimes has not run: there is one Mac so far, and it also needs a Work session, because D-024 blocks M6-01's two-machine run. The route codex plugin add has run only through the host's engine in a throwaway profile, never in Work. The versioned package, its ZIP and the per-machine setup notes exist.",
+  "owner": ""
+ },
+ {
+  "id": "NFR-001",
+  "state": "blocked_on_second_machine",
+  "summary": "Same input and pinned runtime reproduce materially equivalent output.",
+  "checks": [
+   {
+    "lane": "visual-regression",
+    "file": "tests/test_visual_regression.py",
+    "test": "test_the_normalized_graph_matches_its_baseline"
+   },
+   {
+    "lane": "visual-regression",
+    "file": "tests/test_visual_regression.py",
+    "test": "test_the_image_matches_its_baseline"
+   },
+   {
+    "lane": "visual-regression",
+    "file": "tests/test_visual_regression.py",
+    "test": "test_the_engine_is_the_one_the_baseline_was_accepted_on"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_identical_input_renders_identical_output"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_the_normalized_graph_is_stable_across_runs_and_holds_no_host_path"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S07-controlled-rendering.md#clean-setup",
+   "doc/project-management/evidence/S08-reference-diagrams.md#the-visual-regression-lane",
+   "doc/project-management/evidence/S10-core-reproduction-proof.json"
+  ],
+  "open": "Repeat renders, a clean clone with its own Python and packages, and the lock and wheel routes all match the baselines byte for byte on this Mac. Nothing compares a second machine.",
+  "owner": ""
+ },
+ {
+  "id": "NFR-002",
+  "state": "met",
+  "summary": "No input-driven code, imports, shell, remote assets, Graphviz options; network denied.",
+  "checks": [
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_invalid_input_cannot_reach_the_renderer"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_module_path_as_a_type_is_only_ever_an_unknown_type"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_class_outside_the_lock_is_never_imported"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_catalog_class_paths_stay_data_a_model_cannot_supply"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_hostile_text_stays_literal_text"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_hostile_text_cannot_add_to_the_dot_source"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_model_cannot_name_an_image_for_the_engine"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_tampered_asset_path_is_refused"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_svg_embeds_only_verified_icon_bytes"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_sandbox_denies_network_while_the_same_command_can_connect"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_real_engine_run_uses_only_the_request_directory"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_host_without_the_sandbox_fails_closed"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S07-controlled-rendering.md#requirement-coverage",
+   "doc/project-management/evidence/S07-controlled-rendering.md#sabotage-checks"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "NFR-003",
+  "state": "met",
+  "summary": "Confine paths to controlled roots, reject escapes and collisions, validate SVG.",
+  "checks": [
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_symlinked_output_root_is_rejected"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_symlinked_ancestor_is_rejected"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_dangling_symlink_cannot_be_created_through"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_parent_traversal_is_rejected_not_resolved"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_root_replaced_during_rendering_gets_no_bundle"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_bundle_collision_fails_and_keeps_the_first"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_invalid_input_cannot_reach_the_renderer"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_an_undeclared_view_cannot_become_a_path"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_tampered_asset_path_is_refused"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_an_asset_replaced_by_a_link_or_changed_on_disk_is_refused"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_an_unsafe_svg_blocks_the_bundle"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_artifact_names_outside_the_contract_are_refused"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_symbolic_links_in_a_bundle_are_not_followed"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_a_linked_bundle_and_a_linked_root_are_not_followed"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_unsafe_output_root_is_a_runtime_failure_and_nothing_publishes"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S07-controlled-rendering.md#requirement-coverage",
+   "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "NFR-004",
+  "state": "met_with_owner",
+  "summary": "Ship dependency and asset license inventory; unknown rights block packaging.",
+  "checks": [
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_repository_passes_every_catalog_and_license_check"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_missing_notice_fails"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_unlisted_asset_under_src_fails"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_font_without_its_license_notice_fails"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_blocked_pack_cannot_be_distributed_or_lose_its_decision"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_approving_a_pack_without_evidence_fails"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_private_use_requires_the_upload_block"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_font_license_notices_ship_with_the_fonts"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_drawio_symbols_keep_their_attribution"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_the_python_inventory_matches_the_lock"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_the_python_inventory_states_what_each_package_declares"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_a_stale_version_in_the_inventory_fails"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S06-provider-catalogs.md#icon-rights",
+   "doc/project-management/evidence/S06-provider-catalogs.md#huawei-cloud-icons-under-d-018"
+  ],
+  "open": "",
+  "owner": "D-018: the Huawei pack's rights are not cleared, which is the scoped exception this requirement names. Public distribution stays blocked under O-002."
+ },
+ {
+  "id": "NFR-005",
+  "state": "met",
+  "summary": "Diagnostics carry severity, stable code, entity or field, message, remedy.",
+  "checks": [
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_core_errors_remain_fatal_in_both_modes"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_kubernetes_scope_and_typed_references"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_results_are_utf8_whatever_the_output_encoding"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_negative_case_fails_with_its_code"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_every_rule_has_a_negative_case_and_every_emitted_code_is_declared"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_missing_graphviz_fails_closed_with_a_remedy"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_no_label_or_host_path_appears_in_a_failure_report"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_invalid_model_is_a_validation_failure_with_its_diagnostics"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S05-core-and-ci.md#delivered-and-verified",
+   "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "NFR-006",
+  "state": "met",
+  "summary": "Never silently omit security components or hide invalid semantics.",
+  "checks": [
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_every_view_draws_exactly_what_it_selects"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_a_left_out_id_is_disclosed_for_every_view"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t001_requested_services_and_security_groups_stay_visible"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t002_nic_and_security_are_explicit"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_selected_entity_and_relationship_is_in_the_image"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_a_membership_that_nesting_cannot_show_stays_a_note"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_a_declared_subnet_and_zone_stay_noted_when_their_boxes_are_left_out"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_lenient_mode_still_rejects_every_other_error"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_a_blocked_type_takes_no_substitute_in_either_mode"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_an_unknown_cluster_type_draws_as_a_node_and_cannot_lose_its_members"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_lost_or_distorted_element_blocks_the_bundle"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_lost_icon_blocks_the_bundle"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S08-reference-diagrams.md#requirement-coverage",
+   "doc/project-management/evidence/S07-controlled-rendering.md#requirement-coverage"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "NFR-009",
+  "state": "partly",
+  "summary": "Bound parsing, time, memory, storage, sizes; kill children; freeze measured limits.",
+  "checks": [
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_bounded_parser"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_long_chain_and_combined_entity_bound"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_invalid_input_cannot_reach_the_renderer"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_malformed_input_never_creates_output"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_real_engine_timeout_cleans_up_and_publishes_nothing"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_timeout_kills_the_whole_process_group"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_child_left_behind_by_a_finished_leader_is_killed"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_memory_limit_stops_the_engine"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_temporary_storage_limit_stops_the_engine"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_cpu_limit_stops_a_busy_engine"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_file_size_limit_stops_a_runaway_write"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_an_oversize_output_blocks_the_bundle"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_label_amplification_stays_bounded"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_sigterm_stops_graphviz_and_removes_every_temporary_file"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_engine_failure_is_reported_and_cleaned_up"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_a_call_over_its_time_limit_is_stopped_and_reported"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S07-controlled-rendering.md#limits-and-what-this-does-not-establish",
+   "doc/project-management/evidence/S08-reference-diagrams.md#measurements",
+   "doc/project-management/evidence/S05-core-and-ci.md#gate-scope-and-constraints",
+   "doc/project-management/evidence/S04-closeout.md#selected-prototype-bounds"
+  ],
+  "open": "Runtime bounds, kills and cleanup pass. The clause 'Freeze numeric limits in M0/M1 using measurements' is not met as written: S04 and S05 record their M0 and M1 bounds as not final, S04 carries the final NFR-009 bounds to M3, and S07 leaves the numbers to M4 (P-031). 200/300 is an upper bound that labeled icon views do not reach. No test pins the render numbers except view_entities and minimum_png_scale, so a changed limit still passes. Memory and temporary limits are sampled and can overshoot, and they apply to the engine, not to the core's Python process.",
+  "owner": ""
+ },
+ {
+  "id": "NFR-010",
+  "state": "met",
+  "summary": "Collision-safe checksummed bundles; success manifest only after outputs validate.",
+  "checks": [
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_bundle_collision_fails_and_keeps_the_first"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_an_unsafe_svg_blocks_the_bundle"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_an_invalid_png_blocks_the_bundle"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_lost_or_distorted_element_blocks_the_bundle"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_output_links_and_missing_files_block_the_bundle"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_an_oversize_output_blocks_the_bundle"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_failure_after_writing_leaves_no_stage_behind"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_bundle_is_complete_or_absent_when_publication_fails"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_manifest_comes_last_and_only_on_success"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_fixture_view_produces_a_complete_bundle"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S07-controlled-rendering.md#requirement-coverage"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "NFR-011",
+  "state": "met",
+  "summary": "Automate schema, semantic, catalog, security, rendering and package checks in CI.",
+  "checks": [
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_core_errors_remain_fatal_in_both_modes"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_negative_case_fails_with_its_code"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_repository_passes_every_catalog_and_license_check"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_invalid_input_cannot_reach_the_renderer"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_fixture_view_produces_a_complete_bundle"
+   },
+   {
+    "lane": "visual-regression",
+    "file": "tests/test_visual_regression.py",
+    "test": "test_the_normalized_graph_matches_its_baseline"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_build_holds_exactly_the_allowlisted_tree"
+   },
+   {
+    "lane": "claude-plugin",
+    "file": "tests/test_claude_plugin.py",
+    "test": "test_package_contains_only_the_allowlisted_tree"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_repository_checks.py",
+    "test": "test_wheel_check_compares_contents_not_only_names"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S09-work-plugin.md#validation",
+   "doc/project-management/evidence/S05-core-and-ci.md#evidence",
+   "doc/project-management/evidence/S07-controlled-rendering.md#actual-ci"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "NFR-013",
+  "state": "met",
+  "summary": "Remote execution controls; local mode uses per-request controlled directories.",
+  "checks": [
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_real_engine_run_uses_only_the_request_directory"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_failure_after_writing_leaves_no_stage_behind"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_sigterm_stops_graphviz_and_removes_every_temporary_file"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_missing_output_root_is_created_private"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_bundle_files_are_private_to_the_owner"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_server_config_starts_the_packaged_server_in_isolation"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_the_adapter_opens_no_network_connection"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_render_publishes_a_verified_bundle_with_a_preview"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_model_content_reaches_no_log_and_no_runtime_file"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "NFR-014",
+  "state": "met_with_owner",
+  "summary": "English and Thai labels with licensed fonts; Thai visually verified.",
+  "checks": [
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_thai_labels_render_strictly_with_the_same_ids"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_thai_and_english_labels_survive_literally"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_wrapping_never_splits_a_mark_from_its_base"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_labels_are_literal_utf8_and_json_depth_ignores_braces_in_strings"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_the_engine_really_uses_the_bundled_fonts"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_render_that_skipped_the_bundled_fonts_is_refused"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_changed_font_is_refused"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_font_without_its_license_notice_fails"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_thai_labels_survive_from_call_to_source"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S08-reference-diagrams.md#owner-inspection",
+   "doc/project-management/evidence/S07-controlled-rendering.md#inspection"
+  ],
+  "open": "",
+  "owner": "D-023 (the Thai sample; D-022 accepted an earlier one)"
+ },
+ {
+  "id": "NFR-015",
+  "state": "met",
+  "summary": "Rendering needs no second LLM call or paid key; deterministic.",
+  "checks": [
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_every_reference_family_renders_through_the_tool"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_the_adapter_opens_no_network_connection"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_adapter_uses_only_the_standard_library"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_sandbox_denies_network_while_the_same_command_can_connect"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_real_engine_run_uses_only_the_request_directory"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_identical_input_renders_identical_output"
+   },
+   {
+    "lane": "visual-regression",
+    "file": "tests/test_visual_regression.py",
+    "test": "test_the_image_matches_its_baseline"
+   },
+   {
+    "lane": "claude-plugin",
+    "file": "tests/test_claude_plugin.py",
+    "test": "test_environment_holds_exactly_the_locked_runtime_packages"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_the_core_imports_no_network_or_model_client"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_render_opens_no_network_connection"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S05-core-and-ci.md#evidence",
+   "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "T-001",
+  "state": "met_with_owner",
+  "summary": "M4: AWS subnet/AZ mapping, multi-subnet ALB rules, security and monitoring retained.",
+  "checks": [
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t001_one_logical_alb_keeps_both_subnets"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t001_requested_services_and_security_groups_stay_visible"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t001_edges_keep_direction_and_the_named_labels"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t001_rejects_an_instance_whose_subnet_is_in_another_zone"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_a_reference_validates_strictly_and_warns_only_about_what_it_must"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_negative_case_fails_with_its_code"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_fixture_view_produces_a_complete_bundle"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S08-reference-diagrams.md#scenario-checks",
+   "doc/project-management/evidence/S08-reference-diagrams.md#owner-inspection",
+   "doc/project-management/evidence/S06-provider-catalogs.md#validation",
+   "doc/project-management/evidence/S01-release-scope.md#t-001--aws-three-tier-web-application"
+  ],
+  "open": "",
+  "owner": "D-023 (M4 images only; acceptance in actual Work stays with M5 and M6)"
+ },
+ {
+  "id": "T-002",
+  "state": "met_with_owner",
+  "summary": "M4: Azure ownership versus attachment, explicit peering/VPN, firewall and NSG shown.",
+  "checks": [
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t002_ownership_stays_apart_from_network_attachment"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t002_only_the_stated_links_join_hub_and_spoke"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t002_nic_and_security_are_explicit"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t002_rejects_an_attachment_to_a_subnet_of_another_vnet"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_every_view_draws_exactly_what_it_selects"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S08-reference-diagrams.md#scenario-checks",
+   "doc/project-management/evidence/S08-reference-diagrams.md#owner-inspection",
+   "doc/project-management/evidence/S01-release-scope.md#t-002--azure-hub-and-spoke"
+  ],
+  "open": "",
+  "owner": "D-023: the owner passed these views. The VPN Gateway is drawn and no tunnel is modeled, because the brief names no far end, and that reading of 'explicit peering/VPN' is theirs to change."
+ },
+ {
+  "id": "T-003",
+  "state": "met_with_owner",
+  "summary": "M4: GCP global network, regional subnets, host/service projects, workload placement.",
+  "checks": [
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t003_the_vpc_is_global_and_its_subnets_regional"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t003_ownership_is_not_flattened_into_the_network"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t003_rejects_a_workload_zone_outside_its_subnet_region"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_a_reference_validates_strictly_and_warns_only_about_what_it_must"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_negative_case_fails_with_its_code"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_scope_and_network_dimensions_stay_independent"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S08-reference-diagrams.md#scenario-checks",
+   "doc/project-management/evidence/S08-reference-diagrams.md#owner-inspection",
+   "doc/project-management/evidence/S01-release-scope.md#t-003--gcp-shared-vpc"
+  ],
+  "open": "",
+  "owner": "D-023 (M4 images only; acceptance in actual Work stays with M5 and M6)"
+ },
+ {
+  "id": "T-004",
+  "state": "met_with_owner",
+  "summary": "M4: Huawei web diagram; required items resolve with approved icon evidence.",
+  "checks": [
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t004_each_required_service_uses_its_approved_huawei_icon"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t004_a_bundle_carries_the_private_use_limit"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t004_a_box_does_not_imply_a_scope_the_service_lacks"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t004_the_egress_path_is_only_what_the_model_states"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_required_huawei_items_are_reported_by_name"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_huawei_icons_map_only_exact_titles"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_huawei_generic_substitution_fails"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_the_only_blocker_is_public_distribution"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_huawei_bundle_carries_the_private_use_limit"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_each_record_is_drawn_through_its_representation"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S08-reference-diagrams.md#scenario-checks",
+   "doc/project-management/evidence/S08-reference-diagrams.md#owner-inspection",
+   "doc/project-management/evidence/S06-provider-catalogs.md#huawei-cloud-icons-under-d-018",
+   "doc/project-management/evidence/S01-release-scope.md#t-004--huawei-web-application"
+  ],
+  "open": "",
+  "owner": "D-023 (M4 images only), with D-018 and D-019 limiting Huawei icons to private personal use; acceptance in actual Work stays with M5 and M6"
+ },
+ {
+  "id": "T-005",
+  "state": "met_with_owner",
+  "summary": "M4: physical and logical views keep rack, VLAN/VRF, zone, compute memberships.",
+  "checks": [
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t005_physical_and_logical_nest_differently_for_one_identity"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t005_memberships_that_overlap_all_stay_on_the_node"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t005_rejects_a_subnet_paired_with_a_network_it_reaches_only_elsewhere"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_every_view_draws_exactly_what_it_selects"
+   },
+   {
+    "lane": "visual-regression",
+    "file": "tests/test_visual_regression.py",
+    "test": "test_the_normalized_graph_matches_its_baseline"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_onprem_overlapping_logical_memberships_remain_valid"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S08-reference-diagrams.md#scenario-checks",
+   "doc/project-management/evidence/S08-reference-diagrams.md#owner-inspection",
+   "doc/project-management/evidence/S01-release-scope.md#t-005--on-premises-physical-and-logical-views"
+  ],
+  "open": "",
+  "owner": "D-023 (M4 images only; acceptance in actual Work stays with M5 and M6)"
+ },
+ {
+  "id": "T-006",
+  "state": "met_with_owner",
+  "summary": "M4: five environments, only modeled connectivity, visible trust and link labels.",
+  "checks": [
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t006_the_overview_shows_all_five_environments"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t006_links_are_the_stated_ones_and_never_a_mesh"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t006_the_legend_tells_connectivity_from_data_flow"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t006_each_trust_boundary_is_labeled_and_holds_its_workloads"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t006_the_cluster_stays_compact_in_the_overview"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_every_view_draws_exactly_what_it_selects"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S08-reference-diagrams.md#scenario-checks",
+   "doc/project-management/evidence/S08-reference-diagrams.md#owner-inspection",
+   "doc/project-management/evidence/S01-release-scope.md#t-006--five-environment-hybrid-overview"
+  ],
+  "open": "",
+  "owner": "D-023 (M4 images only; acceptance in actual Work stays with M5 and M6)"
+ },
+ {
+  "id": "T-007",
+  "state": "met",
+  "summary": "M3: unknown type fails strict; lenient marks draft; no provider substitution.",
+  "checks": [
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_strict_mode_rejects_an_unknown_type_and_draws_nothing"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_lenient_mode_draws_a_marked_draft_and_keeps_provider_type_and_label"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_lenient_fallback_never_borrows_a_provider_icon"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_lenient_rendering_of_a_clean_model_is_still_marked_draft"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_lenient_mode_still_rejects_every_other_error"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_lenient_mode_discloses_unknown_type_without_substitution"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_lenient_turns_only_an_unknown_type_into_a_draft"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S07-controlled-rendering.md#requirement-coverage"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "T-008",
+  "state": "met",
+  "summary": "M1/M2: bad IDs, cycles, scope, attachment fail actionably in both modes.",
+  "checks": [
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_core_errors_remain_fatal_in_both_modes"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_kubernetes_scope_and_typed_references"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_mixed_controller_ownership_cycle_is_fatal"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_ownership_cycles_fail_but_traffic_cycles_are_valid"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_ownership_edges_use_the_same_context_rules_as_owner_ref"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_negative_case_fails_with_its_code"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_subnet_membership_encodings"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S05-core-and-ci.md#delivered-and-verified",
+   "doc/project-management/evidence/S06-provider-catalogs.md#validation"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "T-009",
+  "state": "met",
+  "summary": "M3/M5: code, path, remote icon, injection, oversize, timeout fixtures fail safely.",
+  "checks": [
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_invalid_input_cannot_reach_the_renderer"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_malformed_input_never_creates_output"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_module_path_as_a_type_is_only_ever_an_unknown_type"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_symlinked_output_root_is_rejected"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_parent_traversal_is_rejected_not_resolved"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_tampered_asset_path_is_refused"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_hostile_text_stays_literal_text"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_hostile_text_cannot_add_to_the_dot_source"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_an_unsafe_svg_blocks_the_bundle"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_real_engine_timeout_cleans_up_and_publishes_nothing"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_bad_arguments_are_refused_before_anything_runs"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_artifact_names_outside_the_contract_are_refused"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_symbolic_links_in_a_bundle_are_not_followed"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_a_special_file_in_a_bundle_cannot_hang_a_read"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_oversize_frame_is_refused_by_id_and_the_server_goes_on"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_repeated_key_is_refused_rather_than_silently_lost"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_oversize_and_unencodable_models_get_a_core_diagnostic"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_too_deep_model_is_refused_without_crashing"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_hostile_environment_and_working_directory_change_nothing"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_a_call_over_its_time_limit_is_stopped_and_reported"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S07-controlled-rendering.md#requirement-coverage",
+   "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage"
+  ],
+  "open": "",
+  "owner": ""
+ },
+ {
+  "id": "T-010",
+  "state": "blocked_on_second_machine",
+  "summary": "M6: same plugin on two machines; clean-runtime core reproduction.",
+  "checks": [
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_setup_builds_the_locked_runtime_and_leaves_the_plugin_unchanged"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_the_same_source_builds_the_same_archive"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_fresh_machine_reports_setup_rather_than_failing"
+   },
+   {
+    "lane": "visual-regression",
+    "file": "tests/test_visual_regression.py",
+    "test": "test_the_normalized_graph_matches_its_baseline"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S09-Work-validation.md#result",
+   "doc/project-management/evidence/S09-work-plugin.md#limits-and-what-this-does-not-establish",
+   "doc/project-management/evidence/S07-controlled-rendering.md#clean-setup",
+   "doc/project-management/evidence/S10-core-reproduction-proof.json"
+  ],
+  "open": "Needs a second supported machine and actual Work, and D-024 parks Work. No install, workflow or artifact record exists for either machine. The separate clean-runtime core reproduction is done on this Mac.",
+  "owner": ""
+ },
+ {
+  "id": "T-011",
+  "state": "blocked_on_work",
+  "summary": "M5/M6: install, discovery, tool calls, preview, bundle retrieval in actual Work.",
+  "checks": [
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_build_holds_exactly_the_allowlisted_tree"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_manifest_meets_the_host_format"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_tools_list_is_the_closed_contract"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_capabilities_state_the_runtime_limits_and_host_modes"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_valid_model_passes_through_the_core_result"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_invalid_model_is_a_validation_failure_with_its_diagnostics"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_render_publishes_a_verified_bundle_with_a_preview"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_each_file_reads_back_through_the_tool"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S09-Work-validation.md#result",
+   "doc/project-management/evidence/S09-work-plugin.md#through-the-real-host",
+   "doc/project-management/evidence/S09-work-plugin.md#limits-and-what-this-does-not-establish"
+  ],
+  "open": "Nothing has run in actual Work (D-024): every result row in S09-Work-validation is Pending, including discovery, the approval prompt, the preview and opening all six files. The listed tests run the built package over real pipes, not in Work, and scripts/work_host_check.py drives the host's engine with a scripted stand-in, which is not a Work session. Local mode needs no authentication (P-034), so that clause does not apply.",
+  "owner": ""
+ },
+ {
+  "id": "T-012",
+  "state": "partly",
+  "summary": "M4: P0 bounded rejection; P1 200/300 stability and readability evaluation.",
+  "checks": [
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_view_size_limits_reject_with_a_split_suggestion"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_deep_nesting_is_rejected_before_graphviz"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_an_in_bound_view_over_the_pixel_limit_asks_for_a_split"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_png_below_half_size_is_refused"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_long_chain_and_combined_entity_bound"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_view_that_cannot_be_drawn_is_a_validation_failure"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_a_large_icon_view_inside_the_limits_renders_at_full_size"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S08-reference-diagrams.md#measurements",
+   "doc/project-management/evidence/S08-reference-diagrams.md#requirement-coverage",
+   "doc/project-management/evidence/S07-controlled-rendering.md#measured-render-time"
+  ],
+  "open": "The P0 rejection is covered. The P1 clause is not: 200/300 stability and the split-view and readability evaluation are deferred (S08, P-031). No test renders 200/300 with icons, the measurements refuse 197/300 on the pixel limit, and automatic splitting is not implemented. M4's exit allows this deferral, so it does not block a P0 release.",
+  "owner": ""
+ },
+ {
+  "id": "T-013",
+  "state": "blocked_on_work",
+  "summary": "M5: edits keep IDs and unrelated links, return updated source.",
+  "checks": [
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_edit_keeps_ids_and_the_earlier_bundle"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_another_view_renders_from_the_bundle_and_ids_stay_stable"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t001_edit_renames_a_tier_and_adds_an_instance_keeping_ids"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t002_edit_adds_a_second_spoke_with_only_its_own_connections"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t004_edit_adds_cce_with_its_detail_view_keeping_the_web_ids"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t006_edit_adds_a_stated_link_without_changing_the_others"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S09-Work-validation.md#result",
+   "doc/project-management/evidence/S09-work-plugin.md#rehearsal-with-a-live-model",
+   "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage",
+   "doc/project-management/evidence/S08-reference-diagrams.md#scenario-checks"
+  ],
+  "open": "M5-04's edit flow has not run in actual Work (D-024). The tests make each edit themselves and then check that the tools keep what they were given, so they cannot show that a session's model keeps IDs or unrelated relationships. Through the tool surface, test_edit_keeps_ids_and_the_earlier_bundle renames one resource and asserts nothing about relationships; that clause is asserted only in core-level reference tests. One rehearsal on Claude kept them, and that is not Work.",
+  "owner": ""
+ },
+ {
+  "id": "T-014",
+  "state": "blocked_on_work",
+  "summary": "M4/M5: English/Thai label inspection; remote isolation and payload-log checks where applicable.",
+  "checks": [
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_thai_labels_render_strictly_with_the_same_ids"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_model_content_reaches_no_log_and_no_runtime_file"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_thai_labels_survive_from_call_to_source"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_the_adapter_opens_no_network_connection"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S08-reference-diagrams.md#owner-inspection",
+   "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage",
+   "doc/project-management/evidence/S09-Work-validation.md#result"
+  ],
+  "open": "The M4 label inspection is accepted under D-023, and remote isolation and expiry do not apply to local mode (D-013). For M5, test_model_content_reaches_no_log_and_no_runtime_file covers the adapter's log and runtime files only. M5-04 lists T-014 for an actual Work run, including Thai labels, and that run is parked under D-024. What the Work host itself logs is unchecked, and S09 says its session record holds the model.",
+  "owner": ""
+ },
+ {
+  "id": "T-015",
+  "state": "partly",
+  "summary": "M6: clean install, notices and assets, checks at release SHA, review.",
+  "checks": [
+   {
+    "lane": "schema-core",
+    "file": "tests/test_repository_checks.py",
+    "test": "test_wheel_check_compares_contents_not_only_names"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_repository_checks.py",
+    "test": "test_wheel_check_rejects_a_wheel_without_code"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_repository_checks.py",
+    "test": "test_private_use_assets_need_the_upload_block"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_missing_notice_fails"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_every_bundled_asset_is_used_by_a_catalog_type"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_build_holds_exactly_the_allowlisted_tree"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_core_in_the_package_is_the_repository_copy"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_setup_builds_the_locked_runtime_and_leaves_the_plugin_unchanged"
+   },
+   {
+    "lane": "claude-plugin",
+    "file": "tests/test_claude_plugin.py",
+    "test": "test_package_contains_only_the_allowlisted_tree"
+   },
+   {
+    "lane": "claude-plugin",
+    "file": "tests/test_claude_plugin.py",
+    "test": "test_copy_serves_fonts_and_private_use_terms_from_its_own_tree"
+   },
+   {
+    "lane": "release-audit",
+    "file": "tests/test_release_audit.py",
+    "test": "test_the_wheel_installs_alone_and_renders_from_outside_the_repository"
+   },
+   {
+    "lane": "release-audit",
+    "file": "tests/test_release_audit.py",
+    "test": "test_the_built_packages_hold_only_what_they_should"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S07-controlled-rendering.md#clean-setup",
+   "doc/project-management/evidence/S09-work-plugin.md#validation",
+   "doc/project-management/evidence/S09-Work-validation.md#result",
+   "doc/project-management/evidence/S10-core-reproduction-proof.json"
+  ],
+  "open": "No release SHA exists, because M6-04 is blocked under D-024, and the final M6-03 review has not run. Clean install, notices, assets and every lane pass at the current head.",
+  "owner": ""
+ },
+ {
+  "id": "T-016",
+  "state": "partly",
+  "summary": "M4/M6: compare samples with official examples; record deviations; visual acceptance.",
+  "checks": [
+   {
+    "lane": "visual-regression",
+    "file": "tests/test_visual_regression.py",
+    "test": "test_the_image_matches_its_baseline"
+   },
+   {
+    "lane": "visual-regression",
+    "file": "tests/test_visual_regression.py",
+    "test": "test_every_view_has_a_baseline_and_no_baseline_is_left_over"
+   },
+   {
+    "lane": "visual-regression",
+    "file": "tests/test_visual_regression.py",
+    "test": "test_a_baseline_says_why_it_was_accepted"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_every_group_style_is_reached_and_a_neutral_view_uses_none"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_a_tint_separates_providers_only_when_a_view_has_several"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S08-reference-diagrams.md#provider-references",
+   "doc/project-management/evidence/S08-reference-diagrams.md#deviations",
+   "doc/project-management/evidence/S08-reference-diagrams.md#owner-inspection"
+  ],
+  "open": "The M4 comparison, deviations and acceptance stand under D-023. D-023 says T-016 repeats in M6, and M6-03 is blocked under D-024, so the M6 inspection has not happened. The comparison is by eye against one page per provider, and the lane only detects change from the accepted baselines, not fidelity. S08's provider-references section and P-029 still say the owner has not accepted, which D-023 superseded.",
+  "owner": ""
+ },
+ {
+  "id": "T-017",
+  "state": "partly",
+  "summary": "M1/M2/M4/M5: Kubernetes catalog, views, rejections, stable IDs, no secret payloads.",
+  "checks": [
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_kubernetes_catalog_covers_every_kind_with_its_namespace_scope"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_every_catalog_type_appears_in_a_passing_fixture"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_positive_fixture_is_fully_valid"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_negative_case_fails_with_its_code"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_concrete_pod_assignments_and_broader_scheduling"
+   },
+   {
+    "lane": "schema-core",
+    "file": "tests/test_contract.py",
+    "test": "test_kubernetes_scope_and_typed_references"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t017_namespace_view_draws_the_service_and_storage_paths"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t017_namespace_and_placement_stay_separate_for_one_pod"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t017_a_view_invents_no_placement"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t017_rejects_a_namespace_from_another_cluster"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t017_a_secret_cannot_carry_a_value"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t017_the_cluster_keeps_its_id_and_provider_across_views"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_all_fixture_views_draw_every_catalog_type"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_render_smoke.py",
+    "test": "test_kubernetes_overview_and_details_select_separately_with_stable_ids"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_secret_markers_show_no_payload"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_another_view_renders_from_the_bundle_and_ids_stay_stable"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_t017_an_edit_keeps_every_id_and_link_it_does_not_touch"
+   }
+  ],
+  "evidence": [
+   "doc/project-management/evidence/S08-reference-diagrams.md#scenario-checks",
+   "doc/project-management/evidence/S08-reference-diagrams.md#owner-inspection",
+   "doc/project-management/evidence/S06-provider-catalogs.md#validation",
+   "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage",
+   "doc/project-management/evidence/S09-Work-validation.md#what-the-owner-runs"
+  ],
+  "open": "M5's part, a Kubernetes overview and detail in actual Work, is parked under D-024. M1, M2 and M4's parts pass, including an edit that keeps every other ID and link.",
+  "owner": ""
+ }
+]

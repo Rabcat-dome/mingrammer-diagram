@@ -15,6 +15,7 @@ from typing import get_args
 
 from build_native_icon_lock import locate
 from build_onprem_assets import CONCEPTS, SHAPES, compose, load_shapes, shape_digest
+from build_third_party import runtime_packages
 from repository_checks import anchors
 
 from cloud_architecture_diagrams.catalog import (
@@ -420,6 +421,10 @@ def check_assets(
             errors.append("assets: NOTICE.md must say the D-018 rights are not cleared")
         if manifest.fonts and "SIL Open Font License" not in text:
             errors.append("assets: NOTICE.md must name the license of the bundled fonts")
+        # FR-052: icons delivered by `diagrams` are not bundled, so their terms live only here.
+        for source in ("AWS", "Azure", "Google Cloud", "Kubernetes", "mingrammer/diagrams"):
+            if not re.search(rf"^\|.*{re.escape(source)}", text, re.M):
+                errors.append(f"assets: NOTICE.md must state the terms for {source} icons")
     return listed
 
 
@@ -502,6 +507,38 @@ def check_source_evidence(data: Catalog, errors: list[str], root: Path = ROOT) -
     return len(urls)
 
 
+def third_party_errors(package: Path, root: Path = ROOT) -> list[str]:
+    """NFR-004: the Python packages the core installs must match the shipped inventory."""
+    inventory = package / "assets/THIRD-PARTY-PYTHON.md"
+    if not inventory.is_file():
+        return ["assets: THIRD-PARTY-PYTHON.md is missing from the package"]
+    lock = tomllib.loads((root / "uv.lock").read_text())
+    listed = {
+        match[0]: (match[1], match[2].strip())
+        for match in re.findall(
+            r"^\| ([a-z0-9._-]+) \| ([^ |]+) \| ([^|]+) \|$", inventory.read_text(), re.M
+        )
+    }
+    locked = runtime_packages(lock)
+    errors = [
+        f"{name}: installed at runtime but not in the inventory"
+        for name in locked.keys() - listed.keys()
+    ]
+    errors += [
+        f"{name}: in the inventory but not installed at runtime"
+        for name in listed.keys() - locked.keys()
+    ]
+    errors += [
+        f"{name}: inventory says {listed[name][0]}, lock says {locked[name]}"
+        for name in locked.keys() & listed.keys()
+        if listed[name][0] != locked[name]
+    ]
+    errors += [
+        f"{name}: the inventory states no license" for name, row in listed.items() if not row[1]
+    ]
+    return sorted(errors)
+
+
 def run(root: Path = ROOT) -> tuple[list[str], dict[str, object]]:
     errors: list[str] = []
     data = catalog()
@@ -513,6 +550,7 @@ def run(root: Path = ROOT) -> tuple[list[str], dict[str, object]]:
     native = check_native_icons(data, errors)
     check_packs(data, errors, root)
     listed = check_assets(data.manifest, errors, root / "src/cloud_architecture_diagrams", root)
+    errors += third_party_errors(root / "src/cloud_architecture_diagrams", root)
     visibility = check_private_use(data.manifest, errors, root)
     pack_entries = check_pack_inventory(data.manifest, errors, root)
     check_plugin(errors, root)
