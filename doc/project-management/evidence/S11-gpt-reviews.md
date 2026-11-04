@@ -73,6 +73,10 @@ Undoing or weakening a fix, one change at a time, gave 47 changes, and each now 
 
 No deterministic test covers a cancel's check and set being under one lock, because that needs two threads at one instruction.
 
+### Validation
+
+Actual CI [run 41856283191](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41856283191) passed 17 lanes and 1,527 tests with 0 skipped at `b862506`, on the runner, which is this same Mac. Its wheel has the digest the reproduction proof records. Its artifact is 42 KB, where earlier runs' were about 21 MiB, so G1's fix took effect from the first push of this branch. [Run 41855686612](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41855686612) at `9fb199d` failed as expected, on the proof test alone, because the proof binds to the source and came in the next commit.
+
 ## Report states these affect
 
 The reviewers named these at `aefcdbc`. Their states in the [P0 report](S10-p0-traceability.md) stay as they were, because the fixes close what was named, and each record now names its new tests.
