@@ -2,7 +2,7 @@
 
 Date: 2026-11-04 (Asia/Bangkok) | Base `5569459` | Head `aefcdbc` | Decision: D-025
 
-**Result: both reviewers requested changes. The Claude session reproduced or confirmed all 15 findings, and fixed them at `9fb199d`. [Fable requested changes](S11-fable-review.md) on those fixes at `3aa566d`, and those are fixed at `f62394a`. An Astra recheck comes next, so nothing is merged.** Neither reviewer found a way for a hostile model alone to write outside the output root, follow a symbolic link or put active content in the SVG. That is what they looked for and did not find, and it is not a proof.
+**Result: both reviewers requested changes. The Claude session reproduced or confirmed all 15 findings, and fixed them at `9fb199d`. [Fable requested changes](S11-fable-review.md) on those fixes at `3aa566d`, and those are fixed at `f62394a`. [Astra requested changes](S11-astra-recheck.md) at `b3485c3`, on three P3 findings. Those are fixed in the commit after it and wait for a short recheck, so nothing is merged.** Neither reviewer found a way for a hostile model alone to write outside the output root, follow a symbolic link or put active content in the SVG. That is what they looked for and did not find, and it is not a proof.
 
 ## Why this ran
 
@@ -75,6 +75,8 @@ No deterministic test covers a cancel's check and set being under one lock, beca
 
 ### Validation
 
+At `b3485c3`, actual CI [run 41866479873](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41866479873) passed 17 lanes and 1,550 tests with 0 skipped, and its wheel has the digest the proof records. [Run 41865960782](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41865960782) at `f62394a` failed in the `release-audit` lane, because the proof came in the next commit.
+
 At the first set of fixes, actual CI [run 41856283191](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41856283191) passed 17 lanes and 1,527 tests with 0 skipped at `b862506`, on the runner, which is this same Mac. Its wheel has the digest the reproduction proof records. Its artifact is 42 KB, where earlier runs' were about 21 MiB, so G1's fix took effect from the first push of this branch. The artifact from that first push holds 29 text files, with no PNG data or `<svg` in any of them. [Run 41855686612](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41855686612) at `9fb199d` failed as expected, on the proof test alone, because the proof binds to the source and came in the next commit.
 
 ## Fable recheck
@@ -89,6 +91,30 @@ On the owner's word, Claude Fable 5.1 rechecked `aefcdbc..3aa566d` in a fresh ag
 | P3 | The contract's limits row does not say that the provider box counts | Read |
 
 All four are fixed at `f62394a`. The P2 came from this session's fix for G5, which applied the rule to every kind and said every kind depended on order. The rule now binds only the kinds whose region other rules read.
+
+## Astra recheck
+
+On the owner's word, GPT-6 Astra / High rechecked `aefcdbc..b3485c3` through Codex CLI, and [requested changes](S11-astra-recheck.md). The host's session record shows `gpt-6-astra`, effort high, with `danger-full-access`, the same sandbox as the owner's earlier Astra chat, because the gate builds its own sandbox. Its gate passed 17 lanes and 1,550 tests.
+
+It found 13 of G1 to G15 fixed. G3 stays an intentional decision (D-026), and G14 is partly fixed. G12 is fixed for the crashes it named. Of Fable's four findings, two are fixed and two partly. Its three findings are all P3, and the Claude session reproduced each one with its own input:
+
+| ID | Finding | Result here |
+|---|---|---|
+| R1 | An sdist missing `models.py` passes the audit, beside a whole wheel | Reproduced |
+| R2 | `pyproject.toml` moved to another top folder in the sdist passes the audit, because each member's first folder is dropped on its own | Reproduced |
+| R3 | A request ID of `1e400` or an array with a missing or invalid `method` is still echoed back, as `Infinity` or an array | Reproduced on a build of this head |
+
+R1's report says that no lane builds and exercises the source archive. `package-build` does build the wheel from that sdist, as its log shows, and `release-audit` installs that wheel alone, so a real sdist missing a module would fail there. R1 stands for what `audit()` accepts when handed a pair of archives.
+
+The three fixes:
+
+| ID | Fix | A test that fails without it |
+|---|---|---|
+| R1 | The audit compares the package's files in the wheel and the sdist, by path and by size, in both directions | `test_a_source_archive_without_a_module_the_wheel_has_fails_the_audit` |
+| R2 | The audit refuses an sdist with more than one top-level entry | `test_a_source_archive_with_a_second_top_folder_fails_the_audit` |
+| R3 | Every error passes one check before an ID goes back, and a valid ID is still named | `test_an_invalid_request_never_sends_a_bad_id_back` |
+
+All 7 sabotage changes for them fail a named test, so the total is 62. `src` did not change, so the wheel and the reproduction proof stand.
 
 ## Report states these affect
 
@@ -112,7 +138,7 @@ D-026 records two defaults the owner can still change:
 
 ## Limits
 
-- These fixes changed the Work plugin's version to `0.1.0-alpha.1+03840aacc866`, so the [Work check](S09-Work-validation.md) must run on that version.
+- These fixes changed the Work plugin's version to `0.1.0-alpha.1+2c3c9ea4f01c`, so the [Work check](S09-Work-validation.md) must run on that version.
 - The reproduction proof is now at `f62394a`, and all 26 views match in both routes. It keeps the [limits S10 states](S10-release-checks.md#core-reproduction).
 - G2's and G4's consequences need a fault or an exact timing, and neither was seen happening on its own.
 - Neither reviewer ran real Work, a second machine or the fresh-clone reproduction, and neither audited all 71 report records.

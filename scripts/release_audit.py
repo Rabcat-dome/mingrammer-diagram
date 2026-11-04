@@ -101,6 +101,32 @@ def sdist_names(dist: Path) -> list[str]:
     return list(sdist_sizes(dist))
 
 
+def sdist_roots(dist: Path) -> list[str]:
+    """Every top-level entry. Reading paths below it assumes that there is exactly one."""
+    archives = sorted(dist.glob("*.tar.gz"))
+    with tarfile.open(archives[0]) as archive:
+        return sorted({name.split("/", 1)[0] for name in archive.getnames()})
+
+
+def package_differences(wheel: dict[str, int], sdist: dict[str, int]) -> list[str]:
+    """The wheel is built from the sdist, so the package's files must be the same in both."""
+    prefix = "cloud_architecture_diagrams/"
+    installed = {name: size for name, size in wheel.items() if name.startswith(prefix)}
+    source = {
+        name.removeprefix("src/"): size
+        for name, size in sdist.items()
+        if name.startswith("src/" + prefix) and "__pycache__" not in name
+    }
+    errors = [f"sdist: lacks src/{name}" for name in sorted(installed.keys() - source.keys())]
+    errors += [f"wheel: lacks {name}" for name in sorted(source.keys() - installed.keys())]
+    errors += [
+        f"sdist: src/{name} differs from the wheel"
+        for name in sorted(installed.keys() & source.keys())
+        if installed[name] != source[name]
+    ]
+    return errors
+
+
 def claude_plugin_names(root: Path = CLAUDE_PLUGIN) -> list[str]:
     """The tree as an install copies it: links resolved, and compiled files left behind."""
     names = []
@@ -138,6 +164,10 @@ def audit(dist: Path) -> dict[str, Any]:
         errors += [
             f"{label}: {name} is empty" for name in empty_required(sizes, packages[label][1])
         ]
+    roots = sdist_roots(dist)
+    if len(roots) > 1:
+        errors.append(f"sdist: has {len(roots)} top-level entries where one folder is expected")
+    errors += package_differences(archives["wheel"], archives["sdist"])
     for path in (
         CLAUDE_PLUGIN / "README.md",
         CLAUDE_PLUGIN / "skills/architecture-model/SKILL.md",

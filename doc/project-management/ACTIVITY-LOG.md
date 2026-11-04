@@ -548,3 +548,11 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 
 - The owner said to fix the findings and send them to Astra, and asked whether Codex CLI could do it. Claude Opus 5.5 fixed the four at `f62394a`. The rule from G5 now binds only regional and zonal kinds. All 8 sabotage changes for them failed a named test.
 - The Work plugin's version is now `0.1.0-alpha.1+03840aacc866`. Nothing is merged.
+
+## 2026-11-04 — Astra requests changes on the S11 fixes
+
+- CI passed at `b3485c3` ([run 41866479873](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41866479873), 17 lanes and 1,550 tests). GPT-6 Astra / High rechecked `aefcdbc..b3485c3` through Codex CLI, found the earlier findings closed apart from two partial fixes, and requested changes on three P3 findings. The Claude session reproduced each. See the [recheck](evidence/S11-astra-recheck.md). Nothing is merged.
+
+## 2026-11-05 — Fixes for the Astra recheck
+
+- The owner said to fix the three P3 findings and have them checked briefly. Claude Opus 5.5 fixed them, and all 7 sabotage changes failed a named test. `src` did not change, so the wheel and the proof stand. The Work plugin's version is now `0.1.0-alpha.1+2c3c9ea4f01c`. A short Astra recheck of this diff comes next, and nothing is merged.

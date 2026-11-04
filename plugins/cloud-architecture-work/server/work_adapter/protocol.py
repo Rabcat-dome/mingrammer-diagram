@@ -112,7 +112,9 @@ class Server:
         self.send({"jsonrpc": "2.0", "id": request_id, "result": result})
 
     def error(self, request_id: Any, code: int, message: str) -> None:
-        self.send({"jsonrpc": "2.0", "id": request_id, "error": {"code": code, "message": message}})
+        # Every error passes here, and an ID that is not valid cannot be sent back as what it was.
+        named = request_id if _valid_id(request_id) else None
+        self.send({"jsonrpc": "2.0", "id": named, "error": {"code": code, "message": message}})
 
     def initialize(self, request_id: Any, params: dict[str, Any]) -> None:
         asked = params.get("protocolVersion")

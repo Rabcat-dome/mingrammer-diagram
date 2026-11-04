@@ -283,7 +283,8 @@ def full_wheel(data: bytes = b"x") -> dict[str, bytes]:
 
 
 def full_sdist(data: bytes = b"x") -> dict[str, bytes]:
-    return dict.fromkeys(release_audit.SDIST_REQUIRED, data)
+    names = [*release_audit.SDIST_REQUIRED, *(f"src/{n}" for n in release_audit.WHEEL_REQUIRED)]
+    return dict.fromkeys(names, data)
 
 
 def audit_errors(folder: Path) -> list[str]:
@@ -293,7 +294,8 @@ def audit_errors(folder: Path) -> list[str]:
 
 def test_an_empty_source_archive_fails_the_audit(tmp_path: Path) -> None:
     errors = audit_errors(archives(tmp_path, {}, full_wheel()))
-    assert {f"sdist: lacks {name}" for name in release_audit.SDIST_REQUIRED} == set(errors)
+    assert {f"sdist: lacks {name}" for name in release_audit.SDIST_REQUIRED} <= set(errors)
+    assert all(error.startswith("sdist: lacks ") for error in errors)
 
 
 def test_a_source_archive_with_one_harmless_file_fails_the_audit(tmp_path: Path) -> None:
@@ -303,12 +305,12 @@ def test_a_source_archive_with_one_harmless_file_fails_the_audit(tmp_path: Path)
 
 def test_a_wheel_of_empty_files_fails_the_audit(tmp_path: Path) -> None:
     errors = audit_errors(archives(tmp_path, full_sdist(), full_wheel(b"")))
-    assert {f"wheel: {name} is empty" for name in release_audit.WHEEL_REQUIRED} == set(errors)
+    assert {f"wheel: {name} is empty" for name in release_audit.WHEEL_REQUIRED} <= set(errors)
 
 
 def test_a_source_archive_of_empty_files_fails_the_audit(tmp_path: Path) -> None:
     errors = audit_errors(archives(tmp_path, full_sdist(b""), full_wheel()))
-    assert {f"sdist: {name} is empty" for name in release_audit.SDIST_REQUIRED} == set(errors)
+    assert {f"sdist: {name} is empty" for name in release_audit.SDIST_REQUIRED} <= set(errors)
 
 
 @pytest.mark.parametrize("name", ["xREADME.md", "tests/README.md", "extra/README.md"])
@@ -331,7 +333,7 @@ def test_a_source_archive_with_only_a_misplaced_file_fails_the_audit(tmp_path: P
 def test_a_wheel_with_its_package_in_another_folder_fails_the_audit(tmp_path: Path) -> None:
     wheel = {f"extra/{name}": b"x" for name in release_audit.WHEEL_REQUIRED}
     errors = audit_errors(archives(tmp_path, full_sdist(), wheel))
-    assert {f"wheel: lacks {name}" for name in release_audit.WHEEL_REQUIRED} == set(errors)
+    assert {f"wheel: lacks {name}" for name in release_audit.WHEEL_REQUIRED} <= set(errors)
 
 
 def test_the_audit_passes_when_each_archive_is_whole(tmp_path: Path) -> None:
@@ -358,3 +360,56 @@ def test_a_reproduction_proof_fails_unless_it_proved_something(
     from reproduce_core import proof_passed
 
     assert proof_passed(GOOD_PROOF | change) is passes
+
+
+@pytest.mark.parametrize("module", ["models.py", "render/graph.py"])
+def test_a_source_archive_without_a_module_the_wheel_has_fails_the_audit(
+    tmp_path: Path, module: str
+) -> None:
+    name = f"cloud_architecture_diagrams/{module}"
+    sdist, wheel = full_sdist(), full_wheel() | {name: b"x"}
+    sdist[f"src/{name}"] = b"x"
+    assert audit_errors(archives(tmp_path, sdist, wheel)) == []
+    del sdist[f"src/{name}"]
+    (tmp_path / "x-1.tar.gz").unlink()
+    (tmp_path / "x-1-py3-none-any.whl").unlink()
+    assert audit_errors(archives(tmp_path, sdist, wheel)) == [f"sdist: lacks src/{name}"]
+
+
+def test_a_wheel_without_a_module_the_source_archive_has_fails_the_audit(tmp_path: Path) -> None:
+    name = "cloud_architecture_diagrams/models.py"
+    sdist = full_sdist() | {f"src/{name}": b"x"}
+    assert audit_errors(archives(tmp_path, sdist, full_wheel())) == [f"wheel: lacks {name}"]
+
+
+def test_a_source_file_that_differs_from_the_wheel_fails_the_audit(tmp_path: Path) -> None:
+    name = "cloud_architecture_diagrams/cli.py"
+    sdist = full_sdist() | {f"src/{name}": b"x"}
+    wheel = full_wheel() | {name: b"two"}
+    assert audit_errors(archives(tmp_path, sdist, wheel)) == [
+        f"sdist: src/{name} differs from the wheel"
+    ]
+
+
+def test_a_source_archive_with_a_second_top_folder_fails_the_audit(tmp_path: Path) -> None:
+    folder = archives(tmp_path, full_sdist(), full_wheel())
+    source = folder / "x-1.tar.gz"
+    moved = tmp_path / "moved.tar.gz"
+    with tarfile.open(source) as old, tarfile.open(moved, "w:gz") as new:
+        for item in old.getmembers():
+            if item.name == "x-1/pyproject.toml":
+                item.name = "other/pyproject.toml"
+            new.addfile(item, old.extractfile(item))
+    moved.replace(source)
+    assert audit_errors(folder) == ["sdist: has 2 top-level entries where one folder is expected"]
+
+
+def test_the_real_packages_have_one_top_folder_and_the_same_files() -> None:
+    dist = ROOT / "reports/dist"
+    assert len(release_audit.sdist_roots(dist)) == 1
+    assert (
+        release_audit.package_differences(
+            release_audit.wheel_sizes(dist), release_audit.sdist_sizes(dist)
+        )
+        == []
+    )

@@ -564,6 +564,31 @@ def test_an_id_that_is_not_a_string_or_number_is_refused(client: Client, request
     assert client.request("ping")["result"] == {}
 
 
+@pytest.mark.parametrize(
+    "frame",
+    [
+        b'{"jsonrpc":"2.0","id":1e400,"method":false}',
+        b'{"jsonrpc":"2.0","id":-1e400}',
+        b'{"jsonrpc":"2.0","id":[1],"method":false}',
+        b'{"jsonrpc":"2.0","id":{"a":1}}',
+        b'{"jsonrpc":"2.0","id":true}',
+    ],
+    ids=["overflow-bad-method", "overflow-no-method", "array", "object", "boolean"],
+)
+def test_an_invalid_request_never_sends_a_bad_id_back(client: Client, frame: bytes) -> None:
+    client.write(frame + b"\n")
+    reply = client.next_frame()
+    assert reply["error"]["code"] == -32600 and reply["id"] is None
+    assert client.request("ping")["result"] == {}
+
+
+@pytest.mark.parametrize("request_id", [7, "seven", 1.5])
+def test_an_invalid_request_with_a_good_id_still_names_it(client: Client, request_id: Any) -> None:
+    client.send({"jsonrpc": "2.0", "id": request_id})
+    reply = client.next_frame()
+    assert reply["error"]["code"] == -32600 and reply["id"] == request_id
+
+
 def test_an_ordinary_fractional_id_still_works(client: Client) -> None:
     client.write(b'{"jsonrpc":"2.0","id":1.5,"method":"ping"}\n')
     reply = client.next_frame()
