@@ -18,9 +18,12 @@ from render_helpers import (
 )
 
 from cloud_architecture_diagrams.catalog import catalog
+from cloud_architecture_diagrams.models import Architecture
 from cloud_architecture_diagrams.render import RenderResult
 from cloud_architecture_diagrams.render.checks import SVG
 from cloud_architecture_diagrams.render.draw import EDGE_STYLES
+from cloud_architecture_diagrams.render.graph import map_view
+from cloud_architecture_diagrams.render.limits import LIMITS
 from cloud_architecture_diagrams.validation import validate_json
 
 REFERENCES = FIXTURES / "references"
@@ -880,3 +883,17 @@ def test_a_pod_with_no_node_and_no_edge_stays_unspecified(tmp_path: Path) -> Non
     found = graph("", "aks-nodes", tmp_path, model)
     assert "node: unspecified" in node_of(found, "web-pod-1")["lines"]
     assert "aks-node-1" not in chain_of(found, "web-pod-1")
+
+
+def test_only_provider_grouping_keeps_providers_apart(tmp_path: Path) -> None:
+    # No other grouping draws a provider's box, so a declared membership there still nests. This
+    # goes straight to the mapper, because the provider rules would refuse this scope in a model.
+    model = foreign_zone_model()
+    model["scopes"] = [{"id": "account", "name": "Account", "provider": "aws", "kind": "account"}]
+    model["resources"][0]["placement"] = {"scope_refs": ["account"]}
+    model["views"] = [
+        {"id": "s", "title": "S", "entity_refs": ["account", "app"], "grouping": "scope"}
+    ]
+    parsed = Architecture.model_validate(model)
+    found = map_view(parsed, parsed.views[0], "strict", LIMITS)
+    assert next(node for node in found.nodes if node.id == "app").group == "account"

@@ -8,7 +8,7 @@ Target: the separate ChatGPT Work page or mode, not Codex (D-014). Automated che
 
 Install, from a checkout of `main`, with the commands in the [plugin README](../../../plugins/cloud-architecture-work/README.md#install). Then restart the ChatGPT app, switch to Work mode, open a new chat and select **Cloud Architecture Diagrams**. The S04 plugin stays enabled and unchanged.
 
-The expected version is `0.1.0-alpha.1+f242304382f3`. Each prompt runs in the same chat unless it says otherwise.
+The expected version is `0.1.0-alpha.1+4e035b4d7e69`, from the [S11 fixes](S11-gpt-reviews.md#fixes). The results below are for `0.1.0-alpha.1+f242304382f3`, the version before them, so check 5 runs again on this one. Each prompt runs in the same chat unless it says otherwise.
 
 | # | Prompt | What it checks |
 |---|---|---|
@@ -65,11 +65,12 @@ The owner's Claude Code session checked the files and the host's session record 
 
 The chat read 12 files at once, all six of both bundles. Eight came back and four answered `busy` with `TOO_MANY_CALLS`, and it read those four again one at a time, which worked. `MAX_CALLS` is 8 in `protocol.py`, and no render was running. Sending 12 reads at once to the installed server again gave 4, 4 and 3 refusals in three tries, while 6 and 8 reads gave none.
 
-This is an open P3. The skill's `busy` row says "Another render is running", which is the wrong cause here although its remedy works, and no test covers `TOO_MANY_CALLS`.
+At that version the skill's `busy` row said "Another render is running", which was the wrong cause although its remedy worked, and no test covered `TOO_MANY_CALLS`. [S11](S11-gpt-reviews.md#fixes) fixed both.
 
 ## What is left
 
-- Prompts 2, 3 and 4 in Work. Prompt 1 did not run as its own prompt, though this chat went through each of its steps.
+- All five prompts in Work, on the expected version. Prompts 2, 3 and 4 have never run, and prompt 1 did not run as its own prompt, though this chat went through each of its steps.
+- A new chat, opened outside this repository, so that the plugin's skill is all it has to go on.
 - The owner reports whether the app showed an approval prompt, how the PNG appeared and whether the file links open.
 
-These results cover this version only. A change to the plugin's content changes its version, so a fix after this needs its own run.
+A change to the plugin's content changes its version, so a fix after that run needs its own run.

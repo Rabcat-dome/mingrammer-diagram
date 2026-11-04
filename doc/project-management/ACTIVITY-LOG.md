@@ -533,3 +533,9 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 
 - GPT-6.1 Sol / High and then GPT-6 Astra / High reviewed `5569459..aefcdbc` under D-025, and both requested changes. Together they gave 15 findings: one P1, six P2 and eight P3. Two P2 findings came from both.
 - The Claude session reproduced or confirmed each one and ranks the P1 as P2. Nothing is fixed, and G3 and the existing CI artifacts wait for the owner. See [S11](evidence/S11-gpt-reviews.md).
+
+## 2026-11-04 — Fixes for the GPT review findings
+
+- The owner said to fix the findings. Claude Opus 5.5 fixed all 15 at `9fb199d` on `codex/s11-review-fixes`, with the skill's `busy` row. G1's fix went in before the first push, so that push uploaded no Huawei icons. No reference image changed. See [S11](evidence/S11-gpt-reviews.md#fixes).
+- All 47 sabotage changes now fail a named test. Four passed at first, and each gained a test.
+- The core reproduction passes again at `9fb199d`, and the Work plugin's version is now `0.1.0-alpha.1+4e035b4d7e69`. Nothing is merged, and an independent recheck comes next.

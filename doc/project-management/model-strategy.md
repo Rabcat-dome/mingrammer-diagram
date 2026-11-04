@@ -52,7 +52,7 @@ Under D-020, Claude Fable 5.1 (`claude-fable-5-1`) / High reviewed `5569459..dc5
 
 D-021 replaces Astra with Fable for every review from 2026-11-03, on the owner's request, and lifts D-020's one-review limit. Earlier reviews stay recorded under the models that ran them. The S06 and S07 implementation also ran on a Claude model, so a Fable review of that work shares a vendor with it. Name the implementing model in each review record so that limit stays visible.
 
-D-025 adds GPT-6 Astra / High and GPT-6.1 Sol / High reviews of `5569459..aefcdbc`, on top of Fable's, because that work's implementer and reviewer shared a vendor. See [S11](evidence/S11-gpt-reviews.md).
+D-025 adds GPT-6 Astra / High and GPT-6.1 Sol / High reviews of `5569459..aefcdbc`, on top of Fable's, because that work's implementer and reviewer shared a vendor. Claude Opus 5.5 fixed the findings. See [S11](evidence/S11-gpt-reviews.md).
 
 S07 / M3 used Claude Opus 5.5 (`claude-opus-5-5`), the model of the session that ran S07, rather than the planned Sol/High, with no model setting changed. This is a recorded substitution. Under D-021, Fable/High [reviewed it](evidence/S07-fable-review.md) in a fresh agent and requested changes on three P2 findings. It approved their fixes at `c8fc687`, after finding a regression in the first fix. Claude Opus 5.5 wrote the fixes, so that review shares a vendor with them. See the [S07 evidence](evidence/S07-controlled-rendering.md#model-and-review).
 
