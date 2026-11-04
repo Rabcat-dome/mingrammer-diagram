@@ -2,7 +2,7 @@
 
 Date: 2026-11-04 | Tasks: part of M6-01, and M6-02 | Branch: `codex/s10-release-checks`, from `codex/s09-work-plugin` | Core: `0.5.0a1`
 
-**Result: the parts of M6 that do not need Work are done, and M6 stays open.** D-024 parks the owner's run in actual Work, so M6-01's two-machine run, M6-03 and M6-04 are blocked, and there is no release and no tag. Of 71 P0 requirements and scenarios, [the report](S10-p0-traceability.md) finds 30 met, 14 met with the owner's acceptance, 17 partly met, 7 blocked on Work and 3 blocked on a second machine. None is wholly unmet, and 17 partial results are real work left. No review has checked this yet: see [model and review](#model-and-review).
+**Result: the parts of M6 that do not need Work are done, and M6 stays open.** D-024 parks the owner's run in actual Work, so M6-01's two-machine run, M6-03 and M6-04 are blocked, and there is no release and no tag. Of 71 P0 requirements and scenarios, [the report](S10-p0-traceability.md) finds 30 met, 14 met with the owner's acceptance, 17 partly met, 7 blocked on Work and 3 blocked on a second machine. None is wholly unmet, and 17 partial results are real work left. [Fable/High approved](S10-fable-review.md) this at `debd754`, which passes actual CI [run 41787236496](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41787236496) with 1,461 tests.
 
 ## Task status
 
@@ -19,7 +19,7 @@ Date: 2026-11-04 | Tasks: part of M6-01, and M6-02 | Branch: `codex/s10-release-
 
 ## Core reproduction
 
-`scripts/reproduce_core.py` clones the repository from GitHub at one commit, and points `HOME` and every cache at a new folder. It downloads its own Python 3.13.7 and packages, and takes two routes to the core: the lock with no development tools, and a wheel built with the locked tools and installed from hash-locked requirements. Each route renders all 26 reference views from outside the clone, and each result is compared with that commit's baselines. [The proof](S10-core-reproduction-proof.json) holds the results, at `7a42e97`: all 26 views match in both routes, and the routes agree.
+`scripts/reproduce_core.py` clones the repository from GitHub at one commit, and points `HOME` and every cache at a new folder. It downloads its own Python 3.13.7 and packages, and takes two routes to the core: the lock with no development tools, and a wheel built with the locked tools and installed from hash-locked requirements. Each route renders all 26 reference views from outside the clone, and each result is compared with that commit's baselines. [The proof](S10-core-reproduction-proof.json) holds the results, at `7a42e97`: all 26 views match in both routes, and the routes agree. The wheel it builds has the digest of a local build at that commit, and actual CI's wheel at `debd754`, which changes only records, has it too.
 
 The proof binds to a digest of the source, the lock, the references and the baselines, because it is committed after the commit it reproduced, and a test fails if that source changes without a new proof. This proves a clean Python runtime on one machine. It shares Graphviz, Homebrew's other tools, uv, macOS and the sandbox with this Mac, and the clone uses the owner's Git credentials. Both routes compare with baselines made here, so T-010's second machine stays open. NFR-001 does not promise byte-identical images across platforms, so what a second machine must match is M6's to decide.
 
@@ -115,7 +115,7 @@ Actual CI [run 41783171328](https://github.com/Rabcat-dome/mingrammer-diagram/ac
 
 Claude Opus 5.5 (`claude-opus-5-5`) did this work, including the three audit agents. The strategy names Sol/Medium for M6, so this is a recorded substitution, and no model setting changed.
 
-Under D-021, Claude Fable 5.1 / High [reviewed `b6997c6..65d800b`](S10-fable-review.md) in a fresh agent, sampling 33 of the 71 IDs. It found no state too generous and **requested changes** on the record and one sdist exclusion. They are fixed, and its recheck is pending. It shares a vendor with the implementing models.
+Under D-021, Claude Fable 5.1 / High [reviewed `b6997c6..65d800b`](S10-fable-review.md) in a fresh agent, sampling 33 of the 71 IDs. It found no state too generous and **requested changes** on the record and one sdist exclusion. They are fixed, and it **approved `debd754`**. It shares a vendor with the implementing models.
 
 ## Next steps
 

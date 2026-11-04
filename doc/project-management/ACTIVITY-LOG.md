@@ -517,3 +517,8 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 
 - CI passed at `65d800b` ([run 41783171328](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41783171328), 17 lanes and 1,453 tests). A fresh Claude Fable 5.1 / High agent sampled 33 of the 71 P0 IDs and found no state too generous. It requested changes on one P1 and three P2 findings, mostly in this session's record: an empty reproduction proof, a claim about the sdist that was not true, an unfilled placeholder, and an sdist that shipped `.git` from a worktree.
 - Claude Opus 5.5 fixed them. The proof now binds to a digest of its source, and it passes at `7a42e97`. The local gate passes 17 lanes and 1,461 tests. See the [review](evidence/S10-fable-review.md). The same reviewer rechecks next, and M6 stays open.
+
+## 2026-11-04 — Fable approves S10
+
+- CI passed at `debd754` ([run 41787236496](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41787236496), 17 lanes and 1,461 tests, with the wheel matching the proof). The same reviewer approved `65d800b..debd754`, and said `b6997c6..debd754` can stand as the review disposition for this part of M6.
+- `main` fast-forwards here once this commit passes CI. M5 and M6 stay open, with no release or tag. Three P3 findings from this review stay open, and the owner's gaps are [listed](evidence/S10-release-checks.md#gaps-the-owner-may-want-to-decide).
