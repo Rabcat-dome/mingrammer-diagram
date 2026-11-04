@@ -2,7 +2,7 @@
 
 Date: 2026-11-04 (Asia/Bangkok) | Base `5569459` | Head `aefcdbc` | Decision: D-025
 
-**Result: both reviewers requested changes. The Claude session reproduced or confirmed all 15 findings, and fixed them at `9fb199d`. [Fable requested changes](S11-fable-review.md) on those fixes at `3aa566d`, and those are fixed at `f62394a`. [Astra requested changes](S11-astra-recheck.md) at `b3485c3`, on three P3 findings. Those are fixed in the commit after it and wait for a short recheck, so nothing is merged.** Neither reviewer found a way for a hostile model alone to write outside the output root, follow a symbolic link or put active content in the SVG. That is what they looked for and did not find, and it is not a proof.
+**Result: both reviewers requested changes. The Claude session reproduced or confirmed all 15 findings, and fixed them at `9fb199d`. [Fable requested changes](S11-fable-review.md) on those fixes at `3aa566d`, and those are fixed at `f62394a`. [Astra requested changes](S11-astra-recheck.md) at `b3485c3`, on three P3 findings. Those are fixed at `ae8520f`, where a [short recheck](S11-astra-short.md) requested changes on two more P3 findings in the audit script. Those two are fixed in the commit after it, and on the owner's word they merge without another review.** Neither reviewer found a way for a hostile model alone to write outside the output root, follow a symbolic link or put active content in the SVG. That is what they looked for and did not find, and it is not a proof.
 
 ## Why this ran
 
@@ -114,7 +114,20 @@ The three fixes:
 | R2 | The audit refuses an sdist with more than one top-level entry | `test_a_source_archive_with_a_second_top_folder_fails_the_audit` |
 | R3 | Every error passes one check before an ID goes back, and a valid ID is still named | `test_an_invalid_request_never_sends_a_bad_id_back` |
 
-All 7 sabotage changes for them fail a named test, so the total is 62. `src` did not change, so the wheel and the reproduction proof stand.
+All 7 sabotage changes for them fail a named test, so the total is 62. `src` did not change, so the wheel and the reproduction proof stand. Actual CI [run 41873929194](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41873929194) passed 17 lanes and 1,564 tests with 0 skipped at `ae8520f`, and its wheel has the digest the proof records.
+
+### Short recheck
+
+GPT-6 Astra / Medium rechecked `b3485c3..ae8520f` through Codex CLI, as the host's session record shows, and [requested changes](S11-astra-short.md). It found R2 and R3 fixed, and R1 partly fixed. The Claude session reproduced both new findings with its own input.
+
+| ID | Finding | Result here |
+|---|---|---|
+| N1 | The audit compares sizes, so an sdist file replaced by the same number of other bytes passes | Reproduced |
+| N2 | An explicit directory entry in an sdist reads as a file the wheel lacks, so a buildable repack fails. The real builder writes none here | Reproduced |
+
+R1's remainder is a module removed from both archives. The audit alone passes that pair, as the report says. The `package-contents` lane compares the wheel with `src` byte for byte in both directions, so such a wheel fails the gate, and the audit now ties the sdist to that wheel.
+
+The owner said to fix N1 and N2 and merge. The audit now compares digests of regular files, in `scripts/release_audit.py` alone, so `src`, the wheel, the proof and the plugin's version do not change. `test_a_source_file_that_differs_from_the_wheel_fails_the_audit` and `test_a_directory_entry_in_a_source_archive_is_not_a_missing_file` fail without this. All 4 sabotage changes for them fail a named test, so the total is 66. No independent review covers this last change.
 
 ## Report states these affect
 
@@ -141,5 +154,5 @@ D-026 records two defaults the owner can still change:
 - These fixes changed the Work plugin's version to `0.1.0-alpha.1+2c3c9ea4f01c`, so the [Work check](S09-Work-validation.md) must run on that version.
 - The reproduction proof is now at `f62394a`, and all 26 views match in both routes. It keeps the [limits S10 states](S10-release-checks.md#core-reproduction).
 - G2's and G4's consequences need a fault or an exact timing, and neither was seen happening on its own.
-- Neither reviewer ran real Work, a second machine or the fresh-clone reproduction, and neither audited all 71 report records.
+- No reviewer ran real Work, a second machine or the fresh-clone reproduction, and none audited all 71 report records.
 - Both reviewers share a vendor with each other, and neither shows the code is correct.

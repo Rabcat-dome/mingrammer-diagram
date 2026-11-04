@@ -384,7 +384,8 @@ def test_a_wheel_without_a_module_the_source_archive_has_fails_the_audit(tmp_pat
 
 def test_a_source_file_that_differs_from_the_wheel_fails_the_audit(tmp_path: Path) -> None:
     name = "cloud_architecture_diagrams/cli.py"
-    sdist = full_sdist() | {f"src/{name}": b"x"}
+    # The same length, so that only the content can tell them apart.
+    sdist = full_sdist() | {f"src/{name}": b"one"}
     wheel = full_wheel() | {name: b"two"}
     assert audit_errors(archives(tmp_path, sdist, wheel)) == [
         f"sdist: src/{name} differs from the wheel"
@@ -409,7 +410,28 @@ def test_the_real_packages_have_one_top_folder_and_the_same_files() -> None:
     assert len(release_audit.sdist_roots(dist)) == 1
     assert (
         release_audit.package_differences(
-            release_audit.wheel_sizes(dist), release_audit.sdist_sizes(dist)
+            release_audit.wheel_digests(dist), release_audit.sdist_digests(dist)
         )
         == []
     )
+
+
+def test_a_directory_entry_in_a_source_archive_is_not_a_missing_file(tmp_path: Path) -> None:
+    folder = archives(tmp_path, full_sdist(), full_wheel())
+    source = folder / "x-1.tar.gz"
+    rebuilt = tmp_path / "rebuilt.tar.gz"
+    with tarfile.open(source) as old, tarfile.open(rebuilt, "w:gz") as new:
+        for item in old.getmembers():
+            new.addfile(item, old.extractfile(item))
+        entry = tarfile.TarInfo("x-1/src/cloud_architecture_diagrams/render")
+        entry.type = tarfile.DIRTYPE
+        new.addfile(entry)
+    rebuilt.replace(source)
+    assert audit_errors(folder) == []
+
+
+def test_a_directory_entry_in_a_wheel_is_not_a_missing_file(tmp_path: Path) -> None:
+    folder = archives(tmp_path, full_sdist(), full_wheel())
+    with zipfile.ZipFile(folder / "x-1-py3-none-any.whl", "a") as wheel:
+        wheel.writestr("cloud_architecture_diagrams/render/", b"")
+    assert audit_errors(folder) == []

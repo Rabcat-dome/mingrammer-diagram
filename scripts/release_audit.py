@@ -5,6 +5,7 @@ the wheel, the sdist and both plugins. It writes `reports/release-audit.json`, a
 """
 
 import ast
+import hashlib
 import json
 import os
 import re
@@ -108,13 +109,34 @@ def sdist_roots(dist: Path) -> list[str]:
         return sorted({name.split("/", 1)[0] for name in archive.getnames()})
 
 
-def package_differences(wheel: dict[str, int], sdist: dict[str, int]) -> list[str]:
+def wheel_digests(dist: Path) -> dict[str, str]:
+    """Regular files only, because a directory entry is structure and not a file to compare."""
+    with zipfile.ZipFile(next(dist.glob("*.whl"))) as wheel:
+        return {
+            item.filename: hashlib.sha256(wheel.read(item)).hexdigest()
+            for item in wheel.infolist()
+            if not item.is_dir()
+        }
+
+
+def sdist_digests(dist: Path) -> dict[str, str]:
+    """Regular files only, with the top folder dropped as `sdist_sizes` does."""
+    found: dict[str, str] = {}
+    with tarfile.open(next(dist.glob("*.tar.gz"))) as archive:
+        for item in archive.getmembers():
+            stream = archive.extractfile(item) if item.isfile() and "/" in item.name else None
+            if stream is not None:
+                found[item.name.split("/", 1)[1]] = hashlib.sha256(stream.read()).hexdigest()
+    return found
+
+
+def package_differences(wheel: dict[str, str], sdist: dict[str, str]) -> list[str]:
     """The wheel is built from the sdist, so the package's files must be the same in both."""
     prefix = "cloud_architecture_diagrams/"
-    installed = {name: size for name, size in wheel.items() if name.startswith(prefix)}
+    installed = {name: digest for name, digest in wheel.items() if name.startswith(prefix)}
     source = {
-        name.removeprefix("src/"): size
-        for name, size in sdist.items()
+        name.removeprefix("src/"): digest
+        for name, digest in sdist.items()
         if name.startswith("src/" + prefix) and "__pycache__" not in name
     }
     errors = [f"sdist: lacks src/{name}" for name in sorted(installed.keys() - source.keys())]
@@ -167,7 +189,7 @@ def audit(dist: Path) -> dict[str, Any]:
     roots = sdist_roots(dist)
     if len(roots) > 1:
         errors.append(f"sdist: has {len(roots)} top-level entries where one folder is expected")
-    errors += package_differences(archives["wheel"], archives["sdist"])
+    errors += package_differences(wheel_digests(dist), sdist_digests(dist))
     for path in (
         CLAUDE_PLUGIN / "README.md",
         CLAUDE_PLUGIN / "skills/architecture-model/SKILL.md",
