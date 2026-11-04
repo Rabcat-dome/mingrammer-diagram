@@ -56,7 +56,8 @@ def _read(directory: int, name: str, limit: int) -> bytes:
     descriptor = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=directory)
     with os.fdopen(descriptor, "rb") as stream:
         info = os.fstat(stream.fileno())
-        if not stat.S_ISREG(info.st_mode):
+        # The core writes each file once, so a second link means its content lives elsewhere too.
+        if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1:
             raise ArtifactError("ARTIFACT_UNSAFE")
         if info.st_size > limit:
             raise ArtifactError("ARTIFACT_TOO_LARGE")

@@ -919,11 +919,22 @@
     "lane": "visual-regression",
     "file": "tests/test_visual_regression.py",
     "test": "test_the_normalized_graph_matches_its_baseline"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_a_foreign_security_zone_keeps_a_resource_in_its_own_provider"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_every_provider_box_holds_only_that_provider"
    }
   ],
   "evidence": [
    "doc/project-management/evidence/S08-reference-diagrams.md#owner-inspection",
-   "doc/project-management/evidence/S08-reference-diagrams.md#scenario-checks"
+   "doc/project-management/evidence/S08-reference-diagrams.md#scenario-checks",
+   "doc/project-management/evidence/S11-gpt-reviews.md#fixes"
   ],
   "open": "",
   "owner": "Whether the groups are appropriate is the owner's judgment: D-023 accepted the 26 reference views for M4 only, and T-016 repeats in M6."
@@ -1292,11 +1303,17 @@
     "lane": "render-security",
     "file": "tests/test_render_security.py",
     "test": "test_svg_embeds_only_verified_icon_bytes"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_pixels_that_do_not_decode_block_the_bundle"
    }
   ],
   "evidence": [
    "doc/project-management/evidence/S07-controlled-rendering.md#requirement-coverage",
-   "doc/project-management/evidence/S07-controlled-rendering.md#limits-and-what-this-does-not-establish"
+   "doc/project-management/evidence/S07-controlled-rendering.md#limits-and-what-this-does-not-establish",
+   "doc/project-management/evidence/S11-gpt-reviews.md#fixes"
   ],
   "open": "",
   "owner": ""
@@ -1472,10 +1489,21 @@
     "lane": "package-contract",
     "file": "tests/test_work_plugin.py",
     "test": "test_core_outcomes_map_onto_stable_statuses"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_pixels_that_do_not_decode_block_the_bundle"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_failed_sync_after_the_rename_leaves_nothing_published"
    }
   ],
   "evidence": [
-   "doc/project-management/evidence/S07-controlled-rendering.md#requirement-coverage"
+   "doc/project-management/evidence/S07-controlled-rendering.md#requirement-coverage",
+   "doc/project-management/evidence/S11-gpt-reviews.md#fixes"
   ],
   "open": "",
   "owner": ""
@@ -1587,11 +1615,22 @@
     "lane": "package-contract",
     "file": "tests/test_work_plugin.py",
     "test": "test_view_that_cannot_be_drawn_is_a_validation_failure"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_the_depth_limit_counts_the_provider_box"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_the_depth_limit_stays_whole_where_no_provider_box_is_added"
    }
   ],
   "evidence": [
    "doc/project-management/evidence/S07-controlled-rendering.md#requirement-coverage",
-   "doc/project-management/evidence/S08-reference-diagrams.md#measurements"
+   "doc/project-management/evidence/S08-reference-diagrams.md#measurements",
+   "doc/project-management/evidence/S11-gpt-reviews.md#fixes"
   ],
   "open": "",
   "owner": ""
@@ -1662,12 +1701,23 @@
     "lane": "render-smoke",
     "file": "tests/test_references.py",
     "test": "test_t005_physical_and_logical_nest_differently_for_one_identity"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_a_scheduling_edge_alone_places_a_pod_on_its_node"
+   },
+   {
+    "lane": "provider-semantics",
+    "file": "tests/test_provider_semantics.py",
+    "test": "test_a_boundary_in_two_regions_fails_in_either_order"
    }
   ],
   "evidence": [
    "doc/project-management/evidence/S08-reference-diagrams.md#provider-references",
    "doc/project-management/evidence/S08-reference-diagrams.md#deviations",
-   "doc/project-management/evidence/S08-reference-diagrams.md#owner-inspection"
+   "doc/project-management/evidence/S08-reference-diagrams.md#owner-inspection",
+   "doc/project-management/evidence/S11-gpt-reviews.md#fixes"
   ],
   "open": "",
   "owner": "Closeness to the official references has no automated check: the comparison is by eye against one page per provider, with approximate colors, and the baselines only detect change. It rests on D-023, which is for M4 only; T-016 repeats in M6 and has not. The references record a URL and the date opened, and no page version beyond Huawei's update date."
@@ -2500,11 +2550,17 @@
     "lane": "package-contract",
     "file": "tests/test_work_plugin.py",
     "test": "test_unsafe_output_root_is_a_runtime_failure_and_nothing_publishes"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_a_hard_link_in_a_bundle_is_not_read"
    }
   ],
   "evidence": [
    "doc/project-management/evidence/S07-controlled-rendering.md#requirement-coverage",
-   "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage"
+   "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage",
+   "doc/project-management/evidence/S11-gpt-reviews.md#fixes"
   ],
   "open": "",
   "owner": ""
@@ -2573,11 +2629,17 @@
     "lane": "catalog-license",
     "file": "tests/test_catalog_license.py",
     "test": "test_a_stale_version_in_the_inventory_fails"
+   },
+   {
+    "lane": "release-audit",
+    "file": "tests/test_release_audit.py",
+    "test": "test_ci_uploads_only_text_reports"
    }
   ],
   "evidence": [
    "doc/project-management/evidence/S06-provider-catalogs.md#icon-rights",
-   "doc/project-management/evidence/S06-provider-catalogs.md#huawei-cloud-icons-under-d-018"
+   "doc/project-management/evidence/S06-provider-catalogs.md#huawei-cloud-icons-under-d-018",
+   "doc/project-management/evidence/S11-gpt-reviews.md#fixes"
   ],
   "open": "",
   "owner": "D-018: the Huawei pack's rights are not cleared, which is the scoped exception this requirement names. Public distribution stays blocked under O-002."
@@ -2792,13 +2854,29 @@
     "lane": "package-contract",
     "file": "tests/test_work_plugin.py",
     "test": "test_a_call_over_its_time_limit_is_stopped_and_reported"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_shutdown_stops_a_core_caught_between_its_start_and_its_registration"
+   },
+   {
+    "lane": "package-contract",
+    "file": "tests/test_work_plugin.py",
+    "test": "test_shutdown_stops_setup_caught_between_its_start_and_its_registration"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_stream_far_larger_than_its_image_stops_at_its_size"
    }
   ],
   "evidence": [
    "doc/project-management/evidence/S07-controlled-rendering.md#limits-and-what-this-does-not-establish",
    "doc/project-management/evidence/S08-reference-diagrams.md#measurements",
    "doc/project-management/evidence/S05-core-and-ci.md#gate-scope-and-constraints",
-   "doc/project-management/evidence/S04-closeout.md#selected-prototype-bounds"
+   "doc/project-management/evidence/S04-closeout.md#selected-prototype-bounds",
+   "doc/project-management/evidence/S11-gpt-reviews.md#fixes"
   ],
   "open": "Runtime bounds, kills and cleanup pass. The clause 'Freeze numeric limits in M0/M1 using measurements' is not met as written: S04 and S05 record their M0 and M1 bounds as not final, S04 carries the final NFR-009 bounds to M3, and S07 leaves the numbers to M4 (P-031). 200/300 is an upper bound that labeled icon views do not reach. No test pins the render numbers except view_entities and minimum_png_scale, so a changed limit still passes. Memory and temporary limits are sampled and can overshoot, and they apply to the engine, not to the core's Python process.",
   "owner": ""
@@ -2857,10 +2935,21 @@
     "lane": "render-smoke",
     "file": "tests/test_render_smoke.py",
     "test": "test_every_fixture_view_produces_a_complete_bundle"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_pixels_that_do_not_decode_block_the_bundle"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_failed_sync_after_the_rename_leaves_nothing_published"
    }
   ],
   "evidence": [
-   "doc/project-management/evidence/S07-controlled-rendering.md#requirement-coverage"
+   "doc/project-management/evidence/S07-controlled-rendering.md#requirement-coverage",
+   "doc/project-management/evidence/S11-gpt-reviews.md#fixes"
   ],
   "open": "",
   "owner": ""

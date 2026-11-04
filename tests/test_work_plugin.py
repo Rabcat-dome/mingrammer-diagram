@@ -549,6 +549,218 @@ def test_protocol_errors_do_not_stop_the_server(client: Client) -> None:
     assert client.request("ping")["result"] == {}
 
 
+@pytest.mark.parametrize(
+    "request_id",
+    [b"[1]", b'{"a":1}', b"true", b"null"],
+    ids=["array", "object", "boolean", "null"],
+)
+def test_an_id_that_is_not_a_string_or_number_is_refused(client: Client, request_id: bytes) -> None:
+    client.write(
+        b'{"jsonrpc":"2.0","id":' + request_id + b',"method":"tools/call",'
+        b'"params":{"name":"list_bundles","arguments":{}}}\n'
+    )
+    assert client.next_frame()["error"]["code"] == -32600
+    assert client.request("ping")["result"] == {}
+
+
+def test_a_control_character_in_an_unparsable_frame_id_does_not_stop_the_server(
+    client: Client,
+) -> None:
+    client.write(b'{"jsonrpc":"2.0","id":"a\x01b",oops\n')
+    reply = client.next_frame()
+    assert reply["error"]["code"] == -32700 and reply["id"] is None
+    assert client.request("ping")["result"] == {}
+
+
+def test_a_cancel_naming_an_unusable_id_does_not_stop_the_server(client: Client) -> None:
+    for request_id in ([1], {"a": 1}, None, True):
+        client.send(
+            {
+                "jsonrpc": "2.0",
+                "method": "notifications/cancelled",
+                "params": {"requestId": request_id},
+            }
+        )
+    assert client.request("ping")["result"] == {}
+
+
+PREAMBLE = """
+import io, json, subprocess, sys, threading, time
+from pathlib import Path
+root = Path(sys.argv[1])
+sys.path.insert(0, str(root / "server"))
+from work_adapter import protocol, runtime, tools
+box = runtime.Runtime(root)
+box.data.mkdir(parents=True, exist_ok=True)
+"""
+
+
+def inside_the_adapter(
+    package: Path, home: dict[str, str], tmp_path: Path, script: str
+) -> dict[str, Any]:
+    """Hold the adapter at an exact moment, on the Python the host really starts it with."""
+    environment = home | {"CLOUD_ARCHITECTURE_WORK_DATA": str(tmp_path.resolve() / "data")}
+    done = subprocess.run(
+        [APPLE_PYTHON, "-I", "-B", "-c", PREAMBLE + script, str(package)],
+        env=environment,
+        capture_output=True,
+        text=True,
+        timeout=60,
+        check=False,
+    )
+    assert done.returncode == 0, done.stderr
+    value: dict[str, Any] = json.loads(done.stdout)
+    return value
+
+
+HELD_START = """
+real = subprocess.Popen
+entered = threading.Event()
+children = []
+def held(*args, **options):
+    # The moment after the system has made the child and before anything can know about it.
+    child = real(["/bin/sleep", "60"], stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+                 stderr=subprocess.DEVNULL, start_new_session=True)
+    children.append(child)
+    entered.set()
+    time.sleep(0.5)
+    return child
+subprocess.Popen = held
+results = []
+worker = threading.Thread(target=lambda: results.append(CALL), daemon=True)
+worker.start()
+assert entered.wait(20), "the call never started a child"
+box.stop_all()
+alive = children[0].poll() is None
+children[0].kill()
+worker.join(20)
+started = len(children)
+after = CALL
+print(json.dumps({"alive": alive, "result": SHOW(results[0]), "after": SHOW(after),
+                  "children": len(children), "started": started}))
+"""
+
+
+def held_start(call: str, show: str) -> str:
+    return HELD_START.replace("CALL", call).replace("SHOW", show)
+
+
+def test_shutdown_stops_a_core_caught_between_its_start_and_its_registration(
+    package: Path, home: dict[str, str], tmp_path: Path
+) -> None:
+    report = inside_the_adapter(
+        package,
+        home,
+        tmp_path,
+        held_start('box.run_core(["capabilities"], None, 30, 1)', "(lambda item: item.cancelled)"),
+    )
+    assert report["alive"] is False and report["result"] is True
+    # Once stopping, a call starts nothing at all.
+    assert report["after"] is True and report["children"] == report["started"] == 1
+
+
+def test_shutdown_stops_setup_caught_between_its_start_and_its_registration(
+    package: Path, home: dict[str, str], tmp_path: Path
+) -> None:
+    report = inside_the_adapter(
+        package, home, tmp_path, held_start("box.setup()", '(lambda item: item.get("code"))')
+    )
+    assert report["alive"] is False
+    assert report["result"] == report["after"] == "RUNTIME_SETUP_INTERRUPTED"
+    assert report["children"] == report["started"] == 1
+
+
+def test_a_cancel_arriving_before_the_child_starts_still_stops_it(
+    package: Path, home: dict[str, str], tmp_path: Path
+) -> None:
+    report = inside_the_adapter(
+        package,
+        home,
+        tmp_path,
+        """
+real = subprocess.Popen
+children = []
+def started(*args, **options):
+    child = real(["/bin/sleep", "60"], stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+                 stderr=subprocess.DEVNULL, start_new_session=True)
+    children.append(child)
+    return child
+subprocess.Popen = started
+box.cancel(5)
+done = box.run_core(["capabilities"], None, 30, 5)
+print(json.dumps({"cancelled": done.cancelled, "alive": children[0].poll() is None}))
+""",
+    )
+    assert report == {"cancelled": True, "alive": False}
+
+
+def test_a_cancel_arriving_as_a_call_ends_leaves_no_token(
+    package: Path, home: dict[str, str], tmp_path: Path
+) -> None:
+    report = inside_the_adapter(
+        package,
+        home,
+        tmp_path,
+        """
+output = io.BytesIO()
+server = protocol.Server(tools.Toolbox(box), output)
+finish = box.finished
+def late(token):
+    finish(token)
+    server.cancel({"requestId": token})
+box.finished = late
+server.calls[7] = threading.current_thread()
+server._run_call(7, "list_bundles", {}, False)
+print(json.dumps({"tokens": len(box.cancelled_early), "answered": bool(output.getvalue())}))
+""",
+    )
+    assert report == {"tokens": 0, "answered": True}
+
+
+def test_an_unexpected_failure_on_a_frame_is_answered_and_the_server_goes_on(
+    package: Path, home: dict[str, str], tmp_path: Path
+) -> None:
+    report = inside_the_adapter(
+        package,
+        home,
+        tmp_path,
+        """
+output = io.BytesIO()
+server = protocol.Server(tools.Toolbox(box), output)
+def broken(frame):
+    raise RuntimeError("secret from the frame")
+server.handle = broken
+server.read_frames(io.BytesIO(b"one\\ntwo\\n"))
+text = output.getvalue().decode()
+print(json.dumps({"replies": len(text.splitlines()), "leaked": "secret" in text}))
+""",
+    )
+    assert report == {"replies": 2, "leaked": False}
+
+
+def test_the_stop_signal_still_gets_through_the_frame_guard(
+    package: Path, home: dict[str, str], tmp_path: Path
+) -> None:
+    report = inside_the_adapter(
+        package,
+        home,
+        tmp_path,
+        """
+server = protocol.Server(tools.Toolbox(box), io.BytesIO())
+def stopping(frame):
+    raise protocol.Stop
+server.handle = stopping
+try:
+    server.read_frames(io.BytesIO(b"one\\n"))
+    stopped = False
+except protocol.Stop:
+    stopped = True
+print(json.dumps({"stopped": stopped}))
+""",
+    )
+    assert report == {"stopped": True}
+
+
 def test_oversize_frame_is_refused_by_id_and_the_server_goes_on(client: Client) -> None:
     padding = "x" * (5 * 1024 * 1024)
     client.write(
@@ -861,6 +1073,22 @@ def test_stopping_during_setup_records_no_false_cause(
     assert state == {"state": "not_installed"}
     assert next_chat.body("validate_model", model={})["code"] == "RUNTIME_NOT_READY"
     next_chat.close()
+
+
+def test_setup_refuses_a_source_build(package: Path, home: dict[str, str], tmp_path: Path) -> None:
+    # The lock pins each wheel, and not what a build would pull in. The real setup runs with this.
+    copy, environment = fake_uv(package, home, tmp_path)
+    (tmp_path.resolve() / "bin/uv").write_text(
+        '#!/bin/sh\nprintf "%s\\n" "$@" > "$HOME/uv.arguments"\n'
+        'echo $$ > "$HOME/uv.pid"\nexec sleep 300\n'
+    )
+    server = Client(copy, environment)
+    assert server.body("setup_runtime")["result"]["started"] is True
+    pid = wait_for_file(Path(home["HOME"]) / "uv.pid")
+    arguments = (Path(home["HOME"]) / "uv.arguments").read_text().split()
+    assert {"sync", "--locked", "--no-dev", "--no-install-project", "--no-build"} <= set(arguments)
+    assert server.close() == 0
+    wait_until_stopped(pid)
 
 
 def test_a_client_request_id_cannot_cancel_setup(
@@ -1280,6 +1508,20 @@ def test_symbolic_links_in_a_bundle_are_not_followed(
     assert client.body("render_model", bundle_id=bundle_id)["code"] == "ARTIFACT_UNSAFE"
 
 
+def test_a_hard_link_in_a_bundle_is_not_read(
+    client: Client, home: dict[str, str], tmp_path: Path
+) -> None:
+    bundle_id, folder = rendered_bundle(client, home)
+    secret = tmp_path / "secret.json"
+    secret.write_text('{"secret": true}')
+    (folder / "model.json").unlink()
+    os.link(secret, folder / "model.json")
+    body = client.body("read_artifact", bundle_id=bundle_id, file="model.json")
+    assert body["code"] == "ARTIFACT_UNSAFE"
+    assert "secret" not in json.dumps(body)
+    assert client.body("render_model", bundle_id=bundle_id)["code"] == "ARTIFACT_UNSAFE"
+
+
 def test_a_linked_bundle_and_a_linked_root_are_not_followed(
     client: Client, home: dict[str, str], tmp_path: Path
 ) -> None:
@@ -1581,6 +1823,60 @@ def test_a_second_render_while_one_runs_is_busy(stand_in: Client, home: dict[str
     body = stand_in.body("render_model", model=behaving("garbage"))
     assert (body["status"], body["code"]) == ("busy", "RENDER_BUSY")
     assert stand_in.next_frame()["id"] == 1
+
+
+def test_too_many_calls_at_once_get_a_stable_busy_answer(
+    package: Path, home: dict[str, str], tmp_path: Path
+) -> None:
+    report = inside_the_adapter(
+        package,
+        home,
+        tmp_path,
+        """
+output = io.BytesIO()
+toolbox = tools.Toolbox(box)
+release = threading.Event()
+call = toolbox.call
+def held(name, arguments, token):
+    release.wait(20)
+    return call(name, arguments, token)
+toolbox.call = held
+server = protocol.Server(toolbox, output)
+def frame(number):
+    return json.dumps({"jsonrpc": "2.0", "id": number, "method": "tools/call",
+                       "params": {"name": "list_bundles", "arguments": {}}}).encode() + b"\\n"
+def answers():
+    return [json.loads(line) for line in output.getvalue().decode().splitlines()]
+def status(answer):
+    return json.loads(answer["result"]["content"][0]["text"])
+server.read_frames(io.BytesIO(b"".join(frame(number) for number in range(1, 10))))
+refused = answers()
+release.set()
+for thread in list(server.calls.values()):
+    thread.join(20)
+server.read_frames(io.BytesIO(frame(10)))
+later = answers()[1:]
+print(json.dumps({
+    "refused": [[item["id"], status(item)["status"], status(item)["code"]] for item in refused],
+    "later": sorted(item["id"] for item in later),
+    "statuses": sorted({status(item)["status"] for item in later}),
+}))
+""",
+    )
+    # Eight are running, so only the ninth is refused, and the first eight still get answers.
+    assert report["refused"] == [[9, "busy", "TOO_MANY_CALLS"]]
+    assert report["statuses"] == ["ok"] and report["later"][:8] == list(range(1, 9))
+
+
+def test_the_skill_names_both_reasons_for_busy(package: Path) -> None:
+    skill = (package / "skills/architecture-model/SKILL.md").read_text()
+    row = next(line for line in skill.splitlines() if line.startswith("| `busy` |"))
+    assert "TOO_MANY_CALLS" in row and "RENDER_BUSY" in row
+
+
+def test_the_readme_says_what_reaches_the_host(package: Path) -> None:
+    text = (package / "README.md").read_text()
+    assert "the PNG preview" in text and "those icons reach the host" in text
 
 
 def test_a_cancelled_call_stops_its_process_and_gets_no_answer(

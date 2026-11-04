@@ -68,7 +68,7 @@ The new alpha.3 default uses native Python/Graphviz with no required Docker; use
 - Run under a dedicated low-privilege account where feasible, outside personal credential locations. Workspace cleanup is required but does not establish isolation from malicious jobs.
 - Use per-run temporary directories, job timeouts, bounded renderer child processes, and cleanup on failure. Avoid concurrent jobs that overwrite shared outputs or mutate global tools.
 - Cache dependencies only with OS/architecture/lockfile keys and trusted origins. Do not restore executable artifacts from an untrusted PR into trusted jobs.
-- Upload synthetic-fixture diagnostics/images/reports, even on failure where possible; do not upload customer architectures or secrets. Proposed CI artifact retention: 14 days, subject to repository limits/owner preference.
+- Upload text reports only (`reports/*.log`, `*.xml` and `*.json`), even on failure where possible. The wheel and rendered bundles stay on the runner, because they hold Huawei icons for private personal use (D-018). Do not upload customer architectures or secrets. Proposed CI artifact retention: 14 days, subject to repository limits/owner preference.
 - Keep CI independent of paid model calls. Record the independent model review separately. Cloud deployment and publishing are outside the test job and require their own selected destination and release scope.
 
 ## Verification depth

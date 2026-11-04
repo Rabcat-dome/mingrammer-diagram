@@ -81,7 +81,7 @@ Each bundle holds `diagram.svg`, `diagram.png`, `model.json`, `view.json`, `diag
 
 Bundles live in `~/Documents/CloudArchitectureDiagrams/work`, private to your account. If you sync Documents with iCloud, they sync too. The runtime lives in `~/.local/share/cloud-architecture-diagrams/work-plugin`. The plugin's log holds tool names, status codes and timings, and never model content. Only setup reaches the network, to download packages. Its tool process sends none of your data anywhere, and its renderer has no network access.
 
-Tool calls and their results, including the model and local file paths, are part of the chat, like anything else sent to the model you selected in Work. The app also keeps its own record of each chat, including those calls, under `~/.codex/sessions`. So do not put secret values in a model; the model format has no field for them.
+Tool calls and their results, including the model, local file paths, the PNG preview and any file read through a tool, are part of the chat, like anything else sent to the model you selected in Work. A view with Huawei icons is no exception: `render_model` returns its preview, so those icons reach the host as part of that image. No setting turns this off, so leave Huawei types out of a model whose image should stay on your Mac. The app also keeps its own record of each chat, including those calls, under `~/.codex/sessions`. So do not put secret values in a model; the model format has no field for them.
 
 Bundles stay until you remove them. Nothing deletes them automatically, and no tool can delete them. To see what is older than 30 days, and then delete it:
 

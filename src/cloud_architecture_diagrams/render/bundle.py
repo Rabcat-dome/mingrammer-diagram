@@ -105,8 +105,11 @@ class OutputRoot:
             else:
                 raise RenderFailure("RENDER_BUNDLE_COLLISION", "/bundle")
             os.rename(stage, name, src_dir_fd=self.fd, dst_dir_fd=self.fd)
-            published = True
+            # Until the rename is durable a failure must still take the bundle away, because the
+            # caller hears that nothing was published, and a retry would otherwise collide.
+            stage = name
             os.fsync(self.fd)
+            published = True
         except (OSError, OverflowError, ValueError) as error:
             raise RenderFailure("RENDER_OUTPUT_WRITE_FAILED", "/output") from error
         finally:

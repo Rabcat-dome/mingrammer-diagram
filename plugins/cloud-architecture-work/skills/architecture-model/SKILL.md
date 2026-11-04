@@ -28,7 +28,7 @@ Every answer's `status` says what happened, with `code`, `message` and `remedy` 
 | `artifact_unavailable` | A bundle or file cannot be read, or a bundle did not check out | Relay the remedy, and render again if it says to |
 | `runtime_unavailable` | The private runtime is not ready | Follow step 1 |
 | `invalid_arguments` | The tool call itself was wrong | Correct the call |
-| `busy` | Another render is running | Wait for it, then call again |
+| `busy` | Too many calls are running at once (`TOO_MANY_CALLS`), or another render is (`RENDER_BUSY`) | Wait for them, then call again. Read a bundle's files in small groups, because more than 8 calls at once are refused |
 
 ## What this version can do
 

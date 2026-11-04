@@ -39,6 +39,10 @@ Neither reviewer could read its own model setting, so the model comes from the s
 
 The [`busy` answers](S09-Work-validation.md#busy-answers) from the Work run are a further open P3, and the same fix batch can take them.
 
+## Fixes
+
+Details follow when the fixes are final.
+
 ## Report states these affect
 
 These are at `aefcdbc`. The [P0 report](S10-p0-traceability.md) is unchanged for now, because the fixes above are meant to restore them.

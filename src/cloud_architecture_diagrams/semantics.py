@@ -163,6 +163,15 @@ class Semantics:
     def region_of(self, boundary: Boundary | None) -> Boundary | None:
         return self._ancestor(boundary, {"region"})
 
+    def spans_regions(self, boundary: Boundary) -> bool:
+        """Two regions leave region_of's answer to declaration order, so neither can stand."""
+        declared = [
+            boundary.parent_ref,
+            *(item.target_ref for item in boundary.relations if item.kind == "located_in"),
+        ]
+        regions = {found.id for ref in declared if (found := self.region_of(self.boundary(ref)))}
+        return len(regions) > 1
+
     def zone_of(self, boundary: Boundary | None) -> Boundary | None:
         return self._ancestor(boundary, {"zone"})
 
@@ -280,7 +289,9 @@ class Semantics:
                     "security_group",
                 }:
                     self.emit("BOUNDARY_RELATION_KIND_INVALID", field, boundary.id)
-            if record.placement.location == "zonal" and len(located) > 1:
+            if (record.placement.location == "zonal" and len(located) > 1) or self.spans_regions(
+                boundary
+            ):
                 self.emit("BOUNDARY_LOCATION_MULTIPLE", path + "/relations", boundary.id)
             if boundary.kind == "subnet":
                 limit = record.placement.max_networks

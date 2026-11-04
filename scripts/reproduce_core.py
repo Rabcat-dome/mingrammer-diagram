@@ -42,6 +42,16 @@ def source_digest(root: Path) -> str:
     return state.hexdigest()
 
 
+def proof_passed(report: dict[str, Any]) -> bool:
+    """A proof needs views, routes that agree and no mismatch, or it proves nothing."""
+    return (
+        report["views"] > 0
+        and report["routes_agree"]
+        and not report["mismatches"]
+        and report["wheel_matches_expected"] is not False
+    )
+
+
 def run(command: list[str], *, env: dict[str, str], cwd: Path, stdin: bytes | None = None) -> bytes:
     result = subprocess.run(
         command, env=env, cwd=cwd, input=stdin, capture_output=True, timeout=600, check=False
@@ -218,7 +228,7 @@ def main() -> int:
     }
     arguments.output.write_text(json.dumps(report, indent=1, sort_keys=True) + "\n")
     print(json.dumps(report, indent=1, sort_keys=True))
-    return 0 if not report["mismatches"] and report["wheel_matches_expected"] is not False else 1
+    return 0 if proof_passed(report) else 1
 
 
 if __name__ == "__main__":

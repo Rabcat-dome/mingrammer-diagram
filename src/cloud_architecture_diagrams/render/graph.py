@@ -170,7 +170,7 @@ def wrap(text: str, width: int) -> list[str]:
     return [*lines, current]
 
 
-def _memberships(entity: Entity) -> list[tuple[str, list[str]]]:
+def _memberships(entity: Entity, scheduled: str | None = None) -> list[tuple[str, list[str]]]:
     """Every declared dimension, most specific first; the order decides which one nests."""
     if isinstance(entity, Scope):
         return [("parent", [entity.parent_ref] if entity.parent_ref else [])]
@@ -194,7 +194,7 @@ def _memberships(entity: Entity) -> list[tuple[str, list[str]]]:
     if context := entity.kubernetes:
         for dimension, target in [
             ("namespace", context.namespace_ref),
-            ("node", context.node_ref),
+            ("node", context.node_ref or scheduled),
             ("node pool", context.node_pool_ref),
             ("cluster", context.cluster_ref),
         ]:
@@ -240,11 +240,23 @@ class Mapper:
             if self._is_group(entity) and self._record(entity) is not None
         }
         self.parents: dict[str, str | None] = {}
+        # A scheduling edge alone can name a Pod's Node. Validation has already refused any that
+        # disagree, so each Pod has one answer here, whatever order the edges come in.
+        self.scheduled = {
+            edge.source_ref: edge.target_ref
+            for edge in model.relationships
+            if edge.kind == "scheduling"
+            and self._kubernetes_kind(self.entities.get(edge.source_ref)) == "Pod"
+            and self._kubernetes_kind(self.entities.get(edge.target_ref)) == "Node"
+        }
 
-    def _kubernetes_kind(self, entity: Entity) -> str | None:
+    def _kubernetes_kind(self, entity: Entity | None) -> str | None:
         if isinstance(entity, Resource) and entity.kubernetes:
             return entity.kubernetes.kind
         return None
+
+    def _dimensions(self, entity: Entity) -> list[tuple[str, list[str]]]:
+        return _memberships(entity, self.scheduled.get(entity.id))
 
     def _is_group(self, entity: Entity) -> bool:
         grouping = self.view.grouping
@@ -289,7 +301,7 @@ class Mapper:
 
     def _container(self, entity: Entity) -> str | None:
         allowed = NESTING[self.view.grouping]
-        for dimension, targets in _memberships(entity):
+        for dimension, targets in self._dimensions(entity):
             if dimension not in allowed:
                 continue
             # Dimensions are acyclic one at a time, not together, so a chain must not loop back.
@@ -300,6 +312,7 @@ class Mapper:
                 and target != entity.id
                 and entity.id not in self._chain(target)
                 and not self._implies_another_scope(entity, target)
+                and not self._implies_another_provider(entity, target)
             ]
             if len(found) == 1:
                 return found[0]
@@ -307,6 +320,16 @@ class Mapper:
                 if common := self._common_ancestor(found):
                     return common
         return None
+
+    def _implies_another_provider(self, entity: Entity, target: str) -> bool:
+        """A provider box says who runs what is inside it, and a membership does not change that.
+
+        A resource in another provider's security zone keeps its own box and names the zone in a
+        note.
+        """
+        return (
+            self.view.grouping == "provider" and self.entities[target].provider != entity.provider
+        )
 
     def _implies_another_scope(self, entity: Entity, target: str) -> bool:
         """A box reads as ownership, so an entity must not sit inside a scope it does not declare.
@@ -358,7 +381,7 @@ class Mapper:
     def _notes(self, entity: Entity, parent: str | None) -> list[str]:
         chain = self._chain(parent)
         lines: list[str] = []
-        for dimension, targets in _memberships(entity):
+        for dimension, targets in self._dimensions(entity):
             shown = [
                 target
                 for target in targets
@@ -375,7 +398,7 @@ class Mapper:
         kind = self._kubernetes_kind(entity)
         if kind == "Pod" and isinstance(entity, Resource) and entity.kubernetes:
             # A Pod with no declared Node is unspecified, whatever group it sits beside.
-            if entity.kubernetes.node_ref is None:
+            if entity.kubernetes.node_ref is None and entity.id not in self.scheduled:
                 lines.append("node: unspecified")
         return lines
 
@@ -384,7 +407,7 @@ class Mapper:
         return isinstance(entity, Boundary) and entity.kind == "region"
 
     def _declared(self, entity: Entity) -> dict[str, tuple[str, ...]]:
-        return {name: tuple(targets) for name, targets in _memberships(entity) if targets}
+        return {name: tuple(targets) for name, targets in self._dimensions(entity) if targets}
 
     def _icon(self, record: CatalogRecord) -> GraphIcon | None:
         item = record.representation
@@ -629,8 +652,10 @@ class Mapper:
         return [*synthetic, *placed_groups], placed_nodes
 
     def _check_depth(self) -> None:
+        # The limit counts what is drawn, and provider grouping adds its box around every tree.
+        limit = self.limits.group_depth - (1 if self.view.grouping == "provider" else 0)
         for identifier in self.group_ids:
-            if len(self._chain(identifier)) > self.limits.group_depth:
+            if len(self._chain(identifier)) > limit:
                 raise RenderFailure("RENDER_GROUP_DEPTH_LIMIT", "/views", identifier)
 
 

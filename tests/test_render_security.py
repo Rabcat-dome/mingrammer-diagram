@@ -15,6 +15,7 @@ import subprocess
 import sys
 import threading
 import time
+import tracemalloc
 import xml.etree.ElementTree as ET
 import zlib
 from collections.abc import Callable
@@ -565,14 +566,185 @@ def test_an_invalid_png_blocks_the_bundle(
     assert tree(output) == []
 
 
+def png_chunk(kind: bytes, body: bytes) -> bytes:
+    return len(body).to_bytes(4) + kind + body + zlib.crc32(kind + body).to_bytes(4)
+
+
 def rebuilt_png(width: int, height: int) -> bytes:
-    """A structurally valid PNG of any size, as a compromised engine could write."""
-
-    def chunk(kind: bytes, body: bytes) -> bytes:
-        return len(body).to_bytes(4) + kind + body + zlib.crc32(kind + body).to_bytes(4)
-
+    """A wholly valid gray PNG of any size, as a compromised engine could write."""
     header = struct.pack(">IIBBBBB", width, height, 8, 0, 0, 0, 0)
-    return PNG_SIGNATURE + chunk(b"IHDR", header) + chunk(b"IDAT", b"x") + chunk(b"IEND", b"")
+    pixels = zlib.compress((b"\0" + bytes(width)) * height, 1)
+    return (
+        PNG_SIGNATURE
+        + png_chunk(b"IHDR", header)
+        + png_chunk(b"IDAT", pixels)
+        + png_chunk(b"IEND", b"")
+    )
+
+
+def png_parts(raw: bytes) -> tuple[bytes, bytes, int]:
+    """A real image's header body, its pixel stream, and the size of one decoded row."""
+    offset, header, stream = len(PNG_SIGNATURE), b"", b""
+    while offset < len(raw):
+        length = int.from_bytes(raw[offset : offset + 4])
+        kind, body = raw[offset + 4 : offset + 8], raw[offset + 8 : offset + 8 + length]
+        header = body if kind == b"IHDR" else header
+        stream += body if kind == b"IDAT" else b""
+        offset += 12 + length
+    return header, stream, len(zlib.decompress(stream)) // struct.unpack(">I", header[4:8])[0]
+
+
+def framed(raw: bytes, *chunks: bytes, header: bytes | None = None) -> bytes:
+    """The image's real size, with valid checksums on every chunk, around these chunks."""
+    first = png_parts(raw)[0] if header is None else header
+    return PNG_SIGNATURE + png_chunk(b"IHDR", first) + b"".join(chunks) + png_chunk(b"IEND", b"")
+
+
+def with_stream(raw: bytes, stream: bytes) -> bytes:
+    return framed(raw, png_chunk(b"IDAT", stream))
+
+
+def with_pixels(raw: bytes, change: Callable[[bytes, int], bytes]) -> bytes:
+    _, stream, row = png_parts(raw)
+    return with_stream(raw, zlib.compress(change(zlib.decompress(stream), row)))
+
+
+def split_by_another_chunk(raw: bytes) -> bytes:
+    stream = png_parts(raw)[1]
+    return framed(
+        raw,
+        png_chunk(b"IDAT", stream[:10]),
+        png_chunk(b"tEXt", b"a\0b"),
+        png_chunk(b"IDAT", stream[10:]),
+    )
+
+
+def with_header(raw: bytes, depth: int, color: int, interlace: int = 0) -> bytes:
+    header = png_parts(raw)[0]
+    changed = header[:8] + bytes([depth, color, 0, 0, interlace])
+    return framed(raw, png_chunk(b"IDAT", png_parts(raw)[1]), header=changed)
+
+
+@pytest.mark.parametrize(
+    "alter",
+    [
+        lambda raw: with_stream(raw, b"not a zlib stream"),
+        lambda raw: with_stream(raw, png_parts(raw)[1][:-8]),
+        lambda raw: with_stream(raw, png_parts(raw)[1] + b"after the end"),
+        lambda raw: with_pixels(raw, lambda pixels, row: pixels[:-row]),
+        lambda raw: with_pixels(raw, lambda pixels, row: pixels + b"\0"),
+        lambda raw: with_pixels(raw, lambda pixels, row: pixels[:-row] + b"\5" + pixels[1 - row :]),
+        split_by_another_chunk,
+        lambda raw: framed(
+            raw, png_chunk(b"IHDR", png_parts(raw)[0]), png_chunk(b"IDAT", png_parts(raw)[1])
+        ),
+        lambda raw: with_header(raw, 8, 6, interlace=1),
+        lambda raw: with_header(raw, 8, 3),
+        lambda raw: with_header(raw, 3, 6),
+    ],
+    ids=[
+        "not-zlib",
+        "cut-short",
+        "bytes-after-the-stream",
+        "one-row-short",
+        "one-byte-over",
+        "illegal-filter",
+        "stream-split-by-another-chunk",
+        "second-header",
+        "interlaced",
+        "palette",
+        "illegal-depth",
+    ],
+)
+def test_pixels_that_do_not_decode_block_the_bundle(
+    alter: Callable[[bytes], bytes], tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # Every chunk's checksum is valid here, so only decoding can tell.
+    output_engine(monkeypatch, png=alter)
+    output = tmp_path / "out"
+    result = render(GOOD, output)
+    assert codes(result) == ["RENDER_PNG_INVALID"]
+    assert renderer.exit_status(result) == 4 and tree(output) == []
+
+
+def test_a_real_image_split_across_chunks_still_publishes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def split(raw: bytes) -> bytes:
+        stream = png_parts(raw)[1]
+        return framed(raw, png_chunk(b"IDAT", stream[:10]), png_chunk(b"IDAT", stream[10:]))
+
+    output_engine(monkeypatch, png=split)
+    assert render(GOOD, tmp_path / "out").rendered
+
+
+def test_every_reviewed_image_passes_the_decode() -> None:
+    images = sorted((FIXTURES.parent / "baselines").glob("*.png"))
+    assert len(images) >= 26
+    for image in images:
+        checks.check_png(image.read_bytes(), LIMITS)
+
+
+def test_a_bad_filter_past_the_first_decoded_piece_is_found() -> None:
+    width, height = 2000, 1000
+    assert (width + 1) * height > checks.PNG_DECODE_PIECE
+    good = (b"\0" + bytes(width)) * height
+    bad = good[: -(width + 1)] + b"\5" + bytes(width)
+
+    def image(pixels: bytes) -> bytes:
+        header = struct.pack(">IIBBBBB", width, height, 8, 0, 0, 0, 0)
+        return framed(b"", png_chunk(b"IDAT", zlib.compress(pixels, 1)), header=header)
+
+    assert checks.check_png(image(good), LIMITS) == (width, height)
+    with pytest.raises(RenderFailure):
+        checks.check_png(image(bad), LIMITS)
+
+
+def test_an_illegal_bit_depth_is_refused_even_when_its_size_adds_up() -> None:
+    # Eight 3-bit samples fit in 3 bytes, so only the depth itself is wrong in this image.
+    header = struct.pack(">IIBBBBB", 8, 1, 3, 0, 0, 0, 0)
+    stream = zlib.compress(b"\0" + bytes(3))
+    with pytest.raises(RenderFailure):
+        checks.check_png(framed(b"", png_chunk(b"IDAT", stream), header=header), LIMITS)
+
+
+def test_a_stream_far_larger_than_its_image_stops_at_its_size() -> None:
+    header = struct.pack(">IIBBBBB", 1, 1, 8, 0, 0, 0, 0)
+    size = 64 * 1024 * 1024
+    bomb = framed(b"", png_chunk(b"IDAT", zlib.compress(bytes(size), 1)), header=header)
+    tracemalloc.start()
+    try:
+        with pytest.raises(RenderFailure):
+            checks.check_png(bomb, LIMITS)
+        _, peak = tracemalloc.get_traced_memory()
+    finally:
+        tracemalloc.stop()
+    assert peak < size // 8, "decoding held the output instead of counting it"
+
+
+def test_a_failed_sync_after_the_rename_leaves_nothing_published(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    output = tmp_path / "out"
+    real = os.fsync
+    failed: list[int] = []
+
+    def failing(descriptor: int) -> None:
+        root = output.exists() and os.fstat(descriptor).st_ino == output.stat().st_ino
+        # The root also syncs earlier, and only a bundle already in it makes this the final one.
+        if root and any(not name.startswith(".") for name in os.listdir(descriptor)):
+            failed.append(descriptor)
+            raise OSError("disk full")
+        real(descriptor)
+
+    monkeypatch.setattr(os, "fsync", failing)
+    result = render(GOOD, output)
+    assert failed, "the final sync never ran, so this would prove nothing"
+    assert codes(result) == ["RENDER_OUTPUT_WRITE_FAILED"] and not result.rendered
+    assert tree(output) == []
+    # The caller heard that nothing was published, so trying again has to work.
+    monkeypatch.setattr(os, "fsync", real)
+    assert render(GOOD, output).rendered
 
 
 def resized(resize: Callable[[int, int], tuple[int, int]]) -> Callable[[bytes], bytes]:
@@ -889,6 +1061,33 @@ def test_deep_nesting_is_rejected_before_graphviz(tmp_path: Path, forbid_engine:
     output = tmp_path / "out"
     result = render(chain_model(LIMITS.group_depth + 1), output)
     assert codes(result) == ["RENDER_GROUP_DEPTH_LIMIT"] and not output.exists()
+
+
+def test_the_depth_limit_counts_the_provider_box(tmp_path: Path) -> None:
+    fits = render(chain_model(LIMITS.group_depth - 1), tmp_path / "fits")
+    assert fits.rendered
+    parents = {item["id"]: item["parent"] for item in graph_of(fits)["groups"]}
+
+    def depth(identifier: str | None) -> int:
+        return 0 if identifier is None else 1 + depth(parents[identifier])
+
+    assert max(map(depth, parents)) == LIMITS.group_depth
+    over = render(chain_model(LIMITS.group_depth), tmp_path / "over")
+    assert codes(over) == ["RENDER_GROUP_DEPTH_LIMIT"] and not (tmp_path / "over").exists()
+
+
+def test_the_depth_limit_stays_whole_where_no_provider_box_is_added() -> None:
+    def mapped(depth: int) -> None:
+        model = chain_model(depth)
+        for boundary in model["boundaries"]:
+            boundary.update(provider="aws", kind="subnet")
+        model["views"][0]["grouping"] = "network"
+        parsed = Architecture.model_validate(model)
+        map_view(parsed, parsed.views[0], "strict", LIMITS)
+
+    mapped(LIMITS.group_depth)
+    with pytest.raises(RenderFailure):
+        mapped(LIMITS.group_depth + 1)
 
 
 @pytest.fixture

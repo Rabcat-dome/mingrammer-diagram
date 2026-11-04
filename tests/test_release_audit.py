@@ -2,8 +2,11 @@
 
 import copy
 import json
+import re
 import subprocess
 import sys
+import tarfile
+import zipfile
 from pathlib import Path
 from typing import Any
 
@@ -236,3 +239,104 @@ def test_a_false_or_empty_claim_is_found(change: dict[str, Any], message: str) -
     records[0] |= change
     errors = release_audit.trace_errors(records)
     assert any(message in error and records[0]["id"] in error for error in errors), errors
+
+
+def test_ci_uploads_only_text_reports() -> None:
+    # The wheel and the rendered bundles hold Huawei icons for private personal use (D-018).
+    workflow = (ROOT / ".github/workflows/quality-gate.yml").read_text()
+    assert workflow.count("actions/upload-artifact@") == 1
+    found = re.search(r"path: \|\n((?: {12}\S+\n)+)", workflow)
+    assert found, "the upload must name its paths one by one"
+    assert found.group(1).split() == ["reports/*.log", "reports/*.xml", "reports/*.json"]
+
+
+def test_what_a_source_archive_must_hold_stays_required() -> None:
+    assert set(release_audit.SDIST_REQUIRED) == {
+        "README.md",
+        "pyproject.toml",
+        "uv.lock",
+        "src/cloud_architecture_diagrams/cli.py",
+        "src/cloud_architecture_diagrams/assets/NOTICE.md",
+        "src/cloud_architecture_diagrams/assets/THIRD-PARTY-PYTHON.md",
+        "src/cloud_architecture_diagrams/catalog_data/assets.json",
+    }
+    assert set(release_audit.WHEEL_REQUIRED) == {
+        "cloud_architecture_diagrams/cli.py",
+        *release_audit.PACKAGE_REQUIRED,
+    }
+
+
+def archives(folder: Path, sdist: dict[str, bytes], wheel: dict[str, bytes]) -> Path:
+    with tarfile.open(folder / "x-1.tar.gz", "w:gz") as archive:
+        for name, data in sdist.items():
+            path = folder / "entry"
+            path.write_bytes(data)
+            archive.add(path, f"x-1/{name}")
+            path.unlink()
+    with zipfile.ZipFile(folder / "x-1-py3-none-any.whl", "w") as archive:
+        for name, data in wheel.items():
+            archive.writestr(name, data)
+    return folder
+
+
+def full_wheel(data: bytes = b"x") -> dict[str, bytes]:
+    return dict.fromkeys(release_audit.WHEEL_REQUIRED, data)
+
+
+def full_sdist(data: bytes = b"x") -> dict[str, bytes]:
+    return dict.fromkeys(release_audit.SDIST_REQUIRED, data)
+
+
+def audit_errors(folder: Path) -> list[str]:
+    errors: list[str] = release_audit.audit(folder)["errors"]
+    return errors
+
+
+def test_an_empty_source_archive_fails_the_audit(tmp_path: Path) -> None:
+    errors = audit_errors(archives(tmp_path, {}, full_wheel()))
+    assert {f"sdist: lacks {name}" for name in release_audit.SDIST_REQUIRED} == set(errors)
+
+
+def test_a_source_archive_with_one_harmless_file_fails_the_audit(tmp_path: Path) -> None:
+    errors = audit_errors(archives(tmp_path, {"README.md": b"x"}, full_wheel()))
+    assert "sdist: lacks pyproject.toml" in errors
+
+
+def test_a_wheel_of_empty_files_fails_the_audit(tmp_path: Path) -> None:
+    errors = audit_errors(archives(tmp_path, full_sdist(), full_wheel(b"")))
+    assert {f"wheel: {name} is empty" for name in release_audit.WHEEL_REQUIRED} == set(errors)
+
+
+def test_a_source_archive_of_empty_files_fails_the_audit(tmp_path: Path) -> None:
+    errors = audit_errors(archives(tmp_path, full_sdist(b""), full_wheel()))
+    assert {f"sdist: {name} is empty" for name in release_audit.SDIST_REQUIRED} == set(errors)
+
+
+def test_a_name_that_only_ends_alike_does_not_count() -> None:
+    assert release_audit.missing_names(["xREADME.md"], ("README.md",)) == ["README.md"]
+
+
+def test_the_audit_passes_when_each_archive_is_whole(tmp_path: Path) -> None:
+    assert audit_errors(archives(tmp_path, full_sdist(), full_wheel())) == []
+
+
+GOOD_PROOF = {"views": 26, "routes_agree": True, "mismatches": [], "wheel_matches_expected": True}
+
+
+@pytest.mark.parametrize(
+    ("change", "passes"),
+    [
+        ({}, True),
+        ({"wheel_matches_expected": None}, True),
+        ({"views": 0}, False),
+        ({"routes_agree": False}, False),
+        ({"mismatches": ["a--b"]}, False),
+        ({"wheel_matches_expected": False}, False),
+    ],
+)
+def test_a_reproduction_proof_fails_unless_it_proved_something(
+    change: dict[str, Any], passes: bool
+) -> None:
+    from reproduce_core import proof_passed
+
+    assert proof_passed(GOOD_PROOF | change) is passes

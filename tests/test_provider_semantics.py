@@ -425,3 +425,43 @@ def test_onprem_overlapping_logical_memberships_remain_valid(mode: Mode) -> None
         {"kind": "network_member_of", "target_ref": "network-other"}
     )
     assert not codes(document, mode)["error"]
+
+
+def spoke_in_two_regions() -> dict[str, Any]:
+    model: dict[str, Any] = json.loads(
+        (Path(__file__).parent / "fixtures/references/azure-hub-spoke.json").read_text()
+    )
+    spoke = next(item for item in model["boundaries"] if item["id"] == "vnet-spoke")
+    home = next(item for item in model["boundaries"] if item["id"] == spoke["parent_ref"])
+    model["boundaries"].append({**home, "id": "region-other", "name": "other"})
+    del spoke["parent_ref"]
+    spoke["relations"] = [
+        {"kind": "located_in", "target_ref": "region-other"},
+        {"kind": "located_in", "target_ref": home["id"]},
+    ]
+    return model
+
+
+@pytest.mark.parametrize("reverse", [False, True])
+def test_a_boundary_in_two_regions_fails_in_either_order(reverse: bool) -> None:
+    model = spoke_in_two_regions()
+    spoke = next(item for item in model["boundaries"] if item["id"] == "vnet-spoke")
+    if reverse:
+        spoke["relations"].reverse()
+    assert "BOUNDARY_LOCATION_MULTIPLE" in codes(model)["error"]
+
+
+def test_a_parent_and_a_location_in_different_regions_fail() -> None:
+    model = spoke_in_two_regions()
+    spoke = next(item for item in model["boundaries"] if item["id"] == "vnet-spoke")
+    spoke["parent_ref"] = spoke["relations"].pop()["target_ref"]
+    assert "BOUNDARY_LOCATION_MULTIPLE" in codes(model)["error"]
+
+
+def test_a_parent_and_a_location_in_one_region_stay_valid() -> None:
+    model = spoke_in_two_regions()
+    spoke = next(item for item in model["boundaries"] if item["id"] == "vnet-spoke")
+    spoke["parent_ref"] = spoke["relations"][1]["target_ref"]
+    spoke["relations"].pop(0)
+    assert "BOUNDARY_LOCATION_MULTIPLE" not in codes(model)["error"]
+    assert codes(model)["error"] == set()

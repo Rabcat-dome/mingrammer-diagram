@@ -53,12 +53,16 @@ jobs:
           uv sync --locked --python 3.13.7 --no-managed-python
       - name: Run every implemented check
         run: uv run --locked python scripts/quality_gate.py
-      - name: Upload synthetic reports and build outputs
+      # Text only. The wheel and rendered bundles hold Huawei icons for private personal use (D-018).
+      - name: Upload text reports
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: m1-quality-${{ github.run_id }}-${{ github.run_attempt }}
-          path: reports/
+          path: |
+            reports/*.log
+            reports/*.xml
+            reports/*.json
           retention-days: 14
           if-no-files-found: error
       - name: Remove per-run Python environment

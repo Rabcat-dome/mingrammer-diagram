@@ -14,6 +14,14 @@ from .graph import RenderGraph
 from .icons import PNG_SIGNATURE, VerifiedIcon
 from .limits import Limits
 
+PNG_HEADER_BYTES = 13
+# Bit depths by color type. A palette image is left out: the engine does not write one, and without
+# a check of its palette such a file would pass here and fail in a viewer.
+PNG_DEPTHS = {0: (1, 2, 4, 8, 16), 2: (8, 16), 4: (8, 16), 6: (8, 16)}
+PNG_CHANNELS = {0: 1, 2: 3, 4: 2, 6: 4}
+PNG_LAST_FILTER = 4
+PNG_DECODE_PIECE = 1024 * 1024
+
 SVG = "http://www.w3.org/2000/svg"
 XLINK = "http://www.w3.org/1999/xlink"
 XML = "http://www.w3.org/XML/1998/namespace"
@@ -206,8 +214,49 @@ def png_scale(root: ET.Element, size: tuple[int, int], limits: Limits) -> float:
     return math.floor(scale * 1000) / 1000
 
 
+def _row_bytes(width: int, header: bytes) -> int:
+    """A scanline's size with its filter byte, from a legal, non-interlaced image header."""
+    if len(header) != PNG_HEADER_BYTES:
+        raise RenderFailure("RENDER_PNG_INVALID", "/png")
+    depth, color, compression, filtering, interlace = header[8:]
+    if (
+        depth not in PNG_DEPTHS.get(color, ())
+        or compression != 0
+        or filtering != 0
+        # Neither engine route writes Adam7, so one here means the file is not what was asked for.
+        or interlace != 0
+    ):
+        raise RenderFailure("RENDER_PNG_INVALID", "/png")
+    return 1 + math.ceil(width * PNG_CHANNELS[color] * depth / 8)
+
+
+def _check_pixels(stream: bytes, width: int, height: int, header: bytes) -> None:
+    """Decode without keeping the output, so a stream cannot hold more memory than one piece."""
+    row = _row_bytes(width, header)
+    expected = row * height
+    decoder = zlib.decompressobj()
+    pending = stream
+    seen = 0
+    try:
+        while not decoder.eof:
+            piece = decoder.decompress(pending, PNG_DECODE_PIECE)
+            pending = decoder.unconsumed_tail
+            if not piece and not pending:
+                break
+            for at in range(-seen % row, len(piece), row):
+                if piece[at] > PNG_LAST_FILTER:
+                    raise RenderFailure("RENDER_PNG_INVALID", "/png")
+            seen += len(piece)
+            if seen > expected:
+                raise RenderFailure("RENDER_PNG_INVALID", "/png")
+    except zlib.error as error:
+        raise RenderFailure("RENDER_PNG_INVALID", "/png") from error
+    if not decoder.eof or decoder.unused_data or seen != expected:
+        raise RenderFailure("RENDER_PNG_INVALID", "/png")
+
+
 def check_png(data: bytes, limits: Limits) -> tuple[int, int]:
-    """Walk every chunk, so a truncated or corrupted file cannot pass on its header alone."""
+    """Walk every chunk and decode the pixels, because a valid checksum says nothing about them."""
     if len(data) > limits.file_bytes:
         raise RenderFailure("RENDER_ARTIFACT_LIMIT", "/png")
     if not data.startswith(PNG_SIGNATURE) or data[12:16] != b"IHDR":
@@ -218,7 +267,9 @@ def check_png(data: bytes, limits: Limits) -> tuple[int, int]:
     if width * height > limits.pixels:
         raise RenderFailure("RENDER_PIXEL_LIMIT", "/png")
     offset = len(PNG_SIGNATURE)
-    pixels = 0
+    header = b""
+    stream: list[bytes] = []
+    last = b""
     while offset + 12 <= len(data):
         length = int.from_bytes(data[offset : offset + 4])
         kind = data[offset + 4 : offset + 8]
@@ -228,10 +279,20 @@ def check_png(data: bytes, limits: Limits) -> tuple[int, int]:
         crc = int.from_bytes(data[end : end + 4])
         if zlib.crc32(data[offset + 4 : end]) != crc:
             raise RenderFailure("RENDER_PNG_INVALID", "/png")
-        pixels += length if kind == b"IDAT" else 0
+        if kind == b"IHDR":
+            if header:
+                raise RenderFailure("RENDER_PNG_INVALID", "/png")
+            header = data[offset + 8 : end]
+        if kind == b"IDAT":
+            # A PNG's pixels are one stream, and only adjacent chunks can continue it.
+            if stream and last != b"IDAT":
+                raise RenderFailure("RENDER_PNG_INVALID", "/png")
+            stream.append(data[offset + 8 : end])
+        last = kind
         offset = end + 4
         if kind == b"IEND":
-            if offset != len(data) or not pixels:
+            if offset != len(data) or not any(stream):
                 raise RenderFailure("RENDER_PNG_INVALID", "/png")
+            _check_pixels(b"".join(stream), width, height, header)
             return width, height
     raise RenderFailure("RENDER_PNG_INVALID", "/png")

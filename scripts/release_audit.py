@@ -31,6 +31,17 @@ PACKAGE_REQUIRED = (
     "assets/fonts/NotoSansThai-OFL.txt",
     "catalog_data/assets.json",
 )
+WHEEL_REQUIRED = ("cloud_architecture_diagrams/cli.py", *PACKAGE_REQUIRED)
+# What a build from this archive needs, so that an archive holding nothing forbidden is not enough.
+SDIST_REQUIRED = (
+    "README.md",
+    "pyproject.toml",
+    "uv.lock",
+    "src/cloud_architecture_diagrams/cli.py",
+    "src/cloud_architecture_diagrams/assets/NOTICE.md",
+    "src/cloud_architecture_diagrams/assets/THIRD-PARTY-PYTHON.md",
+    "src/cloud_architecture_diagrams/catalog_data/assets.json",
+)
 PRIVATE_USE = "private personal use"
 REQUIREMENTS = ROOT / "doc/requirements/requirements.md"
 TRACE = ROOT / "doc/project-management/evidence/S10-p0-traceability.json"
@@ -48,25 +59,51 @@ def forbidden_names(names: list[str]) -> list[str]:
     return sorted(name for name in names if FORBIDDEN.search(name))
 
 
+def _is(name: str, item: str) -> bool:
+    return name == item or name.endswith("/" + item)
+
+
 def missing_names(names: list[str], required: tuple[str, ...]) -> list[str]:
-    return [item for item in required if not any(name.endswith(item) for name in names)]
+    return [item for item in required if not any(_is(name, item) for name in names)]
 
 
-def wheel_names(dist: Path) -> list[str]:
+def empty_required(sizes: dict[str, int], required: tuple[str, ...]) -> list[str]:
+    """A required path holding nothing is as absent as a missing one, though its name is there."""
+    return [
+        item
+        for item in required
+        if any(_is(name, item) for name in sizes)
+        and not any(size for name, size in sizes.items() if _is(name, item))
+    ]
+
+
+def wheel_sizes(dist: Path) -> dict[str, int]:
     wheels = sorted(dist.glob("*.whl"))
     if len(wheels) != 1:
         raise SystemExit(f"{dist}: expected one wheel, found {len(wheels)}")
     with zipfile.ZipFile(wheels[0]) as wheel:
-        return wheel.namelist()
+        return {item.filename: item.file_size for item in wheel.infolist()}
 
 
-def sdist_names(dist: Path) -> list[str]:
+def wheel_names(dist: Path) -> list[str]:
+    return list(wheel_sizes(dist))
+
+
+def sdist_sizes(dist: Path) -> dict[str, int]:
     archives = sorted(dist.glob("*.tar.gz"))
     if len(archives) != 1:
         raise SystemExit(f"{dist}: expected one sdist, found {len(archives)}")
     with tarfile.open(archives[0]) as archive:
         # The top folder is only the package's name, and a path check must not read it.
-        return [name.split("/", 1)[1] for name in archive.getnames() if "/" in name]
+        return {
+            item.name.split("/", 1)[1]: item.size
+            for item in archive.getmembers()
+            if "/" in item.name
+        }
+
+
+def sdist_names(dist: Path) -> list[str]:
+    return list(sdist_sizes(dist))
 
 
 def claude_plugin_names(root: Path = CLAUDE_PLUGIN) -> list[str]:
@@ -85,9 +122,10 @@ def work_plugin_names() -> list[str]:
 
 
 def audit(dist: Path) -> dict[str, Any]:
+    archives = {"wheel": wheel_sizes(dist), "sdist": sdist_sizes(dist)}
     packages = {
-        "wheel": (wheel_names(dist), PACKAGE_REQUIRED),
-        "sdist": (sdist_names(dist), ()),
+        "wheel": (list(archives["wheel"]), WHEEL_REQUIRED),
+        "sdist": (list(archives["sdist"]), SDIST_REQUIRED),
         "claude-plugin": (claude_plugin_names(), PACKAGE_REQUIRED),
         "work-plugin": (work_plugin_names(), PACKAGE_REQUIRED),
     }
@@ -101,6 +139,10 @@ def audit(dist: Path) -> dict[str, Any]:
                 f"sdist: must not ship {name}" for name in names if SDIST_FORBIDDEN.search(name)
             ]
         errors += [f"{label}: lacks {name}" for name in missing_names(names, required)]
+    for label, sizes in archives.items():
+        errors += [
+            f"{label}: {name} is empty" for name in empty_required(sizes, packages[label][1])
+        ]
     for path in (
         CLAUDE_PLUGIN / "README.md",
         CLAUDE_PLUGIN / "skills/architecture-model/SKILL.md",

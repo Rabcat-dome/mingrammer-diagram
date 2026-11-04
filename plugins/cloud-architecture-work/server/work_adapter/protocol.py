@@ -58,6 +58,22 @@ def parse_frame(frame: bytes) -> tuple[Any, bool]:
         return json.loads(frame, parse_constant=_no_constant), True
 
 
+def _valid_id(value: Any) -> bool:
+    """A JSON-RPC ID is a string or a number. Anything else cannot key a call or be trusted back."""
+    return isinstance(value, (str, int, float)) and not isinstance(value, bool)
+
+
+def _recovered_id(frame: bytes) -> Any:
+    """The ID of a frame that did not parse, if one can still be read from its start."""
+    found = REQUEST_ID.search(frame[:256])
+    if found is None:
+        return None
+    try:
+        return json.loads(found.group(1))
+    except ValueError:
+        return None
+
+
 def log(event: str, **values: object) -> None:
     # Only names, codes and timings, so an architecture's content never reaches a log (T-014).
     fields = " ".join(f"{key}={value}" for key, value in values.items())
@@ -140,11 +156,12 @@ class Server:
             code=outcome.body.get("code", "-"),
             ms=round((time.monotonic() - started) * 1000),
         )
-        self.toolbox.runtime.finished(request_id)
+        # The call leaves `calls` first, so a cancel arriving now is ignored and leaves no token.
         with self.calls_guard:
             self.calls.pop(request_id, None)
             cancelled = request_id in self.cancelled
             self.cancelled.discard(request_id)
+        self.toolbox.runtime.finished(request_id)
         # The protocol asks a server not to answer a request its client has cancelled.
         if not cancelled:
             self.reply(request_id, outcome.result())
@@ -176,19 +193,19 @@ class Server:
 
     def cancel(self, params: dict[str, Any]) -> None:
         request_id = params.get("requestId")
+        if not _valid_id(request_id):
+            return
+        # Under the lock, so the call cannot finish between this check and its token being set.
         with self.calls_guard:
-            known = request_id in self.calls
-            if known:
+            if request_id in self.calls:
                 self.cancelled.add(request_id)
-        if known:
-            self.toolbox.runtime.cancel(request_id)
+                self.toolbox.runtime.cancel(request_id)
 
     def handle(self, frame: bytes) -> None:
         try:
             message, repeated = parse_frame(frame)
         except (ValueError, RecursionError):
-            found = REQUEST_ID.search(frame[:256])
-            self.error(json.loads(found.group(1)) if found else None, -32700, "Not valid JSON.")
+            self.error(_recovered_id(frame), -32700, "Not valid JSON.")
             return
         if not isinstance(message, dict) or not isinstance(message.get("method"), str):
             if not (isinstance(message, dict) and ("result" in message or "error" in message)):
@@ -204,6 +221,9 @@ class Server:
                 self.cancel(params)
             return
         request_id = message["id"]
+        if not _valid_id(request_id):
+            self.error(None, -32600, "A request ID must be a string or a number.")
+            return
         if method == "initialize":
             self.initialize(request_id, params)
         elif method == "ping":
@@ -224,18 +244,26 @@ class Server:
                 self._refuse_oversize(stream, frame)
                 continue
             if frame.strip():
-                self.handle(frame)
+                self._handle_safely(frame)
+
+    def _handle_safely(self, frame: bytes) -> None:
+        """One bad frame must not end the chat's tool process."""
+        try:
+            self.handle(frame)
+        except Stop:
+            raise
+        except Exception as error:
+            # The exception's text can quote the frame, so only its type reaches the log.
+            log("frame-error", type=type(error).__name__)
+            self.error(None, -32603, "This request could not be handled.")
 
     def _refuse_oversize(self, stream: BinaryIO, frame: bytes) -> None:
-        found = REQUEST_ID.search(frame[:256])
         while True:
             chunk = stream.readline(1024 * 1024)
             if not chunk or chunk.endswith(b"\n"):
                 break
         log("oversize-frame")
-        self.error(
-            json.loads(found.group(1)) if found else None, -32600, "The request is too large."
-        )
+        self.error(_recovered_id(frame), -32600, "The request is too large.")
 
 
 def _signalled(_signum: int, _frame: object) -> None:

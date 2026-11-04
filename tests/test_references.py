@@ -770,3 +770,113 @@ def test_thai_labels_render_strictly_with_the_same_ids(tmp_path: Path) -> None:
     text = " ".join(item.text or "" for item in svg_root(result).iter(f"{{{SVG}}}text"))
     assert "ฐานข้อมูลหลัก" in text and "ระบบเฝ้าระวัง" in text
     assert "Noto Sans Thai" in json.dumps(manifest_of(result)["fonts"])
+
+
+def foreign_zone_model() -> dict[str, Any]:
+    return {
+        "schema_version": "1.0.0",
+        "metadata": {"id": "zone", "title": "Zone", "environment": "test", "assumptions": ["x"]},
+        "scopes": [],
+        "boundaries": [
+            {
+                "id": "trust",
+                "name": "Shared trust zone",
+                "provider": "external",
+                "kind": "security_zone",
+            }
+        ],
+        "resources": [
+            {
+                "id": "app",
+                "name": "Application",
+                "provider": "gcp",
+                "service_type": "gcp.compute.compute_engine",
+                "taxonomy": "compute.vm",
+                "placement": {"security_boundaries": ["trust"]},
+            }
+        ],
+        "relationships": [],
+        "views": [{"id": "overview", "title": "Overview", "entity_refs": ["trust", "app"]}],
+    }
+
+
+def test_a_foreign_security_zone_keeps_a_resource_in_its_own_provider(tmp_path: Path) -> None:
+    model = foreign_zone_model()
+    assert errors(model) == []
+    found = graph("", "overview", tmp_path, model)
+    assert chain_of(found, "app") == ["_provider.gcp"]
+    # The membership is a declared fact, so leaving the box must not lose it.
+    assert "security: Shared trust zone" in " ".join(node_of(found, "app")["lines"])
+    assert next(item for item in found["groups"] if item["id"] == "trust")["parent"] == (
+        "_provider.external"
+    )
+
+
+def test_a_foreign_security_zone_keeps_a_boundary_in_its_own_provider(tmp_path: Path) -> None:
+    model = foreign_zone_model()
+    model["boundaries"].append(
+        {
+            "id": "vpc",
+            "name": "Network",
+            "provider": "gcp",
+            "kind": "network",
+            "relations": [{"kind": "security_member_of", "target_ref": "trust"}],
+        }
+    )
+    model["views"][0]["entity_refs"].append("vpc")
+    found = graph("", "overview", tmp_path, model)
+    assert (
+        next(item for item in found["groups"] if item["id"] == "vpc")["parent"] == "_provider.gcp"
+    )
+
+
+@pytest.mark.parametrize("name", ALL)
+def test_every_provider_box_holds_only_that_provider(name: str, tmp_path: Path) -> None:
+    model = model_of(name)
+    views = [view for view in model["views"] if view.get("grouping", "provider") == "provider"]
+    assert views or name == "onprem-physical-logical"
+    for view in views:
+        found = graph(name, view["id"], tmp_path / view["id"], model)
+        groups = {item["id"]: item for item in found["groups"]}
+        for item in [*found["nodes"], *found["groups"]]:
+            at = item["group"] if "group" in item else item["parent"]
+            while at is not None:
+                assert groups[at]["provider"] == item["provider"], (item["id"], at)
+                at = groups[at]["parent"]
+
+
+def scheduled_pod(target: str = "aks-node-1") -> dict[str, Any]:
+    model = model_of("azure-hub-spoke")
+    del resource(model, "web-pod-1")["kubernetes"]["node_ref"]
+    model["relationships"].append(
+        {"id": "pod-to-node", "source_ref": "web-pod-1", "target_ref": target, "kind": "scheduling"}
+    )
+    view_of(model, "aks-nodes")["relationship_refs"].append("pod-to-node")
+    return model
+
+
+def test_a_scheduling_edge_alone_places_a_pod_on_its_node(tmp_path: Path) -> None:
+    model = scheduled_pod()
+    assert errors(model) == []
+    found = graph("", "aks-nodes", tmp_path / "nodes", model)
+    assert chain_of(found, "web-pod-1")[0] == "aks-node-1"
+    assert "node: unspecified" not in node_of(found, "web-pod-1")["lines"]
+    assert "pod-to-node" in {edge["id"] for edge in found["edges"]}
+    # The namespace view does not nest by Node, so it states the same fact in a note.
+    other = graph("", "aks-namespaces", tmp_path / "namespaces", model)
+    assert "node: node-1" in node_of(other, "web-pod-1")["lines"]
+
+
+def test_a_scheduling_edge_to_a_node_pool_leaves_the_node_unspecified(tmp_path: Path) -> None:
+    model = scheduled_pod("aks-node-pool")
+    assert errors(model) == []
+    found = graph("", "aks-nodes", tmp_path, model)
+    assert "node: unspecified" in node_of(found, "web-pod-1")["lines"]
+
+
+def test_a_pod_with_no_node_and_no_edge_stays_unspecified(tmp_path: Path) -> None:
+    model = model_of("azure-hub-spoke")
+    del resource(model, "web-pod-1")["kubernetes"]["node_ref"]
+    found = graph("", "aks-nodes", tmp_path, model)
+    assert "node: unspecified" in node_of(found, "web-pod-1")["lines"]
+    assert "aks-node-1" not in chain_of(found, "web-pod-1")

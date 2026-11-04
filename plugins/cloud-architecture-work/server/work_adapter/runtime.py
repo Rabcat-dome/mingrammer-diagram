@@ -18,6 +18,7 @@ import sys
 import tempfile
 import threading
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -198,14 +199,20 @@ class Runtime:
         return environment
 
     # Running children.
-    def _register(self, token: Any, popen: subprocess.Popen[bytes]) -> Process:
-        process = Process(popen)
+    def _start(self, token: Any, start: Callable[[], subprocess.Popen[bytes]]) -> Process | None:
+        """Start and register as one step, so that shutdown cannot miss a child being started.
+
+        None means this process is shutting down and nothing was started.
+        """
         with self.guard:
+            if self.stopping:
+                return None
+            process = Process(start())
             self.running[token] = process
-            stop = self.stopping or token in self.cancelled_early
+            stop = token in self.cancelled_early
         if stop:
             process.cancelled = True
-            stop_group(popen)
+            stop_group(process.popen)
         return process
 
     def cancel(self, token: Any) -> None:
@@ -249,17 +256,23 @@ class Runtime:
             str(self.root / "src"),
             *arguments,
         ]
-        popen = subprocess.Popen(
-            command,
-            stdin=subprocess.DEVNULL if payload is None else subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            # A traceback can quote a value from the model, so it reaches neither the log nor the host.
-            stderr=subprocess.DEVNULL,
-            env=self.core_environment(),
-            cwd=str(self.data),
-            start_new_session=True,
+        process = self._start(
+            token,
+            lambda: subprocess.Popen(
+                command,
+                stdin=subprocess.DEVNULL if payload is None else subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                # A traceback can quote a value from the model, so it reaches neither the log nor
+                # the host.
+                stderr=subprocess.DEVNULL,
+                env=self.core_environment(),
+                cwd=str(self.data),
+                start_new_session=True,
+            ),
         )
-        process = self._register(token, popen)
+        if process is None:
+            return Completed(-1, b"", cancelled=True)
+        popen = process.popen
         try:
             stdout, _ = popen.communicate(payload, timeout=seconds)
             return Completed(popen.returncode, stdout, cancelled=process.cancelled)
@@ -373,26 +386,31 @@ class Runtime:
         environment["UV_PROJECT_ENVIRONMENT"] = str(self.environment_path)
         environment["PATH"] = self._search_path()
         try:
-            sync = subprocess.Popen(
-                [
-                    uv,
-                    "sync",
-                    "--quiet",
-                    "--system-certs",
-                    "--locked",
-                    "--no-dev",
-                    "--no-install-project",
-                    "--python",
-                    PYTHON,
-                    "--project",
-                    str(self.root),
-                ],
-                stdin=subprocess.DEVNULL,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                env=environment,
-                cwd=str(self.data),
-                start_new_session=True,
+            process = self._start(
+                SETUP_TOKEN,
+                lambda: subprocess.Popen(
+                    [
+                        uv,
+                        "sync",
+                        "--quiet",
+                        "--system-certs",
+                        "--locked",
+                        "--no-dev",
+                        "--no-install-project",
+                        # The lock pins each wheel, but not what a source build would pull in.
+                        "--no-build",
+                        "--python",
+                        PYTHON,
+                        "--project",
+                        str(self.root),
+                    ],
+                    stdin=subprocess.DEVNULL,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    env=environment,
+                    cwd=str(self.data),
+                    start_new_session=True,
+                ),
             )
         except OSError as error:
             return self._record_failure(
@@ -401,7 +419,9 @@ class Runtime:
                 "Check that uv runs from a terminal, then call setup_runtime again.",
                 type(error).__name__,
             )
-        process = self._register(SETUP_TOKEN, sync)
+        if process is None:
+            raise SetupInterrupted
+        sync = process.popen
         try:
             output, _ = sync.communicate(timeout=SETUP_SECONDS)
         except subprocess.TimeoutExpired:
