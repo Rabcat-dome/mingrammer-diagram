@@ -39,10 +39,10 @@ False refusals and false passes, by probe:
 |---|---|---|---|
 | `a` U+0301 `b` (combining acute) | yes | passes | `áb`, correct |
 | `a` U+0E48 `b` (Thai tone mark on Latin base) | yes | passes | mark over `a`, no box |
-| `ก` U+200B `ข` | yes | passes | correct, ZWSP invisible |
+| U+0E01 U+200B U+0E02 | yes | passes | correct, ZWSP invisible |
 | `x` U+2060 `y`, `a` U+00AD `b`, `a` U+200E `b` | yes | passes | identical PNG to `xy` / `ab` |
 | `a` U+00A0 `b`, `a  b` | yes | passes | correct |
-| `ที่ ๆ ฿` | yes | passes | correct |
+| U+0E17 U+0E35 U+0E48, U+0E46, U+0E3F | yes | passes | correct |
 | `a` U+FE0F `b`, `a` U+FE0E `b` (bypassed) | **no** | **refused** | **PNG byte-identical to `ab`** — no box (P3-1) |
 | `1` U+20E3 (bypassed) | no | refused | hex box, as claimed |
 | `a` U+E000 `b` (bypassed) | no | refused | hex box |
@@ -116,4 +116,4 @@ Recorded by the implementer, Claude Opus 5.5. The reviewer ran as Claude Fable 5
 | P3-4 | Fixed. New tests cover a format 12 run starting at glyph 0, and the `/notices` row |
 | P3-5 | Open. It predates this change, and a schema rule is a change of its own |
 
-No independent review covers these fixes, which are wording and two tests, plus one word in a diagnostic's message.
+The table in section 2 gives two Thai labels as code points, because repository documents stay English. No independent review covers these fixes, which are wording and two tests, plus one word in a diagnostic's message.
