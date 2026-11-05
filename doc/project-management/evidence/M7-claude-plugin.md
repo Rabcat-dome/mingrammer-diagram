@@ -2,7 +2,7 @@
 
 Recorded: 2026-11-02 (Asia/Bangkok) | Base: `c5f74b4` | First tested code: `22fc85e` | Review fixes: `0220e94`, `87acce5` and `917f46f` | Branch: `codex/m7-claude-plugin` | Host: macOS ARM64, Claude Code 2.1.309.
 
-**M7-01 and M7-02 are complete, and M7-04 brought catalog discovery and rendering to the plugin. M7-03 is verified on one Mac, most recently on [a copy installed at `ea6c802`](#the-acceptance-copy), with [what a real session asks for](#what-a-real-session-asks-for). Nobody has seen a permission dialog drawn, and D-035 accepts one Mac in place of two. M7 stays open for the owner's word.** This is a preparation build under D-015. It authors and validates models, and since S07 it also renders them. It does not change the Work first-release target.
+**M7-01 and M7-02 are complete, and M7-04 brought catalog discovery and rendering to the plugin. M7-03 is verified on one Mac, most recently on [a copy installed at `ea6c802`](#the-acceptance-copy), with [what a real session asks for](#what-a-real-session-asks-for). Nobody has seen a permission dialog drawn, and D-035 accepts one Mac in place of two. **M7 closed on the owner's word under D-039.** This is a preparation build under D-015. It authors and validates models, and since S07 it also renders them. It does not change the Work first-release target.
 
 Actual CI and the GitHub and real-config installs below ran against commit `22fc85e`, before the review fixes. See [Same-session review](#same-session-review) and [Separate-session review](#separate-session-review) for what changed afterward and what has been rerun.
 
