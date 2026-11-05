@@ -2230,7 +2230,7 @@
  },
  {
   "id": "FR-064",
-  "state": "blocked_on_second_machine",
+  "state": "met_with_owner",
   "summary": "Native runtime setup on each machine, verified permissions and transport, documented.",
   "checks": [
    {
@@ -2273,10 +2273,11 @@
    "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage",
    "doc/project-management/evidence/S09-work-plugin.md#what-the-host-really-does",
    "doc/project-management/evidence/S09-work-plugin.md#limits-and-what-this-does-not-establish",
-   "doc/project-management/evidence/S09-Work-validation.md#result"
+   "doc/project-management/evidence/S09-Work-validation.md#result",
+   "doc/project-management/evidence/M6-second-machine.md"
   ],
-  "open": "Local Work transport and first setup ran in Work on one Mac (D-027), with Python already present and with full access, so a Python download, an approval prompt under a stricter setting and the system's Documents prompt are unseen. 'Each supported machine' needs the second machine.",
-  "owner": ""
+  "open": "",
+  "owner": "D-029: the owner reported the second Mac's result on 2026-11-05. Setup ran from a removed or absent runtime on two Macs, through local Work transport, with one allow prompt on the second. Both had Python and Homebrew, and a chat under a stricter setting has not run."
  },
  {
   "id": "FR-065",
@@ -2318,7 +2319,7 @@
  },
  {
   "id": "FR-066",
-  "state": "blocked_on_second_machine",
+  "state": "met_with_owner",
   "summary": "Versioned plugin route; full Work workflow shown on two machines.",
   "checks": [
    {
@@ -2360,14 +2361,15 @@
   "evidence": [
    "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage",
    "doc/project-management/evidence/S09-work-plugin.md#limits-and-what-this-does-not-establish",
-   "doc/project-management/evidence/S09-Work-validation.md#result"
+   "doc/project-management/evidence/S09-Work-validation.md#result",
+   "doc/project-management/evidence/M6-second-machine.md"
   ],
-  "open": "The complete Work workflow from two machines with independently installed runtimes has not run: there is one Mac so far, and it also needs a Work session, because D-024 blocks M6-01's two-machine run. The route codex plugin add has run only through the host's engine in a throwaway profile, never in Work. The versioned package, its ZIP and the per-machine setup notes exist.",
-  "owner": ""
+  "open": "",
+  "owner": "D-029: the owner reported the second Mac's result on 2026-11-05. The versioned plugin installed from its ZIP on a second Mac with no checkout, and the workflow completed on both with their own runtimes."
  },
  {
   "id": "NFR-001",
-  "state": "blocked_on_second_machine",
+  "state": "met_with_owner",
   "summary": "Same input and pinned runtime reproduce materially equivalent output.",
   "checks": [
    {
@@ -2399,10 +2401,11 @@
   "evidence": [
    "doc/project-management/evidence/S07-controlled-rendering.md#clean-setup",
    "doc/project-management/evidence/S08-reference-diagrams.md#the-visual-regression-lane",
-   "doc/project-management/evidence/S10-core-reproduction-proof.json"
+   "doc/project-management/evidence/S10-core-reproduction-proof.json",
+   "doc/project-management/evidence/M6-second-machine.md"
   ],
-  "open": "Repeat renders, a clean clone with its own Python and packages, and the lock and wheel routes all match the baselines byte for byte on this Mac. Nothing compares a second machine.",
-  "owner": ""
+  "open": "",
+  "owner": "D-029: the owner reported the second Mac's result on 2026-11-05. A second Mac reproduced all 26 views byte for byte on the pinned runtime, and rendering its Work models on the first gave the same output. A different Graphviz has not been compared."
  },
  {
   "id": "NFR-002",
@@ -3694,7 +3697,7 @@
  },
  {
   "id": "T-010",
-  "state": "blocked_on_second_machine",
+  "state": "met_with_owner",
   "summary": "M6: same plugin on two machines; clean-runtime core reproduction.",
   "checks": [
    {
@@ -3722,10 +3725,11 @@
    "doc/project-management/evidence/S09-Work-validation.md#result",
    "doc/project-management/evidence/S09-work-plugin.md#limits-and-what-this-does-not-establish",
    "doc/project-management/evidence/S07-controlled-rendering.md#clean-setup",
-   "doc/project-management/evidence/S10-core-reproduction-proof.json"
+   "doc/project-management/evidence/S10-core-reproduction-proof.json",
+   "doc/project-management/evidence/M6-second-machine.md"
   ],
-  "open": "Needs a second supported machine and actual Work, and D-024 parks Work. No install, workflow or artifact record exists for either machine. The separate clean-runtime core reproduction is done on this Mac.",
-  "owner": ""
+  "open": "",
+  "owner": "D-029: the owner reported the second Mac's result on 2026-11-05. Both Macs completed the Work workflow with their own runtimes, including artifact retrieval, and the core reproduced from a clean runtime on each. Both are Apple silicon."
  },
  {
   "id": "T-011",
@@ -3981,7 +3985,7 @@
    "doc/project-management/evidence/S09-Work-validation.md#result",
    "doc/project-management/evidence/S10-core-reproduction-proof.json"
   ],
-  "open": "No release SHA exists, because M6-04 is blocked under D-024, and the final M6-03 review has not run. Clean install, notices, assets and every lane pass at the current head.",
+  "open": "No release SHA exists, because M6-03 and M6-04 have not run. Clean install, notices, assets and every lane pass at the current head.",
   "owner": ""
  },
  {
@@ -4020,7 +4024,7 @@
    "doc/project-management/evidence/S08-reference-diagrams.md#deviations",
    "doc/project-management/evidence/S08-reference-diagrams.md#owner-inspection"
   ],
-  "open": "The M4 comparison, deviations and acceptance stand under D-023. D-023 says T-016 repeats in M6, and M6-03 is blocked under D-024, so the M6 inspection has not happened. The comparison is by eye against one page per provider, and the lane only detects change from the accepted baselines, not fidelity. S08's provider-references section and P-029 still say the owner has not accepted, which D-023 superseded.",
+  "open": "The M4 comparison, deviations and acceptance stand under D-023. D-023 says T-016 repeats in M6, and the M6 inspection has not happened. The comparison is by eye against one page per provider, and the lane only detects change from the accepted baselines, not fidelity. S08's provider-references section and P-029 still say the owner has not accepted, which D-023 superseded.",
   "owner": ""
  },
  {

@@ -21,7 +21,7 @@ INTRO = """# S10 — P0 Traceability
 
 M6-02's requirement-to-check report. It covers every P0 requirement and every acceptance scenario in the [requirements](../../requirements/requirements.md). `scripts/build_traceability.py` writes this page from [its JSON](S10-p0-traceability.json), and the `release-audit` lane fails if an ID is missing or extra, a named test no longer exists, an evidence link is broken, or a claim has no check behind it. That guard proves a check exists. Whether it checks enough was judged by reading it, and the [S10 evidence](S10-release-checks.md#the-p0-audit) says how.
 
-No release SHA exists: M6-01's second machine has not run, so M6-03 and M6-04 are blocked, and this report describes the head it was last checked at, not a release.
+No release SHA exists: M6-03 and M6-04 have not run, and this report describes the head it was last checked at, not a release.
 """
 
 

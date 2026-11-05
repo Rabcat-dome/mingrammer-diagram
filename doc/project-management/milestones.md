@@ -104,7 +104,7 @@ Exit: installed plugin works in the selected Work mode, artifacts are retrievabl
 
 ## M6 — Reproduction and personal release
 
-Status: Open. Under D-024, [S10](evidence/S10-release-checks.md) did the clean-runtime core reproduction in M6-01 and all of M6-02, including the [P0 report](evidence/S10-p0-traceability.md), and [Fable/High approved](evidence/S10-fable-review.md) that part at `debd754`. M6-01's run on a second machine, M6-03 and M6-04 remain, so nothing is released. Implementation: Sol/Medium; final review: Fable/High and owner inspection.
+Status: Open. Under D-024, [S10](evidence/S10-release-checks.md) did the clean-runtime core reproduction in M6-01 and all of M6-02, including the [P0 report](evidence/S10-p0-traceability.md), and [Fable/High approved](evidence/S10-fable-review.md) that part at `debd754`. [M6-01's second machine](evidence/M6-second-machine.md) passes on the owner's report (D-029). T-016's repeat, M6-03 and M6-04 remain, so nothing is released. Implementation: Sol/Medium; final review: Fable/High and owner inspection.
 
 | Task | Work | Dependency / output |
 |---|---|---|

@@ -572,3 +572,9 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - The session record and the bundles agree: first setup reached `ready`, the edit kept all 10 IDs and added three, the invalid model gave `REFERENCE_MISSING` with no bundle, both GKE views draw from one model, no chat saw `RUNTIME_INSTALLING`, and rendering all four bundles again gives identical output. See the [Work check](evidence/S09-Work-validation.md#result).
 - The P0 report moves eight records to `met_with_owner` and FR-064 to `blocked_on_second_machine`, so none stays blocked on Work.
 - The owner closed M5 (D-028), and `main` fast-forwards here once this commit passes CI. M6 stays open, with no release or tag: it needs the second machine, the T-016 repeat, the final review and the package.
+
+## 2026-11-05 — M6-01 on the second Mac
+
+- The owner installed `0.1.0-alpha.1+d27ef23f6f94` on a second Apple silicon Mac from its ZIP, ran all five prompts in one new Work chat, and ran the core reproduction. The owner reports one allow prompt at first use, an image as on the first Mac, and that every check passes (D-029).
+- The session record, bundles and proof agree. The chat read only the plugin's own skill, model guide and examples. Rendering its four models on the first Mac gives identical output, and all 26 reference views match in both routes.
+- The P0 report moves FR-064, FR-066, NFR-001 and T-010 to `met_with_owner`, so none stays blocked. Fifteen stay partly met. `main` fast-forwards here once this commit passes CI. M6 stays open, with no release or tag.
