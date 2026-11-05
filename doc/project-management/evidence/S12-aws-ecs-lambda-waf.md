@@ -2,7 +2,7 @@
 
 Date: 2026-11-05 | Branch: `codex/aws-ecs-fargate-lambda-waf`, from `a4bf065`, with `main` merged at `0aa040f` | Decision: D-036
 
-**Result: strict validation and rendering now accept five new AWS types, each with one taxonomy ID, a placement rule from AWS's own pages and AWS's own icon. The branch is pushed and not merged, the tag `v0.1.0-alpha.1` does not move, and no live session has used it yet.**
+**Result: strict validation and rendering now accept five new AWS types, each with one taxonomy ID, a placement rule from AWS's own pages and AWS's own icon. The owner had it merged into `main` on 2026-11-05, the tag `v0.1.0-alpha.1` does not move, and no live session has used it yet.**
 
 ## Why
 
@@ -92,7 +92,7 @@ The picture holds AWS and generic icons only, and a test requires its manifest t
 
 ## Validation
 
-`uv run --frozen python scripts/quality_gate.py` passes all 17 lanes with 1712 tests, none skipped, on a clean checkout of `2460844`. Actual Quality gate [run 42032378161](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/42032378161) passes all 17 lanes at that commit on the project's runner. The commit after it records only this. An earlier [run 42030777942](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/42030777942) at `fe1e472` failed `release-audit` alone, as expected, because the proof was replaced after it.
+`uv run --frozen python scripts/quality_gate.py` passes all 17 lanes with 1712 tests, none skipped, on a clean checkout of `2460844`. Actual Quality gate [run 42032378161](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/42032378161) passes all 17 lanes at that commit on the project's runner. [Run 42033165025](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/42033165025) also passes at `3b692c1`, which records only this. An earlier [run 42030777942](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/42030777942) at `fe1e472` failed `release-audit` alone, as expected, because the proof was replaced after it.
 
 | Lane | Tests, none skipped | What it adds here |
 |---|---:|---|
@@ -133,5 +133,5 @@ Implementation used **Claude Opus 5.5 (`claude-opus-5-5`)**, the model of the se
 
 ## Next steps
 
-1. The owner reads the picture and decides whether to merge. Merging confirms D-036, which this session recorded from the session that started it and not from the owner's own words.
-2. After a merge, rebuild and reinstall the Work plugin, run `scripts/work_host_check.py` as the handoff says, and repeat one of M7's AWS requests in a live session.
+1. The owner's answer "merge into main", translated from Thai, confirms D-036. It is not recorded as visual acceptance of the picture, which the owner can still give.
+2. Rebuild and reinstall the Work plugin, run `scripts/work_host_check.py` as the handoff says, and repeat one of M7's AWS requests in a live session.
