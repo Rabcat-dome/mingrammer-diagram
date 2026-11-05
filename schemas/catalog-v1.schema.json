@@ -22,6 +22,7 @@
               "backup",
               "block_storage",
               "container_cluster",
+              "container_workload",
               "database",
               "external_party",
               "file_storage",
@@ -154,6 +155,7 @@
         "placement": {
           "$ref": "#/$defs/PlacementRule",
           "default": {
+            "attachment_targets": [],
             "dedicated_subnet": false,
             "enterprise_project_authorization": null,
             "host_types": [],
@@ -264,6 +266,14 @@
       "additionalProperties": false,
       "description": "Absence means unspecified, so these constrain only what a model actually declares.",
       "properties": {
+        "attachment_targets": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Attachment Targets",
+          "type": "array"
+        },
         "dedicated_subnet": {
           "default": false,
           "title": "Dedicated Subnet",

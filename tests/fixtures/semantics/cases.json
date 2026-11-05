@@ -2559,6 +2559,841 @@
      "value": "cm"
     }
    ]
+  },
+  {
+   "id": "aws-ecs-cluster-in-vpc",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:cluster/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ],
+   "note": "A cluster is a logical group. Its service or task holds the network configuration."
+  },
+  {
+   "id": "aws-ecs-cluster-in-subnets",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:cluster/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "app-a"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-ecs-cluster-in-security-group",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_SECURITY_GROUP_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:cluster/placement/security_boundaries",
+     "value": [
+      "sg-app"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-ecs-cluster-zonal",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:cluster/placement/location",
+     "value": {
+      "zone_ref": "az-a"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-ecs-service-zonal",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:worker/placement/location",
+     "value": {
+      "zone_ref": "az-a"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-ecs-service-two-vpcs",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_NETWORK_COUNT_INVALID",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "vpc-other",
+      "name": "Other VPC",
+      "provider": "aws",
+      "kind": "network",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "app-other",
+      "name": "Other app",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "vpc-other",
+      "relations": [
+       {
+        "kind": "located_in",
+        "target_ref": "az-a"
+       }
+      ]
+     }
+    },
+    {
+     "set": "resources/id:worker/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "app-a"
+       ]
+      },
+      {
+       "network_ref": "vpc-other",
+       "subnet_refs": [
+        "app-other"
+       ]
+      }
+     ]
+    }
+   ],
+   "note": "All specified subnets must be from the same VPC."
+  },
+  {
+   "id": "aws-ecs-service-subnet-other-vpc",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_SUBNET_NETWORK_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "vpc-other",
+      "name": "Other VPC",
+      "provider": "aws",
+      "kind": "network",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "app-other",
+      "name": "Other app",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "vpc-other",
+      "relations": [
+       {
+        "kind": "located_in",
+        "target_ref": "az-a"
+       }
+      ]
+     }
+    },
+    {
+     "set": "resources/id:worker/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "app-other"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-ecs-service-security-group-other-vpc",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_SECURITY_GROUP_NETWORK_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "vpc-other",
+      "name": "Other VPC",
+      "provider": "aws",
+      "kind": "network",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "app-other",
+      "name": "Other app",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "vpc-other",
+      "relations": [
+       {
+        "kind": "located_in",
+        "target_ref": "az-a"
+       }
+      ]
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "sg-other",
+      "name": "Other SG",
+      "provider": "aws",
+      "kind": "security_group",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "vpc-other"
+     }
+    },
+    {
+     "set": "resources/id:worker/placement/security_boundaries",
+     "value": [
+      "sg-other"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-ecs-service-on-lambda",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_HOST_TYPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:worker/placement/deployment_context",
+     "value": [
+      "thumbnails"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-ecs-service-in-eks",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_HOST_TYPE_INVALID",
+   "ops": [
+    {
+     "add": "resources",
+     "value": {
+      "id": "eks",
+      "name": "EKS",
+      "provider": "aws",
+      "service_type": "aws.containers.eks",
+      "taxonomy": "compute.containers",
+      "kubernetes": {
+       "kind": "Cluster"
+      }
+     }
+    },
+    {
+     "set": "resources/id:worker/placement/deployment_context",
+     "value": [
+      "eks"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-ecs-service-two-clusters",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "AWS_ECS_CLUSTER_MULTIPLE",
+   "ops": [
+    {
+     "add": "resources",
+     "value": {
+      "id": "cluster-2",
+      "name": "Second cluster",
+      "provider": "aws",
+      "service_type": "aws.containers.ecs_cluster",
+      "taxonomy": "compute.containers",
+      "placement": {
+       "location": {
+        "region_ref": "region"
+       }
+      }
+     }
+    },
+    {
+     "set": "resources/id:worker/placement/deployment_context",
+     "value": [
+      "cluster",
+      "cluster-2"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-ecs-service-cluster-other-region",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_HOST_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-other",
+      "name": "us-east-1",
+      "provider": "aws",
+      "kind": "region",
+      "scope_refs": [
+       "acct"
+      ]
+     }
+    },
+    {
+     "set": "resources/id:cluster/placement/location",
+     "value": {
+      "region_ref": "region-other"
+     }
+    }
+   ],
+   "note": "Clusters are AWS Region specific."
+  },
+  {
+   "id": "aws-ecs-service-subnets-other-region-than-cluster",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_HOST_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-other",
+      "name": "us-east-1",
+      "provider": "aws",
+      "kind": "region",
+      "scope_refs": [
+       "acct"
+      ]
+     }
+    },
+    {
+     "set": "resources/id:cluster/placement/location",
+     "value": {
+      "region_ref": "region-other"
+     }
+    },
+    {
+     "set": "resources/id:worker/placement/location",
+     "value": {}
+    }
+   ],
+   "note": "With no location of its own, the service's region comes from its network."
+  },
+  {
+   "id": "aws-fargate-on-ec2",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_HOST_TYPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:web/placement/deployment_context",
+     "value": [
+      "cluster",
+      "worker-host"
+     ]
+    }
+   ],
+   "note": "Fargate runs with no EC2 instances to manage."
+  },
+  {
+   "id": "aws-fargate-zonal",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:web/placement/location",
+     "value": {
+      "zone_ref": "az-a"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-fargate-two-vpcs",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_NETWORK_COUNT_INVALID",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "vpc-other",
+      "name": "Other VPC",
+      "provider": "aws",
+      "kind": "network",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "app-other",
+      "name": "Other app",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "vpc-other",
+      "relations": [
+       {
+        "kind": "located_in",
+        "target_ref": "az-a"
+       }
+      ]
+     }
+    },
+    {
+     "set": "resources/id:web/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "app-a"
+       ]
+      },
+      {
+       "network_ref": "vpc-other",
+       "subnet_refs": [
+        "app-other"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-fargate-two-clusters",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "AWS_ECS_CLUSTER_MULTIPLE",
+   "ops": [
+    {
+     "add": "resources",
+     "value": {
+      "id": "cluster-2",
+      "name": "Second cluster",
+      "provider": "aws",
+      "service_type": "aws.containers.ecs_cluster",
+      "taxonomy": "compute.containers",
+      "placement": {
+       "location": {
+        "region_ref": "region"
+       }
+      }
+     }
+    },
+    {
+     "set": "resources/id:web/placement/deployment_context",
+     "value": [
+      "cluster",
+      "cluster-2"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-fargate-cluster-other-region",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_HOST_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-other",
+      "name": "us-east-1",
+      "provider": "aws",
+      "kind": "region",
+      "scope_refs": [
+       "acct"
+      ]
+     }
+    },
+    {
+     "set": "resources/id:cluster/placement/location",
+     "value": {
+      "region_ref": "region-other"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-fargate-wrong-taxonomy",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "CATALOG_TAXONOMY_MISMATCH",
+   "ops": [
+    {
+     "set": "resources/id:web/taxonomy",
+     "value": "compute.serverless"
+    }
+   ]
+  },
+  {
+   "id": "aws-lambda-zonal",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:receipts/placement/location",
+     "value": {
+      "zone_ref": "az-a"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-lambda-two-vpcs",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_NETWORK_COUNT_INVALID",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "vpc-other",
+      "name": "Other VPC",
+      "provider": "aws",
+      "kind": "network",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "app-other",
+      "name": "Other app",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "vpc-other",
+      "relations": [
+       {
+        "kind": "located_in",
+        "target_ref": "az-a"
+       }
+      ]
+     }
+    },
+    {
+     "set": "resources/id:receipts/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "app-a"
+       ]
+      },
+      {
+       "network_ref": "vpc-other",
+       "subnet_refs": [
+        "app-other"
+       ]
+      }
+     ]
+    }
+   ],
+   "note": "A function's VPC settings name one VPC."
+  },
+  {
+   "id": "aws-lambda-region-differs-from-vpc",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-other",
+      "name": "us-east-1",
+      "provider": "aws",
+      "kind": "region",
+      "scope_refs": [
+       "acct"
+      ]
+     }
+    },
+    {
+     "set": "resources/id:receipts/placement/location",
+     "value": {
+      "region_ref": "region-other"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-lambda-wrong-taxonomy",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "CATALOG_TAXONOMY_MISMATCH",
+   "ops": [
+    {
+     "set": "resources/id:thumbnails/taxonomy",
+     "value": "compute.containers"
+    }
+   ]
+  },
+  {
+   "id": "aws-lambda-on-another-provider",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "CATALOG_PROVIDER_MISMATCH",
+   "ops": [
+    {
+     "set": "resources/id:thumbnails/provider",
+     "value": "huawei"
+    },
+    {
+     "set": "resources/id:thumbnails/placement",
+     "value": {}
+    }
+   ]
+  },
+  {
+   "id": "aws-waf-in-vpc",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:waf/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-waf-in-security-group",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_SECURITY_GROUP_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:waf/placement/security_boundaries",
+     "value": [
+      "sg-app"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-waf-zonal",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:waf/placement/location",
+     "value": {
+      "zone_ref": "az-a"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-waf-wrong-taxonomy",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "CATALOG_TAXONOMY_MISMATCH",
+   "ops": [
+    {
+     "set": "resources/id:waf/taxonomy",
+     "value": "network.routing"
+    }
+   ]
+  },
+  {
+   "id": "aws-waf-on-ec2",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
+   "ops": [
+    {
+     "set": "relationships/id:a-waf-alb/target_ref",
+     "value": "worker-host"
+    }
+   ],
+   "note": "AWS's list of what WAF protects has no EC2 instance."
+  },
+  {
+   "id": "aws-waf-on-lambda",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
+   "ops": [
+    {
+     "set": "relationships/id:a-waf-alb/target_ref",
+     "value": "receipts"
+    }
+   ]
+  },
+  {
+   "id": "aws-waf-on-ecs-service",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
+   "ops": [
+    {
+     "set": "relationships/id:a-waf-alb/target_ref",
+     "value": "web"
+    }
+   ]
+  },
+  {
+   "id": "aws-waf-on-ec2-as-policy",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
+   "ops": [
+    {
+     "set": "relationships/id:a-waf-alb/target_ref",
+     "value": "worker-host"
+    },
+    {
+     "set": "relationships/id:a-waf-alb/kind",
+     "value": "policy"
+    }
+   ]
+  },
+  {
+   "id": "aws-waf-on-ec2-reversed",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
+   "ops": [
+    {
+     "set": "relationships/id:a-waf-alb/source_ref",
+     "value": "worker-host"
+    },
+    {
+     "set": "relationships/id:a-waf-alb/target_ref",
+     "value": "waf"
+    }
+   ]
+  },
+  {
+   "id": "aws-waf-other-region",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "AWS_WAF_RESOURCE_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-other",
+      "name": "us-east-1",
+      "provider": "aws",
+      "kind": "region",
+      "scope_refs": [
+       "acct"
+      ]
+     }
+    },
+    {
+     "set": "resources/id:waf/placement/location",
+     "value": {
+      "region_ref": "region-other"
+     }
+    }
+   ],
+   "note": "A regional web ACL must be in the same Region as its resource."
+  },
+  {
+   "id": "aws-waf-other-region-from-alb-network",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "AWS_WAF_RESOURCE_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-other",
+      "name": "us-east-1",
+      "provider": "aws",
+      "kind": "region",
+      "scope_refs": [
+       "acct"
+      ]
+     }
+    },
+    {
+     "set": "resources/id:waf/placement/location",
+     "value": {
+      "region_ref": "region-other"
+     }
+    },
+    {
+     "set": "resources/id:alb/placement/location",
+     "value": {}
+    }
+   ]
+  },
+  {
+   "id": "aws-waf-two-web-acls",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "AWS_WAF_ACL_MULTIPLE",
+   "ops": [
+    {
+     "add": "resources",
+     "value": {
+      "id": "waf-2",
+      "name": "Second web ACL",
+      "provider": "aws",
+      "service_type": "aws.security.waf",
+      "taxonomy": "security.control",
+      "placement": {
+       "location": {
+        "region_ref": "region"
+       }
+      }
+     }
+    },
+    {
+     "add": "relationships",
+     "value": {
+      "id": "a-waf-2-alb",
+      "source_ref": "waf-2",
+      "target_ref": "alb",
+      "kind": "attachment"
+     }
+    }
+   ],
+   "note": "Each resource has only one web ACL."
   }
  ],
  "warnings": [

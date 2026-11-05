@@ -26,6 +26,7 @@ Capability = Literal[
     "backup",
     "block_storage",
     "container_cluster",
+    "container_workload",
     "database",
     "external_party",
     "file_storage",
@@ -89,6 +90,7 @@ class PlacementRule(CatalogModel):
     dedicated_subnet: bool = False
     same_resource_group_as_network: bool = False
     host_types: tuple[str, ...] = ()
+    attachment_targets: tuple[str, ...] = ()
     iam_authorization: Literal["project", "global"] | None = None
     enterprise_project_authorization: bool | None = None
 

@@ -18,7 +18,7 @@ from cloud_architecture_diagrams.validation import Mode, validate_json
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests/fixtures"
 HOSTS = ["eks", "aks", "gke", "cce", "onprem"]
-PROVIDERS = ["aws", "azure", "gcp", "huawei", "onprem", "hybrid"]
+PROVIDERS = ["aws", "aws-ecs-lambda-waf", "azure", "gcp", "huawei", "onprem", "hybrid"]
 POSITIVE = (
     [f"providers/{name}" for name in PROVIDERS]
     + [f"kubernetes/{name}" for name in HOSTS]
@@ -508,3 +508,163 @@ def test_a_production_environment_across_regions_keeps_its_members(reverse: bool
 @pytest.mark.parametrize("kind", ["network", "security_group", "zone"])
 def test_a_kind_whose_region_is_read_may_not_span_regions(kind: str, reverse: bool) -> None:
     assert "BOUNDARY_LOCATION_MULTIPLE" in codes(spanning_boundary(kind, reverse))["error"]
+
+
+ECS_LAMBDA_WAF = "providers/aws-ecs-lambda-waf"
+
+
+def subnets(document: dict[str, Any], count: int) -> list[str]:
+    """Add subnets to the fixture's VPC and return their IDs."""
+    identifiers = [f"extra-{number}" for number in range(count)]
+    for identifier in identifiers:
+        document["boundaries"].append(
+            {
+                "id": identifier,
+                "name": identifier,
+                "provider": "aws",
+                "kind": "subnet",
+                "parent_ref": "vpc",
+                "relations": [{"kind": "located_in", "target_ref": "az-a"}],
+            }
+        )
+    return identifiers
+
+
+@pytest.mark.parametrize("target", ["web", "worker", "receipts"])
+@pytest.mark.parametrize(("count", "valid"), [(1, True), (16, True), (17, False)])
+def test_ecs_and_lambda_list_up_to_sixteen_subnets(target: str, count: int, valid: bool) -> None:
+    # AWS states 16 for awsVpcConfiguration and for a function's VpcConfig, and states no minimum.
+    document = load(ECS_LAMBDA_WAF)
+    attachment = {"network_ref": "vpc", "subnet_refs": subnets(document, count)}
+    entity(document, "resources", target)["placement"]["network_attachments"] = [attachment]
+    errors = codes(document)["error"]
+    assert ("PLACEMENT_SUBNET_COUNT_INVALID" in errors) is not valid, errors
+    if valid:
+        assert not errors, errors
+
+
+@pytest.mark.parametrize("target", ["web", "worker", "receipts"])
+def test_a_network_attachment_stays_optional_on_ecs_and_lambda(target: str) -> None:
+    # A function runs in Lambda's own VPC unless attached, and an unspecified network stays valid.
+    document = load(ECS_LAMBDA_WAF)
+    placement = entity(document, "resources", target)["placement"]
+    del placement["network_attachments"], placement["security_boundaries"]
+    assert not codes(document)["error"]
+
+
+def test_a_workload_may_leave_its_cluster_unspecified() -> None:
+    document = load(ECS_LAMBDA_WAF)
+    del entity(document, "resources", "web")["placement"]["deployment_context"]
+    assert not codes(document)["error"]
+
+
+def test_only_an_ecs_service_may_name_an_ec2_host() -> None:
+    document = load(ECS_LAMBDA_WAF)
+    worker = entity(document, "resources", "worker")["placement"]["deployment_context"]
+    assert worker == ["cluster", "worker-host"] and not codes(document)["error"]
+    entity(document, "resources", "web")["placement"]["deployment_context"] = worker
+    assert "PLACEMENT_HOST_TYPE_INVALID" in codes(document)["error"]
+
+
+def test_several_ec2_hosts_are_not_several_clusters() -> None:
+    document = load(ECS_LAMBDA_WAF)
+    second = copy.deepcopy(entity(document, "resources", "worker-host"))
+    second["id"] = "worker-host-2"
+    document["resources"].append(second)
+    context = entity(document, "resources", "worker")["placement"]["deployment_context"]
+    context.append("worker-host-2")
+    assert not codes(document)["error"]
+
+
+@pytest.mark.parametrize(
+    "relationship",
+    [
+        {"source_ref": "waf", "target_ref": "alb", "kind": "attachment"},
+        {"source_ref": "alb", "target_ref": "waf", "kind": "attachment"},
+        {"source_ref": "waf", "target_ref": "alb", "kind": "policy"},
+        # Repeating one association is still one web ACL.
+        {"source_ref": "waf", "target_ref": "alb", "kind": "attachment", "label": "Again"},
+    ],
+)
+def test_a_web_acl_may_associate_with_an_alb_either_way(relationship: dict[str, str]) -> None:
+    document = load(ECS_LAMBDA_WAF)
+    document["relationships"].append({"id": "probe", **relationship})
+    assert not codes(document)["error"]
+
+
+def test_traffic_through_a_web_acl_is_not_an_association() -> None:
+    # Authors often draw users -> WAF -> service. That is a drawing choice, and it claims no target.
+    document = load(ECS_LAMBDA_WAF)
+    document["relationships"].append(
+        {"id": "probe", "source_ref": "waf", "target_ref": "worker-host", "kind": "traffic"}
+    )
+    assert not codes(document)["error"]
+
+
+def test_one_web_acl_may_protect_several_albs() -> None:
+    document = load(ECS_LAMBDA_WAF)
+    second = copy.deepcopy(entity(document, "resources", "alb"))
+    second["id"] = "alb-2"
+    document["resources"].append(second)
+    document["relationships"].append(
+        {"id": "probe", "source_ref": "waf", "target_ref": "alb-2", "kind": "attachment"}
+    )
+    assert not codes(document)["error"]
+
+
+def test_a_web_acl_may_go_undeclared_in_any_region() -> None:
+    # A web ACL for CloudFront has no regional home to state, so no region is required of it.
+    document = load(ECS_LAMBDA_WAF)
+    entity(document, "resources", "waf")["placement"]["location"] = {}
+    assert not codes(document)["error"]
+
+
+def test_a_draft_target_gets_no_web_acl_rule() -> None:
+    # An unknown type has no record to judge, and lenient mode keeps it as a disclosed draft.
+    document = load(ECS_LAMBDA_WAF)
+    document["resources"].append(
+        {
+            "id": "edge",
+            "name": "Amazon CloudFront",
+            "provider": "aws",
+            "service_type": "aws.edge.cloudfront",
+            "taxonomy": "edge.delivery",
+        }
+    )
+    document["relationships"].append(
+        {"id": "probe", "source_ref": "waf", "target_ref": "edge", "kind": "attachment"}
+    )
+    assert codes(document)["error"] == {"CATALOG_TYPE_UNKNOWN"}
+    lenient = validate_json(json.dumps(document).encode(), mode="lenient")
+    assert lenient.valid and lenient.draft
+
+
+def test_unrelated_attachment_edges_stay_free() -> None:
+    # Only a type that lists its targets is limited, so existing models keep their meaning.
+    document = load("providers/aws")
+    document["relationships"].append(
+        {"id": "probe", "source_ref": "web", "target_ref": "bucket", "kind": "attachment"}
+    )
+    assert not codes(document)["error"]
+
+
+def test_a_region_comes_from_the_network_when_no_location_is_declared() -> None:
+    def mismatched(document: dict[str, Any]) -> set[str | None]:
+        result = validate_json(json.dumps(document).encode())
+        return {
+            item.entity_id
+            for item in result.diagnostics
+            if item.code == "PLACEMENT_HOST_REGION_MISMATCH"
+        }
+
+    document = load(ECS_LAMBDA_WAF)
+    other = {"id": "region-other", "name": "Other", "provider": "aws", "kind": "region"}
+    document["boundaries"].append(other)
+    entity(document, "resources", "cluster")["placement"]["location"] = {
+        "region_ref": "region-other"
+    }
+    entity(document, "resources", "web")["placement"]["location"] = {}
+    assert mismatched(document) == {"web", "worker"}
+    # With nothing declared there is nothing to compare, so the region stays unspecified.
+    entity(document, "resources", "web")["placement"]["network_attachments"] = []
+    assert mismatched(document) == {"worker"}

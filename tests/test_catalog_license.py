@@ -649,6 +649,57 @@ def test_bundled_svgs_are_safe_and_eight_concepts_stay_distinct() -> None:
     }
 
 
+AWS_ADDED = {
+    "aws.containers.ecs_cluster": ("diagrams.aws.compute.ElasticContainerService", "compute"),
+    "aws.containers.ecs_service": (
+        "diagrams.aws.compute.ElasticContainerServiceService",
+        "compute",
+    ),
+    "aws.containers.ecs_fargate": ("diagrams.aws.compute.Fargate", "compute"),
+    "aws.compute.lambda": ("diagrams.aws.compute.Lambda", "compute"),
+    "aws.security.waf": ("diagrams.aws.security.WAF", "security"),
+}
+
+
+@pytest.mark.parametrize(("type_id", "expected"), AWS_ADDED.items())
+def test_added_aws_types_draw_their_own_icon_from_the_listed_pack(
+    type_id: str, expected: tuple[str, str]
+) -> None:
+    # A new type must not borrow a neighbour's icon, and the package must hold no copy of it.
+    class_path, folder = expected
+    record = catalog().records[type_id]
+    assert record.representation.kind == "native_class" and record.status == "supported"
+    assert record.representation.class_path == class_path
+    assert record.representation.pack == "aws-architecture-icons"
+    assert catalog().packs["aws-architecture-icons"].status == "approved"
+    lock = json.loads((PACKAGE / "catalog_data/native_icons.json").read_text())["icons"]
+    assert lock[class_path]["resource"].startswith(f"resources/aws/{folder}/")
+    assert lock[class_path]["pack"] == "aws-architecture-icons"
+    assert not [asset for asset in catalog().manifest.assets if asset.pack.startswith("aws")]
+
+
+def test_added_aws_types_have_distinct_icons() -> None:
+    assert len({value[0] for value in AWS_ADDED.values()}) == len(AWS_ADDED)
+
+
+def test_added_aws_types_are_not_required_items() -> None:
+    # They are selected P1 work (D-034), so the P0 inventory and its requirements table stay as is.
+    listed = {type_id for item in catalog().inventory["aws"].values() for type_id in item}
+    assert not listed & set(AWS_ADDED)
+
+
+@pytest.mark.parametrize("field", ["host_types", "attachment_targets"])
+@pytest.mark.parametrize("target", ["aws.compute.not_a_type", "aws.network.vpc"])
+def test_a_placement_target_naming_no_resource_type_fails(field: str, target: str) -> None:
+    view = Catalog()
+    record = view.records["aws.security.waf"]
+    placement = record.placement.model_copy(update={field: (target,)})
+    view.records[record.id] = record.model_copy(update={"placement": placement})
+    errors: list[str] = []
+    catalog_checks.check_records(view, errors)
+    assert any("which is no resource type" in error for error in errors), errors
+
+
 def test_catalog_records_use_only_their_required_label() -> None:
     for record in catalog().records.values():
         if record.representation.kind == "custom_asset":
@@ -702,6 +753,12 @@ def test_plugin_tree_holds_no_assets_outside_the_checked_package() -> None:
     ]
 
 
+def ids(found: dict[str, object]) -> list[str]:
+    records = found["records"]
+    assert isinstance(records, list)
+    return [record["id"] for record in records]
+
+
 def test_catalog_discovery_is_bounded_and_filterable() -> None:
     result = catalog().search(limit=10_000)
     assert result["returned"] == min(len(catalog().records), MAX_RESULTS)
@@ -711,7 +768,19 @@ def test_catalog_discovery_is_bounded_and_filterable() -> None:
         "aws.network.application_load_balancer"
     ]
     assert catalog().search(type_id="aws.compute.ec2")["total"] == 1
-    assert catalog().search(query="ECS", provider="aws")["total"] == 0
+    # FR-054: "ECS" names a service on two providers, so only the provider can choose between them.
+    assert ids(catalog().search(query="ECS", provider="huawei")) == ["huawei.compute.ecs"]
+    assert ids(catalog().search(query="ECS", provider="aws")) == [
+        "aws.containers.ecs_cluster",
+        "aws.containers.ecs_fargate",
+        "aws.containers.ecs_service",
+    ]
+    assert ids(catalog().search(query="ECS")) == [
+        "aws.containers.ecs_cluster",
+        "aws.containers.ecs_fargate",
+        "aws.containers.ecs_service",
+        "huawei.compute.ecs",
+    ]
     kubernetes = catalog().search(kubernetes=True, provider="onprem")["total"]
     assert isinstance(kubernetes, int) and kubernetes > 22
     assert catalog().search(limit=1)["truncated"] is True

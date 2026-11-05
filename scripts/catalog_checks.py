@@ -97,6 +97,11 @@ def check_records(data: Catalog, errors: list[str]) -> None:
         if record.id.startswith("k8s.") and "kubernetes" in str(record.providers):
             errors.append(f"{record.id}: Kubernetes must not be a provider")
         check_representation(record, data, errors)
+        # A misspelled ID here would refuse every model that uses this type, so it fails now.
+        for target in (*record.placement.host_types, *record.placement.attachment_targets):
+            named = data.records.get(target)
+            if named is None or named.entity != "resource":
+                errors.append(f"{record.id}: placement names {target}, which is no resource type")
     kinds = {
         record.kubernetes_kinds[0]: record
         for record in data.files["kubernetes"].records

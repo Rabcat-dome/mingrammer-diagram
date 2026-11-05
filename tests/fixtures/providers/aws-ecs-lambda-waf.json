@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0.0",
+  "metadata": {
+    "id": "aws-ecs-lambda-waf",
+    "title": "Web application on ECS Fargate behind AWS WAF, with Lambda",
+    "environment": "fixture",
+    "assumptions": [
+      "Synthetic fixture; no deployed infrastructure implied.",
+      "The worker service runs on EC2 capacity, and the web service on Fargate."
+    ]
+  },
+  "scopes": [
+    {"id": "acct", "name": "Workload account", "provider": "aws", "kind": "account"}
+  ],
+  "boundaries": [
+    {"id": "region", "name": "ap-southeast-1", "provider": "aws", "kind": "region", "scope_refs": ["acct"]},
+    {"id": "az-a", "name": "ap-southeast-1a", "provider": "aws", "kind": "zone", "parent_ref": "region"},
+    {"id": "az-b", "name": "ap-southeast-1b", "provider": "aws", "kind": "zone", "parent_ref": "region"},
+    {"id": "vpc", "name": "Workload VPC", "provider": "aws", "kind": "network", "scope_refs": ["acct"], "parent_ref": "region"},
+    {"id": "public-a", "name": "Public A", "provider": "aws", "kind": "subnet", "scope_refs": ["acct"], "parent_ref": "vpc", "relations": [{"kind": "located_in", "target_ref": "az-a"}]},
+    {"id": "public-b", "name": "Public B", "provider": "aws", "kind": "subnet", "scope_refs": ["acct"], "parent_ref": "vpc", "relations": [{"kind": "located_in", "target_ref": "az-b"}]},
+    {"id": "app-a", "name": "App A", "provider": "aws", "kind": "subnet", "scope_refs": ["acct"], "parent_ref": "vpc", "relations": [{"kind": "located_in", "target_ref": "az-a"}]},
+    {"id": "app-b", "name": "App B", "provider": "aws", "kind": "subnet", "scope_refs": ["acct"], "parent_ref": "vpc", "relations": [{"kind": "located_in", "target_ref": "az-b"}]},
+    {"id": "sg-app", "name": "App tier", "provider": "aws", "kind": "security_group", "scope_refs": ["acct"], "parent_ref": "vpc"}
+  ],
+  "resources": [
+    {"id": "users", "name": "Users", "provider": "external", "service_type": "external.people.user", "taxonomy": "external.entity"},
+    {"id": "waf", "name": "Web ACL", "provider": "aws", "service_type": "aws.security.waf", "taxonomy": "security.control", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}}},
+    {"id": "alb", "name": "Application Load Balancer", "provider": "aws", "service_type": "aws.network.application_load_balancer", "taxonomy": "network.load_balancing", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}, "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["public-a", "public-b"]}]}},
+    {"id": "cluster", "name": "Orders cluster", "provider": "aws", "service_type": "aws.containers.ecs_cluster", "taxonomy": "compute.containers", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}}},
+    {"id": "web", "name": "Web service", "provider": "aws", "service_type": "aws.containers.ecs_fargate", "taxonomy": "compute.containers", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}, "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["app-a", "app-b"]}], "security_boundaries": ["sg-app"], "deployment_context": ["cluster"]}},
+    {"id": "worker-host", "name": "Container instance", "provider": "aws", "service_type": "aws.compute.ec2", "taxonomy": "compute.vm", "placement": {"scope_refs": ["acct"], "location": {"zone_ref": "az-a"}, "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["app-a"]}]}},
+    {"id": "worker", "name": "Worker service", "provider": "aws", "service_type": "aws.containers.ecs_service", "taxonomy": "compute.containers", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}, "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["app-a", "app-b"]}], "security_boundaries": ["sg-app"], "deployment_context": ["cluster", "worker-host"]}},
+    {"id": "receipts", "name": "Receipt function", "provider": "aws", "service_type": "aws.compute.lambda", "taxonomy": "compute.serverless", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}, "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["app-a", "app-b"]}], "security_boundaries": ["sg-app"]}},
+    {"id": "thumbnails", "name": "Thumbnail function", "provider": "aws", "service_type": "aws.compute.lambda", "taxonomy": "compute.serverless", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}}},
+    {"id": "bucket", "name": "Images bucket", "provider": "aws", "service_type": "aws.storage.s3", "taxonomy": "storage.object", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}}}
+  ],
+  "relationships": [
+    {"id": "t-users-alb", "source_ref": "users", "target_ref": "alb", "kind": "traffic", "protocol": "HTTPS"},
+    {"id": "a-waf-alb", "source_ref": "waf", "target_ref": "alb", "kind": "attachment", "label": "Web ACL association"},
+    {"id": "t-alb-web", "source_ref": "alb", "target_ref": "web", "kind": "traffic", "protocol": "HTTP"},
+    {"id": "t-web-worker", "source_ref": "web", "target_ref": "worker", "kind": "traffic", "protocol": "gRPC"},
+    {"id": "t-web-receipts", "source_ref": "web", "target_ref": "receipts", "kind": "traffic", "label": "Invoke"},
+    {"id": "t-bucket-thumbnails", "source_ref": "bucket", "target_ref": "thumbnails", "kind": "traffic", "label": "Object created"},
+    {"id": "m-web-cluster", "source_ref": "web", "target_ref": "cluster", "kind": "membership"},
+    {"id": "m-worker-cluster", "source_ref": "worker", "target_ref": "cluster", "kind": "membership"}
+  ],
+  "views": [
+    {
+      "id": "overview",
+      "title": "Overview",
+      "direction": "LR",
+      "entity_refs": ["users", "acct", "region", "vpc", "waf", "alb", "cluster", "web", "worker-host", "worker", "receipts", "thumbnails", "bucket"],
+      "relationship_refs": ["t-users-alb", "a-waf-alb", "t-alb-web", "t-web-worker", "t-web-receipts", "t-bucket-thumbnails", "m-web-cluster", "m-worker-cluster"]
+    }
+  ]
+}

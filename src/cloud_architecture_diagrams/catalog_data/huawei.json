@@ -1,5 +1,5 @@
 {
-  "catalog_version": "2026.11.0",
+  "catalog_version": "2026.11.1",
   "provider": "huawei",
   "single_scope_kinds": [
     "iam_project"

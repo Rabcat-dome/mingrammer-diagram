@@ -1326,6 +1326,261 @@
     }
    ],
    "review_followup": "2026-11-02; curl HTTPS fetch; HTMLParser text nodes joined and whitespace normalized"
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/clusters.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "9bb156c9a764b2b861b3b9b3a5d26647b492b32f96712083cdb500308040c667",
+   "characters": 8724,
+   "claims": [
+    {
+     "claim": "An ECS cluster is a logical grouping",
+     "pattern": "logical grouping of tasks or services",
+     "matched": true
+    },
+    {
+     "claim": "A cluster belongs to one Region",
+     "pattern": "Clusters are AWS Region specific",
+     "matched": true
+    },
+    {
+     "claim": "AWS lists the network as where tasks and services run, which S12 weighs",
+     "pattern": "where your tasks and services run",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-ecs-cluster.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "25ce41e18a535de747625d1d2493e8be8cd80e0a6b6f5d9763c3ddf12500fb28",
+   "characters": 21436,
+   "claims": [
+    {
+     "claim": "The CloudFormation type exists",
+     "pattern": "AWS::ECS::Cluster",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-ecs-service.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "bc2c3a3f329c3dc4789eb8dd0b4c64f1e95d15b649662b12c1e821effe25c9d7",
+   "characters": 36277,
+   "claims": [
+    {
+     "claim": "The CloudFormation type exists",
+     "pattern": "AWS::ECS::Service",
+     "matched": true
+    },
+    {
+     "claim": "A service names one cluster",
+     "pattern": "of the cluster that you run your service on",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_AwsVpcConfiguration.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "c326a0ad80503a690015eca169dfed440977c106f02bd0379e15331e0c434df9",
+   "characters": 1910,
+   "claims": [
+    {
+     "claim": "At most 16 subnets",
+     "pattern": "limit of 16 subnets",
+     "matched": true
+    },
+    {
+     "claim": "Subnets come from one VPC",
+     "pattern": "All specified subnets must be from the same VPC",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "e8385a02e011a4ae8f8aaf59729492eaef2f3e8a06d62da38eedfb8fae79d5dd",
+   "characters": 6243,
+   "claims": [
+    {
+     "claim": "Fargate runs with no EC2 instances to manage",
+     "pattern": "without having to manage servers or clusters of Amazon EC2 instances",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_RegisterTaskDefinition.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "376345b873f157be2347241ee6900a332970fcf6078c7c96d218409108f14a15",
+   "characters": 27878,
+   "claims": [
+    {
+     "claim": "Fargate requires the awsvpc network mode",
+     "pattern": "network mode is required",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-lambda-function.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "639f4bee173b06a2bb6536459c1182f7bd21d7641e64c15cae0469686a89f3ac",
+   "characters": 18520,
+   "claims": [
+    {
+     "claim": "The CloudFormation type exists",
+     "pattern": "AWS::Lambda::Function",
+     "matched": true
+    },
+    {
+     "claim": "A function's network settings name one VPC",
+     "pattern": "security groups and subnets in the VPC",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/lambda/latest/api/API_VpcConfig.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "ec587aff87c762ff37dde5dfb13b8db6f3d90e81a8e35f4f98f4f7d3f08cef0b",
+   "characters": 1338,
+   "claims": [
+    {
+     "claim": "At most 16 subnets",
+     "pattern": "Maximum number of 16 items",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/lambda/latest/api/API_VpcConfigResponse.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "5908bcd9be6613ebc6b18cd70d13f1228e44b6967401d3eb9b04ac27b3edc379",
+   "characters": 1317,
+   "claims": [
+    {
+     "claim": "The response holds one VPC ID",
+     "pattern": "The ID of the VPC",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/lambda/latest/dg/configuration-vpc.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "61def7ddd5fe53f605fffd504c1abdb95ed95b78eac6ded66de0fbe04c059554",
+   "characters": 21556,
+   "claims": [
+    {
+     "claim": "Attaching to a VPC is a choice, through subnets",
+     "pattern": "by attaching your function to the VPC",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/lambda/latest/dg/security-resilience.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "373b18577aaff466009a545acebc9a2e39bb9f1d982b1d802edee9a548a84637",
+   "characters": 3657,
+   "claims": [
+    {
+     "claim": "A function runs across Availability Zones",
+     "pattern": "Lambda runs your function in multiple Availability Zones",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/waf/latest/developerguide/what-is-aws-waf.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "3e5d83718baa7a53c55dfbba74a4c57e67d2d045e5084508a5c0a99b801423bb",
+   "characters": 7921,
+   "claims": [
+    {
+     "claim": "AWS lists what WAF protects",
+     "pattern": "You can protect the following resource types",
+     "matched": true
+    },
+    {
+     "claim": "The list holds an ALB",
+     "pattern": "Application Load Balancer",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/waf/latest/developerguide/web-acl-associating-aws-resource.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "a5bc39482825c9c9de0670e73b4f1cbfaac9f86665109ea2faf49de780950c31",
+   "characters": 3837,
+   "claims": [
+    {
+     "claim": "A regional web ACL shares its resource's Region",
+     "pattern": "must be in the same region as your resource",
+     "matched": true
+    },
+    {
+     "claim": "One web ACL for each resource",
+     "pattern": "with only one",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-wafv2-webacl.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "d0d1bf888e312ad2a9ab5fcccb61649d285dd6b309ad26797c4717473373cfca",
+   "characters": 23677,
+   "claims": [
+    {
+     "claim": "The CloudFormation type exists",
+     "pattern": "AWS::WAFv2::WebACL",
+     "matched": true
+    },
+    {
+     "claim": "Scope is REGIONAL or CLOUDFRONT",
+     "pattern": "Valid Values are",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-wafv2-webaclassociation.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "0e18e4e904b61cd0504748a831556ca3f495a897c7497e3ba8ebf49be9bb18bf",
+   "characters": 5102,
+   "claims": [
+    {
+     "claim": "The association type exists",
+     "pattern": "AWS::WAFv2::WebACLAssociation",
+     "matched": true
+    },
+    {
+     "claim": "It joins a web ACL and a regional resource",
+     "pattern": "regional application resource",
+     "matched": true
+    }
+   ]
   }
  ]
 }

@@ -123,6 +123,35 @@ def test_all_fixture_views_draw_every_catalog_type(
     assert seen == set(catalog().records), set(catalog().records) ^ seen
 
 
+def test_added_aws_types_render_in_one_picture_with_only_aws_and_generic_rights(
+    rendered: dict[tuple[str, str], RenderResult],
+) -> None:
+    result = rendered[("providers/aws-ecs-lambda-waf.json", "overview")]
+    graph = graph_of(result)
+    drawn = {node["type_id"]: node for node in graph["nodes"]}
+    for type_id in (
+        "aws.containers.ecs_cluster",
+        "aws.containers.ecs_service",
+        "aws.containers.ecs_fargate",
+        "aws.compute.lambda",
+        "aws.security.waf",
+    ):
+        item = catalog().records[type_id].representation
+        assert drawn[type_id]["drawing"] == "icon"
+        assert drawn[type_id]["icon"]["reference"] == item.class_path
+        assert drawn[type_id]["fallback"] is False
+    manifest = manifest_of(result)
+    assert manifest["validation"]["draft"] is False
+    # This picture can be shown, because it holds no icon under D-018's private-use limit.
+    assert manifest["rights"]["private_use_only"] is False
+    assert {item["id"] for item in manifest["rights"]["packs"]} == {
+        "aws-architecture-icons",
+        "diagrams-generic",
+    }
+    web = next(node for node in graph["nodes"] if node["id"] == "web")
+    assert web["memberships"]["deployment"] == ["cluster"]
+
+
 def test_every_catalog_icon_resolves_to_its_locked_bytes() -> None:
     data = catalog()
     resolved = 0

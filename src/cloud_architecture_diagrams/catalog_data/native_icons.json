@@ -1,5 +1,5 @@
 {
-  "catalog_version": "2026.11.0",
+  "catalog_version": "2026.11.1",
   "package": "diagrams",
   "package_version": "0.25.1",
   "icons": {
@@ -12,6 +12,26 @@
       "pack": "aws-architecture-icons",
       "resource": "resources/aws/compute/elastic-kubernetes-service.png",
       "sha256": "2e13d9bf26e01849cb41eafafc2a661eccfe3204af61b00be1b8119543fbbf07"
+    },
+    "diagrams.aws.compute.ElasticContainerService": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/compute/elastic-container-service.png",
+      "sha256": "c1eb220ee1ff2f196d6dff2c0e4cd13bec873c5468386d3380fc197dbbfcbc4b"
+    },
+    "diagrams.aws.compute.ElasticContainerServiceService": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/compute/elastic-container-service-service.png",
+      "sha256": "1e82320154c2b2a9fe148362d08e25058d08039e98254f06dce78c1de11fd449"
+    },
+    "diagrams.aws.compute.Fargate": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/compute/fargate.png",
+      "sha256": "8e16a7456fe9fc3aa8f98b23b597f01d2d75112ffd35f49c6ed5daaa7ebcb676"
+    },
+    "diagrams.aws.compute.Lambda": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/compute/lambda.png",
+      "sha256": "e15932c1bce58ac2f9490e75eba738f8299c5bbfbe4f70f3fcbfea9b5514a800"
     },
     "diagrams.aws.database.RDS": {
       "pack": "aws-architecture-icons",
@@ -52,6 +72,11 @@
       "pack": "aws-architecture-icons",
       "resource": "resources/aws/security/identity-and-access-management-iam.png",
       "sha256": "f9b9f5fbe062a82a3a0eff49bba209561b11815c91d9806576ccc7a25e7a8bb7"
+    },
+    "diagrams.aws.security.WAF": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/security/waf.png",
+      "sha256": "ed37f638db7aa5bb496b5945e6067a03a6a908484ed735e18e495069b7cd5e3e"
     },
     "diagrams.aws.storage.S3": {
       "pack": "aws-architecture-icons",
