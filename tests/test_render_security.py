@@ -20,6 +20,7 @@ import xml.etree.ElementTree as ET
 import zlib
 from collections.abc import Callable
 from dataclasses import asdict, replace
+from importlib import metadata
 from pathlib import Path
 from typing import Any
 
@@ -1644,9 +1645,9 @@ def test_a_diagrams_version_other_than_the_lock_blocks_the_render(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     # FR-050: an icon comes from the version the catalog was checked against, or from nothing.
-    real = icons.metadata.version
+    real = metadata.version
     monkeypatch.setattr(
-        icons.metadata,
+        metadata,
         "version",
         lambda name: "0.0.0" if name == "diagrams" else real(name),
     )
