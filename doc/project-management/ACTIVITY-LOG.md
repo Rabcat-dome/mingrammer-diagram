@@ -632,3 +632,8 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - [Fable approved it](evidence/S13-fable-review.md) with three P3 findings, then approved their fixes with one more. One stays open by choice: a node-based cache that states a zone lists only that zone's subnets.
 - `codex/aws-next-types` is built on S12's branch, because that is not merged. It is pushed and not merged, and the tag does not move. The core reproduces from a new clone at `b54375f`, and the gate passes 17 lanes locally and in actual [run 42040895164](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/42040895164) at `cec1d21`. No live session has used these types. The owner accepted the picture, and the merge is still theirs to decide.
 - The owner said to merge S13, and it reaches `main` here with S12's branch already in it. `main` changed nothing the core proof covers after S13's base, so the proof at `b54375f` still describes this source. The tag does not move.
+
+## 2026-11-05 — Work build, and three open P3 findings
+
+- On the owner's word, the Work plugin was built from `201792c` as `0.1.0-alpha.1+b3b15252a0c2`, twice with the same ZIP digest, and it passed 35 host checks in a throwaway profile. The owner installed it, then asked to skip Work for now (D-040), so no prompt has run on it in Work.
+- The owner said to go to the next step, so [S14](evidence/S14-open-p3-fixes.md) fixes P3-1, P3-2 and P3-3 of the final review. A typed reference's note now hides only for the relationship kind that draws it. No baseline changed.

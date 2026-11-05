@@ -253,7 +253,7 @@ class Mapper:
         }
         selected_edges = set(view.relationship_refs)
         self.linked = {
-            frozenset((edge.source_ref, edge.target_ref))
+            (frozenset((edge.source_ref, edge.target_ref)), edge.kind)
             for edge in model.relationships
             if edge.id in selected_edges
         }
@@ -433,31 +433,38 @@ class Mapper:
     def _typed_references(self, entity: Resource) -> list[str]:
         """A declared reference stays visible unless a selected relationship already draws it.
 
-        Only an entity's name appears, so a Secret's reference never carries a value.
+        Only the kind that means this reference draws it, in either direction: a line of another
+        kind between the same two says something else. Only an entity's name appears, so a
+        Secret's reference never carries a value.
         """
         context = entity.kubernetes
         if context is None:
             return []
-        references: list[tuple[str, list[str]]] = [
-            ("service", list(context.service_refs)),
-            ("target", list(context.target_refs)),
-            ("claim", list(context.volume_claim_refs)),
-            ("volume", [context.volume_ref] if context.volume_ref else []),
-            ("storage class", [context.storage_class_ref] if context.storage_class_ref else []),
-            ("config", list(context.config_refs)),
-            ("secret", list(context.secret_refs)),
+        references: list[tuple[str, str, list[str]]] = [
+            ("service", "traffic", list(context.service_refs)),
+            ("target", "traffic", list(context.target_refs)),
+            ("claim", "storage", list(context.volume_claim_refs)),
+            ("volume", "storage", [context.volume_ref] if context.volume_ref else []),
+            (
+                "storage class",
+                "storage",
+                [context.storage_class_ref] if context.storage_class_ref else [],
+            ),
+            ("config", "configuration", list(context.config_refs)),
+            ("secret", "configuration", list(context.secret_refs)),
             (
                 "service account",
+                "configuration",
                 [context.service_account_ref] if context.service_account_ref else [],
             ),
-            ("owner", [context.owner_ref] if context.owner_ref else []),
+            ("owner", "ownership", [context.owner_ref] if context.owner_ref else []),
         ]
         lines: list[str] = []
-        for label, targets in references:
+        for label, kind, targets in references:
             names = [
                 self.entities[target].name
                 for target in targets
-                if frozenset((entity.id, target)) not in self.linked
+                if (frozenset((entity.id, target)), kind) not in self.linked
             ]
             if names:
                 lines.append(f"{label}: {', '.join(names)}")

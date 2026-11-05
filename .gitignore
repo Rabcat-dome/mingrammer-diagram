@@ -8,3 +8,4 @@ reports/
 dist/
 spikes/s04-runtime/output/
 spikes/s04-local-plugin/output/
+.claude/

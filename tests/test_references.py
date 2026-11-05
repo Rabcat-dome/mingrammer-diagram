@@ -1004,7 +1004,20 @@ def test_a_typed_reference_stays_visible_until_a_relationship_draws_it(tmp_path:
     assert "secret:" not in text_of_node(drawn, "web-pod-1")
 
 
-def test_every_kind_of_typed_reference_has_a_note() -> None:
+TYPED_REFERENCES = {
+    "service_refs": ("service", "traffic"),
+    "target_refs": ("target", "traffic"),
+    "volume_claim_refs": ("claim", "storage"),
+    "volume_ref": ("volume", "storage"),
+    "storage_class_ref": ("storage class", "storage"),
+    "config_refs": ("config", "configuration"),
+    "secret_refs": ("secret", "configuration"),
+    "service_account_ref": ("service account", "configuration"),
+    "owner_ref": ("owner", "ownership"),
+}
+
+
+def test_every_typed_reference_field_is_covered_below() -> None:
     # A field added to the model must not silently stay out of the detail view.
     fields = {
         name
@@ -1012,17 +1025,82 @@ def test_every_kind_of_typed_reference_has_a_note() -> None:
         if name.endswith(("_ref", "_refs"))
         and name not in {"cluster_ref", "namespace_ref", "node_pool_ref", "node_ref"}
     }
-    assert fields == {
-        "service_refs",
-        "target_refs",
-        "volume_claim_refs",
-        "volume_ref",
-        "storage_class_ref",
-        "config_refs",
-        "secret_refs",
-        "service_account_ref",
-        "owner_ref",
-    }
+    assert fields == set(TYPED_REFERENCES)
+
+
+def _one_reference(field: str) -> tuple[dict[str, Any], str, str]:
+    """The Kubernetes fixture cut down to one declared reference, with no line drawing it."""
+    model: dict[str, Any] = json.loads((FIXTURES / "kubernetes-valid.json").read_text())
+    entity = next(item for item in model["resources"] if item.get("kubernetes", {}).get(field))
+    value = entity["kubernetes"][field]
+    target = value if isinstance(value, str) else value[0]
+    if not isinstance(value, str):
+        entity["kubernetes"][field] = [target]
+    model["relationships"] = []
+    model["views"] = [
+        {
+            "id": "detail",
+            "title": "Detail",
+            "grouping": "namespace",
+            "entity_refs": [entity["id"], target],
+        }
+    ]
+    return model, entity["id"], target
+
+
+def _mapped_text(model: dict[str, Any], identifier: str) -> str:
+    parsed = Architecture.model_validate(model)
+    found = map_view(parsed, parsed.views[0], "strict", LIMITS)
+    lines = [line for node in found.nodes if node.id == identifier for line in node.lines]
+    lines += [line for group in found.groups if group.id == identifier for line in group.lines]
+    return " ".join(lines)
+
+
+def _with_edge(model: dict[str, Any], source: str, target: str, kind: str) -> dict[str, Any]:
+    changed = copy.deepcopy(model)
+    changed["relationships"] = [
+        {"id": "edge", "source_ref": source, "target_ref": target, "kind": kind}
+    ]
+    changed["views"][0]["relationship_refs"] = ["edge"]
+    return changed
+
+
+@pytest.mark.parametrize("field", TYPED_REFERENCES)
+def test_every_kind_of_typed_reference_has_a_note(field: str) -> None:
+    label, drawing_kind = TYPED_REFERENCES[field]
+    model, entity, target = _one_reference(field)
+    name = next(item["name"] for item in model["resources"] if item["id"] == target)
+    note = f"{label}: {name}"
+    assert note in _mapped_text(model, entity)
+    for source, sink in ((entity, target), (target, entity)):
+        drawn = _with_edge(model, source, sink, drawing_kind)
+        assert note not in _mapped_text(drawn, entity)
+        for kind in sorted(EDGE_STYLES.keys() - {drawing_kind}):
+            assert note in _mapped_text(_with_edge(model, source, sink, kind), entity), kind
+
+
+@pytest.mark.parametrize(
+    ("kind", "source", "target"),
+    [
+        ("management", "web-deployment", "web-secret"),
+        ("observability", "web-secret", "web-deployment"),
+    ],
+)
+def test_a_line_of_another_kind_does_not_hide_a_typed_reference(
+    kind: str, source: str, target: str, tmp_path: Path
+) -> None:
+    model = model_of("azure-hub-spoke")
+    view = view_of(model, "aks-namespaces")
+    view["relationship_refs"] = [
+        ref for ref in view["relationship_refs"] if ref != "configuration-deployment-secret"
+    ]
+    model["relationships"].append(
+        {"id": "other-line", "source_ref": source, "target_ref": target, "kind": kind}
+    )
+    view["relationship_refs"].append("other-line")
+    assert errors(model) == []
+    found = graph("", "aks-namespaces", tmp_path, model)
+    assert "secret: web-frontend-secret" in text_of_node(found, "web-deployment")
 
 
 @pytest.mark.parametrize("host", ["aks", "cce", "eks", "gke", "onprem"])
