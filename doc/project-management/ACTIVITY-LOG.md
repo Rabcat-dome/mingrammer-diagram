@@ -584,3 +584,8 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - The owner accepted the Claude session's recommendations (D-030). Detail views now list declared properties and typed references (FR-018), which changes exactly the 11 Kubernetes detail views. FR-050 and NFR-009 are reworded with new tests, and the rest are accepted as listed. The report has 2 partly met: T-015 and T-016. See [the record](evidence/M6-p0-gaps.md).
 - The plugin's version is now `0.1.0-alpha.1+88ce2c0cd0dc`, so the Work prompts run again on both Macs before release. The owner has not yet seen the changed images.
 - The owner opened the 11 changed images and passed them (D-031), so only T-015 stays partly met. `main` fast-forwards here once this commit passes CI. The Work prompts run again on both Macs next, and M6 stays open, with no release or tag.
+
+## 2026-11-05 — The final version in actual Work
+
+- The owner upgraded to `0.1.0-alpha.1+88ce2c0cd0dc` and ran the five prompts on the first Mac. Prompt 5 first ran as this project's own table row, so the chat only drafted a sentence, and that row now says not to paste it. The drafted sentence then ran, and the detail view shows the new `type: ClusterIP` line. The owner passed all five.
+- The owner chose not to rerun the second Mac (D-032). `main` fast-forwards here once this commit passes CI, and M6-03's final review follows. M6 stays open, with no release or tag.

@@ -2,13 +2,13 @@
 
 Target: the separate ChatGPT Work page or mode, not Codex (D-014). Automated checks and rehearsals stay in the [S09 evidence](S09-work-plugin.md), and only what the owner reports below counts as a Work result.
 
-**Status: all five checks pass in Work on `0.1.0-alpha.1+d27ef23f6f94`, on the owner's report of 2026-11-05 (D-027). M5 closed on 2026-11-05 under D-028.**
+**Status: all five checks pass in Work on the final version, `0.1.0-alpha.1+88ce2c0cd0dc`, on the first Mac (D-032), after passing on `0.1.0-alpha.1+d27ef23f6f94` on both Macs (D-027, D-029). M5 closed on 2026-11-05 under D-028.**
 
 ## What the owner runs
 
 Install, from a checkout of `main`, with the commands in the [plugin README](../../../plugins/cloud-architecture-work/README.md#install). Then restart the ChatGPT app, switch to Work mode, open a new chat and select **Cloud Architecture Diagrams**. The S04 plugin stays enabled and unchanged.
 
-The version that passed is `0.1.0-alpha.1+d27ef23f6f94`, which has the [S11 fixes](S11-gpt-reviews.md#fixes) and the fix for the [second run's fault](#second-run). A change to the plugin's content changes its version, so a fix after this needs its own run. Each prompt runs in the same chat unless it says otherwise.
+The final version is `0.1.0-alpha.1+88ce2c0cd0dc`, which adds [D-030's detail lines](M6-p0-gaps.md#fr-018) to the [S11 fixes](S11-gpt-reviews.md#fixes) and the fix for the [second run's fault](#second-run). A change to the plugin's content changes its version, so a fix after this needs its own run. Each prompt runs in the same chat unless it says otherwise.
 
 | # | Prompt | What it checks |
 |---|---|---|
@@ -16,9 +16,30 @@ The version that passed is `0.1.0-alpha.1+d27ef23f6f94`, which has the [S11 fixe
 | 2 | `Draw an AWS three-tier web application: an Application Load Balancer, two EC2 app servers and an RDS database in one VPC. Show me the picture and give me all six files.` | Rendering, preview, retrieval |
 | 3 | `In that diagram, add an S3 bucket that both app servers read from, and draw it again. Keep everything else as it is. Tell me which IDs you kept and added.` | Edit flow, stable IDs, updated source |
 | 4 | `Validate this model and tell me what is wrong, without fixing it: {"schema_version":"1.0.0","metadata":{"id":"x","title":"X","environment":"prod","assumptions":[]},"resources":[{"id":"app","name":"App","provider":"aws","service_type":"aws.compute.ec2","taxonomy":"compute.vm"}],"relationships":[{"id":"r1","source_ref":"app","target_ref":"ghost","kind":"traffic"}],"views":[{"id":"v","title":"V","entity_refs":["app"]}]}` | Invalid input: expects `REFERENCE_MISSING` and no image |
-| 5 | In Thai, ask for a GKE architecture with a Deployment, Service, Ingress and PVC, with both an overview view and a detail view, and with Thai names on the labels. The session that started this check gives the exact sentence, because repository documents stay English | Kubernetes overview and detail, Thai labels, same IDs in both views |
+| 5 | Do not paste this row. Paste a Thai sentence asking for a GKE architecture with a Deployment, Service, Ingress and PVC, with both an overview view and a detail view, and with Thai names on the labels. The session that started this check gives the exact sentence, because repository documents stay English. Pasting this row made a chat draft a sentence and call no tool | Kubernetes overview and detail, Thai labels, same IDs in both views |
+
+## Final version
+
+Run on 2026-11-05 on `0.1.0-alpha.1+88ce2c0cd0dc`, on the first Mac, in one new Work chat outside this repository, after removing the runtime. The session record has originator `codex_work_desktop` and GPT-6.1 Sol / High, with approval policy `never` and `danger-full-access`. The owner passed all five. The rest was checked from the session record and the files.
+
+| Check | Result |
+|---|---|
+| 1. Install and runtime | Passed. The chat reports this version, and setup reaches `ready` from `RUNTIME_NOT_READY` |
+| 2. AWS drawing | Passed. Strict, no warnings, and all six files |
+| 3. Edit | Passed. All 10 IDs stayed, `s3-bucket`, `app-1-s3` and `app-2-s3` were added, and no existing resource or relationship changed |
+| 4. Invalid model | Passed. `REFERENCE_MISSING`, and no bundle |
+| 5. GKE with Thai labels | Passed, at the second attempt. The first paste was this page's own table row, so the chat drafted a sentence and called no tool, and its row now says not to. The drafted sentence then ran. Both views share one model, and the detail view shows D-030's new `type: ClusterIP` line, with no such line in the overview |
+
+Rendering all four bundles again from `main` gives the same `diagram.svg`, `diagram.png` and `view.json`. No `busy` answer and no `RUNTIME_INSTALLING` appeared. Bundles under `~/Documents/CloudArchitectureDiagrams/work/`:
+
+- AWS `aws-three-tier-web--overview--aa1d14ba097e636c`, and after the edit `aws-three-tier-web--overview--dc0cb58ed135873a`
+- GKE `gke-thai-application--overview--4ddc97f3f718c736` and `gke-thai-application--detail--6cd7d16ed1f478fa`
+
+The model in this run declared a Service type and no replicas or ports, so only `type:` was seen in Work. Tests and the owner's [reference images](M6-p0-gaps.md#fr-018) cover the other lines. The second Mac did not run this version (D-032).
 
 ## Result
+
+This is the run on `0.1.0-alpha.1+d27ef23f6f94`, which closed M5.
 
 Run on 2026-11-05 (Asia/Bangkok) in one new Work chat, with GPT-6.1 Sol / High, in a folder outside this repository, after removing the runtime. The session record has originator `codex_work_desktop`. "Owner" marks what only the owner could see, and the rest was checked from the session record and the files.
 

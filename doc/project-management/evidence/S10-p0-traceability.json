@@ -217,7 +217,8 @@
   "evidence": [
    "doc/project-management/evidence/S09-work-plugin.md#rehearsal-with-a-live-model",
    "doc/project-management/evidence/S09-work-plugin.md#limits-and-what-this-does-not-establish",
-   "doc/project-management/evidence/S09-Work-validation.md#result"
+   "doc/project-management/evidence/S09-Work-validation.md#result",
+   "doc/project-management/evidence/S09-Work-validation.md#final-version"
   ],
   "open": "",
   "owner": "D-027: the owner reported the Work result on 2026-11-05, for one Mac with full access. GPT-6.1 Sol authored models from English and Thai requests through this skill in Work, with no `src` to read, on one model and one Mac."
@@ -834,7 +835,8 @@
    "doc/project-management/evidence/S08-reference-diagrams.md#requirement-coverage",
    "doc/project-management/evidence/S08-reference-diagrams.md#scenario-checks",
    "doc/project-management/evidence/S06-provider-catalogs.md#task-status",
-   "doc/project-management/evidence/M6-p0-gaps.md"
+   "doc/project-management/evidence/M6-p0-gaps.md",
+   "doc/project-management/evidence/S09-Work-validation.md#final-version"
   ],
   "open": "",
   "owner": ""
@@ -2133,7 +2135,8 @@
   "evidence": [
    "doc/project-management/evidence/S09-Work-validation.md#result",
    "doc/project-management/evidence/S09-work-plugin.md#through-the-real-host",
-   "doc/project-management/evidence/S09-work-plugin.md#limits-and-what-this-does-not-establish"
+   "doc/project-management/evidence/S09-work-plugin.md#limits-and-what-this-does-not-establish",
+   "doc/project-management/evidence/S09-Work-validation.md#final-version"
   ],
   "open": "",
   "owner": "D-027: the owner reported the Work result on 2026-11-05, for one Mac with full access. Install, selection, discovery, invocation and output delivery ran in Work on one Mac. How the app asks for approval under a stricter setting is unverified."
@@ -2177,7 +2180,8 @@
   "evidence": [
    "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage",
    "doc/project-management/evidence/S09-work-plugin.md#rehearsal-with-a-live-model",
-   "doc/project-management/evidence/S09-Work-validation.md#result"
+   "doc/project-management/evidence/S09-Work-validation.md#result",
+   "doc/project-management/evidence/S09-Work-validation.md#final-version"
   ],
   "open": "",
   "owner": "D-027: the owner reported the Work result on 2026-11-05, for one Mac with full access. A real model used this skill in Work: lookup, stated assumptions, validation, rendering, and an edit that kept every ID. One model, on one Mac."
@@ -2211,7 +2215,8 @@
   "evidence": [
    "doc/project-management/evidence/S09-Work-validation.md#result",
    "doc/project-management/evidence/S09-work-plugin.md#exit-criteria",
-   "doc/project-management/evidence/S09-work-plugin.md#through-the-real-host"
+   "doc/project-management/evidence/S09-work-plugin.md#through-the-real-host",
+   "doc/project-management/evidence/S09-Work-validation.md#final-version"
   ],
   "open": "",
   "owner": "D-027: the owner reported the Work result on 2026-11-05, for one Mac with full access. The owner reports that the preview appears as an image and can be downloaded, and that all six files open from Work."
@@ -2324,10 +2329,11 @@
    "doc/project-management/evidence/S09-work-plugin.md#what-the-host-really-does",
    "doc/project-management/evidence/S09-work-plugin.md#limits-and-what-this-does-not-establish",
    "doc/project-management/evidence/S09-Work-validation.md#result",
-   "doc/project-management/evidence/M6-second-machine.md"
+   "doc/project-management/evidence/M6-second-machine.md",
+   "doc/project-management/evidence/S09-Work-validation.md#final-version"
   ],
   "open": "",
-  "owner": "D-029: the owner reported the second Mac's result on 2026-11-05. Setup ran from a removed or absent runtime on two Macs, through local Work transport, with one allow prompt on the second. Both had Python and Homebrew, and a chat under a stricter setting has not run."
+  "owner": "D-029: the owner reported the second Mac's result on 2026-11-05. Setup ran from a removed or absent runtime on two Macs, through local Work transport, with one allow prompt on the second. Both had Python and Homebrew, and a chat under a stricter setting has not run. D-032: the final plugin version passed on the first Mac only, and the second Mac passed the version before it."
  },
  {
   "id": "FR-065",
@@ -2413,10 +2419,11 @@
    "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage",
    "doc/project-management/evidence/S09-work-plugin.md#limits-and-what-this-does-not-establish",
    "doc/project-management/evidence/S09-Work-validation.md#result",
-   "doc/project-management/evidence/M6-second-machine.md"
+   "doc/project-management/evidence/M6-second-machine.md",
+   "doc/project-management/evidence/S09-Work-validation.md#final-version"
   ],
   "open": "",
-  "owner": "D-029: the owner reported the second Mac's result on 2026-11-05. The versioned plugin installed from its ZIP on a second Mac with no checkout, and the workflow completed on both with their own runtimes."
+  "owner": "D-029: the owner reported the second Mac's result on 2026-11-05. The versioned plugin installed from its ZIP on a second Mac with no checkout, and the workflow completed on both with their own runtimes. D-032: the final plugin version passed on the first Mac only, and the second Mac passed the version before it."
  },
  {
   "id": "NFR-001",
@@ -2456,7 +2463,7 @@
    "doc/project-management/evidence/M6-second-machine.md"
   ],
   "open": "",
-  "owner": "D-029: the owner reported the second Mac's result on 2026-11-05. A second Mac reproduced all 26 views byte for byte on the pinned runtime, and rendering its Work models on the first gave the same output. A different Graphviz has not been compared."
+  "owner": "D-029: the owner reported the second Mac's result on 2026-11-05. A second Mac reproduced all 26 views byte for byte on the pinned runtime, and rendering its Work models on the first gave the same output. A different Graphviz has not been compared. D-032: the final plugin version passed on the first Mac only, and the second Mac passed the version before it."
  },
  {
   "id": "NFR-002",
@@ -3783,10 +3790,11 @@
    "doc/project-management/evidence/S09-work-plugin.md#limits-and-what-this-does-not-establish",
    "doc/project-management/evidence/S07-controlled-rendering.md#clean-setup",
    "doc/project-management/evidence/S10-core-reproduction-proof.json",
-   "doc/project-management/evidence/M6-second-machine.md"
+   "doc/project-management/evidence/M6-second-machine.md",
+   "doc/project-management/evidence/S09-Work-validation.md#final-version"
   ],
   "open": "",
-  "owner": "D-029: the owner reported the second Mac's result on 2026-11-05. Both Macs completed the Work workflow with their own runtimes, including artifact retrieval, and the core reproduced from a clean runtime on each. Both are Apple silicon."
+  "owner": "D-029: the owner reported the second Mac's result on 2026-11-05. Both Macs completed the Work workflow with their own runtimes, including artifact retrieval, and the core reproduced from a clean runtime on each. Both are Apple silicon. D-032: the final plugin version passed on the first Mac only, and the second Mac passed the version before it."
  },
  {
   "id": "T-011",
@@ -3837,7 +3845,8 @@
   "evidence": [
    "doc/project-management/evidence/S09-Work-validation.md#result",
    "doc/project-management/evidence/S09-work-plugin.md#through-the-real-host",
-   "doc/project-management/evidence/S09-work-plugin.md#limits-and-what-this-does-not-establish"
+   "doc/project-management/evidence/S09-work-plugin.md#limits-and-what-this-does-not-establish",
+   "doc/project-management/evidence/S09-Work-validation.md#final-version"
   ],
   "open": "",
   "owner": "D-027: the owner reported the Work result on 2026-11-05, for one Mac with full access. Install, discovery, valid and invalid calls, the preview and the complete bundle ran in the local Work mode on one Mac. Local mode needs no authentication. The second machine stays with M6."
@@ -3932,7 +3941,8 @@
    "doc/project-management/evidence/S09-Work-validation.md#result",
    "doc/project-management/evidence/S09-work-plugin.md#rehearsal-with-a-live-model",
    "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage",
-   "doc/project-management/evidence/S08-reference-diagrams.md#scenario-checks"
+   "doc/project-management/evidence/S08-reference-diagrams.md#scenario-checks",
+   "doc/project-management/evidence/S09-Work-validation.md#final-version"
   ],
   "open": "",
   "owner": "D-027: the owner reported the Work result on 2026-11-05, for one Mac with full access. In Work, every ID stayed, the S3 bucket and two edges were added, nothing else in the model changed, and the new bundle holds the updated source. One edit, on one model."
@@ -3966,7 +3976,8 @@
   "evidence": [
    "doc/project-management/evidence/S08-reference-diagrams.md#owner-inspection",
    "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage",
-   "doc/project-management/evidence/S09-Work-validation.md#result"
+   "doc/project-management/evidence/S09-Work-validation.md#result",
+   "doc/project-management/evidence/S09-Work-validation.md#final-version"
   ],
   "open": "",
   "owner": "D-027: the owner reported the Work result on 2026-11-05, for one Mac with full access. English and Thai labels are accepted in Work. Remote isolation and expiry do not apply to local mode. The host keeps its own record of each chat, which the README states."
@@ -4183,7 +4194,8 @@
    "doc/project-management/evidence/S06-provider-catalogs.md#validation",
    "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage",
    "doc/project-management/evidence/S09-Work-validation.md#what-the-owner-runs",
-   "doc/project-management/evidence/S09-Work-validation.md#result"
+   "doc/project-management/evidence/S09-Work-validation.md#result",
+   "doc/project-management/evidence/S09-Work-validation.md#final-version"
   ],
   "open": "",
   "owner": "D-027: the owner reported the Work result on 2026-11-05, for one Mac with full access. A Kubernetes overview and detail ran in Work from one model, as M5 asks. M1, M2 and M4's parts pass."

@@ -2,7 +2,7 @@
 
 Date: 2026-11-05 (Asia/Bangkok) | Task: M6-01 | Plugin: `0.1.0-alpha.1+d27ef23f6f94` | Core: `0.5.0a1` | Decision: D-029
 
-**Result: M6-01 passes on the owner's report (D-029). The same plugin version completes the Work workflow on two Apple silicon Macs with independently installed runtimes, and the core reproduces on the second one, with all 26 views identical to the baselines.** M6 stays open: T-016's repeat, M6-03 and M6-04 remain, and 15 P0 records are still partly met.
+**Result: M6-01 passes on the owner's report (D-029). The same plugin version completes the Work workflow on two Apple silicon Macs with independently installed runtimes, and the core reproduces on the second one, with all 26 views identical to the baselines.** This describes `0.1.0-alpha.1+d27ef23f6f94`. [D-030](M6-p0-gaps.md) later moved the plugin to `0.1.0-alpha.1+88ce2c0cd0dc`, and under D-032 the owner chose not to rerun the second Mac, so that version passed on the [first Mac](S09-Work-validation.md#final-version) only.
 
 ## What differs between the machines
 
