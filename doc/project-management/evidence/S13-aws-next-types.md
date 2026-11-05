@@ -175,7 +175,8 @@ The picture holds AWS and generic icons only, and a test requires its manifest t
 - **No live session has used these types.** This does not yet show that an ordinary request now ends strict.
 - **Neither plugin was reinstalled**, and no Work session ran this version. The owner's installed copies are unchanged.
 - **Merging this brings S12 with it**, because this branch is built on S12's and neither is in `main`.
-- **FR-048's comparison was not repeated.** The picture was looked at, and it was not compared with an AWS reference diagram. It has no reviewed baseline, and the owner has not yet accepted it. Two arrows touch a label, on the ECS cluster and the ECR repository, because Graphviz routes them through that rank.
+- **FR-048's comparison was not repeated.** The picture was looked at, and it was not compared with an AWS reference diagram. It has no reviewed baseline. Two arrows touch a label, on the ECS cluster and the ECR repository, because Graphviz routes them through that rank.
+- **The owner accepted the picture on 2026-11-05,** translated from Thai: "the picture is fine". That covers [this picture](S13-aws-next-types.png) only, SHA-256 `19d073cfa9770ef2a4ab08f5b3e7156e916f96d4495e21ec6887d3ab32ed67b0`. It accepts neither a merge nor a comparison with an AWS reference.
 - **Sources were checked once.** Nothing re-fetches them, as S06 says of its own pages.
 - **AWS gaps that remain.** EventBridge, Step Functions and App Runner, which the owner left out, and anything S12's list did not name. Which to add is the owner's call.
 
@@ -185,5 +186,5 @@ Implementation used **Claude Opus 5.5 (`claude-opus-5-5`)**, the model of the se
 
 ## Next steps
 
-1. The owner reads the picture and decides whether to merge. Merging confirms D-037, and D-036 with it.
+1. The owner decides whether to merge. Merging confirms D-037, and D-036 with it.
 2. After a merge, rebuild and reinstall the Work plugin, run `scripts/work_host_check.py` as the handoff says, and repeat one of M7's AWS requests in a live session.
