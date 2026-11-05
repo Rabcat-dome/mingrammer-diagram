@@ -211,7 +211,7 @@ def test_the_next_aws_types_render_in_one_picture_with_only_aws_and_generic_righ
         assert nodes[identifier]["group"] == "region", identifier
 
 
-def test_a_private_hosted_zone_on_vpcs_in_two_regions_renders() -> None:
+def test_a_private_hosted_zone_on_vpcs_in_two_regions_renders(smoke_root: Path) -> None:
     model = json.loads((FIXTURES / "providers/aws-edge-api-data.json").read_text())
     model["boundaries"] += [
         {"id": "region-2", "name": "Other Region", "provider": "aws", "kind": "region"},
@@ -222,7 +222,7 @@ def test_a_private_hosted_zone_on_vpcs_in_two_regions_renders() -> None:
     zone["placement"]["network_attachments"] = [{"network_ref": "vpc"}, {"network_ref": "vpc-2"}]
     view = model["views"][0]
     view["entity_refs"] += ["region-2", "vpc-2"]
-    result = render(encode(model), OUTPUT.parent / "render-smoke-zone")
+    result = render(encode(model), smoke_root)
     assert result.rendered, [item.model_dump() for item in result.diagnostics]
     node = next(item for item in graph_of(result)["nodes"] if item["id"] == "private-dns")
     # A tree cannot hold both, so one VPC holds it and the record keeps the other.

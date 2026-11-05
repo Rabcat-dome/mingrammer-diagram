@@ -2,7 +2,7 @@
 
 Date: 2026-11-05 | Branch: `codex/aws-next-types`, from `3b692c1` on `codex/aws-ecs-fargate-lambda-waf`, because that branch is not merged | Decision: D-037
 
-**Result: strict validation and rendering now accept 16 new AWS types, from the owner's choice of 12 services. Each has one taxonomy ID, a placement rule from AWS's own pages and AWS's own icon. S12's one WAF type becomes two. The branch is pushed and not merged, the tag `v0.1.0-alpha.1` does not move, and no live session has used it yet.**
+**Result: strict validation and rendering now accept 16 new AWS types: 15 for the owner's choice of 12 services, and a CloudFront web ACL, because S12's one WAF type becomes two now that CloudFront is here. Each has one taxonomy ID, a placement rule from AWS's own pages and AWS's own icon. The branch is pushed and not merged, the tag `v0.1.0-alpha.1` does not move, and no live session has used it yet.**
 
 ## Why
 
@@ -37,7 +37,7 @@ Each gap was confirmed before editing, with `cloud-diagrams catalog --provider a
 | `aws.security.kms` | `AWS::KMS::Key` | `security.secrets_keys` | `aws.security.KeyManagementService` | Regional | None |
 | `aws.containers.ecr` | `AWS::ECR::Repository` | `compute.containers` | `aws.compute.EC2ContainerRegistry` | Regional | None |
 
-**Twelve services became 16 types** because S06 gives a variant its own type where a rule differs:
+**The owner's 12 services became 15 types, and S12's WAF type became two, which makes 16.** The owner did not choose these splits. They are this session's call, because S06 gives a variant its own type where a rule differs:
 
 - API Gateway: AWS WAF applies to a REST API and not to an HTTP API.
 - Route 53: a public hosted zone omits VPCs, and a private one associates with them.
@@ -48,7 +48,7 @@ Variants of one service draw its one icon, as the two NAT gateway types do. A te
 
 `aws.security.waf` keeps its ID and stays regional, so a model that protects an ALB stays valid. Its display name becomes "AWS WAF web ACL (regional)", which is what a picture now draws under its icon.
 
-**The catalog's own format changed in two additive ways, so the schema stays at 1.0.0:** seven capabilities (`cache`, `container_registry`, `content_delivery`, `dns`, `key_management`, `messaging`, `secret_management`), because none described these services, and one placement field, `one_subnet_per_zone`. **No rule code is new**, because existing codes cover every rule here. Their remedies now name these types. The `network.routing` taxonomy's meaning gains DNS routing, because the frozen list has no closer ID for a hosted zone. Its ID does not change.
+**The catalog's own format changed in two additive ways, so the schema stays at 1.0.0:** seven capabilities (`cache`, `container_registry`, `content_delivery`, `dns`, `key_management`, `messaging`, `secret_management`), because none described these services, and one placement field, `one_subnet_per_zone`. **No rule code is new**, because existing codes cover every rule here. Their remedies now name these types. Two taxonomy meanings widen, because the frozen list has no closer ID: `network.routing` gains DNS routing for a hosted zone, and `compute.containers` gains registries for a repository. Their IDs do not change.
 
 ![The new types in one picture](S13-aws-next-types.png)
 
@@ -64,7 +64,7 @@ Each page was fetched on 2026-11-05 and is recorded in `S06-source-checks.json`,
 | A regional web ACL shares its resource's Region, and a global one goes with a distribution | Stated as the two kinds of association | [Associating](https://docs.aws.amazon.com/waf/latest/developerguide/web-acl-associating-aws-resource.html) |
 | One web ACL type cannot serve the other's resource | A web ACL on a distribution cannot also go on another resource type | [Associating](https://docs.aws.amazon.com/waf/latest/developerguide/web-acl-associating-aws-resource.html) |
 | One web ACL for each resource, and one may serve several distributions | Stated as restrictions, and a distribution's configuration names one | [Associating](https://docs.aws.amazon.com/waf/latest/developerguide/web-acl-associating-aws-resource.html), [DistributionConfig](https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-cloudfront-distribution-distributionconfig.html) |
-| A REST API takes a regional web ACL, whatever its endpoint type | API Gateway's WAF page requires a web ACL for a regional application | [API Gateway and WAF](https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-control-access-aws-waf.html) |
+| A REST API takes a regional web ACL | API Gateway's WAF page requires a web ACL for a regional application. It makes no exception for an edge-optimized endpoint, and reading that as all endpoint types is this record's inference | [API Gateway and WAF](https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-control-access-aws-waf.html) |
 | An HTTP API takes no web ACL | Its feature table marks AWS WAF as REST only | [REST or HTTP](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-vs-rest.html) |
 | A public hosted zone takes no network | CloudFormation says to omit VPCs for one | [`AWS::Route53::HostedZone`](https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-route53-hostedzone.html) |
 | A private hosted zone may serve VPCs in several Regions | AWS's own example associates VPCs in two Regions, and more can be added by Region and ID | [`AWS::Route53::HostedZone`](https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-route53-hostedzone.html), [Associating more VPCs](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zone-private-associate-vpcs.html) |
@@ -92,7 +92,7 @@ The SNS row is the weakest: the page implies that a topic has one Region and doe
 
 **One native ID for a node-based cache.** A record holds one, so this names `AWS::ElastiCache::ReplicationGroup`, and a Memcached cluster is really `AWS::ElastiCache::CacheCluster`. Nothing reads this field to make a decision, and the rule is the same for both.
 
-**A node-based cache is `zonal`, and that does not make a zone required.** It only allows one, as for RDS. A cache across zones names a region, and a stated zone that disagrees with a listed subnet fails.
+**A node-based cache is `zonal`, and that does not make a zone required.** It only allows one, as for RDS. A cache across zones names a region, and a stated zone that disagrees with a listed subnet fails. AWS allows a one-zone cluster on a subnet group that spans more zones, so that model must list only the subnets its nodes use. `subnet_refs` here means where the nodes attach and not the whole group, which is how S06 reads an RDS subnet group. A model is corrected in one step, and a rule on the whole group would need a field the model does not have.
 
 **The one-subnet rule applies to the NLB alone, although AWS states it for the ALB too.** Adding it to the ALB would tighten an existing type in a change about new ones, so that waits as a separate decision. It is listed below.
 

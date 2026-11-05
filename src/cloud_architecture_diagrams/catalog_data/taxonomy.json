@@ -47,7 +47,7 @@
     },
     {
       "id": "compute.containers",
-      "meaning": "Container platforms and Kubernetes compute objects"
+      "meaning": "Container platforms and registries, and Kubernetes compute objects"
     },
     {
       "id": "compute.serverless",
