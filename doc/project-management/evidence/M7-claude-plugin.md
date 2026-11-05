@@ -2,7 +2,7 @@
 
 Recorded: 2026-11-02 (Asia/Bangkok) | Base: `c5f74b4` | First tested code: `22fc85e` | Review fixes: `0220e94`, `87acce5` and `917f46f` | Branch: `codex/m7-claude-plugin` | Host: macOS ARM64, Claude Code 2.1.309.
 
-**M7-01 and M7-02 are complete, and M7-04 brought catalog discovery and rendering to the plugin. M7-03 is verified on one Mac, most recently [at the release commit](#acceptance-measurements-at-97b0841), including [what a real session asks for](#what-a-real-session-asks-for). Nobody has seen a permission dialog drawn, and D-035 accepts one Mac in place of two. M7 stays open for the owner's word.** This is a preparation build under D-015. It authors and validates models, and since S07 it also renders them. It does not change the Work first-release target.
+**M7-01 and M7-02 are complete, and M7-04 brought catalog discovery and rendering to the plugin. M7-03 is verified on one Mac, most recently on [a copy installed at `ea6c802`](#the-acceptance-copy), with [what a real session asks for](#what-a-real-session-asks-for). Nobody has seen a permission dialog drawn, and D-035 accepts one Mac in place of two. M7 stays open for the owner's word.** This is a preparation build under D-015. It authors and validates models, and since S07 it also renders them. It does not change the Work first-release target.
 
 Actual CI and the GitHub and real-config installs below ran against commit `22fc85e`, before the review fixes. See [Same-session review](#same-session-review) and [Separate-session review](#separate-session-review) for what changed afterward and what has been rerun.
 
@@ -181,6 +181,20 @@ Measured on the installed copy `c6c7490d8ca7`. There are [three runs](M7-permiss
 
 This is the host's own request stream, but not its look. How the app draws a request, and whether an "always allow" answer removes the repeats, stay unseen.
 
+### The acceptance copy
+
+The owner ran `plugin marketplace update` and `plugin update`, which moved the install to `ea6c802ec4d3`, fetched from the private repository. That copy has 0 symlinks, and its `bin`, `skills` and README match the commit byte for byte. It reports catalog `2026.11.1`, `render_available: true` and no host blockers, and it finds the D-036 types.
+
+Three new headless sessions on Sonnet 5.5 then used that copy, with the owner's real config, no `--plugin-dir`, no tool pre-approved, and the same stand-in. Their records are [under `acceptance_copy`](M7-permission-requests.json). I looked at the first and third pictures.
+
+| Request | Turns | Requests | Result |
+|---|---|---|---|
+| Thai: WAF, ALB, an ECS service on Fargate, RDS, S3 and Lambda | 19 | 3: the skill, a `for` loop of catalog searches, denied, and writing the model | Strict, with no draft. All the new types drew with their icons, and the session added the ECS cluster the service needs and said why |
+| Thai: add a cache if the catalog has one, keep the IDs, draw again | 20 | 1: the skill | The catalog has none. The session said so, changed nothing and invented no ID, then validated and drew again |
+| English: a Kubernetes detail on EKS | 11 | 2: the skill and writing the model | Strict. The picture shows the declared replicas, labels, Service type and ports |
+
+The plugin's own command ran 25 times with no request.
+
 ### What did not run
 
 An interactive terminal session. This Mac's CLI has never finished first-run setup, because the owner uses the app, and a session driven through a pseudo-terminal stopped at the theme chooser. Finishing it would change the owner's `~/.claude.json`, so the run stopped there, and that file shows no onboarding state afterward. So no permission dialog has been seen by anyone: the runs above record what the host asks, not how it looks.
@@ -191,7 +205,7 @@ Fable's credit ran out, so on the owner's word (D-038) this milestone's review w
 
 | Finding | Disposition |
 |---|---|
-| F1, P2: no session has used a copy installed at the acceptance commit | Open until the owner updates the install and a session runs through that copy |
+| F1, P2: no session has used a copy installed at the acceptance commit | Addressed by [the acceptance copy](#the-acceptance-copy), at `ea6c802` |
 | F2: the manifest's missing version against P-019 | Waits for the owner's word on closing M7 |
 | F3: the README turned a sample into a promise | Fixed. `> /dev/null` and read-only commands such as `ls` pass, and the README now says what was measured |
 | F4: the stand-in allows `mkdir` anywhere | Fixed in the method's statement. No run asked for `mkdir`, so the 2, 6 and 5 requests stand |
