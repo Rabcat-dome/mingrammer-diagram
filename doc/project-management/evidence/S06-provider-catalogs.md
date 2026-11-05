@@ -4,6 +4,8 @@ Date: 2026-11-02 | Tasks: M2-01..06 | Branch: `codex/s06-provider-catalogs`, fro
 
 **Status update after independent review:** Astra/High found five P2 issues at `5569459`; the owner then requested fixes. After the [fixes](S06-review-fixes.md), Claude Fable 5.1 / High [reviewed them](S06-fable-review.md) under D-020 and approved `5f391eb`, which passes actual CI with 12 lanes / 652 tests. M2 closed on 2026-11-03, and D-019 closes the asset-rights exit item for the private personal release. The implementation results below are the record from before that review; the exit criteria and next steps are kept current.
 
+**Later change:** this record describes catalog `2026.11.0`. [S12](S12-aws-ecs-lambda-waf.md) adds five AWS types as catalog `2026.11.1`, and those pages were checked on 2026-11-05.
+
 **Result: the catalogs, semantic rules, on-premises assets and both new gate lanes are implemented, along with the owner's decisions D-016, D-017 and D-018, and actual CI passes at `6929253`. M2 closed on 2026-11-03** for the private personal release, after the [fix review](S06-fable-review.md) approved `5f391eb`.
 
 ## Task status

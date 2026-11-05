@@ -1,6 +1,6 @@
 # Cloud Architecture Diagram Plugin Requirements
 
-Document: CADP-REQ-001 | Revision: 0.14 | Updated: 2026-11-05
+Document: CADP-REQ-001 | Revision: 0.15 | Updated: 2026-11-05
 
 Status: The baseline of the private personal release `v0.1.0-alpha.1`, accepted under D-033. [The release record](../project-management/evidence/M6-release.md) says what the evidence covers.
 
@@ -186,6 +186,8 @@ These are required catalog targets. M2 froze exact type IDs, product variants an
 For the eight on-premises gaps, use the [draw.io-type generic mappings](../project-management/evidence/S02-additional-icon-sources.md#2-drawio-type-symbols-for-the-eight-on-premises-gaps): load balancer, hypervisor, VM, NAS, SAN, identity service, backup and monitoring. Some types use labeled compositions rather than a dedicated icon. Keep NAS/SAN, hypervisor/VM and monitoring/display semantics distinct. This is an asset/style choice; diagrams/Graphviz remains the runtime backend.
 
 Support networking, compute, containers, data/storage, identity/security, connectivity, and observability in every environment. Expanded analytics/AI, messaging, vendor appliances, and additional database variants are P1.
+
+The catalog also holds types beyond this minimum, selected from P1 under [D-034](../project-management/decisions.md#confirmed-user-direction): the AWS ECS cluster, ECS service, AWS Fargate for ECS, Lambda function and WAF web ACL. The inventory does not list them, so they add nothing to P0. They meet the same standard: one taxonomy ID, a sourced placement rule, an approved icon, and positive and negative fixtures. See [S12](../project-management/evidence/S12-aws-ecs-lambda-waf.md).
 
 ### 6.1 Detailed Kubernetes coverage (P0)
 

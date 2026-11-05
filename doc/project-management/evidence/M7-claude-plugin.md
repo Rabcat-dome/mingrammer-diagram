@@ -161,7 +161,7 @@ Sessions still try chained commands although the skill says not to, and each rec
 
 **Some characters draw as boxes.** Neither bundled font has `→ ← ↔ ↑ ↓ ⇒ ✓ ✗ ✔ ✘ ≥ ≤ ≠`. A label holding one draws as a hex box in the PNG, and neither validation nor render reports it. The Thai AWS session wrote `→` in its title at once, and found the box only because the skill tells it to look at the PNG. A title holding `→ ← ✓` reproduces it. I rate this P2, as silent unreadable text against FR-042, and no reviewer has rated it. It is not fixed. A fix reaches the core, so it changes the Work plugin's version.
 
-**The AWS catalog has gaps that ordinary requests hit.** It holds 48 types. ECS, Lambda and WAF are not among them, and Fargate appears only as the EKS profile. The P0 provider list does not name them, and [the milestones](../milestones.md) leave expanded coverage as later P1 work, so this is within scope. Both AWS requests here still ended as drafts. Lenient mode did its job: each type kept its name, and the picture says draft.
+**The AWS catalog has gaps that ordinary requests hit.** [S12](S12-aws-ecs-lambda-waf.md) later adds ECS, Fargate for ECS, Lambda and WAF, and these measurements describe the catalog before that. It holds 48 types. ECS, Lambda and WAF are not among them, and Fargate appears only as the EKS profile. The P0 provider list does not name them, and [the milestones](../milestones.md) leave expanded coverage as later P1 work, so this is within scope. Both AWS requests here still ended as drafts. Lenient mode did its job: each type kept its name, and the picture says draft.
 
 ### What did not run
 

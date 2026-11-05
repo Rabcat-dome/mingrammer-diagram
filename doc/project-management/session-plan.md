@@ -20,6 +20,8 @@ S05 result: [core/CI evidence](evidence/S05-core-and-ci.md), [contract/setup](..
 
 S07 result: [controlled rendering](evidence/S07-controlled-rendering.md). M3-01..04 are implemented on `codex/s07-controlled-rendering` and pass the 14-lane gate in actual CI at `cddb497`, including new `render-security` and `render-smoke` lanes. [Fable/High requested changes](evidence/S07-fable-review.md) on three P2 findings and approved their fixes at `c8fc687`. The owner passed three samples of the first output, and M3 closed under D-022 with five P3 findings left open.
 
+S12 result: [AWS ECS, Fargate for ECS, Lambda and WAF](evidence/S12-aws-ecs-lambda-waf.md). Five new AWS types as catalog `2026.11.1`, under D-034, on `codex/aws-ecs-fargate-lambda-waf` and not merged.
+
 S11 result, in part: [GPT reviews and fixes](evidence/S11-gpt-reviews.md). Under D-025, Astra and Sol reviewed everything after S06, and their 15 findings are fixed. Fable and Astra rechecked the fixes, those findings are fixed too, and the work is in `main`.
 
 S10 result, in part: [release checks](evidence/S10-release-checks.md). The core reproduces from a new clone and runtime on this Mac, the packages hold what they should, and the [P0 report](evidence/S10-p0-traceability.md) covers all 71 IDs, and [Fable/High approved](evidence/S10-fable-review.md) it at `debd754`. The two-machine Work run, the final review and the release stay blocked under D-024.
