@@ -20,7 +20,7 @@ Five sabotaged versions each fail a test for the reason named: any kind hiding t
 
 The test for each of the nine fields drives the mapper directly, so it also tries directions the validator would refuse. One real model through the validator covers `secret_refs`, in both directions, with `management` and `observability` lines.
 
-No fixture draws a typed reference with a line outside the table, in any of the fixtures, and every view matches its baseline. The core reproduces from a new clone at `cad6098`, and the gate passes 17 lanes locally, on a tree whose only change was that proof, not yet committed. CI at `cad6098` failed `release-audit`, because the committed proof still described the source before. CI on `main` at `da83f0a` passes all 17 lanes.
+No fixture draws a typed reference with a line outside the table, in any of the fixtures, and every view matches its baseline. The core reproduces from a new clone at `cad6098`, and the gate passes 17 lanes locally, on a tree whose only change was that proof, not yet committed. CI at `cad6098` failed `release-audit` in one test only, `test_the_reproduction_proof_passes_and_still_describes_this_source`, whose source digest did not match, because the committed proof still described the source before. CI on `main` at `da83f0a` passes all 17 lanes.
 
 ## Review
 
@@ -50,3 +50,4 @@ On `codex/s14-review-fixes`, after both reviews:
 
 Four sabotaged versions each fail a test for the reason named: direction ignored, undirected lines counted one way, ownership read from the dependent, and one drawn target hiding the whole line. No baseline changed.
 
+Codex CLI with `gpt-6-astra` at medium effort then [reviewed this follow-up](S14-astra-recheck.md) at `c3fdae4` and approved it with no findings. It agrees that a `traffic` line states a typed reference only running the way the reference means, and it found the one claim it could not confirm, the cause of the CI failure above, which the run's own test report now confirms.
