@@ -6,6 +6,7 @@
 # Exit 64: the command was used incorrectly.
 set -eu
 
+# The project is found from this file's own location, so a symbolic link elsewhere exits 3.
 root=$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd -P)
 
 # A relative location would resolve inside the user's project, so only absolute paths count.
@@ -46,7 +47,7 @@ status=0
 case $status in
   0 | 2 | 4 | 64) exit "$status" ;;
   *)
-    echo "cloud-diagrams: the runtime failed unexpectedly (exit $status)." >&2
+    echo "cloud-diagrams: the runtime failed unexpectedly (exit $status). If this repeats, remove $environment and retry." >&2
     exit 3
     ;;
 esac

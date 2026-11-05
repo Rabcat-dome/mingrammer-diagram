@@ -2,7 +2,7 @@
 
 Recorded: 2026-11-02 (Asia/Bangkok) | Base: `c5f74b4` | First tested code: `22fc85e` | Review fixes: `0220e94`, `87acce5` and `917f46f` | Branch: `codex/m7-claude-plugin` | Host: macOS ARM64, Claude Code 2.1.309.
 
-**M7-01 and M7-02 are complete, and M7-04 brought catalog discovery and rendering to the plugin. M7-03 is verified on one Mac, most recently [at the release commit](#acceptance-measurements-at-97b0841). Permission dialogs in a real chat remain, so M7 stays open, and D-035 accepts one Mac in place of two.** This is a preparation build under D-015. It authors and validates models, and since S07 it also renders them. It does not change the Work first-release target.
+**M7-01 and M7-02 are complete, and M7-04 brought catalog discovery and rendering to the plugin. M7-03 is verified on one Mac, most recently on [a copy installed at `ea6c802`](#the-acceptance-copy), with [what a real session asks for](#what-a-real-session-asks-for). Nobody has seen a permission dialog drawn, and D-035 accepts one Mac in place of two. **M7 closed on the owner's word under D-039.** This is a preparation build under D-015. It authors and validates models, and since S07 it also renders them. It does not change the Work first-release target.
 
 Actual CI and the GitHub and real-config installs below ran against commit `22fc85e`, before the review fixes. See [Same-session review](#same-session-review) and [Separate-session review](#separate-session-review) for what changed afterward and what has been rerun.
 
@@ -122,7 +122,7 @@ S06 / M2 moved the core, and the checks built to catch that fired as intended. F
 
 ## Fable review
 
-Under D-021, Claude Fable 5.1 / High reviewed `c5f74b4..c6a59e5` in a fresh agent, with priority on the Medium and Low fixes, and [approved the range](M7-fable-review.md). It found one P2 at the head, in a skill sentence S06 changed, and three P3 findings. None is fixed yet. Claude Opus 5.5 wrote the code, so reviewer and implementer share a vendor.
+Under D-021, Claude Fable 5.1 / High reviewed `c5f74b4..c6a59e5` in a fresh agent, with priority on the Medium and Low fixes, and [approved the range](M7-fable-review.md). It found one P2 at the head, in a skill sentence S06 changed, and three P3 findings. The P2 is fixed, and [the M7 review](M7-astra-review.md) settles the three P3 findings. Claude Opus 5.5 wrote the code, so reviewer and implementer share a vendor.
 
 ## Acceptance measurements at `97b0841`
 
@@ -163,16 +163,64 @@ Sessions still try chained commands although the skill says not to, and each rec
 
 A new headless session on Sonnet 5.5 through `--plugin-dir` then checked the fix. Asked for the title `ALB → EC2 → RDS` and the view title `Web ✓`, it validated, got the refusal from `render`, changed them to `ALB > EC2 > RDS` and `Web OK`, rendered, and told the requester what it had changed and why. [Fable/Medium approved the change](M7-fable-glyph-review.md), with five P3 findings, of which four are fixed. The fifth predates it: U+2028 and U+2029 pass the schema and draw as a line break.
 
+**Some lines start in mid-air.** A line leaving a node from above can start above its icon, with nothing visibly attached. It showed in two of the four pictures I looked at, Huawei ECS to OBS and EC2 to S3. This is [S08's P3-2](S08-fable-review.md), which the owner's image pass already covers, and it stays open.
+
 **The AWS catalog has gaps that ordinary requests hit.** [S12](S12-aws-ecs-lambda-waf.md) later adds ECS, Fargate for ECS, Lambda and WAF, and [S13](S13-aws-next-types.md) adds CloudFront, API Gateway and more. These measurements describe the catalog before both. It holds 48 types. ECS, Lambda and WAF are not among them, and Fargate appears only as the EKS profile. The P0 provider list does not name them, and [the milestones](../milestones.md) leave expanded coverage as later P1 work, so this is within scope. Both AWS requests here still ended as drafts. Lenient mode did its job: each type kept its name, and the picture says draft.
+
+### What a real session asks for
+
+Measured on the installed copy `c6c7490d8ca7`. There are [three runs](M7-permission-requests.json), each a new headless session on Sonnet 5.5 in the default permission mode, with no tool pre-approved. Its `--permission-prompt-tool` is a small server standing in for the person who answers: it records every request, allows the skill, reads of the plugin or the project, writes inside the project and a bare `mkdir` with any target, which no run asked for, and denies the rest. All three ended with a rendered bundle, and I looked at the edit's picture.
+
+| Run | Requests |
+|---|---|
+| New model, the owner's real config | 2: the skill, and writing the model |
+| Edit that model, the owner's real config | 6: the skill, one Python script to change the model, denied, and four edits of the model |
+| New model, project settings only | 5: the skill, reading the guide, reading an example, a line of catalog searches joined together, denied, and writing the model |
+
+**The plugin's own command asked nothing in any run.** It ran 16 times in all, including `validate` and `render`, and two more calls naming it were refused because other commands were part of them. So a person in this mode answers once for the skill and once per file change, and more only when a session runs anything else. The owner's rule that allows reading their home folder is why the real config asks for no reads.
+
+This is the host's own request stream, but not its look. How the app draws a request, and whether an "always allow" answer removes the repeats, stay unseen.
+
+### The acceptance copy
+
+The owner ran `plugin marketplace update` and `plugin update`, which moved the install to `ea6c802ec4d3`, fetched from the private repository. That copy has 0 symlinks, and its `bin`, `skills` and README match the commit byte for byte. It reports catalog `2026.11.1`, `render_available: true` and no host blockers, and it finds the D-036 types.
+
+Three new headless sessions on Sonnet 5.5 then used that copy, with the owner's real config, no `--plugin-dir`, no tool pre-approved, and the same stand-in. Their records are [under `acceptance_copy`](M7-permission-requests.json). I looked at the first and third pictures.
+
+| Request | Turns | Requests | Result |
+|---|---|---|---|
+| Thai: WAF, ALB, an ECS service on Fargate, RDS, S3 and Lambda | 19 | 3: the skill, a `for` loop of catalog searches, denied, and writing the model | Strict, with no draft. The four new types it used, ECS cluster, Fargate for ECS, Lambda and WAF, drew with their icons, and the session added the cluster and said why. It did not use the plain ECS service type, which the [recheck](M7-astra-recheck.md) validated and rendered through this copy directly |
+| Thai: add a cache if the catalog has one, keep the IDs, draw again | 20 | 1: the skill | The catalog has none. The session said so, changed nothing and invented no ID, then validated and drew again |
+| English: a Kubernetes detail on EKS | 11 | 2: the skill and writing the model | Strict. The picture shows the declared replicas, labels, Service type and ports |
+
+The plugin's own command ran 25 times with no request.
 
 ### What did not run
 
-An interactive terminal session. This Mac's CLI has never finished first-run setup, because the owner uses the app, and a session driven through a pseudo-terminal stopped at the theme chooser. Finishing it would change the owner's `~/.claude.json`, so the run stopped there, and that file shows no onboarding state afterward. So no permission dialog has been seen: the refusals above say what needs approval, not how the host asks.
+An interactive terminal session. This Mac's CLI has never finished first-run setup, because the owner uses the app, and a session driven through a pseudo-terminal stopped at the theme chooser. Finishing it would change the owner's `~/.claude.json`, so the run stopped there, and that file shows no onboarding state afterward. So no permission dialog has been seen by anyone: the runs above record what the host asks, not how it looks.
+
+## Astra review
+
+Fable's credit ran out, so on the owner's word (D-038) this milestone's review went through Codex CLI with `gpt-6-astra` at high effort, in a new session with no prior context. Its [report](M7-astra-review.md) requested changes at `8f9c246`, and it also repeated six permission cases that found a gap in the README's wording. It shares no vendor with the implementer.
+
+| Finding | Disposition |
+|---|---|
+| F1, P2: no session has used a copy installed at the acceptance commit | Addressed by [the acceptance copy](#the-acceptance-copy), at `ea6c802` |
+| F2: the manifest's missing version against P-019 | Waits for the owner's word on closing M7 |
+| F3: the README turned a sample into a promise | Fixed. `> /dev/null` and read-only commands such as `ls` pass, and the README now says what was measured |
+| F4: the stand-in allows `mkdir` anywhere | Fixed in the method's statement. No run asked for `mkdir`, so the 2, 6 and 5 requests stand |
+| F5: a wrong count and stale statements | Fixed. I had first written 16 and then wrongly changed it to 17 before this review |
+| F6: the guide left out two exceptions the core accepts | Fixed |
+| C1: no test for a relative `HOME` | Fixed |
+| C2: a damaged environment names no way out | Fixed. The message names the environment, and a test removes it and recovers |
+| C3: a symbolic link from elsewhere exits 3 | Documented in the README and the wrapper, and a test pins it |
+
+A [bounded recheck](M7-astra-recheck.md) through the same route approved closing M7 for `ea6c802`, under D-035's one Mac. It found two wording problems, both fixed: this table overstated which new types the session used, and two summaries still called the earlier P3 findings open. F5 and F6 hold, and it ran no Claude session.
 
 ## Not verified
 
 - A second machine, which D-035 accepts, and any other operating system.
-- Permission dialogs, in the Code tab or a terminal. Headless runs show what needs approval, and the Code tab check ran under bypass permissions.
+- How a permission dialog looks, in the Code tab or a terminal, and what an "always allow" answer does. Headless runs record what the host asks, and the Code tab check ran under bypass permissions.
 - Authoring a model from the Code tab.
 
-Prompts were run once each, so trigger rates are observations rather than measurements. Provider semantics are unchanged from M1: a passing result does not establish that a service type exists or that a placement is legal.
+Prompts were run once each, so trigger rates are observations rather than measurements. A passing result covers the core, the catalog and the documented provider rules. It does not establish that anything is deployed or reachable.

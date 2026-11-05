@@ -615,8 +615,15 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 
 - Under D-036, at the request of the session that started it, a Claude Opus 5.5 session added five AWS types as catalog `2026.11.1`: ECS cluster, ECS service, AWS Fargate for ECS, Lambda function and WAF web ACL. Each has a placement rule from AWS's own pages and its icon from the AWS pack already listed. No other type was added, and no baseline changed. See [S12](evidence/S12-aws-ecs-lambda-waf.md).
 - [Fable requested changes](evidence/S12-fable-review.md) on two P2 findings, both false rejections, then approved the fixes. Two P3 findings stay open by choice.
-- `codex/aws-ecs-fargate-lambda-waf` is pushed and not merged, and the tag does not move. The core reproduces from a new clone at `fe1e472`, and the gate passes 17 lanes locally and in actual [run 42032378161](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/42032378161) at `2460844`. No live session has used these types, and the owner has not yet accepted the picture.
+- On the owner's answer "merge into main", translated from Thai, `codex/aws-ecs-fargate-lambda-waf` is fast-forwarded into `main`, and the tag does not move. The core reproduces from a new clone at `fe1e472`, and the gate passes 17 lanes locally and in actual [run 42032378161](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/42032378161) at `2460844`. No live session has used these types, and the owner has not yet accepted the picture.
 
+## 2026-11-05 — What a real session asks for
+
+- The owner's Code tab check had not run when they said to go to the next step, so Claude Opus 5.5 [recorded what the host asks for](evidence/M7-claude-plugin.md#what-a-real-session-asks-for) on the installed `c6c7490d8ca7`, in three new sessions whose permission requests went to a recording stand-in. The plugin's own command asked nothing, and a person answers once for the skill and once per file change. How a dialog looks stays unseen.
+- Fable's credit ran out, so on the owner's word Codex CLI reviewed M7 (D-038). [Its report](evidence/M7-astra-review.md) requests changes: one P2, that no session has used a copy installed at the acceptance commit, five new P3 findings, and the three earlier ones. The P3 findings are settled here, except the version policy, which waits for the owner.
+- The owner updated the Claude plugin to `ea6c802`, and three new sessions through [that copy](evidence/M7-claude-plugin.md#the-acceptance-copy) reached rendered bundles in strict mode, the first using the D-036 types in a live session. M7 waits for a short recheck and the owner's word.
+- A [bounded recheck](evidence/M7-astra-recheck.md) through Codex CLI approved closing M7 for `ea6c802`. Its two wording findings are fixed, and M7 waits for the owner's word.
+- The owner closed M7 (D-039). The plugin stays versioned by commit, no tag marks the closure, and nobody has seen a permission dialog drawn. No milestone is scheduled after it.
 
 ## 2026-11-05 — AWS edge, API, data, messaging and security types
 
@@ -624,3 +631,4 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - This reverses S12's choice of one WAF type. A regional web ACL now also protects a REST API and a Cognito user pool, and a CloudFront web ACL protects only a distribution.
 - [Fable approved it](evidence/S13-fable-review.md) with three P3 findings, then approved their fixes with one more. One stays open by choice: a node-based cache that states a zone lists only that zone's subnets.
 - `codex/aws-next-types` is built on S12's branch, because that is not merged. It is pushed and not merged, and the tag does not move. The core reproduces from a new clone at `b54375f`, and the gate passes 17 lanes locally and in actual [run 42040895164](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/42040895164) at `cec1d21`. No live session has used these types. The owner accepted the picture, and the merge is still theirs to decide.
+- The owner said to merge S13, and it reaches `main` here with S12's branch already in it. `main` changed nothing the core proof covers after S13's base, so the proof at `b54375f` still describes this source. The tag does not move.

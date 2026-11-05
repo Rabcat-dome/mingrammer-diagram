@@ -1,6 +1,6 @@
 # Milestones and Work Breakdown
 
-Updated: 2026-11-05 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 complete on 2026-11-03 for the private personal release. S07 / M3 complete on 2026-11-03 under D-022. S08 / M4 complete on 2026-11-03 under D-023. S09 / M5 complete on 2026-11-05 under D-028, and M6 under D-033, tagged `v0.1.0-alpha.1`. Huawei rights are not cleared: D-018 allows private personal use only, D-019 settles the asset-rights exit item for that use, and O-002 blocks public distribution. M7 Claude Code preparation started early under D-015.
+Updated: 2026-11-05 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 complete on 2026-11-03 for the private personal release. S07 / M3 complete on 2026-11-03 under D-022. S08 / M4 complete on 2026-11-03 under D-023. S09 / M5 complete on 2026-11-05 under D-028, and M6 under D-033, tagged `v0.1.0-alpha.1`. Huawei rights are not cleared: D-018 allows private personal use only, D-019 settles the asset-rights exit item for that use, and O-002 blocks public distribution. M7, the Claude Code plugin, is complete on 2026-11-05 under D-039. No milestone is scheduled after it.
 
 Source of scope: [requirements](../requirements/requirements.md). Model abbreviations and review rules: [model strategy](model-strategy.md). Quality check definitions: [quality gate](quality-gate.md).
 
@@ -15,7 +15,7 @@ M0 Scope + runtime/icon/runner feasibility
  -> M5 ChatGPT Work plugin
  -> M6 Reproduction + release acceptance
 
-Later: M7 Claude Code adapter acceptance and selected P1 work
+Then: M7 Claude Code adapter acceptance, complete under D-039. Later: selected P1 work
 ```
 
 M0 investigates the Work execution route before core development. M5 delivers the complete plugin; a CLI demonstration is not completion of the first release. Catalog review may proceed by provider, but no parallel agent execution is implied by this plan.
@@ -117,20 +117,20 @@ Exit: all P0 pass; no unresolved Critical/High findings; justified Medium findin
 
 ## M7 — Claude Code adapter and later work
 
-Status: Adapter preparation started under D-015; not complete and not a first-release requirement. See [M7 evidence](evidence/M7-claude-plugin.md). Implementation: Claude Opus 5.5, the model of the owner's session rather than a project selection. A same-session review and a separate-session Claude review ran; all their findings are fixed. Under D-021, [Fable/High approved `c5f74b4..c6a59e5`](evidence/M7-fable-review.md) The P2 it found at the head, from S06, is fixed and confirmed at `c8fc687`, and three P3 findings stay open. [Measurements at the release commit](evidence/M7-claude-plugin.md#acceptance-measurements-at-97b0841) leave permission dialogs in a real chat, and D-035 accepts one Mac in place of two.
+Status: **Complete on 2026-11-05 under D-039, for the copy at `ea6c802`, on one Mac and in headless sessions.** It was not a first-release requirement, and no tag marks it. See [M7 evidence](evidence/M7-claude-plugin.md). Implementation: Claude Opus 5.5, the model of the owner's session rather than a project selection. A same-session review and a separate-session Claude review ran; all their findings are fixed. Under D-021, [Fable/High approved `c5f74b4..c6a59e5`](evidence/M7-fable-review.md) The P2 it found at the head, from S06, is fixed and confirmed at `c8fc687`, and [the M7 review](evidence/M7-astra-review.md) settles its three P3 findings. [Measurements at the release commit](evidence/M7-claude-plugin.md#acceptance-measurements-at-97b0841) and [what a real session asks for](evidence/M7-claude-plugin.md#what-a-real-session-asks-for) leave how a permission dialog looks, and D-035 accepts one Mac in place of two. [The M7 review](evidence/M7-astra-review.md) added one need, a session through a copy installed at the acceptance commit, and [that copy](evidence/M7-claude-plugin.md#the-acceptance-copy) now has three, at `ea6c802`.
 
 | Task | Work | Dependency / output |
 |---|---|---|
-| M7-01 | Package the core as an installable Claude Code plugin with marketplace, bundled skill and command wrapper, reusing the core without a second copy | M1 + D-015 -> complete locally; `plugins/cloud-architecture-diagrams`, validate-only |
+| M7-01 | Package the core as an installable Claude Code plugin with marketplace, bundled skill and command wrapper, reusing the core without a second copy | M1 + D-015 -> complete locally; `plugins/cloud-architecture-diagrams`, validate-only at this step, and M7-04 added rendering |
 | M7-02 | Add plugin package and wheel-content checks to the quality gate | M7-01 -> complete; `claude-plugin` and `package-contents` lanes passed actual CI, most recently run 41453874994 at `917f46f` |
-| M7-03 | Verify actual Claude Code installation and invocation | M7-01 -> local-path, private GitHub and real-config installs, plugin update, English/Thai/edit invocations and a Code tab runtime check verified on one Mac. `allowed-tools` breadth and a first run with nothing cached are measured at `97b0841`; permission dialogs in a real chat remain, and D-035 accepts one Mac |
+| M7-03 | Verify actual Claude Code installation and invocation | M7-01 -> local-path, private GitHub and real-config installs, plugin update, English/Thai/edit invocations and a Code tab runtime check verified on one Mac. `allowed-tools` breadth and a first run with nothing cached are measured at `97b0841`; the permission requests of a real session are measured at `c6c7490`. How a dialog looks stays unseen, and D-035 accepts one Mac |
 | M7-04 | Expose catalog discovery and rendering through the plugin as M2/M3 arrive, then update the skill's stated capabilities and plugin version | M2 + M3 -> catalog discovery and semantic validation reach the plugin and its skill in S06. S07 adds `render` to the skill and passes the clean-copy lane in actual CI at `cddb497`. A live session first rendered through `--plugin-dir` in S08, after a skill correction, on one Mac; see the [M7 evidence](evidence/M7-claude-plugin.md). The plugin stays versioned by commit, so no version bump applies |
 
 Exit: the same plugin version installs from the private repository on two machines and produces validated models and, after M3, retrievable SVG/PNG in actual Claude Code sessions, with independent review recorded. D-035 accepts one Mac for this.
 
 Later work, not scheduled:
 
-- P1 view presets, YAML, aliases, enterprise packs, PDF/DOT, automatic splitting, 200/300 stress validation, and expanded catalog coverage. [S12](evidence/S12-aws-ecs-lambda-waf.md) takes the first part of that coverage under D-036: AWS ECS, Fargate for ECS, Lambda and WAF, on `codex/aws-ecs-fargate-lambda-waf` and not merged. [S13](evidence/S13-aws-next-types.md) takes the next part under D-037, on `codex/aws-next-types` and not merged. Its record lists the AWS gaps that remain.
+- P1 view presets, YAML, aliases, enterprise packs, PDF/DOT, automatic splitting, 200/300 stress validation, and expanded catalog coverage. [S12](evidence/S12-aws-ecs-lambda-waf.md) takes the first part of that coverage under D-036: AWS ECS, Fargate for ECS, Lambda and WAF, merged into `main` on 2026-11-05. [S13](evidence/S13-aws-next-types.md) takes the next part under D-037, merged the same day. Its record lists the AWS gaps that remain.
 - Optional shared-team features, IaC import/discovery, or public publication only under a separate scope decision.
 
 ## Planning discipline

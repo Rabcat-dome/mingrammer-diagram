@@ -615,6 +615,48 @@ def test_missing_home_is_a_setup_failure(
     assert b"absolute path" in result.stderr
 
 
+def test_a_relative_home_is_a_setup_failure(
+    installed: tuple[Path, dict[str, str]], tmp_path: Path
+) -> None:
+    # A relative location would put the environment inside the user's project.
+    copy, environment = installed
+    bare = {k: v for k, v in environment.items() if k != "XDG_DATA_HOME"} | {"HOME": "relative"}
+    project = tmp_path / "project"
+    project.mkdir()
+    result = run((copy, bare), "capabilities", cwd=project)
+    assert result.returncode == 3 and not result.stdout
+    assert b"absolute path" in result.stderr
+    assert not list(project.iterdir())
+
+
+def test_a_damaged_environment_names_the_way_out(
+    installed: tuple[Path, dict[str, str]], tmp_path: Path
+) -> None:
+    copy, environment = installed
+    home = tmp_path / "data"
+    own = environment | {"XDG_DATA_HOME": str(home)}
+    assert run((copy, own), "capabilities").returncode == 0
+    venv = home / "cloud-architecture-diagrams/claude-plugin/venv"
+    shutil.rmtree(next(venv.glob("lib/python*/site-packages/pydantic")))
+    result = run((copy, own), "capabilities")
+    assert result.returncode == 3 and not result.stdout
+    assert str(venv).encode() in result.stderr
+    shutil.rmtree(venv)
+    assert run((copy, own), "capabilities").returncode == 0
+
+
+def test_a_symbolic_link_from_elsewhere_exits_3_as_stated(
+    installed: tuple[Path, dict[str, str]], tmp_path: Path
+) -> None:
+    copy, environment = installed
+    link = tmp_path / "cloud-diagrams"
+    link.symlink_to(copy / "bin/cloud-diagrams")
+    result = subprocess.run(
+        [link, "capabilities"], capture_output=True, env=environment, check=False, cwd=tmp_path
+    )
+    assert result.returncode == 3 and not result.stdout
+
+
 def test_unexpected_runtime_failure_is_not_a_model_result(
     installed: tuple[Path, dict[str, str]], tmp_path: Path
 ) -> None:

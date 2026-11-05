@@ -1,8 +1,8 @@
 # S13 — AWS edge, API, data, messaging and security types
 
-Date: 2026-11-05 | Branch: `codex/aws-next-types`, from `3b692c1` on `codex/aws-ecs-fargate-lambda-waf`, because that branch is not merged | Decision: D-037
+Date: 2026-11-05 | Branch: `codex/aws-next-types`, from `3b692c1` on `codex/aws-ecs-fargate-lambda-waf`, because that branch was not merged then | Decision: D-037
 
-**Result: strict validation and rendering now accept 16 new AWS types: 15 for the owner's choice of 12 services, and a CloudFront web ACL, because S12's one WAF type becomes two now that CloudFront is here. Each has one taxonomy ID, a placement rule from AWS's own pages and AWS's own icon. The branch is pushed and not merged, the tag `v0.1.0-alpha.1` does not move, and no live session has used it yet.**
+**Result: strict validation and rendering now accept 16 new AWS types: 15 for the owner's choice of 12 services, and a CloudFront web ACL, because S12's one WAF type becomes two now that CloudFront is here. Each has one taxonomy ID, a placement rule from AWS's own pages and AWS's own icon. The owner had it merged into `main` on 2026-11-05, the tag `v0.1.0-alpha.1` does not move, and no live session has used it yet.**
 
 ## Why
 
@@ -174,7 +174,7 @@ The picture holds AWS and generic icons only, and a test requires its manifest t
 
 - **No live session has used these types.** This does not yet show that an ordinary request now ends strict.
 - **Neither plugin was reinstalled**, and no Work session ran this version. The owner's installed copies are unchanged.
-- **Merging this brings S12 with it**, because this branch is built on S12's and neither is in `main`.
+- **S12 reached `main` first,** on the owner's answer, so merging this added only S13.
 - **FR-048's comparison was not repeated.** The picture was looked at, and it was not compared with an AWS reference diagram. It has no reviewed baseline. Two arrows touch a label, on the ECS cluster and the ECR repository, because Graphviz routes them through that rank.
 - **The owner accepted the picture on 2026-11-05,** translated from Thai: "the picture is fine". That covers [this picture](S13-aws-next-types.png) only, SHA-256 `19d073cfa9770ef2a4ab08f5b3e7156e916f96d4495e21ec6887d3ab32ed67b0`. It accepts neither a merge nor a comparison with an AWS reference.
 - **Sources were checked once.** Nothing re-fetches them, as S06 says of its own pages.
@@ -186,5 +186,5 @@ Implementation used **Claude Opus 5.5 (`claude-opus-5-5`)**, the model of the se
 
 ## Next steps
 
-1. The owner decides whether to merge. Merging confirms D-037, and D-036 with it.
+1. Done: the owner said to merge on 2026-11-05, which confirms D-037.
 2. After a merge, rebuild and reinstall the Work plugin, run `scripts/work_host_check.py` as the handoff says, and repeat one of M7's AWS requests in a live session.
