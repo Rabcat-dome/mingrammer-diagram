@@ -599,6 +599,15 @@
           "pod-web-a",
           "pod-web-b"
         ]
+      },
+      "properties": {
+        "service_type": "ClusterIP",
+        "ports": [
+          {
+            "port": 80,
+            "target_port": 8080
+          }
+        ]
       }
     },
     {

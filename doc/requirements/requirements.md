@@ -1,6 +1,6 @@
 # Cloud Architecture Diagram Plugin Requirements
 
-Document: CADP-REQ-001 | Revision: 0.12 | Updated: 2026-11-02
+Document: CADP-REQ-001 | Revision: 0.13 | Updated: 2026-11-05
 
 Status: Draft baseline with confirmed granularity/style and per-machine local-runtime direction; product implementation and release acceptance remain pending.
 
@@ -119,7 +119,7 @@ The plugin is the installable product; its skill supplies instructions/reference
 | FR-046 | P0 | Enforce input/graph limits. Oversized inputs receive an actionable error or explicit suggestion to split views. Automatic overview/detail generation is P1. |
 | FR-047 | P0 | Export engine, schema, catalog, asset/font versions, input digest, output checksums, and validation mode in a manifest. |
 | FR-048 | P0 | Render provider-aware visuals close to selected official architecture references, including approved icon appearance, native service labels and appropriate grouping/connection conventions. Record source/version/date and material deviations. Preserve correct model semantics when layout conventions differ. |
-| FR-050 | P0 | Resolve provider/type/version through a catalog to an allowed bundled asset or controlled native class. |
+| FR-050 | P0 | Resolve provider and type through the one bundled catalog, whose version every result reports, to an allowed bundled asset or controlled native class at its locked version. |
 | FR-051 | P0 | Package approved Huawei and on-premises assets; no render-time icon downloads. |
 | FR-052 | P0 | Record original source URL, license/usage terms, redistribution evidence, attribution, asset version/date, and checksum for every external icon pack and custom asset. Preserve dependency notices. |
 | FR-053 | P0 | Strict mode rejects unknown service types. Lenient mode may use an approved generic icon while retaining provider/type/label and emitting a warning. Unknown providers and unsafe paths always fail. |
@@ -173,7 +173,7 @@ Taxonomy availability does not require every provider to implement every categor
 
 ## 6. Minimum release catalog
 
-These are required catalog targets. M2 froze exact type IDs, product variants and icon mappings in a machine-readable inventory (`catalog_data/inventory.json`, catalog `2026.11.0`), which a check compares with this table, so edit both together. A supported item needs a valid record, approved visual representation, applicable rules, and positive/negative fixtures. Scope/group items may use labeled boundaries instead of service icons.
+These are required catalog targets. M2 froze exact type IDs, product variants and icon mappings in a machine-readable inventory (`catalog_data/inventory.json`, catalog `2026.11.0`), which a check compares with this table, so edit both together. A supported item needs a valid record, approved visual representation, applicable rules, positive fixtures, and negative fixtures for its rules (D-030). Scope/group items may use labeled boundaries instead of service icons.
 
 | Environment | Minimum scope and services |
 |---|---|
@@ -234,7 +234,7 @@ The [user-supplied Huawei pack follow-up](../project-management/evidence/S02-add
 | NFR-006 | P0 | Never silently omit requested security components or hide invalid semantics through layout/fallback behavior. |
 | NFR-007 | P1 | Benchmark small (<=30 nodes/50 edges) and medium (<=100/150) fixtures with target render times of <5 s and <15 s; record p50/p95, cold/warm runs, fonts, versions, and reference machine before setting a release threshold. |
 | NFR-008 | P1 | Stress-test 200 nodes/300 edges and assess readability; a stable render alone is insufficient for a useful large view. |
-| NFR-009 | P0 | Bound parsing, render time, process memory, temporary storage, payload/label lengths, and artifact sizes. Kill timed-out child processes and clean request directories. Freeze numeric limits in M0/M1 using measurements. |
+| NFR-009 | P0 | Bound parsing, render time, process memory, temporary storage, payload/label lengths, and artifact sizes. Kill timed-out child processes and clean request directories. Freeze numeric limits by M4 using measurements. |
 | NFR-010 | P0 | Produce collision-safe artifact bundles and checksums; publish a success manifest only after all requested outputs validate. |
 | NFR-011 | P0 | Automate schema, semantic, catalog, security, rendering, and package checks in CI as their components arrive. See the [quality gate plan](../project-management/quality-gate.md). |
 | NFR-012 | P1 | Extend catalogs through validated data packs with explicit compatibility versions. |

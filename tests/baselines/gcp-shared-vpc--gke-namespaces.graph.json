@@ -332,7 +332,8 @@
    "id": "deploy-web",
    "lines": [
     "web",
-    "Deployment"
+    "Deployment",
+    "replicas: 2"
    ],
    "memberships": {
     "cluster": [
@@ -444,7 +445,9 @@
    "id": "svc-web",
    "lines": [
     "web",
-    "Service"
+    "Service",
+    "type: ClusterIP",
+    "ports: 80:8080/TCP"
    ],
    "memberships": {
     "cluster": [
@@ -496,7 +499,9 @@
    "id": "pvc-web-data",
    "lines": [
     "web-data",
-    "PersistentVolumeClaim"
+    "PersistentVolumeClaim",
+    "storage class:",
+    "web-data-class"
    ],
    "memberships": {
     "cluster": [

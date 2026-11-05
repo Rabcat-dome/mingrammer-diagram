@@ -122,7 +122,7 @@
  },
  {
   "id": "FR-004",
-  "state": "partly",
+  "state": "met_with_owner",
   "summary": "Require stable IDs; reject duplicates, dangling references and containment cycles.",
   "checks": [
    {
@@ -162,10 +162,11 @@
    }
   ],
   "evidence": [
-   "doc/project-management/evidence/S05-core-and-ci.md#delivered-and-verified"
+   "doc/project-management/evidence/S05-core-and-ci.md#delivered-and-verified",
+   "doc/project-management/evidence/M6-p0-gaps.md"
   ],
-  "open": "Duplicates, dangling references and cycles are covered. ID stability across a host's edits cannot be enforced by the core, which validates one model at a time, so it rests on the skills and on T-013 in actual Work.",
-  "owner": ""
+  "open": "",
+  "owner": "D-027 and D-029: an edit in actual Work kept every ID on both Macs. The core validates one model at a time, so this rests on the skill and on T-013."
  },
  {
   "id": "FR-005",
@@ -333,7 +334,7 @@
  },
  {
   "id": "FR-010",
-  "state": "partly",
+  "state": "met_with_owner",
   "summary": "AWS catalog and approved native icons for section 6 coverage.",
   "checks": [
    {
@@ -394,14 +395,15 @@
   ],
   "evidence": [
    "doc/project-management/evidence/S06-provider-catalogs.md#catalog-design",
-   "doc/project-management/evidence/S06-provider-catalogs.md#icon-rights"
+   "doc/project-management/evidence/S06-provider-catalogs.md#icon-rights",
+   "doc/project-management/evidence/M6-p0-gaps.md"
   ],
-  "open": "The catalog and icon clauses are covered. Section 6 also says a supported item needs positive and negative fixtures. Positives are per type, but negatives are per rule, and no negative case targets RDS, Site-to-Site VPN, Direct Connect or CloudWatch.",
-  "owner": ""
+  "open": "",
+  "owner": "D-030: negative fixtures are per rule rather than per item, because a case per item would repeat the same rule."
  },
  {
   "id": "FR-011",
-  "state": "partly",
+  "state": "met_with_owner",
   "summary": "Azure catalog and approved native icons for section 6 coverage.",
   "checks": [
    {
@@ -467,14 +469,15 @@
   ],
   "evidence": [
    "doc/project-management/evidence/S06-provider-catalogs.md#catalog-design",
-   "doc/project-management/evidence/S06-provider-catalogs.md#icon-rights"
+   "doc/project-management/evidence/S06-provider-catalogs.md#icon-rights",
+   "doc/project-management/evidence/M6-p0-gaps.md"
   ],
-  "open": "The catalog and icon clauses are covered. Section 6 also says a supported item needs positive and negative fixtures. Positives are per type, but negatives are per rule, and no negative case targets Azure SQL Database, Blob Storage, NSG, NAT Gateway, VPN Gateway, ExpressRoute or Azure Monitor.",
-  "owner": ""
+  "open": "",
+  "owner": "D-030: negative fixtures are per rule rather than per item, because a case per item would repeat the same rule."
  },
  {
   "id": "FR-012",
-  "state": "partly",
+  "state": "met_with_owner",
   "summary": "GCP catalog and approved native icons for section 6 coverage.",
   "checks": [
    {
@@ -535,14 +538,15 @@
   ],
   "evidence": [
    "doc/project-management/evidence/S06-provider-catalogs.md#catalog-design",
-   "doc/project-management/evidence/S06-provider-catalogs.md#icon-rights"
+   "doc/project-management/evidence/S06-provider-catalogs.md#icon-rights",
+   "doc/project-management/evidence/M6-p0-gaps.md"
   ],
-  "open": "The catalog and icon clauses are covered, and the icons' approval rests on owner decision D-016 with no license text. Section 6 also says a supported item needs positive and negative fixtures. Positives are per type, but negatives are per rule, and no negative case targets Cloud SQL, Cloud Storage, IAM, Cloud NAT, Cloud VPN, Cloud Interconnect or Cloud Monitoring/Logging.",
-  "owner": ""
+  "open": "",
+  "owner": "D-030: negative fixtures are per rule rather than per item. The icons' approval rests on D-016, with no license text."
  },
  {
   "id": "FR-013",
-  "state": "partly",
+  "state": "met_with_owner",
   "summary": "Huawei catalog and curated service icons through controlled custom nodes.",
   "checks": [
    {
@@ -613,14 +617,15 @@
   ],
   "evidence": [
    "doc/project-management/evidence/S06-provider-catalogs.md#huawei-cloud-icons-under-d-018",
-   "doc/project-management/evidence/S06-provider-catalogs.md#exit-criteria"
+   "doc/project-management/evidence/S06-provider-catalogs.md#exit-criteria",
+   "doc/project-management/evidence/M6-p0-gaps.md"
   ],
-  "open": "The catalog, curated-title mapping and controlled custom nodes are covered. The icons are not approved: they rest on owner risk acceptance under D-018 and D-019, rights are not cleared, and O-002 blocks public distribution. Section 6 also says a supported item needs positive and negative fixtures. Positives are per type, but negatives are per rule, and no negative case targets NAT Gateway, RDS, API Gateway, FunctionGraph, Direct Connect, Cloud Eye or LTS.",
-  "owner": ""
+  "open": "",
+  "owner": "D-030: negative fixtures are per rule rather than per item. The icons are not approved: they rest on D-018 and D-019, rights are not cleared, and O-002 blocks public distribution."
  },
  {
   "id": "FR-014",
-  "state": "partly",
+  "state": "met_with_owner",
   "summary": "On-premises catalog, native icons, draw.io-type symbols for eight gaps, with attribution.",
   "checks": [
    {
@@ -692,14 +697,20 @@
     "lane": "render-smoke",
     "file": "tests/test_references.py",
     "test": "test_t005_rejects_a_subnet_paired_with_a_network_it_reaches_only_elsewhere"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_the_onprem_pack_terms_reach_the_bundle_and_the_notice"
    }
   ],
   "evidence": [
    "doc/project-management/evidence/S06-provider-catalogs.md#on-premises-representations",
-   "doc/project-management/evidence/S06-provider-catalogs.md#icon-rights"
+   "doc/project-management/evidence/S06-provider-catalogs.md#icon-rights",
+   "doc/project-management/evidence/M6-p0-gaps.md"
   ],
-  "open": "The catalog, eight symbols, labels and attribution are covered. The pack's source conditions reach the manifest and NOTICE, but no test asserts their content. Section 6 also says a supported item needs positive and negative fixtures. Positives are per type, but negatives are per rule, and no negative case targets router, L2/L3 switch, firewall, database, SAN, identity service, backup system or monitoring.",
-  "owner": ""
+  "open": "",
+  "owner": "D-030: negative fixtures are per rule rather than per item."
  },
  {
   "id": "FR-015",
@@ -745,7 +756,7 @@
  },
  {
   "id": "FR-018",
-  "state": "partly",
+  "state": "met",
   "summary": "Detailed Kubernetes inventory across five hosts, with detail views preserving IDs.",
   "checks": [
    {
@@ -792,14 +803,40 @@
     "lane": "render-security",
     "file": "tests/test_render_security.py",
     "test": "test_secret_markers_show_no_payload"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_a_detail_view_lists_what_the_model_declares"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_a_typed_reference_stays_visible_until_a_relationship_draws_it"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_every_kind_of_typed_reference_has_a_note"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_every_host_fixture_holds_every_kubernetes_kind"
+   },
+   {
+    "lane": "render-smoke",
+    "file": "tests/test_references.py",
+    "test": "test_an_overview_stays_compact"
    }
   ],
   "evidence": [
    "doc/project-management/evidence/S08-reference-diagrams.md#requirement-coverage",
    "doc/project-management/evidence/S08-reference-diagrams.md#scenario-checks",
-   "doc/project-management/evidence/S06-provider-catalogs.md#task-status"
+   "doc/project-management/evidence/S06-provider-catalogs.md#task-status",
+   "doc/project-management/evidence/M6-p0-gaps.md"
   ],
-  "open": "Kinds, hosts, and IDs and provider across views are covered. Section 6.1 items do not reach the drawing, and no test asks: (1) the renderer never reads properties, so replica counts, labels, Service type and ports stay only in model.json; a Deployment with replicas 2 draws as its name and kind. (2) Typed references such as secret_refs, config_refs, volume_claim_refs, service_account_ref and target_refs are validated but draw only if a relationship repeats them, with no diagnostic: the detail view of kubernetes-valid.json declares them and draws one edge. Section 6.1 says the detail view must retain supplied security, configuration and storage relationships. (3) No test requires each host to hold all 22 kinds; each does at this commit.",
+  "open": "",
   "owner": ""
  },
  {
@@ -941,7 +978,7 @@
  },
  {
   "id": "FR-022",
-  "state": "partly",
+  "state": "met_with_owner",
   "summary": "Enforce documented constraints; visual nesting never redefines ownership or attachment.",
   "checks": [
    {
@@ -993,10 +1030,11 @@
   "evidence": [
    "doc/project-management/evidence/S08-fable-review.md#findings",
    "doc/project-management/evidence/S08-reference-diagrams.md#limits-and-what-this-does-not-establish",
-   "doc/project-management/evidence/S06-fable-review.md#follow-up-n1-fix-and-deferrals"
+   "doc/project-management/evidence/S06-fable-review.md#follow-up-n1-fix-and-deferrals",
+   "doc/project-management/evidence/M6-p0-gaps.md"
   ],
-  "open": "The nesting clause and the listed rules are covered. S08 P3-8 stays open and is reproduced at this commit: an AWS subnet with no path to a network, attached under a different VPC, validates, so PLACEMENT_SUBNET_NETWORK_MISMATCH does not fire. The owner deferred N2 to N4 in the S06 review, and relation-only mismatch cases for Azure, GCP and Huawei remain a recorded coverage gap.",
-  "owner": ""
+  "open": "",
+  "owner": "D-030: a subnet with no path to any network stays an unspecified fact, because it does not contradict anything the model declares."
  },
  {
   "id": "FR-023",
@@ -1182,7 +1220,7 @@
  },
  {
   "id": "FR-029",
-  "state": "partly",
+  "state": "met_with_owner",
   "summary": "Validate Kubernetes references separately; distinguish relationship kinds; invent no live state.",
   "checks": [
    {
@@ -1259,10 +1297,11 @@
   "evidence": [
    "doc/project-management/evidence/S08-reference-diagrams.md#requirement-coverage",
    "doc/project-management/evidence/S08-reference-diagrams.md#scenario-checks",
-   "doc/project-management/evidence/S06-provider-catalogs.md#task-status"
+   "doc/project-management/evidence/S06-provider-catalogs.md#task-status",
+   "doc/project-management/evidence/M6-p0-gaps.md"
   ],
-  "open": "`management` edges have no rule or negative case, so any endpoints pass, and invented controller availability is caught only by the exact baseline. Kinds now draw differently and a wrong `service_account_ref` is refused.",
-  "owner": ""
+  "open": "",
+  "owner": "D-030: `management` edges have no endpoint rule, because real models use them across kinds, such as an Ingress configuring a load balancer."
  },
  {
   "id": "FR-040",
@@ -1729,7 +1768,7 @@
  },
  {
   "id": "FR-050",
-  "state": "partly",
+  "state": "met",
   "summary": "Resolve provider/type/version through catalog to allowed asset or native class.",
   "checks": [
    {
@@ -1766,13 +1805,24 @@
     "lane": "provider-semantics",
     "file": "tests/test_provider_semantics.py",
     "test": "test_negative_case_fails_with_its_code"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_a_diagrams_version_other_than_the_lock_blocks_the_render"
+   },
+   {
+    "lane": "catalog-license",
+    "file": "tests/test_catalog_license.py",
+    "test": "test_a_diagrams_version_other_than_the_lock_fails_the_lane"
    }
   ],
   "evidence": [
    "doc/project-management/evidence/S06-provider-catalogs.md#catalog-design",
-   "doc/project-management/evidence/S06-provider-catalogs.md#icon-rights"
+   "doc/project-management/evidence/S06-provider-catalogs.md#icon-rights",
+   "doc/project-management/evidence/M6-p0-gaps.md"
   ],
-  "open": "Version is not part of resolution. A model cannot state a type or catalog version, so provider and type resolve against the one bundled catalog, whose version is only reported. The renderer's and the lane's refusals of a diagrams version other than the lock have no test: with each removed in a scratch copy, the lanes still pass. Provider, type and the allowlist are covered.",
+  "open": "",
   "owner": ""
  },
  {
@@ -2281,7 +2331,7 @@
  },
  {
   "id": "FR-065",
-  "state": "partly",
+  "state": "met_with_owner",
   "summary": "Core stays free of Work APIs so Claude adapter reuses it.",
   "checks": [
    {
@@ -2312,10 +2362,11 @@
   ],
   "evidence": [
    "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage",
-   "doc/project-management/evidence/M7-claude-plugin.md#s07-follow-up"
+   "doc/project-management/evidence/M7-claude-plugin.md#s07-follow-up",
+   "doc/project-management/evidence/M6-p0-gaps.md"
   ],
-  "open": "The Claude plugin's clean copy reuses the model, catalogs and renderer, and the core imports neither host's APIs nor reads their settings. Reuse of the tests has no check of its own.",
-  "owner": ""
+  "open": "",
+  "owner": "D-030: test reuse has no check of its own, because both adapters live in one repository."
  },
  {
   "id": "FR-066",
@@ -2781,7 +2832,7 @@
  },
  {
   "id": "NFR-009",
-  "state": "partly",
+  "state": "met_with_owner",
   "summary": "Bound parsing, time, memory, storage, sizes; kill children; freeze measured limits.",
   "checks": [
    {
@@ -2878,6 +2929,11 @@
     "lane": "render-security",
     "file": "tests/test_render_security.py",
     "test": "test_a_stream_far_larger_than_its_image_stops_at_its_size"
+   },
+   {
+    "lane": "render-security",
+    "file": "tests/test_render_security.py",
+    "test": "test_the_limits_stay_the_ones_the_measurements_set"
    }
   ],
   "evidence": [
@@ -2885,10 +2941,11 @@
    "doc/project-management/evidence/S08-reference-diagrams.md#measurements",
    "doc/project-management/evidence/S05-core-and-ci.md#gate-scope-and-constraints",
    "doc/project-management/evidence/S04-closeout.md#selected-prototype-bounds",
-   "doc/project-management/evidence/S11-gpt-reviews.md#fixes"
+   "doc/project-management/evidence/S11-gpt-reviews.md#fixes",
+   "doc/project-management/evidence/M6-p0-gaps.md"
   ],
-  "open": "Runtime bounds, kills and cleanup pass. The clause 'Freeze numeric limits in M0/M1 using measurements' is not met as written: S04 and S05 record their M0 and M1 bounds as not final, S04 carries the final NFR-009 bounds to M3, and S07 leaves the numbers to M4 (P-031). 200/300 is an upper bound that labeled icon views do not reach. No test pins the render numbers except view_entities and minimum_png_scale, so a changed limit still passes. Memory and temporary limits are sampled and can overshoot, and they apply to the engine, not to the core's Python process.",
-  "owner": ""
+  "open": "",
+  "owner": "D-030: reworded to freezing by M4, and a test pins the numbers. Memory and temporary limits are sampled, and 200/300 is an upper bound that labeled icon views do not reach."
  },
  {
   "id": "NFR-010",
@@ -3787,7 +3844,7 @@
  },
  {
   "id": "T-012",
-  "state": "partly",
+  "state": "met_with_owner",
   "summary": "M4: P0 bounded rejection; P1 200/300 stability and readability evaluation.",
   "checks": [
    {
@@ -3829,10 +3886,11 @@
   "evidence": [
    "doc/project-management/evidence/S08-reference-diagrams.md#measurements",
    "doc/project-management/evidence/S08-reference-diagrams.md#requirement-coverage",
-   "doc/project-management/evidence/S07-controlled-rendering.md#measured-render-time"
+   "doc/project-management/evidence/S07-controlled-rendering.md#measured-render-time",
+   "doc/project-management/evidence/M6-p0-gaps.md"
   ],
-  "open": "The P0 rejection is covered. The P1 clause is not: 200/300 stability and the split-view and readability evaluation are deferred (S08, P-031). No test renders 200/300 with icons, the measurements refuse 197/300 on the pixel limit, and automatic splitting is not implemented. M4's exit allows this deferral, so it does not block a P0 release.",
-  "owner": ""
+  "open": "",
+  "owner": "D-030: the P1 clause stays deferred, which M4's exit allows. The P0 rejection is covered."
  },
  {
   "id": "T-013",

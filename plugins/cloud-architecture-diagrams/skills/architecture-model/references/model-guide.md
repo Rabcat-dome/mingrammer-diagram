@@ -92,10 +92,11 @@ A view reads best when it selects only the boxes its grouping can draw. Give one
 | `network` | Network membership | Networks, subnets, VLANs and VRFs |
 | `physical` | Placement by region, zone, site or rack | Regions, zones, sites, data centers, rooms and racks |
 | `scope` | Ownership apart from the network | Scopes |
-| `namespace` | Kubernetes logical view | Kubernetes clusters, node pools and namespaces |
-| `node` | Kubernetes worker placement | Kubernetes clusters, node pools and Nodes |
+| `namespace` | Kubernetes logical detail | Kubernetes clusters, node pools and namespaces |
+| `node` | Kubernetes worker placement detail | Kubernetes clusters, node pools and Nodes |
 | `none` | A flat picture | Nothing |
 
+- **Use `namespace` or `node` for Kubernetes detail.** Only these list a resource's declared `properties` on its node, and its typed references such as `secret_refs`, `config_refs` and `service_account_ref` where no selected relationship draws them. A `provider` overview leaves them out and stays compact.
 - **Leave out what the grouping cannot draw.** Any other selected scope or boundary becomes a loose labeled box. A `network` view, for example, should not select a region or a zone.
 - **Leave out zone boxes in a `provider` view.** A subnet nests under its network, so a zone box stays empty. A declared subnet, zone or rack is noted on each resource even when the view does not select it, so the fact stays. Use a `physical` view when the user wants resources drawn by zone.
 - **Select a region only where it can hold something**, as in `provider` and `physical` views. Elsewhere it would be a loose box, and leaving it out also drops its note.

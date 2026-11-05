@@ -19,7 +19,7 @@ import tracemalloc
 import xml.etree.ElementTree as ET
 import zlib
 from collections.abc import Callable
-from dataclasses import replace
+from dataclasses import asdict, replace
 from pathlib import Path
 from typing import Any
 
@@ -1621,3 +1621,36 @@ def test_manifest_comes_last_and_only_on_success(tmp_path: Path) -> None:
     manifest = manifest_of(result)
     assert manifest["status"] == "complete"
     assert set(manifest["artifacts"]) == set(renderer.BUNDLE_FILES) - {"manifest.json"}
+
+
+def test_the_limits_stay_the_ones_the_measurements_set() -> None:
+    # NFR-009. A changed number has to be a deliberate change, here and in the contract.
+    assert asdict(LIMITS) == {
+        "view_entities": 200,
+        "view_relationships": 300,
+        "group_depth": 16,
+        "wall_seconds": 55,
+        "cpu_seconds": 45,
+        "memory_bytes": 1024**3,
+        "temporary_bytes": 256 * 1024**2,
+        "file_bytes": 16 * 1024**2,
+        "pixels": 32_000_000,
+        "minimum_png_scale": 0.5,
+        "sampling_seconds": 0.1,
+    }
+
+
+def test_a_diagrams_version_other_than_the_lock_blocks_the_render(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # FR-050: an icon comes from the version the catalog was checked against, or from nothing.
+    real = icons.metadata.version
+    monkeypatch.setattr(
+        icons.metadata,
+        "version",
+        lambda name: "0.0.0" if name == "diagrams" else real(name),
+    )
+    output = tmp_path / "out"
+    result = render(GOOD, output)
+    assert codes(result) == ["RENDER_ASSET_UNSAFE"] and not result.rendered
+    assert not output.exists() or tree(output) == []

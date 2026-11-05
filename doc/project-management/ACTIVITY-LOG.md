@@ -578,3 +578,8 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - The owner installed `0.1.0-alpha.1+d27ef23f6f94` on a second Apple silicon Mac from its ZIP, ran all five prompts in one new Work chat, and ran the core reproduction. The owner reports one allow prompt at first use, an image as on the first Mac, and that every check passes (D-029).
 - The session record, bundles and proof agree. The chat read only the plugin's own skill, model guide and examples. Rendering its four models on the first Mac gives identical output, and all 26 reference views match in both routes.
 - The P0 report moves FR-064, FR-066, NFR-001 and T-010 to `met_with_owner`, so none stays blocked. Fifteen stay partly met. `main` fast-forwards here once this commit passes CI. M6 stays open, with no release or tag.
+
+## 2026-11-05 — The P0 records left partly met
+
+- The owner accepted the Claude session's recommendations (D-030). Detail views now list declared properties and typed references (FR-018), which changes exactly the 11 Kubernetes detail views. FR-050 and NFR-009 are reworded with new tests, and the rest are accepted as listed. The report has 2 partly met: T-015 and T-016. See [the record](evidence/M6-p0-gaps.md).
+- The plugin's version is now `0.1.0-alpha.1+88ce2c0cd0dc`, so the Work prompts run again on both Macs before release. The owner has not yet seen the changed images.

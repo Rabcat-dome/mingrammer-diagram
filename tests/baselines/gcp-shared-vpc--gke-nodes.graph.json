@@ -180,7 +180,8 @@
    "lines": [
     "web-pod-a",
     "Pod",
-    "namespace: web"
+    "namespace: web",
+    "owner: web-rs"
    ],
    "memberships": {
     "cluster": [
@@ -210,7 +211,8 @@
    "lines": [
     "web-pod-b",
     "Pod",
-    "namespace: web"
+    "namespace: web",
+    "owner: web-rs"
    ],
    "memberships": {
     "cluster": [

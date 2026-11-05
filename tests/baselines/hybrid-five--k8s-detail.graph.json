@@ -184,7 +184,8 @@
    "id": "k8s-deployment-orders",
    "lines": [
     "orders",
-    "Deployment"
+    "Deployment",
+    "replicas: 2"
    ],
    "memberships": {
     "cluster": [
@@ -210,7 +211,8 @@
    "id": "k8s-replicaset-orders",
    "lines": [
     "orders-rs",
-    "ReplicaSet"
+    "ReplicaSet",
+    "replicas: 2"
    ],
    "memberships": {
     "cluster": [
@@ -296,7 +298,9 @@
    "id": "k8s-service-orders",
    "lines": [
     "orders-svc",
-    "Service"
+    "Service",
+    "type: ClusterIP",
+    "ports: 80:8080/TCP"
    ],
    "memberships": {
     "cluster": [

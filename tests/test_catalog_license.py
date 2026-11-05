@@ -733,3 +733,13 @@ def test_cli_catalog_and_capabilities_report_the_blocker(
     report = json.loads(capsys.readouterr().out)
     assert [item["id"] for item in report["release_blockers"]] == ["O-002"]
     assert "render" in report["commands"]
+
+
+def test_a_diagrams_version_other_than_the_lock_fails_the_lane(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # FR-050: the lane refuses it too, and not only the renderer.
+    monkeypatch.setattr(catalog_checks, "version", lambda _name: "0.0.0")
+    errors: list[str] = []
+    catalog_checks.check_native_icons(catalog(), errors)
+    assert "native icons: the lock and the installed diagrams version differ" in errors

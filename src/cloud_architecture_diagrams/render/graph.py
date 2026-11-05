@@ -11,7 +11,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict
 
 from ..catalog import CatalogRecord, catalog
-from ..models import Architecture, Boundary, Entity, Resource, Scope, View
+from ..models import Architecture, Boundary, Entity, Port, Resource, Scope, View
 from ..validation import Mode
 from .errors import RenderFailure
 from .limits import Limits
@@ -58,6 +58,8 @@ NESTING: dict[str, frozenset[str]] = {
 # a declared subnet and location, which lets a view leave out their boxes and keep the fact. A region
 # is the exception: it applies to nearly everything, so it is noted only when the view selects it.
 ALWAYS_NOTED = {"namespace", "node", "subnet", "location"}
+# FR-018: a Kubernetes detail view carries what the model declares. An overview stays compact.
+KUBERNETES_DETAIL = {"namespace", "node"}
 
 
 class GraphModel(BaseModel):
@@ -249,6 +251,12 @@ class Mapper:
             and self._kubernetes_kind(self.entities.get(edge.source_ref)) == "Pod"
             and self._kubernetes_kind(self.entities.get(edge.target_ref)) == "Node"
         }
+        selected_edges = set(view.relationship_refs)
+        self.linked = {
+            frozenset((edge.source_ref, edge.target_ref))
+            for edge in model.relationships
+            if edge.id in selected_edges
+        }
 
     def _kubernetes_kind(self, entity: Entity | None) -> str | None:
         if isinstance(entity, Resource) and entity.kubernetes:
@@ -400,6 +408,59 @@ class Mapper:
             # A Pod with no declared Node is unspecified, whatever group it sits beside.
             if entity.kubernetes.node_ref is None and entity.id not in self.scheduled:
                 lines.append("node: unspecified")
+        if isinstance(entity, Resource) and self.view.grouping in KUBERNETES_DETAIL:
+            for line in [*self._declared_properties(entity), *self._typed_references(entity)]:
+                lines += wrap(line, LABEL_WIDTH)
+        return lines
+
+    def _declared_properties(self, entity: Resource) -> list[str]:
+        """Replica counts, labels, and a Service's type and ports, in a stable order."""
+        declared = entity.properties
+        if declared is None or entity.kubernetes is None:
+            return []
+        lines: list[str] = []
+        if declared.replicas is not None:
+            lines.append(f"replicas: {declared.replicas}")
+        if declared.service_type:
+            lines.append(f"type: {declared.service_type}")
+        if declared.ports:
+            lines.append("ports: " + ", ".join(_port_text(port) for port in declared.ports))
+        if declared.labels:
+            pairs = (f"{key}={declared.labels[key]}" for key in sorted(declared.labels))
+            lines.append("labels: " + ", ".join(pairs))
+        return lines
+
+    def _typed_references(self, entity: Resource) -> list[str]:
+        """A declared reference stays visible unless a selected relationship already draws it.
+
+        Only an entity's name appears, so a Secret's reference never carries a value.
+        """
+        context = entity.kubernetes
+        if context is None:
+            return []
+        references: list[tuple[str, list[str]]] = [
+            ("service", list(context.service_refs)),
+            ("target", list(context.target_refs)),
+            ("claim", list(context.volume_claim_refs)),
+            ("volume", [context.volume_ref] if context.volume_ref else []),
+            ("storage class", [context.storage_class_ref] if context.storage_class_ref else []),
+            ("config", list(context.config_refs)),
+            ("secret", list(context.secret_refs)),
+            (
+                "service account",
+                [context.service_account_ref] if context.service_account_ref else [],
+            ),
+            ("owner", [context.owner_ref] if context.owner_ref else []),
+        ]
+        lines: list[str] = []
+        for label, targets in references:
+            names = [
+                self.entities[target].name
+                for target in targets
+                if frozenset((entity.id, target)) not in self.linked
+            ]
+            if names:
+                lines.append(f"{label}: {', '.join(names)}")
         return lines
 
     def _is_region(self, identifier: str) -> bool:
@@ -657,6 +718,12 @@ class Mapper:
         for identifier in self.group_ids:
             if len(self._chain(identifier)) > limit:
                 raise RenderFailure("RENDER_GROUP_DEPTH_LIMIT", "/views", identifier)
+
+
+def _port_text(port: Port) -> str:
+    """The form kubectl prints: port, the target where one is declared, and the protocol."""
+    target = "" if port.target_port is None else f":{port.target_port}"
+    return f"{port.port}{target}/{port.protocol}"
 
 
 def _entity_kind(entity: Entity) -> Literal["scope", "boundary", "resource"]:

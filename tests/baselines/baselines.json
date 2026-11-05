@@ -1,15 +1,15 @@
 {
- "accepted_on": "2026-11-03",
+ "accepted_on": "2026-11-05",
  "engine": "dot - graphviz version 16.1.0 (20260904.0139)",
- "reason": "S08 review fixes: the GCP ingress controller's name and the load balancer edge's purpose changed in the model. Other views are unchanged.",
+ "reason": "FR-018 (D-030): Kubernetes detail views list declared replicas, Service type, ports and labels, and typed references no selected relationship draws. The references declare a Service type and ports. The owner reviews these under T-016.",
  "views": {
   "aws-three-tier--eks-namespaces": {
-   "png": "917353b23bdeafe5e56ad3fe240e6baff3d716d3ee96ec713dd970168f94d7e2",
-   "svg": "faf4c6b28e5c9b3709a5b8b76daac033ddca3b5e7be61a0d2af223bf96df481c"
+   "png": "49b713edfe32e9c10d998c5fc155c753346ef1952f553d1f2e11a625bbd0f6f9",
+   "svg": "b68e6b2c0e8dd4dd990ceb63b4b1bdb00b88866cf818a7310569f708d68bcc61"
   },
   "aws-three-tier--eks-nodes": {
-   "png": "cc7bae2a3cc2eac7e672ebd0ac3df86e018dfe8cb4b8905250f3195cd9e751fb",
-   "svg": "1eaebccbbc3dd37d383e8cd7bb9084f85af55f56b1044a61289be0a6b67736b5"
+   "png": "5a3c4a0ae5776d2fbc0d6671dfe92ebc093a98bc03db96e0ccee4898b8a88d7d",
+   "svg": "f100e4a06b31abf7c3d66eae6ad34da6d499178ca6b10fb90f2a0b5d553e5479"
   },
   "aws-three-tier--overview": {
    "png": "e3f4f360c5c1433be65271674cf8649e2aa23be2959d448a98947ceb0d418b0b",
@@ -20,12 +20,12 @@
    "svg": "407456597b925b6e62af592121b416560bd6700e6fa1fcbea0b6c677e66b3a0a"
   },
   "azure-hub-spoke--aks-namespaces": {
-   "png": "f27625eb9075aa7f1a462b0fab719aa5b4095c6c11f63af642ae1fc93e254ec4",
-   "svg": "46254b32e48bfdd1851bc850a2914237faa80039e29f9e8429251960cda39896"
+   "png": "58f4a314c10f461aa4294c7899e4c8618dddd0432f95ef9ef6303621f2acfcc5",
+   "svg": "220faa6e8cd4c06489e3ca717dd78ce8ebb774ae2ecce56bf6e9c07e23517a2f"
   },
   "azure-hub-spoke--aks-nodes": {
-   "png": "64a9a179f394cccdfce2f6a67c28e845f08c86eefd9f16b4eefd639d6a1057a8",
-   "svg": "0127cb501b0daafdc26c36ceee160c5fd8eef07b0e6cc46ef6b69e16bd315b14"
+   "png": "7ad3d7306eba28b672ff4ac6d67f29e4ae3b7d8391e6eafc57cd7883b5c30ee0",
+   "svg": "0a604f7fc9cdb4d85466fdb82b409d4ff9eb774d3601dfc8383a5ef05eeb7cac"
   },
   "azure-hub-spoke--overview": {
    "png": "a48d783831589e4968d17c5d0289ff101e100d78ca110b73f68659d2e7a21c0f",
@@ -36,12 +36,12 @@
    "svg": "0ff9ebe82ea0b8903e9d4f2948fa6565656c6768b3d14ac190e85ec783ba3812"
   },
   "gcp-shared-vpc--gke-namespaces": {
-   "png": "2a55eb7fb4265aba9c4f20d442aed6886c4079f40173f95cb41afe9f5e6431d9",
-   "svg": "fcd04effe5f1108350c8a19bf7488317a82b0eb391526f4ca2b610b42f5638d9"
+   "png": "aca7d9de0b1a741f0da90188404ee5c65a5c07a261e3cdda8f03f1228842e6bf",
+   "svg": "a13ddb8d5893facb337664c5647841d32a6670f47390df3cdfe39886568d5ed5"
   },
   "gcp-shared-vpc--gke-nodes": {
-   "png": "743d6e21f41e97fa05ef491d99cc473a291f67085891d9ee4a11e41ef4726ac1",
-   "svg": "ef1ee96861f6c782f64b92464e096aa520fbfe081fdb95e23f0052345501d26b"
+   "png": "a510ccd21032b13f6ebfde51c82fc0d531d5367d9717c9c7b14da499808dbd6c",
+   "svg": "5bec8e54065db445665c687403a457bd6acedf341ccab994308f48939675859f"
   },
   "gcp-shared-vpc--locations": {
    "png": "a63f3ffbb3b1e90e448bb238e38282058164a079018fec6886818f777719a8eb",
@@ -56,12 +56,12 @@
    "svg": "1a0d5498f3e60c54176bc84ab8ee390c7a3527a071b406551a09948f4f777330"
   },
   "huawei-web--cce-namespaces": {
-   "png": "f4cb9c9a74c64ee04e9e1c68d434dfe2b7e8cb8aec36ad21d9a34616d1c8d1e2",
-   "svg": "26e9f5bbadc3a1633929452d951aaf359e6f41621ea0cee439e72f7208750f3c"
+   "png": "3d0ef7c7e49b141c84f0ba54e0a86d42db106cfc8bb770e87f83f0c5cb75050a",
+   "svg": "0d834fbf86ca43c3498b3d78c916682bddfdb5c7aeac4655b7fb663d34f786b5"
   },
   "huawei-web--cce-nodes": {
-   "png": "4fbc11f98f830d59c750536633d9e7331b72ca488fcfec6f96c86db63e095794",
-   "svg": "7b8f316b2ead836036aa72895f0596e36c3a16cd66885bf0afa46ff65f81d56a"
+   "png": "3c1d67de1e1393c35a7b4f9c13c175acc80d533dad87412775ae7e17f8f42a25",
+   "svg": "73f7cd4a20c805550f3017fe47af87d3c8d5baa10b43e79193d364044b810a7b"
   },
   "huawei-web--overview": {
    "png": "485ea31434427b84df2cebb270359995baae626484dba1921c4e8065e5f19ba7",
@@ -84,20 +84,20 @@
    "svg": "5196f95ee6044c6470289397aa2ec197b34bd03d0c7f3fc28c25053b7a90ecfd"
   },
   "hybrid-five--k8s-detail": {
-   "png": "d89b66a4323b4ead51dfa475bb9b51a83dc57701fe4b97eb9df9becc1665dc12",
-   "svg": "d6c44b781df99b8799227936d24ce7c1e8e55e804875c8ba89f01315e4765ea0"
+   "png": "4604b78baae9c8a9c9d69c0f4d0dfc74a011324f8f04f36e7b8207fe830b31d2",
+   "svg": "4b523c6e9d522c0903c4aefe6974626ea1007267bf3d8900a84fbdec93f70a96"
   },
   "hybrid-five--overview": {
    "png": "dc4de9c8e37eb4a50254d50e09fb4ed5cfc0d87b82bcb1f8359200f5890bf2f0",
    "svg": "aea59a5bf185aa5ca7c0633b23eed50435f56e683bcfb3f409add10e0139f11f"
   },
   "onprem-physical-logical--k8s-namespaces": {
-   "png": "ff6d9a5da8b94ebe18cfaff7737bce6a26df007f6b21c16c5911a000387e07e7",
-   "svg": "adf2321e6f679643f0f6afb04cb50aef4e8a7cbf9112c93c48f650383fe36bfd"
+   "png": "6faf634026918482a4cceffb9abddf81d350374770bf235f46c4f1f48fbc2079",
+   "svg": "d3bb8b3ee098afe0e9368bf6ab76c091825eef684ce646f4530a0f1473118383"
   },
   "onprem-physical-logical--k8s-nodes": {
-   "png": "a486437122eece02e23f172b363c5812955ec4a829529c267089919e679f0a2f",
-   "svg": "bf226150831f4668050c4817d251ebeec60125b1ef16d4d5db67c4bf5e301091"
+   "png": "cadda134d8f713227579a33dba1671dea3d9782971d617a00ad7b6232dc534c3",
+   "svg": "eb7e5243254b4244dc9d05dc1ae1d979fb91821fb8b1784f3f414764326d8d7b"
   },
   "onprem-physical-logical--logical": {
    "png": "8da847586ac44232ac29ec7702e02373f17cf1678d8dadeb252380a79496482b",

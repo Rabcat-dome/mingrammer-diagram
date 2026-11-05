@@ -181,7 +181,9 @@
    "lines": [
     "web-frontend-pod-1",
     "Pod",
-    "namespace: web"
+    "namespace: web",
+    "owner:",
+    "web-frontend-rs"
    ],
    "memberships": {
     "cluster": [
@@ -211,7 +213,9 @@
    "lines": [
     "web-frontend-pod-2",
     "Pod",
-    "namespace: web"
+    "namespace: web",
+    "owner:",
+    "web-frontend-rs"
    ],
    "memberships": {
     "cluster": [

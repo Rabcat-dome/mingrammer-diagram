@@ -3,7 +3,7 @@
 import copy
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, get_args
 
 import pytest
 from render_helpers import (
@@ -18,7 +18,7 @@ from render_helpers import (
 )
 
 from cloud_architecture_diagrams.catalog import catalog
-from cloud_architecture_diagrams.models import Architecture
+from cloud_architecture_diagrams.models import Architecture, KubernetesContext, KubernetesKind
 from cloud_architecture_diagrams.render import RenderResult
 from cloud_architecture_diagrams.render.checks import SVG
 from cloud_architecture_diagrams.render.draw import EDGE_STYLES
@@ -897,3 +897,155 @@ def test_only_provider_grouping_keeps_providers_apart(tmp_path: Path) -> None:
     parsed = Architecture.model_validate(model)
     found = map_view(parsed, parsed.views[0], "strict", LIMITS)
     assert next(node for node in found.nodes if node.id == "app").group == "account"
+
+
+def text_of_node(found: dict[str, Any], identifier: str) -> str:
+    return " ".join(node_of(found, identifier)["lines"])
+
+
+def detail_model() -> dict[str, Any]:
+    """The Azure reference's namespace detail view, with properties on its workload and Service."""
+    model = model_of("azure-hub-spoke")
+    resource(model, "web-deployment")["properties"] = {
+        "replicas": 3,
+        "labels": {"tier": "web", "app": "store"},
+    }
+    resource(model, "web-service")["properties"] = {
+        "service_type": "ClusterIP",
+        "ports": [
+            {"port": 80, "target_port": 8080},
+            {"port": 443, "target_port": "https", "protocol": "TCP"},
+            {"port": 53, "protocol": "UDP"},
+        ],
+    }
+    return model
+
+
+@pytest.mark.parametrize("view", ["aks-namespaces", "aks-nodes"])
+def test_a_detail_view_lists_what_the_model_declares(view: str, tmp_path: Path) -> None:
+    model = detail_model()
+    if view == "aks-nodes":
+        view_of(model, view)["entity_refs"] += [
+            item
+            for item in ("web-deployment", "web-service")
+            if item not in view_of(model, view)["entity_refs"]
+        ]
+    assert errors(model) == []
+    found = graph("", view, tmp_path, model)
+    workload = text_of_node(found, "web-deployment")
+    assert "replicas: 3" in workload
+    # Sorted by key, so the order a model lists its labels in cannot change the picture.
+    assert "labels: app=store, tier=web" in workload
+    service = text_of_node(found, "web-service")
+    assert "type: ClusterIP" in service
+    assert "ports: 80:8080/TCP, 443:https/TCP, 53/UDP" in service
+
+
+def test_a_workload_scaled_to_zero_still_says_so(tmp_path: Path) -> None:
+    model = detail_model()
+    resource(model, "web-deployment")["properties"]["replicas"] = 0
+    found = graph("", "aks-namespaces", tmp_path, model)
+    assert "replicas: 0" in text_of_node(found, "web-deployment")
+
+
+def test_an_overview_stays_compact(tmp_path: Path) -> None:
+    model = detail_model()
+    view_of(model, "overview")["entity_refs"] += [
+        "aks-namespace-web",
+        "web-deployment",
+        "web-service",
+    ]
+    found = graph("", "overview", tmp_path, model)
+    for identifier in ("web-deployment", "web-service"):
+        text = text_of_node(found, identifier)
+        assert not any(word in text for word in ("replicas:", "type:", "ports:", "labels:"))
+
+
+def test_labels_read_the_same_whatever_order_a_model_lists_them_in(tmp_path: Path) -> None:
+    first, second = detail_model(), detail_model()
+    resource(second, "web-deployment")["properties"]["labels"] = {"app": "store", "tier": "web"}
+    resource(first, "web-deployment")["properties"]["labels"] = {"tier": "web", "app": "store"}
+    one = graph("", "aks-namespaces", tmp_path / "one", first)
+    other = graph("", "aks-namespaces", tmp_path / "other", second)
+    assert node_of(one, "web-deployment")["lines"] == node_of(other, "web-deployment")["lines"]
+
+
+def test_a_typed_reference_stays_visible_until_a_relationship_draws_it(tmp_path: Path) -> None:
+    model = model_of("azure-hub-spoke")
+    pod = resource(model, "web-pod-1")["kubernetes"]
+    secret = next(item["id"] for item in model["resources"] if item["service_type"] == "k8s.secret")
+    secret_name = resource(model, secret)["name"]
+    pod["secret_refs"] = [secret]
+    view = view_of(model, "aks-namespaces")
+    view["relationship_refs"] = [
+        ref
+        for ref in view["relationship_refs"]
+        if {
+            (edge["source_ref"], edge["target_ref"])
+            for edge in model["relationships"]
+            if edge["id"] == ref
+        }
+        != {("web-pod-1", secret)}
+    ]
+    assert errors(model) == []
+    noted = graph("", "aks-namespaces", tmp_path / "noted", model)
+    assert f"secret: {secret_name}" in text_of_node(noted, "web-pod-1")
+    model["relationships"].append(
+        {
+            "id": "pod-uses-secret",
+            "source_ref": "web-pod-1",
+            "target_ref": secret,
+            "kind": "configuration",
+        }
+    )
+    view["relationship_refs"].append("pod-uses-secret")
+    assert errors(model) == []
+    drawn = graph("", "aks-namespaces", tmp_path / "drawn", model)
+    assert "secret:" not in text_of_node(drawn, "web-pod-1")
+
+
+def test_every_kind_of_typed_reference_has_a_note() -> None:
+    # A field added to the model must not silently stay out of the detail view.
+    fields = {
+        name
+        for name in KubernetesContext.model_fields
+        if name.endswith(("_ref", "_refs"))
+        and name not in {"cluster_ref", "namespace_ref", "node_pool_ref", "node_ref"}
+    }
+    assert fields == {
+        "service_refs",
+        "target_refs",
+        "volume_claim_refs",
+        "volume_ref",
+        "storage_class_ref",
+        "config_refs",
+        "secret_refs",
+        "service_account_ref",
+        "owner_ref",
+    }
+
+
+@pytest.mark.parametrize("host", ["aks", "cce", "eks", "gke", "onprem"])
+def test_every_host_fixture_holds_every_kubernetes_kind(host: str) -> None:
+    model = json.loads((FIXTURES / "kubernetes" / f"{host}.json").read_text())
+    kinds = {item["kubernetes"]["kind"] for item in model["resources"] if item.get("kubernetes")}
+    assert set(get_args(KubernetesKind)) == kinds
+
+
+def test_the_onprem_pack_terms_reach_the_bundle_and_the_notice(tmp_path: Path) -> None:
+    # FR-014's source conditions. They go with the image, and with the package.
+    pack = catalog().packs["drawio-network-2018"]
+    model = model_of("onprem-physical-logical")
+    drawn = [
+        manifest_of(render(model, tmp_path / view["id"], view=view["id"]))["rights"]["packs"]
+        for view in model["views"]
+    ]
+    found = [item for packs in drawn for item in packs if item["id"] == pack.id]
+    assert found, "no on-premises view used this pack, so this would prove nothing"
+    assert found[0]["conditions"] == list(pack.conditions)
+    assert found[0]["attribution"] == pack.attribution
+    assert "CC BY 4.0" in pack.conditions[0] and "JGraph" in pack.conditions[0]
+    notice = (
+        Path(__file__).parents[1] / "src/cloud_architecture_diagrams/assets/NOTICE.md"
+    ).read_text()
+    assert "JGraph" in notice and "CC BY 4.0" in notice

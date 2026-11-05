@@ -210,7 +210,8 @@
    "lines": [
     "web-pod-a",
     "Pod",
-    "namespace: web-app"
+    "namespace: web-app",
+    "owner: web-rs"
    ],
    "memberships": {
     "cluster": [
@@ -240,7 +241,8 @@
    "lines": [
     "web-pod-b",
     "Pod",
-    "namespace: web-app"
+    "namespace: web-app",
+    "owner: web-rs"
    ],
    "memberships": {
     "cluster": [
