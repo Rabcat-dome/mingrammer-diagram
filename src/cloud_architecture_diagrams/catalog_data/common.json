@@ -1,5 +1,5 @@
 {
-  "catalog_version": "2026.11.1",
+  "catalog_version": "2026.11.2",
   "platform": "common",
   "records": [
     {"id": "common.scope.environment", "providers": ["aws", "azure", "gcp", "huawei", "onprem"], "entity": "scope", "kind": "environment", "display_name": "Environment", "taxonomy": "governance.scope", "capabilities": ["scope"], "placement": {"parent_kinds": ["account", "tenant", "subscription", "resource_group", "organization", "folder", "project", "iam_project", "enterprise_project", "environment"]}, "representation": {"kind": "labeled_boundary", "label": "Environment"}, "status": "supported", "sources": ["doc:requirements#5-canonical-model-and-taxonomy"]},

@@ -3460,6 +3460,963 @@
     }
    ],
    "note": "A web ACL with no region of its own still cannot protect resources in two regions."
+  },
+  {
+   "id": "aws-cloudfront-in-region",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:cdn/placement/location",
+     "value": {
+      "region_ref": "region"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-cloudfront-in-vpc",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:cdn/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-cloudfront-security-group",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_SECURITY_GROUP_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:cdn/placement/security_boundaries",
+     "value": [
+      "sg-app"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-cloudfront-acl-in-region",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:cdn-acl/placement/location",
+     "value": {
+      "region_ref": "region"
+     }
+    }
+   ],
+   "note": "AWS manages it from us-east-1, and calls the choice Global (CloudFront)."
+  },
+  {
+   "id": "aws-cloudfront-acl-in-vpc",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:cdn-acl/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-public-zone-in-region",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:public-dns/placement/location",
+     "value": {
+      "region_ref": "region"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-public-zone-with-vpc",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:public-dns/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ],
+   "note": "AWS says to omit VPCs for a public hosted zone."
+  },
+  {
+   "id": "aws-private-zone-in-region",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:private-dns/placement/location",
+     "value": {
+      "region_ref": "region"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-private-zone-subnets",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_SUBNET_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:private-dns/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "app-a"
+       ]
+      }
+     ]
+    }
+   ],
+   "note": "A private hosted zone associates with a VPC and not with subnets."
+  },
+  {
+   "id": "aws-regional-acl-on-distribution",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
+   "ops": [
+    {
+     "add": "relationships",
+     "value": {
+      "id": "probe",
+      "source_ref": "api-acl",
+      "target_ref": "cdn",
+      "kind": "attachment"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-regional-acl-on-distribution-reversed",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
+   "ops": [
+    {
+     "add": "relationships",
+     "value": {
+      "id": "probe",
+      "source_ref": "cdn",
+      "target_ref": "api-acl",
+      "kind": "attachment"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-cloudfront-acl-on-rest-api",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
+   "ops": [
+    {
+     "add": "relationships",
+     "value": {
+      "id": "probe",
+      "source_ref": "cdn-acl",
+      "target_ref": "api",
+      "kind": "attachment"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-cloudfront-acl-on-user-pool",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
+   "ops": [
+    {
+     "add": "relationships",
+     "value": {
+      "id": "probe",
+      "source_ref": "cdn-acl",
+      "target_ref": "pool",
+      "kind": "attachment"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-cloudfront-acl-on-alb",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
+   "ops": [
+    {
+     "add": "resources",
+     "value": {
+      "id": "alb",
+      "name": "ALB",
+      "provider": "aws",
+      "service_type": "aws.network.application_load_balancer",
+      "taxonomy": "network.load_balancing"
+     }
+    },
+    {
+     "add": "relationships",
+     "value": {
+      "id": "probe",
+      "source_ref": "cdn-acl",
+      "target_ref": "alb",
+      "kind": "attachment"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-regional-acl-on-http-api",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
+   "ops": [
+    {
+     "add": "relationships",
+     "value": {
+      "id": "probe",
+      "source_ref": "api-acl",
+      "target_ref": "partner",
+      "kind": "attachment"
+     }
+    }
+   ],
+   "note": "AWS's feature table says AWS WAF applies to REST APIs and not to HTTP APIs."
+  },
+  {
+   "id": "aws-regional-acl-on-nlb",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
+   "ops": [
+    {
+     "add": "relationships",
+     "value": {
+      "id": "probe",
+      "source_ref": "api-acl",
+      "target_ref": "nlb",
+      "kind": "attachment"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-regional-acl-on-dynamodb",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
+   "ops": [
+    {
+     "add": "relationships",
+     "value": {
+      "id": "probe",
+      "source_ref": "api-acl",
+      "target_ref": "table",
+      "kind": "attachment"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-distribution-two-acls",
+   "base": "providers/aws-edge-api-data",
+   "expect": "AWS_WAF_ACL_MULTIPLE",
+   "ops": [
+    {
+     "add": "resources",
+     "value": {
+      "id": "cdn-acl-2",
+      "name": "Second",
+      "provider": "aws",
+      "service_type": "aws.security.waf_cloudfront",
+      "taxonomy": "security.control"
+     }
+    },
+    {
+     "add": "relationships",
+     "value": {
+      "id": "probe",
+      "source_ref": "cdn-acl-2",
+      "target_ref": "cdn",
+      "kind": "attachment"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-rest-api-two-acls",
+   "base": "providers/aws-edge-api-data",
+   "expect": "AWS_WAF_ACL_MULTIPLE",
+   "ops": [
+    {
+     "add": "resources",
+     "value": {
+      "id": "api-acl-2",
+      "name": "Second",
+      "provider": "aws",
+      "service_type": "aws.security.waf",
+      "taxonomy": "security.control"
+     }
+    },
+    {
+     "add": "relationships",
+     "value": {
+      "id": "probe",
+      "source_ref": "api-acl-2",
+      "target_ref": "api",
+      "kind": "attachment"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-user-pool-two-acls",
+   "base": "providers/aws-edge-api-data",
+   "expect": "AWS_WAF_ACL_MULTIPLE",
+   "ops": [
+    {
+     "add": "resources",
+     "value": {
+      "id": "api-acl-2",
+      "name": "Second",
+      "provider": "aws",
+      "service_type": "aws.security.waf",
+      "taxonomy": "security.control"
+     }
+    },
+    {
+     "add": "relationships",
+     "value": {
+      "id": "probe",
+      "source_ref": "api-acl-2",
+      "target_ref": "pool",
+      "kind": "attachment"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-regional-acl-user-pool-other-region",
+   "base": "providers/aws-edge-api-data",
+   "expect": "AWS_WAF_RESOURCE_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-other",
+      "name": "us-east-1",
+      "provider": "aws",
+      "kind": "region",
+      "scope_refs": [
+       "acct"
+      ]
+     }
+    },
+    {
+     "set": "resources/id:pool/placement/location",
+     "value": {
+      "region_ref": "region-other"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-regional-acl-rest-api-other-region",
+   "base": "providers/aws-edge-api-data",
+   "expect": "AWS_WAF_RESOURCE_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-other",
+      "name": "us-east-1",
+      "provider": "aws",
+      "kind": "region",
+      "scope_refs": [
+       "acct"
+      ]
+     }
+    },
+    {
+     "set": "resources/id:api/placement/location",
+     "value": {
+      "region_ref": "region-other"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-rest-api-in-zone",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:api/placement/location",
+     "value": {
+      "zone_ref": "az-a"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-rest-api-in-vpc",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:api/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ],
+   "note": "A private REST API is reached through an interface VPC endpoint, and is not attached."
+  },
+  {
+   "id": "aws-http-api-in-zone",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:partner/placement/location",
+     "value": {
+      "zone_ref": "az-a"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-http-api-in-vpc",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:partner/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ],
+   "note": "A VPC link reaches a private resource, and the API itself is not attached."
+  },
+  {
+   "id": "aws-nlb-two-subnets-one-zone",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_SUBNET_ZONES_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:nlb/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "app-a",
+        "data-a"
+       ]
+      }
+     ]
+    }
+   ],
+   "note": "AWS allows only one subnet per Availability Zone."
+  },
+  {
+   "id": "aws-nlb-two-vpcs",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_NETWORK_COUNT_INVALID",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "vpc-2",
+      "name": "Second VPC",
+      "provider": "aws",
+      "kind": "network",
+      "parent_ref": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "other-b",
+      "name": "Other B",
+      "provider": "aws",
+      "kind": "subnet",
+      "parent_ref": "vpc-2",
+      "relations": [
+       {
+        "kind": "located_in",
+        "target_ref": "az-b"
+       }
+      ]
+     }
+    },
+    {
+     "set": "resources/id:nlb/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "data-a"
+       ]
+      },
+      {
+       "network_ref": "vpc-2",
+       "subnet_refs": [
+        "other-b"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-nlb-in-zone",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:nlb/placement",
+     "value": {
+      "location": {
+       "zone_ref": "az-a"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-elasticache-two-vpcs",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_NETWORK_COUNT_INVALID",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "vpc-2",
+      "name": "Second VPC",
+      "provider": "aws",
+      "kind": "network",
+      "parent_ref": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "other-b",
+      "name": "Other B",
+      "provider": "aws",
+      "kind": "subnet",
+      "parent_ref": "vpc-2",
+      "relations": [
+       {
+        "kind": "located_in",
+        "target_ref": "az-b"
+       }
+      ]
+     }
+    },
+    {
+     "set": "resources/id:cache/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "data-a"
+       ]
+      },
+      {
+       "network_ref": "vpc-2",
+       "subnet_refs": [
+        "other-b"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-elasticache-serverless-two-vpcs",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_NETWORK_COUNT_INVALID",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "vpc-2",
+      "name": "Second VPC",
+      "provider": "aws",
+      "kind": "network",
+      "parent_ref": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "other-b",
+      "name": "Other B",
+      "provider": "aws",
+      "kind": "subnet",
+      "parent_ref": "vpc-2",
+      "relations": [
+       {
+        "kind": "located_in",
+        "target_ref": "az-b"
+       }
+      ]
+     }
+    },
+    {
+     "set": "resources/id:sessions/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "data-a"
+       ]
+      },
+      {
+       "network_ref": "vpc-2",
+       "subnet_refs": [
+        "other-b"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-elasticache-serverless-in-zone",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:sessions/placement",
+     "value": {
+      "location": {
+       "zone_ref": "az-a"
+      }
+     }
+    }
+   ],
+   "note": "AWS stores a serverless cache across zones and offers no zone to choose."
+  },
+  {
+   "id": "aws-elasticache-subnet-outside-zone",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_SUBNET_ZONE_MISMATCH",
+   "ops": [
+    {
+     "set": "resources/id:cache/placement/location",
+     "value": {
+      "zone_ref": "az-a"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-dynamodb-in-vpc",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:table/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-dynamodb-in-zone",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:table/placement/location",
+     "value": {
+      "zone_ref": "az-a"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-dynamodb-security-group",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_SECURITY_GROUP_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:table/placement/security_boundaries",
+     "value": [
+      "sg-app"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-sqs-in-vpc",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:queue/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-sqs-in-zone",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:queue/placement/location",
+     "value": {
+      "zone_ref": "az-a"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-sqs-security-group",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_SECURITY_GROUP_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:queue/placement/security_boundaries",
+     "value": [
+      "sg-app"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-sns-in-vpc",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:topic/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-sns-in-zone",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:topic/placement/location",
+     "value": {
+      "zone_ref": "az-a"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-sns-security-group",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_SECURITY_GROUP_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:topic/placement/security_boundaries",
+     "value": [
+      "sg-app"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-cognito-in-vpc",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:pool/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-cognito-in-zone",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:pool/placement/location",
+     "value": {
+      "zone_ref": "az-a"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-cognito-security-group",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_SECURITY_GROUP_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:pool/placement/security_boundaries",
+     "value": [
+      "sg-app"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-secrets-manager-in-vpc",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:secret/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-secrets-manager-in-zone",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:secret/placement/location",
+     "value": {
+      "zone_ref": "az-a"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-secrets-manager-security-group",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_SECURITY_GROUP_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:secret/placement/security_boundaries",
+     "value": [
+      "sg-app"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-kms-in-vpc",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:key/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-kms-in-zone",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:key/placement/location",
+     "value": {
+      "zone_ref": "az-a"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-kms-security-group",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_SECURITY_GROUP_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:key/placement/security_boundaries",
+     "value": [
+      "sg-app"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-ecr-in-vpc",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:images/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-ecr-in-zone",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:images/placement/location",
+     "value": {
+      "zone_ref": "az-a"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-ecr-security-group",
+   "base": "providers/aws-edge-api-data",
+   "expect": "PLACEMENT_SECURITY_GROUP_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:images/placement/security_boundaries",
+     "value": [
+      "sg-app"
+     ]
+    }
+   ]
   }
  ],
  "warnings": [

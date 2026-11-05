@@ -2208,7 +2208,7 @@ def test_skill_keeps_the_rules_a_live_session_depends_on(skill: str) -> None:
         "Only setup reaches the network",
         "`result.runtime.render_probe.passed`",
         # Measured in a live session: a missing service must stop the model guessing.
-        "such as Amazon CloudFront",
+        "such as Amazon EventBridge",
     ):
         assert sentence in skill, sentence
 

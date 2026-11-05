@@ -658,6 +658,29 @@ AWS_ADDED = {
     "aws.containers.ecs_fargate": ("diagrams.aws.compute.Fargate", "compute"),
     "aws.compute.lambda": ("diagrams.aws.compute.Lambda", "compute"),
     "aws.security.waf": ("diagrams.aws.security.WAF", "security"),
+    "aws.security.waf_cloudfront": ("diagrams.aws.security.WAF", "security"),
+    "aws.network.cloudfront": ("diagrams.aws.network.CloudFront", "network"),
+    "aws.network.network_load_balancer": ("diagrams.aws.network.ElbNetworkLoadBalancer", "network"),
+    "aws.network.route53_public_zone": ("diagrams.aws.network.Route53", "network"),
+    "aws.network.route53_private_zone": ("diagrams.aws.network.Route53", "network"),
+    "aws.integration.api_gateway_rest": ("diagrams.aws.network.APIGateway", "network"),
+    "aws.integration.api_gateway_v2": ("diagrams.aws.network.APIGateway", "network"),
+    "aws.integration.sqs": ("diagrams.aws.integration.SimpleQueueServiceSqs", "integration"),
+    "aws.integration.sns": ("diagrams.aws.integration.SimpleNotificationServiceSns", "integration"),
+    "aws.database.dynamodb": ("diagrams.aws.database.Dynamodb", "database"),
+    "aws.database.elasticache": ("diagrams.aws.database.Elasticache", "database"),
+    "aws.database.elasticache_serverless": ("diagrams.aws.database.Elasticache", "database"),
+    "aws.identity.cognito_user_pool": ("diagrams.aws.security.Cognito", "security"),
+    "aws.security.secrets_manager": ("diagrams.aws.security.SecretsManager", "security"),
+    "aws.security.kms": ("diagrams.aws.security.KeyManagementService", "security"),
+    "aws.containers.ecr": ("diagrams.aws.compute.EC2ContainerRegistry", "compute"),
+}
+# Variants of one AWS service draw its one icon, as the two NAT gateway types do.
+AWS_ADDED_VARIANTS = {
+    frozenset({"aws.security.waf", "aws.security.waf_cloudfront"}),
+    frozenset({"aws.network.route53_public_zone", "aws.network.route53_private_zone"}),
+    frozenset({"aws.integration.api_gateway_rest", "aws.integration.api_gateway_v2"}),
+    frozenset({"aws.database.elasticache", "aws.database.elasticache_serverless"}),
 }
 
 
@@ -678,12 +701,15 @@ def test_added_aws_types_draw_their_own_icon_from_the_listed_pack(
     assert not [asset for asset in catalog().manifest.assets if asset.pack.startswith("aws")]
 
 
-def test_added_aws_types_have_distinct_icons() -> None:
-    assert len({value[0] for value in AWS_ADDED.values()}) == len(AWS_ADDED)
+def test_added_aws_types_share_an_icon_only_with_a_variant_of_their_service() -> None:
+    icons: dict[str, set[str]] = {}
+    for type_id, (class_path, _) in AWS_ADDED.items():
+        icons.setdefault(class_path, set()).add(type_id)
+    assert {frozenset(types) for types in icons.values() if len(types) > 1} == AWS_ADDED_VARIANTS
 
 
 def test_added_aws_types_are_not_required_items() -> None:
-    # They are selected P1 work (D-036), so the P0 inventory and its requirements table stay as is.
+    # They are selected P1 work (D-036, D-037), so the P0 inventory and its table stay as they are.
     listed = {type_id for item in catalog().inventory["aws"].values() for type_id in item}
     assert not listed & set(AWS_ADDED)
 
@@ -759,13 +785,53 @@ def ids(found: dict[str, object]) -> list[str]:
     return [record["id"] for record in records]
 
 
+@pytest.mark.parametrize(
+    ("term", "expected"),
+    [
+        ("cloudfront", {"aws.network.cloudfront", "aws.security.waf_cloudfront"}),
+        ("api gateway", {"aws.integration.api_gateway_rest", "aws.integration.api_gateway_v2"}),
+        ("apigateway", {"aws.integration.api_gateway_rest", "aws.integration.api_gateway_v2"}),
+        ("route 53", {"aws.network.route53_public_zone", "aws.network.route53_private_zone"}),
+        ("route53", {"aws.network.route53_public_zone", "aws.network.route53_private_zone"}),
+        ("nlb", {"aws.network.network_load_balancer"}),
+        ("network load balancer", {"aws.network.network_load_balancer"}),
+        ("dynamodb", {"aws.database.dynamodb"}),
+        ("elasticache", {"aws.database.elasticache", "aws.database.elasticache_serverless"}),
+        ("sqs", {"aws.integration.sqs"}),
+        ("simple queue", {"aws.integration.sqs"}),
+        ("sns", {"aws.integration.sns"}),
+        ("simple notification", {"aws.integration.sns"}),
+        ("cognito", {"aws.identity.cognito_user_pool"}),
+        ("secrets manager", {"aws.security.secrets_manager"}),
+        ("kms", {"aws.security.kms"}),
+        ("key management", {"aws.security.kms"}),
+        ("ecr", {"aws.containers.ecr"}),
+        ("container registry", {"aws.containers.ecr"}),
+        ("waf", {"aws.security.waf", "aws.security.waf_cloudfront"}),
+    ],
+)
+def test_the_names_a_request_uses_find_the_added_types(term: str, expected: set[str]) -> None:
+    # The search matches substrings, so `ecr` also finds Secrets Manager and the Kubernetes Secret.
+    assert expected <= set(ids(catalog().search(query=term, provider="aws")))
+
+
+def test_the_skills_example_of_a_missing_service_is_really_missing() -> None:
+    # It named AWS WAF and then CloudFront, each of which a later catalog added.
+    skill = (
+        ROOT / "plugins/cloud-architecture-work/skills/architecture-model/SKILL.md"
+    ).read_text()
+    assert "such as Amazon EventBridge" in skill
+    assert catalog().search(query="eventbridge")["total"] == 0
+
+
 def test_catalog_discovery_is_bounded_and_filterable() -> None:
     result = catalog().search(limit=10_000)
     assert result["returned"] == min(len(catalog().records), MAX_RESULTS)
     assert result["total"] == len(catalog().records)
     aws = catalog().search(provider="aws", entity="resource", query="load balancer")
     assert [item["id"] for item in aws["records"]] == [  # type: ignore[attr-defined]
-        "aws.network.application_load_balancer"
+        "aws.network.application_load_balancer",
+        "aws.network.network_load_balancer",
     ]
     assert catalog().search(type_id="aws.compute.ec2")["total"] == 1
     # FR-054: "ECS" names a service on two providers, so only the provider can choose between them.

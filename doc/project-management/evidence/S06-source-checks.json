@@ -271,12 +271,28 @@
   {
    "url": "https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/global-services.html",
    "http_status": 200,
-   "text_sha256": "fbe0a122f7829ba827b8782ab6c201d58c15c4969df190d963e8b9fa10b50e1a",
-   "characters": 12815,
+   "checked": "2026-11-05",
+   "text_sha256": "135e10a1e4ddeae6c67fa6d07e06da5a18303e156ecf8ed3889c060e00b82b3d",
+   "characters": 12813,
    "claims": [
     {
      "claim": "IAM is a partitional, not regional, service",
      "pattern": "partitional services, such as IAM",
+     "matched": true
+    },
+    {
+     "claim": "Route 53 is listed with a us-east-1 control plane",
+     "pattern": "Amazon Route 53** us-east-1",
+     "matched": true
+    },
+    {
+     "claim": "CloudFront is listed with a us-east-1 control plane",
+     "pattern": "Amazon CloudFront us-east-1",
+     "matched": true
+    },
+    {
+     "claim": "WAF for CloudFront is listed as a global service",
+     "pattern": "AWS WAF for CloudFront us-east-1",
      "matched": true
     }
    ]
@@ -1522,6 +1538,21 @@
      "claim": "The list holds an ALB",
      "pattern": "Application Load Balancer",
      "matched": true
+    },
+    {
+     "claim": "The list holds a CloudFront distribution",
+     "pattern": "Amazon CloudFront distribution",
+     "matched": true
+    },
+    {
+     "claim": "The list holds an API Gateway REST API",
+     "pattern": "Amazon API Gateway REST API",
+     "matched": true
+    },
+    {
+     "claim": "The list holds a Cognito user pool",
+     "pattern": "Amazon Cognito user pool",
+     "matched": true
     }
    ]
   },
@@ -1541,6 +1572,21 @@
      "claim": "One web ACL for each resource",
      "pattern": "with only one",
      "matched": true
+    },
+    {
+     "claim": "A global web ACL goes with a distribution",
+     "pattern": "Associate a global protection pack (web ACL) with a Amazon CloudFront distribution",
+     "matched": true
+    },
+    {
+     "claim": "One web ACL may serve several distributions",
+     "pattern": "with one or more CloudFront distributions",
+     "matched": true
+    },
+    {
+     "claim": "A distribution's web ACL serves no other resource type",
+     "pattern": "You cannot associate a protection pack (web ACL) that you have associated with a CloudFront distribution with any other AWS resource type",
+     "matched": true
     }
    ]
   },
@@ -1559,6 +1605,11 @@
     {
      "claim": "Scope is REGIONAL or CLOUDFRONT",
      "pattern": "Valid Values are",
+     "matched": true
+    },
+    {
+     "claim": "A web ACL's scope has two values",
+     "pattern": "Valid Values are CLOUDFRONT and REGIONAL",
      "matched": true
     }
    ]
@@ -1597,6 +1648,711 @@
     {
      "claim": "Services can use the EXTERNAL launch type",
      "pattern": "EXTERNAL launch type",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/waf/latest/developerguide/how-aws-waf-works-resources.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "4a3d9726434052ebdb52c194e22ab74c148703c978e0887236ab2255ff177126",
+   "characters": 4159,
+   "claims": [
+    {
+     "claim": "A web ACL shares its resource's Region",
+     "pattern": "must be located in the Region where the associated resource is located",
+     "matched": true
+    },
+    {
+     "claim": "WAF is global for CloudFront",
+     "pattern": "AWS WAF is available globally for CloudFront distributions",
+     "matched": true
+    },
+    {
+     "claim": "Global (CloudFront) means us-east-1",
+     "pattern": "Choosing this is identical to choosing Region US East (N. Virginia)",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-cloudfront-distribution.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "f7cbfd8a3f3a5c5a002b085d2002be46b37abf6db1f55652263ab5ae10c3bd68",
+   "characters": 9941,
+   "claims": [
+    {
+     "claim": "The CloudFormation type exists",
+     "pattern": "AWS::CloudFront::Distribution",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-cloudfront-distribution-distributionconfig.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "5510bb43b00a9c2b5dc421759c9b9e8dfcb88c705a3d43e4f682d32adaab8374",
+   "characters": 15766,
+   "claims": [
+    {
+     "claim": "A distribution names one web ACL",
+     "pattern": "A unique identifier that specifies the AWS WAF web ACL, if any, to associate with this distribution",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "3283ed8e82217e7d9b8a0a42769744ab297b4f19f59f6479e7f92d82b2cb82e0",
+   "characters": 8477,
+   "claims": [
+    {
+     "claim": "CloudFront delivers from edge locations",
+     "pattern": "worldwide network of data centers called edge locations",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-apigateway-restapi.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "b01cee9f8f33c1440929dcd9ef935f8975364d2d9a01ceb37eca348873c6ce2b",
+   "characters": 11055,
+   "claims": [
+    {
+     "claim": "The CloudFormation type exists",
+     "pattern": "AWS::ApiGateway::RestApi",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-apigatewayv2-api.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "adcc371587f75caed967f88f3a59c15b2f6a63cc5bef66a9b3119a775881f8f3",
+   "characters": 10175,
+   "claims": [
+    {
+     "claim": "The CloudFormation type exists",
+     "pattern": "AWS::ApiGatewayV2::Api",
+     "matched": true
+    },
+    {
+     "claim": "It covers HTTP and WebSocket",
+     "pattern": "Valid values are WEBSOCKET or HTTP",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-vs-rest.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "aa81f907a7d5751a3bb2fec9fda9249a3f684d2e265047325d04c295ae90b3d0",
+   "characters": 4547,
+   "claims": [
+    {
+     "claim": "REST APIs take AWS WAF and HTTP APIs do not",
+     "pattern": "AWS WAF Yes No",
+     "matched": true
+    },
+    {
+     "claim": "Only REST APIs have an edge-optimized endpoint",
+     "pattern": "Edge-optimized Yes No",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-control-access-aws-waf.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "942271ea06f1ed21c6e8b028f26e78567d029d95a36f83aa9fb336fc04d49797",
+   "characters": 5761,
+   "claims": [
+    {
+     "claim": "A REST API takes a regional web ACL",
+     "pattern": "API Gateway requires an AWS WAFV2 web ACL for a Regional application",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-api-endpoint-types.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "0e636afb6d49ee4ea77cf208d17fc708985fc1706716bff33f13d0452aa36ffb",
+   "characters": 3188,
+   "claims": [
+    {
+     "claim": "A REST API has three endpoint types",
+     "pattern": "edge-optimized , Regional , or private",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-private-apis.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "495a4daa3b7c2d737dfb691cc3631945bbbbbcd50450cec5af32602ed8f15dfa",
+   "characters": 4150,
+   "claims": [
+    {
+     "claim": "A private API is a REST API inside a VPC",
+     "pattern": "A private API is a REST API that is only callable from within an Amazon VPC",
+     "matched": true
+    },
+    {
+     "claim": "It is reached through an interface endpoint",
+     "pattern": "access your API using an interface VPC endpoint",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-private-integration.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "48fbeeb2633b46d129fa75ca888f6348a69b28d4d8c81cb6ab73e24cd947f4b8",
+   "characters": 8927,
+   "claims": [
+    {
+     "claim": "A VPC link reaches private resources",
+     "pattern": "A VPC link allows API Gateway to access private resources in an Amazon VPC",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-route53-hostedzone.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "7fe100fdeb20be07332e60ba69e8f69f4ea33e7b8b48b12f745ec5e91edccdc5",
+   "characters": 12550,
+   "claims": [
+    {
+     "claim": "The CloudFormation type exists",
+     "pattern": "AWS::Route53::HostedZone",
+     "matched": true
+    },
+    {
+     "claim": "A public zone omits VPCs",
+     "pattern": "For public hosted zones, omit VPCs",
+     "matched": true
+    },
+    {
+     "claim": "A zone cannot change kind",
+     "pattern": "You can't convert a public hosted zone to a private hosted zone",
+     "matched": true
+    },
+    {
+     "claim": "AWS's example associates VPCs in two Regions",
+     "pattern": "\"VPCRegion\": \"ap-northeast-1\"",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-private.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "c2cc84de8bcd54061174239af10d30c04db89476c5399fab94c3fe6ea9503650",
+   "characters": 4023,
+   "claims": [
+    {
+     "claim": "A private zone serves one or more VPCs",
+     "pattern": "within one or more VPCs",
+     "matched": true
+    },
+    {
+     "claim": "More VPCs can be associated",
+     "pattern": "you can associate more VPCs with it",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zone-private-associate-vpcs.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "e7206fa1b2b63b375b1252f6269f11de79df7218b5a785ce0ac8b14b9f302863",
+   "characters": 2088,
+   "claims": [
+    {
+     "claim": "An associated VPC is chosen by Region and ID",
+     "pattern": "Choose the Region and the ID of the VPC",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/AboutHZWorkingWith.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "fc047184a14894abee53d6dedbd5041c31fc810fb0f61a006412ec6a0a4e6b74",
+   "characters": 2307,
+   "claims": [
+    {
+     "claim": "A public zone routes internet traffic",
+     "pattern": "route traffic on the internet for a domain",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-elasticloadbalancingv2-loadbalancer.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "0e5a53d0549c39aebc07a00301dbbd00fa77f1c3e676368cde7503067f076d32",
+   "characters": 11424,
+   "claims": [
+    {
+     "claim": "One subnet for each zone",
+     "pattern": "You can specify only one subnet per Availability Zone",
+     "matched": true
+    },
+    {
+     "claim": "An NLB may have security groups",
+     "pattern": "[Application Load Balancers and Network Load Balancers] The IDs of the security groups",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/elasticloadbalancing/latest/APIReference/API_CreateLoadBalancer.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "d062813745c90309e0758943fb29862153c0d92d7ae396ce4700d5704d3b1623",
+   "characters": 11362,
+   "claims": [
+    {
+     "claim": "An NLB needs one or more zones",
+     "pattern": "[Network Load Balancers and Gateway Load Balancers] You can specify subnets from one or more Availability Zones",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/elasticloadbalancing/latest/network/create-network-load-balancer.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "f9c7f00501e9e328d27fc1723b0c2f0caf0850e2331aac3360a17760dd38ec56",
+   "characters": 10239,
+   "claims": [
+    {
+     "claim": "At least one zone and one subnet in each",
+     "pattern": "select at least one Availability Zone, and select one subnet per zone",
+     "matched": true
+    },
+    {
+     "claim": "Subnets come from the load balancer's VPC",
+     "pattern": "Configure your load balancer VPC with subnets in each of these Availability Zones",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-dynamodb-table.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "61f361a9699ef85aa3faa82f1e738c299e3a76dfcba2b2c3f46ce60f3d196ccc",
+   "characters": 23453,
+   "claims": [
+    {
+     "claim": "The CloudFormation type exists",
+     "pattern": "AWS::DynamoDB::Table",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithTables.Basics.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "34de67810565856dc3e19b05eed0514b4809a8d859a64329e50eff6721c51785",
+   "characters": 11883,
+   "claims": [
+    {
+     "claim": "A table belongs to one Region",
+     "pattern": "must be unique for the current AWS account and Region",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GlobalTables.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "47f8792435f50be098538586b49667e2f852e62883db2a3a0c5e1a16eb823e36",
+   "characters": 4665,
+   "claims": [
+    {
+     "claim": "A global table replicates across Regions",
+     "pattern": "replicate your DynamoDB table data across AWS Regions",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-elasticache-replicationgroup.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "232411a27862393f6b99569859ac835949de9ae93b720b33a51a71d5feb66469",
+   "characters": 28722,
+   "claims": [
+    {
+     "claim": "The CloudFormation type exists",
+     "pattern": "AWS::ElastiCache::ReplicationGroup",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-elasticache-cachecluster.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "992c983569604f586c7a33483f84110718873907cb6b16cc63d1224302fa6042",
+   "characters": 19833,
+   "claims": [
+    {
+     "claim": "A node-based cluster may sit in one zone",
+     "pattern": "All nodes belonging to this cluster are placed in the preferred Availability Zone",
+     "matched": true
+    },
+    {
+     "claim": "Memcached nodes may span zones",
+     "pattern": "created across multiple Availability Zones",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/SubnetGroups.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "8980f0cfcf47560ea9b303ad801d44a71a2d6c057c9cd01bbfa33b77a043c454",
+   "characters": 1824,
+   "claims": [
+    {
+     "claim": "A node-based cluster uses a subnet group",
+     "pattern": "If you create a node-based cluster in an Amazon VPC, you must use a subnet group",
+     "matched": true
+    },
+    {
+     "claim": "A serverless cache takes subnets directly",
+     "pattern": "ElastiCache Serverless does not use a subnet group resource",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/SubnetGroups.Creating.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "c149bfdf5a56e676b38f517c0f9b4afee6c687f9bdbe007e787648168988b210",
+   "characters": 4224,
+   "claims": [
+    {
+     "claim": "A subnet group is created in one VPC",
+     "pattern": "In the VPC ID box, choose your Amazon VPC",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/VPCs.EC.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "e3812da854b50a859d8affc1631a2e9cb15ad8e2eaa9e8920599886c7327d031",
+   "characters": 6287,
+   "claims": [
+    {
+     "claim": "A subnet group belongs to its VPC",
+     "pattern": "A cache subnet group must be defined for your Amazon VPC",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.deployment.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "e1f32dc159f3a8cfb465aab02c98ed30cb503ae7b1ebb871306c53735d3447a9",
+   "characters": 9061,
+   "claims": [
+    {
+     "claim": "A node-based cluster chooses its placement",
+     "pattern": "node placement across AWS Availability Zones",
+     "matched": true
+    },
+    {
+     "claim": "A serverless cache spans zones",
+     "pattern": "automatically stores data redundantly across three Availability Zones",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.corecomponents.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "c9debbec10eb1817a89390765b4dc830a400da13e02d68bd4bf9ced648143cd2",
+   "characters": 10537,
+   "claims": [
+    {
+     "claim": "A serverless cache may have no VPC",
+     "pattern": "connects to the cache directly over the internet, without a VPC",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-elasticache-serverlesscache.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "a955eba107a864779334c035d499d316d9fadf05fbfc10f0a8748d256cc50e07",
+   "characters": 6440,
+   "claims": [
+    {
+     "claim": "The CloudFormation type exists",
+     "pattern": "AWS::ElastiCache::ServerlessCache",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AmazonElastiCache/latest/APIReference/API_CreateServerlessCache.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "6eb92ad654ef7c947d168c94ec9845fac6a9be272d902c9942492c3a02b4e71d",
+   "characters": 8547,
+   "claims": [
+    {
+     "claim": "A serverless cache's subnets share one VPC",
+     "pattern": "All the subnetIds must belong to the same VPC",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-sqs-queue.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "cbb957f04f521f542f7b3898af51411a44fd633895bd822ce1d56fb5d809040d",
+   "characters": 17331,
+   "claims": [
+    {
+     "claim": "The CloudFormation type exists",
+     "pattern": "AWS::SQS::Queue",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-queue-message-identifiers.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "cfdcdf3f6251c8afe34acc0a1fbe3aca4435ac599779bf8be7f8a8ecfa8ea036",
+   "characters": 2944,
+   "claims": [
+    {
+     "claim": "A queue belongs to one Region",
+     "pattern": "queue name unique for your AWS account and region",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-sns-topic.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "8465c1c94c9ca26a39eec9d48d35a57b337e3ae9bdb33961020e9a89fc81d4e6",
+   "characters": 9318,
+   "claims": [
+    {
+     "claim": "The CloudFormation type exists",
+     "pattern": "AWS::SNS::Topic",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/sns/latest/dg/sns-cross-region-delivery.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "cf132436e2acf6472d40aab210ee6523f54962f2e02f7af68907b1388b63b378",
+   "characters": 5349,
+   "claims": [
+    {
+     "claim": "A topic delivers across Regions, so it has one",
+     "pattern": "Amazon SNS supports cross-Region deliveries",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-cognito-userpool.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "f6fa07e73c779a4bdf1412a11b075bcb628d29d7da99022f78ffc2d6067c1ef5",
+   "characters": 26040,
+   "claims": [
+    {
+     "claim": "The CloudFormation type exists",
+     "pattern": "AWS::Cognito::UserPool",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/cognito/latest/developerguide/security-cognito-regional-data-considerations.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "c6ecd725d1a1969aff0d4de4fa15c0f405796ae77af5fa53c624ec0abba7ef37",
+   "characters": 2165,
+   "claims": [
+    {
+     "claim": "A user pool belongs to one Region",
+     "pattern": "Amazon Cognito user pools are each created in one AWS Region",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-waf.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "85bb323eec0b06bd70a2be5a6dccb805d42a61eca7a54bb50878f790fe69463d",
+   "characters": 12761,
+   "claims": [
+    {
+     "claim": "One web ACL for each user pool",
+     "pattern": "You can associate one web ACL with each user pool",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-secretsmanager-secret.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "c69b1685966b0bff60eb133757805b880083dab62dd2d6075d6f22b685aa3511",
+   "characters": 11550,
+   "claims": [
+    {
+     "claim": "The CloudFormation type exists",
+     "pattern": "AWS::SecretsManager::Secret",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/secretsmanager/latest/userguide/replicate-secrets.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "0681b775f65a5ffdd4a5025f68cb18771091adb0050e3c51447a38567c68cc71",
+   "characters": 4890,
+   "claims": [
+    {
+     "claim": "A secret's ARN names one Region",
+     "pattern": "the same as the primary secret except for the Region",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-kms-key.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "edce8d02771a0250ffedef6367326864bff59ac51fb3facd5d63afcb56c81770",
+   "characters": 30398,
+   "claims": [
+    {
+     "claim": "The CloudFormation type exists",
+     "pattern": "AWS::KMS::Key",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/kms/latest/developerguide/multi-region-keys-overview.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "f7eac8dfd1424f69fd5a34ece0e91cdf0eadc38fe5cb04fc4d3f287a5d73a5b8",
+   "characters": 14142,
+   "claims": [
+    {
+     "claim": "Even a multi-Region key is not global",
+     "pattern": "Multi-Region keys are not global",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "223dc7d864199c0527d286673407ba795a95f65a64a4fb98693aab7dbaffb158",
+   "characters": 17268,
+   "claims": [
+    {
+     "claim": "A key's ARN names one Region",
+     "pattern": "A key ARN includes the AWS account, Region, and the key ID",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-ecr-repository.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "0b18f4b7a262e5a83054a8dda151aec53ffa1865de2d87fadea3eed79a9f36b6",
+   "characters": 9075,
+   "claims": [
+    {
+     "claim": "The CloudFormation type exists",
+     "pattern": "AWS::ECR::Repository",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AmazonECR/latest/userguide/Registries.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "0275a40af024650f0cc572547f41435ee4ff7878a56e57354ffc99d521dc9b27",
+   "characters": 2349,
+   "claims": [
+    {
+     "claim": "A registry's URL names one Region",
+     "pattern": "dkr.ecr. region .amazonaws.com",
+     "matched": true
+    },
+    {
+     "claim": "Repositories replicate across Regions",
+     "pattern": "can be replicated across AWS Regions",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AmazonECR/latest/userguide/Repositories.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "7e43e230f36e72164fed84a940578b4a01b91c7d37561fe6ad5a35947d572553",
+   "characters": 2963,
+   "claims": [
+    {
+     "claim": "A repository is in the default registry",
+     "pattern": "repositories in your default registry",
      "matched": true
     }
    ]

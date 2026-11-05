@@ -25,15 +25,20 @@ Capability = Literal[
     "api_management",
     "backup",
     "block_storage",
+    "cache",
     "container_cluster",
+    "container_registry",
     "container_workload",
+    "content_delivery",
     "database",
+    "dns",
     "external_party",
     "file_storage",
     "firewall",
     "gateway",
     "hypervisor",
     "identity",
+    "key_management",
     "kubernetes_config",
     "kubernetes_identity",
     "kubernetes_policy",
@@ -43,6 +48,7 @@ Capability = Literal[
     "load_balancing",
     "location",
     "logging",
+    "messaging",
     "monitoring",
     "nat",
     "network",
@@ -54,6 +60,7 @@ Capability = Literal[
     "public_ip",
     "routing",
     "scope",
+    "secret_management",
     "security_boundary",
     "serverless",
     "subnet",
@@ -86,6 +93,7 @@ class PlacementRule(CatalogModel):
     max_subnets_per_network: int | None = None
     min_subnet_zones: int = 0
     single_subnet_zone: bool = False
+    one_subnet_per_zone: bool = False
     unique_networks: bool = False
     dedicated_subnet: bool = False
     same_resource_group_as_network: bool = False

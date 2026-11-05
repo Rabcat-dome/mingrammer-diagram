@@ -18,7 +18,16 @@ from cloud_architecture_diagrams.validation import Mode, validate_json
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests/fixtures"
 HOSTS = ["eks", "aks", "gke", "cce", "onprem"]
-PROVIDERS = ["aws", "aws-ecs-lambda-waf", "azure", "gcp", "huawei", "onprem", "hybrid"]
+PROVIDERS = [
+    "aws",
+    "aws-ecs-lambda-waf",
+    "aws-edge-api-data",
+    "azure",
+    "gcp",
+    "huawei",
+    "onprem",
+    "hybrid",
+]
 POSITIVE = (
     [f"providers/{name}" for name in PROVIDERS]
     + [f"kubernetes/{name}" for name in HOSTS]
@@ -728,7 +737,7 @@ def test_one_web_acl_may_protect_several_albs() -> None:
 
 
 def test_a_web_acl_may_go_undeclared_in_any_region() -> None:
-    # A web ACL for CloudFront has no regional home to state, so no region is required of it.
+    # A region stays optional on a regional web ACL, as it does on every type here.
     document = load(ECS_LAMBDA_WAF)
     entity(document, "resources", "waf")["placement"]["location"] = {}
     assert not codes(document)["error"]
@@ -739,15 +748,15 @@ def test_a_draft_target_gets_no_web_acl_rule() -> None:
     document = load(ECS_LAMBDA_WAF)
     document["resources"].append(
         {
-            "id": "edge",
-            "name": "Amazon CloudFront",
+            "id": "graph",
+            "name": "AWS AppSync",
             "provider": "aws",
-            "service_type": "aws.edge.cloudfront",
-            "taxonomy": "edge.delivery",
+            "service_type": "aws.integration.appsync",
+            "taxonomy": "integration.messaging",
         }
     )
     document["relationships"].append(
-        {"id": "probe", "source_ref": "waf", "target_ref": "edge", "kind": "attachment"}
+        {"id": "probe", "source_ref": "waf", "target_ref": "graph", "kind": "attachment"}
     )
     assert codes(document)["error"] == {"CATALOG_TYPE_UNKNOWN"}
     lenient = validate_json(json.dumps(document).encode(), mode="lenient")
@@ -783,3 +792,228 @@ def test_a_region_comes_from_the_network_when_no_location_is_declared() -> None:
     # With nothing declared there is nothing to compare, so the region stays unspecified.
     entity(document, "resources", "web")["placement"]["network_attachments"] = []
     assert mismatched(document) == {"worker"}
+
+
+EDGE_API_DATA = "providers/aws-edge-api-data"
+ONE_REASON = [case for case in CASES["errors"] if case["base"] in {ECS_LAMBDA_WAF, EDGE_API_DATA}]
+EDGE_ADDED = [
+    "public-dns",
+    "private-dns",
+    "cdn",
+    "cdn-acl",
+    "api",
+    "partner",
+    "api-acl",
+    "pool",
+    "table",
+    "topic",
+    "queue",
+    "nlb",
+    "images",
+    "cache",
+    "sessions",
+    "secret",
+    "key",
+]
+
+
+@pytest.mark.parametrize("case", ONE_REASON, ids=lambda case: case["id"])
+def test_a_case_on_the_added_aws_fixtures_fails_for_one_reason(case: dict[str, Any]) -> None:
+    # The harness above asks only that the code be present, which a second fault could hide.
+    assert codes(mutated(case))["error"] == {case["expect"]}
+
+
+def edge_attachment(document: dict[str, Any], source: str, target: str) -> None:
+    document["relationships"].append(
+        {"id": f"p-{source}-{target}", "source_ref": source, "target_ref": target}
+        | {"kind": "attachment"}
+    )
+
+
+def test_the_added_types_keep_the_placement_their_record_states() -> None:
+    # A placement change here needs a reason in the S13 record, not only a new expected value.
+    records = catalog().records
+    expected = {
+        "aws.network.cloudfront": ("global", "none"),
+        "aws.security.waf_cloudfront": ("global", "none"),
+        "aws.network.route53_public_zone": ("global", "none"),
+        "aws.network.route53_private_zone": ("global", "network"),
+        "aws.integration.api_gateway_rest": ("regional", "none"),
+        "aws.integration.api_gateway_v2": ("regional", "none"),
+        "aws.network.network_load_balancer": ("regional", "subnet"),
+        "aws.database.dynamodb": ("regional", "none"),
+        "aws.database.elasticache": ("zonal", "subnet"),
+        "aws.database.elasticache_serverless": ("regional", "subnet"),
+        "aws.integration.sqs": ("regional", "none"),
+        "aws.integration.sns": ("regional", "none"),
+        "aws.identity.cognito_user_pool": ("regional", "none"),
+        "aws.security.secrets_manager": ("regional", "none"),
+        "aws.security.kms": ("regional", "none"),
+        "aws.containers.ecr": ("regional", "none"),
+    }
+    for type_id, (location, network) in expected.items():
+        placement = records[type_id].placement
+        assert (placement.location, placement.network) == (location, network), type_id
+    assert records["aws.security.waf"].placement.attachment_targets == (
+        "aws.network.application_load_balancer",
+        "aws.integration.api_gateway_rest",
+        "aws.identity.cognito_user_pool",
+    )
+    assert records["aws.security.waf_cloudfront"].placement.attachment_targets == (
+        "aws.network.cloudfront",
+    )
+
+
+@pytest.mark.parametrize("target", EDGE_ADDED)
+def test_an_added_type_may_leave_its_location_and_network_unspecified(target: str) -> None:
+    # A rule fires only on what a model declares, so a bare resource stays valid.
+    document = load(EDGE_API_DATA)
+    entity(document, "resources", target)["placement"] = {}
+    assert not codes(document)["error"]
+
+
+def test_a_private_hosted_zone_may_serve_vpcs_in_two_regions() -> None:
+    # AWS's own CloudFormation example associates VPCs in ap-northeast-1 and us-west-2.
+    document = load(EDGE_API_DATA)
+    document["boundaries"] += [
+        {"id": "region-2", "name": "Other", "provider": "aws", "kind": "region"},
+        {"id": "vpc-2", "name": "Other", "provider": "aws", "kind": "network"}
+        | {"parent_ref": "region-2"},
+    ]
+    placement = entity(document, "resources", "private-dns")["placement"]
+    placement["network_attachments"] = [{"network_ref": "vpc"}, {"network_ref": "vpc-2"}]
+    assert not codes(document)["error"]
+
+
+@pytest.mark.parametrize(
+    "subnet_refs",
+    [["app-a"], ["app-b"], ["app-a", "app-b"], ["data-a", "app-b"]],
+)
+def test_an_nlb_needs_one_zone_and_one_subnet_for_each(subnet_refs: list[str]) -> None:
+    # Unlike an ALB, AWS asks for one or more zones.
+    document = load(EDGE_API_DATA)
+    attachment = {"network_ref": "vpc", "subnet_refs": subnet_refs}
+    entity(document, "resources", "nlb")["placement"]["network_attachments"] = [attachment]
+    assert not codes(document)["error"]
+
+
+def test_an_nlb_subnet_named_in_two_attachments_is_still_one_subnet() -> None:
+    document = load(EDGE_API_DATA)
+    attachment = {"network_ref": "vpc", "subnet_refs": ["app-a"]}
+    entity(document, "resources", "nlb")["placement"]["network_attachments"] = [
+        attachment,
+        attachment,
+    ]
+    assert "PLACEMENT_SUBNET_ZONES_INVALID" not in codes(document)["error"]
+
+
+def test_an_nlb_subnet_with_no_declared_zone_stays_unspecified() -> None:
+    document = load(EDGE_API_DATA)
+    for identifier in ("no-zone-1", "no-zone-2"):
+        document["boundaries"].append(
+            {"id": identifier, "name": identifier, "provider": "aws", "kind": "subnet"}
+            | {"parent_ref": "vpc"}
+        )
+    attachment = {"network_ref": "vpc", "subnet_refs": ["no-zone-1", "no-zone-2", "app-a"]}
+    entity(document, "resources", "nlb")["placement"]["network_attachments"] = [attachment]
+    assert not codes(document)["error"]
+
+
+def test_the_one_subnet_rule_stays_off_for_an_alb() -> None:
+    # AWS states it for an ALB too. S13 records this as a gap, to keep existing models valid.
+    alb = catalog().records["aws.network.application_load_balancer"]
+    assert not alb.placement.one_subnet_per_zone
+
+
+def test_a_node_based_cache_may_state_a_zone_and_its_subnet() -> None:
+    # AWS: "All nodes belonging to this cluster are placed in the preferred Availability Zone."
+    document = load(EDGE_API_DATA)
+    placement = entity(document, "resources", "cache")["placement"]
+    placement["location"] = {"zone_ref": "az-a"}
+    placement["network_attachments"] = [{"network_ref": "vpc", "subnet_refs": ["data-a"]}]
+    assert not codes(document)["error"]
+
+
+def test_a_serverless_cache_may_have_a_public_endpoint_and_no_vpc() -> None:
+    document = load(EDGE_API_DATA)
+    placement = entity(document, "resources", "sessions")["placement"]
+    del placement["network_attachments"], placement["security_boundaries"]
+    assert not codes(document)["error"]
+
+
+def test_one_cloudfront_web_acl_may_protect_several_distributions() -> None:
+    document = load(EDGE_API_DATA)
+    second = copy.deepcopy(entity(document, "resources", "cdn"))
+    second["id"] = "cdn-2"
+    document["resources"].append(second)
+    edge_attachment(document, "cdn-acl", "cdn-2")
+    assert not codes(document)["error"]
+
+
+def test_one_regional_web_acl_may_protect_every_type_it_lists() -> None:
+    document = load(EDGE_API_DATA)
+    document["resources"].append(
+        {
+            "id": "alb",
+            "name": "ALB",
+            "provider": "aws",
+            "service_type": "aws.network.application_load_balancer",
+            "taxonomy": "network.load_balancing",
+        }
+    )
+    edge_attachment(document, "api-acl", "alb")
+    assert not codes(document)["error"]
+
+
+def test_a_regional_web_acl_is_compared_with_each_resources_own_region() -> None:
+    # With no region of its own, the web ACL still cannot span a REST API and a user pool.
+    document = load(EDGE_API_DATA)
+    document["boundaries"].append(
+        {"id": "region-2", "name": "Other", "provider": "aws", "kind": "region"}
+    )
+    entity(document, "resources", "api-acl")["placement"]["location"] = {}
+    entity(document, "resources", "pool")["placement"]["location"] = {"region_ref": "region-2"}
+    assert codes(document)["error"] == {"AWS_WAF_RESOURCE_REGION_MISMATCH"}
+
+
+@pytest.mark.parametrize(
+    ("source", "target", "kind"),
+    [
+        # Authors draw traffic through a web ACL. That claims nothing about what it protects.
+        ("users", "cdn-acl", "traffic"),
+        ("cdn-acl", "cdn", "traffic"),
+        ("api-acl", "partner", "traffic"),
+        ("api-acl", "nlb", "policy"),
+    ],
+)
+def test_only_an_attachment_claims_what_either_web_acl_protects(
+    source: str, target: str, kind: str
+) -> None:
+    document = load(EDGE_API_DATA)
+    document["relationships"].append(
+        {"id": "probe", "source_ref": source, "target_ref": target, "kind": kind}
+    )
+    assert not codes(document)["error"]
+
+
+def test_the_earlier_aws_fixture_keeps_its_regional_web_acl() -> None:
+    # An existing model that protects an ALB keeps the same type ID and stays valid.
+    document = load(ECS_LAMBDA_WAF)
+    assert entity(document, "resources", "waf")["service_type"] == "aws.security.waf"
+    assert not codes(document)["error"]
+
+
+def test_a_service_still_missing_stays_a_disclosed_draft() -> None:
+    document = load(EDGE_API_DATA)
+    document["resources"].append(
+        {
+            "id": "bus",
+            "name": "Amazon EventBridge",
+            "provider": "aws",
+            "service_type": "aws.integration.eventbridge",
+            "taxonomy": "integration.messaging",
+        }
+    )
+    assert codes(document)["error"] == {"CATALOG_TYPE_UNKNOWN"}
+    lenient = validate_json(json.dumps(document).encode(), mode="lenient")
+    assert lenient.valid and lenient.draft

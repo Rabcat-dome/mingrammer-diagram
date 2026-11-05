@@ -485,6 +485,12 @@ class Semantics:
                 self.emit("PLACEMENT_SUBNET_ZONES_INVALID", field, resource.id)
         if rule.single_subnet_zone and len(known) > 1:
             self.emit("PLACEMENT_SUBNET_ZONES_INVALID", field, resource.id)
+        # A subnet with no declared zone stays unspecified, and repeating one is still one subnet.
+        placed = {
+            subnet.id: found.id for subnet, found in zip(subnets, zones, strict=True) if found
+        }
+        if rule.one_subnet_per_zone and len(set(placed.values())) < len(placed):
+            self.emit("PLACEMENT_SUBNET_ZONES_INVALID", field, resource.id)
 
     def security(
         self, path: str, resource: Resource, record: CatalogRecord, own_region: Boundary | None
@@ -758,8 +764,10 @@ class Semantics:
     ) -> bool:
         """A type that lists targets attaches only to those. An unknown draft type has no rule yet.
 
-        Only a WAF web ACL lists targets today, so the region and one-owner rules are AWS's for it.
-        A second type that lists targets must say whether they apply to it.
+        Only the two WAF web ACL types list targets today, so the region and one-owner rules are
+        AWS's for them. A CloudFront web ACL and its distribution are global, so its region set
+        stays empty and only the one-owner rule bites. Another type that lists targets must say
+        whether these apply to it.
         """
         record = self.types.get(owner.id)
         if record is None or not record.placement.attachment_targets or target.id not in self.types:

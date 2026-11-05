@@ -1,5 +1,5 @@
 {
-  "catalog_version": "2026.11.1",
+  "catalog_version": "2026.11.2",
   "package": "diagrams",
   "package_version": "0.25.1",
   "icons": {
@@ -7,6 +7,11 @@
       "pack": "aws-architecture-icons",
       "resource": "resources/aws/compute/ec2.png",
       "sha256": "b77c918ad4ed02d54fd28f547d81eafd88bb1d1bb0c08ad8e0bf048845998fc2"
+    },
+    "diagrams.aws.compute.EC2ContainerRegistry": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/compute/ec2-container-registry.png",
+      "sha256": "eb130f8b7da48fd6a0c9b7a053945ebbae4b7dd30868fe4c97d50568865b243d"
     },
     "diagrams.aws.compute.EKS": {
       "pack": "aws-architecture-icons",
@@ -33,15 +38,45 @@
       "resource": "resources/aws/compute/lambda.png",
       "sha256": "e15932c1bce58ac2f9490e75eba738f8299c5bbfbe4f70f3fcbfea9b5514a800"
     },
+    "diagrams.aws.database.Dynamodb": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/database/dynamodb.png",
+      "sha256": "1c577caafe295a2cf1c693689a73a6b6cfbaa2420f4c7492ddc18e700ca160e8"
+    },
+    "diagrams.aws.database.Elasticache": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/database/elasticache.png",
+      "sha256": "251cf655f84e64c210f2fcdcf049deaa5bc87215b5b60754536c1a0ebcfb372f"
+    },
     "diagrams.aws.database.RDS": {
       "pack": "aws-architecture-icons",
       "resource": "resources/aws/database/rds.png",
       "sha256": "92508cd5c2cc82a3cbebe0657d02b69294277a876b20010d4bbe73cca2b3c935"
     },
+    "diagrams.aws.integration.SimpleNotificationServiceSns": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/integration/simple-notification-service-sns.png",
+      "sha256": "9c1d2c00eef972fb4a57c78a5dfc7938b84247698428fea0c5502c8af5dbd15b"
+    },
+    "diagrams.aws.integration.SimpleQueueServiceSqs": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/integration/simple-queue-service-sqs.png",
+      "sha256": "9e9c8b3aa72634b2463eed5ee25aaed1628d49d302777c1d2f1ac0fb66cfc69a"
+    },
     "diagrams.aws.management.Cloudwatch": {
       "pack": "aws-architecture-icons",
       "resource": "resources/aws/management/cloudwatch.png",
       "sha256": "f2bfe7bca7e17455a668364fbc67d61e2a1a2ef16aa639f960fc75409d5073d8"
+    },
+    "diagrams.aws.network.APIGateway": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/network/api-gateway.png",
+      "sha256": "ff37b043596bf750c9ee28893733a363e218da5dbcfc63a698912c5112368916"
+    },
+    "diagrams.aws.network.CloudFront": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/network/cloudfront.png",
+      "sha256": "1bcf596515ece4be0adc52ea370ddd611e7d88f11f83e85bde192ce495a46a9a"
     },
     "diagrams.aws.network.DirectConnect": {
       "pack": "aws-architecture-icons",
@@ -53,6 +88,11 @@
       "resource": "resources/aws/network/elb-application-load-balancer.png",
       "sha256": "f3d8087cd510f3eccabbc3b954ffe4cdfbe5aabc539c177bb2a30ec522840aa1"
     },
+    "diagrams.aws.network.ElbNetworkLoadBalancer": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/network/elb-network-load-balancer.png",
+      "sha256": "6aaee63fed863eebe8487d026a82fe59678d3fabaecfb2673f885c14b4a3b133"
+    },
     "diagrams.aws.network.InternetGateway": {
       "pack": "aws-architecture-icons",
       "resource": "resources/aws/network/internet-gateway.png",
@@ -63,15 +103,35 @@
       "resource": "resources/aws/network/nat-gateway.png",
       "sha256": "bb2ce8082e007e931b923bb8973aa4169128a57a7f848f46a85c8c1713f26866"
     },
+    "diagrams.aws.network.Route53": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/network/route-53.png",
+      "sha256": "d069c578cb7893a02b37023b2fea953d316f31fd6eeedca61f89cf5556947c8d"
+    },
     "diagrams.aws.network.SiteToSiteVpn": {
       "pack": "aws-architecture-icons",
       "resource": "resources/aws/network/site-to-site-vpn.png",
       "sha256": "eb865cc644d60d71a6189adbb4f09f4420c510a9de2ec82f13cf53f2933873b0"
     },
+    "diagrams.aws.security.Cognito": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/security/cognito.png",
+      "sha256": "93d787fbeb5a6c3eff3f0307ebd0811edecd2db3d6e43c7a001f98cf02cd375f"
+    },
     "diagrams.aws.security.IAM": {
       "pack": "aws-architecture-icons",
       "resource": "resources/aws/security/identity-and-access-management-iam.png",
       "sha256": "f9b9f5fbe062a82a3a0eff49bba209561b11815c91d9806576ccc7a25e7a8bb7"
+    },
+    "diagrams.aws.security.KeyManagementService": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/security/key-management-service.png",
+      "sha256": "96d578a6fb2bd6e814b5028f5c7c0d6c3a0f8821736667562b19a266e77bec01"
+    },
+    "diagrams.aws.security.SecretsManager": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/security/secrets-manager.png",
+      "sha256": "e2d91696e0fc7619bfc114a3e6d102b247a1f345eb004627e9fd03ec48de211c"
     },
     "diagrams.aws.security.WAF": {
       "pack": "aws-architecture-icons",

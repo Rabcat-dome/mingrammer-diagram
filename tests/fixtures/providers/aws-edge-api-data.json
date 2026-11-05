@@ -1,0 +1,85 @@
+{
+  "schema_version": "1.0.0",
+  "metadata": {
+    "id": "aws-edge-api-data",
+    "title": "Web platform behind CloudFront and API Gateway, with AWS data and messaging services",
+    "environment": "fixture",
+    "assumptions": [
+      "Synthetic fixture; no deployed infrastructure implied.",
+      "The partner API reaches the private NLB through a VPC link, which this catalog does not model as a type."
+    ]
+  },
+  "scopes": [
+    {"id": "acct", "name": "Workload account", "provider": "aws", "kind": "account"}
+  ],
+  "boundaries": [
+    {"id": "region", "name": "ap-southeast-1", "provider": "aws", "kind": "region", "scope_refs": ["acct"]},
+    {"id": "az-a", "name": "ap-southeast-1a", "provider": "aws", "kind": "zone", "parent_ref": "region"},
+    {"id": "az-b", "name": "ap-southeast-1b", "provider": "aws", "kind": "zone", "parent_ref": "region"},
+    {"id": "vpc", "name": "Workload VPC", "provider": "aws", "kind": "network", "scope_refs": ["acct"], "parent_ref": "region"},
+    {"id": "app-a", "name": "App A", "provider": "aws", "kind": "subnet", "scope_refs": ["acct"], "parent_ref": "vpc", "relations": [{"kind": "located_in", "target_ref": "az-a"}]},
+    {"id": "app-b", "name": "App B", "provider": "aws", "kind": "subnet", "scope_refs": ["acct"], "parent_ref": "vpc", "relations": [{"kind": "located_in", "target_ref": "az-b"}]},
+    {"id": "data-a", "name": "Data A", "provider": "aws", "kind": "subnet", "scope_refs": ["acct"], "parent_ref": "vpc", "relations": [{"kind": "located_in", "target_ref": "az-a"}]},
+    {"id": "data-b", "name": "Data B", "provider": "aws", "kind": "subnet", "scope_refs": ["acct"], "parent_ref": "vpc", "relations": [{"kind": "located_in", "target_ref": "az-b"}]},
+    {"id": "sg-app", "name": "App tier", "provider": "aws", "kind": "security_group", "scope_refs": ["acct"], "parent_ref": "vpc"},
+    {"id": "sg-data", "name": "Data tier", "provider": "aws", "kind": "security_group", "scope_refs": ["acct"], "parent_ref": "vpc"}
+  ],
+  "resources": [
+    {"id": "users", "name": "Users", "provider": "external", "service_type": "external.people.user", "taxonomy": "external.entity"},
+    {"id": "public-dns", "name": "example.com", "provider": "aws", "service_type": "aws.network.route53_public_zone", "taxonomy": "network.routing", "placement": {"scope_refs": ["acct"]}},
+    {"id": "cdn", "name": "Web distribution", "provider": "aws", "service_type": "aws.network.cloudfront", "taxonomy": "edge.delivery", "placement": {"scope_refs": ["acct"]}},
+    {"id": "cdn-acl", "name": "Edge web ACL", "provider": "aws", "service_type": "aws.security.waf_cloudfront", "taxonomy": "security.control", "placement": {"scope_refs": ["acct"]}},
+    {"id": "site", "name": "Static site", "provider": "aws", "service_type": "aws.storage.s3", "taxonomy": "storage.object", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}}},
+    {"id": "api", "name": "Public API", "provider": "aws", "service_type": "aws.integration.api_gateway_rest", "taxonomy": "integration.messaging", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}}},
+    {"id": "api-acl", "name": "Regional web ACL", "provider": "aws", "service_type": "aws.security.waf", "taxonomy": "security.control", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}}},
+    {"id": "pool", "name": "Customer sign-in", "provider": "aws", "service_type": "aws.identity.cognito_user_pool", "taxonomy": "identity.access", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}}},
+    {"id": "partner", "name": "Partner API", "provider": "aws", "service_type": "aws.integration.api_gateway_v2", "taxonomy": "integration.messaging", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}}},
+    {"id": "orders", "name": "Orders function", "provider": "aws", "service_type": "aws.compute.lambda", "taxonomy": "compute.serverless", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}}},
+    {"id": "table", "name": "Orders table", "provider": "aws", "service_type": "aws.database.dynamodb", "taxonomy": "data.nosql_cache", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}}},
+    {"id": "topic", "name": "Order events", "provider": "aws", "service_type": "aws.integration.sns", "taxonomy": "integration.messaging", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}}},
+    {"id": "queue", "name": "Fulfilment queue", "provider": "aws", "service_type": "aws.integration.sqs", "taxonomy": "integration.messaging", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}}},
+    {"id": "private-dns", "name": "internal.example", "provider": "aws", "service_type": "aws.network.route53_private_zone", "taxonomy": "network.routing", "placement": {"scope_refs": ["acct"], "network_attachments": [{"network_ref": "vpc"}]}},
+    {"id": "nlb", "name": "Internal load balancer", "provider": "aws", "service_type": "aws.network.network_load_balancer", "taxonomy": "network.load_balancing", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}, "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["app-a", "app-b"]}], "security_boundaries": ["sg-app"]}},
+    {"id": "cluster", "name": "Partner cluster", "provider": "aws", "service_type": "aws.containers.ecs_cluster", "taxonomy": "compute.containers", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}}},
+    {"id": "partner-svc", "name": "Partner service", "provider": "aws", "service_type": "aws.containers.ecs_fargate", "taxonomy": "compute.containers", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}, "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["app-a", "app-b"]}], "security_boundaries": ["sg-app"], "deployment_context": ["cluster"]}},
+    {"id": "images", "name": "Partner images", "provider": "aws", "service_type": "aws.containers.ecr", "taxonomy": "compute.containers", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}}},
+    {"id": "cache", "name": "Catalog cache", "provider": "aws", "service_type": "aws.database.elasticache", "taxonomy": "data.nosql_cache", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}, "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["data-a", "data-b"]}], "security_boundaries": ["sg-data"]}},
+    {"id": "sessions", "name": "Session cache", "provider": "aws", "service_type": "aws.database.elasticache_serverless", "taxonomy": "data.nosql_cache", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}, "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["data-a", "data-b"]}], "security_boundaries": ["sg-data"]}},
+    {"id": "secret", "name": "Partner credentials", "provider": "aws", "service_type": "aws.security.secrets_manager", "taxonomy": "security.secrets_keys", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}}},
+    {"id": "key", "name": "Platform key", "provider": "aws", "service_type": "aws.security.kms", "taxonomy": "security.secrets_keys", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}}}
+  ],
+  "relationships": [
+    {"id": "t-users-dns", "source_ref": "users", "target_ref": "public-dns", "kind": "traffic", "label": "DNS query"},
+    {"id": "t-users-cdn", "source_ref": "users", "target_ref": "cdn", "kind": "traffic", "protocol": "HTTPS"},
+    {"id": "t-users-partner", "source_ref": "users", "target_ref": "partner", "kind": "traffic", "protocol": "HTTPS"},
+    {"id": "a-cdn-acl", "source_ref": "cdn-acl", "target_ref": "cdn", "kind": "attachment", "label": "Web ACL"},
+    {"id": "t-cdn-site", "source_ref": "cdn", "target_ref": "site", "kind": "traffic", "label": "Origin"},
+    {"id": "t-cdn-api", "source_ref": "cdn", "target_ref": "api", "kind": "traffic", "label": "Origin"},
+    {"id": "a-api-acl", "source_ref": "api-acl", "target_ref": "api", "kind": "attachment", "label": "Web ACL"},
+    {"id": "a-pool-acl", "source_ref": "api-acl", "target_ref": "pool", "kind": "attachment", "label": "Web ACL"},
+    {"id": "d-api-pool", "source_ref": "api", "target_ref": "pool", "kind": "dependency", "label": "Authorizer"},
+    {"id": "t-api-orders", "source_ref": "api", "target_ref": "orders", "kind": "traffic", "label": "Invoke"},
+    {"id": "t-orders-table", "source_ref": "orders", "target_ref": "table", "kind": "traffic", "label": "Read and write"},
+    {"id": "t-orders-topic", "source_ref": "orders", "target_ref": "topic", "kind": "traffic", "label": "Publish"},
+    {"id": "t-topic-queue", "source_ref": "topic", "target_ref": "queue", "kind": "traffic", "label": "Subscription"},
+    {"id": "t-partner-nlb", "source_ref": "partner", "target_ref": "nlb", "kind": "traffic", "label": "VPC link"},
+    {"id": "t-nlb-svc", "source_ref": "nlb", "target_ref": "partner-svc", "kind": "traffic", "protocol": "TCP"},
+    {"id": "m-svc-cluster", "source_ref": "partner-svc", "target_ref": "cluster", "kind": "membership"},
+    {"id": "d-svc-images", "source_ref": "partner-svc", "target_ref": "images", "kind": "dependency", "label": "Pull image"},
+    {"id": "t-svc-cache", "source_ref": "partner-svc", "target_ref": "cache", "kind": "traffic", "protocol": "TCP"},
+    {"id": "t-svc-sessions", "source_ref": "partner-svc", "target_ref": "sessions", "kind": "traffic", "protocol": "TCP"},
+    {"id": "t-svc-dns", "source_ref": "partner-svc", "target_ref": "private-dns", "kind": "traffic", "label": "DNS query"},
+    {"id": "c-svc-secret", "source_ref": "partner-svc", "target_ref": "secret", "kind": "configuration", "label": "Read secret"},
+    {"id": "d-secret-key", "source_ref": "secret", "target_ref": "key", "kind": "dependency", "label": "Encrypted by"},
+    {"id": "d-table-key", "source_ref": "table", "target_ref": "key", "kind": "dependency", "label": "Encrypted by"}
+  ],
+  "views": [
+    {
+      "id": "overview",
+      "title": "Overview",
+      "direction": "LR",
+      "entity_refs": ["users", "acct", "region", "vpc", "public-dns", "cdn", "cdn-acl", "site", "api", "api-acl", "pool", "partner", "orders", "table", "topic", "queue", "private-dns", "nlb", "cluster", "partner-svc", "images", "cache", "sessions", "secret", "key"],
+      "relationship_refs": ["t-users-dns", "t-users-cdn", "t-users-partner", "a-cdn-acl", "t-cdn-site", "t-cdn-api", "a-api-acl", "a-pool-acl", "d-api-pool", "t-api-orders", "t-orders-table", "t-orders-topic", "t-topic-queue", "t-partner-nlb", "t-nlb-svc", "m-svc-cluster", "d-svc-images", "t-svc-cache", "t-svc-sessions", "t-svc-dns", "c-svc-secret", "d-secret-key", "d-table-key"]
+    }
+  ]
+}

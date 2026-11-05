@@ -166,6 +166,69 @@ def test_added_aws_types_render_in_one_picture_with_only_aws_and_generic_rights(
     assert web["memberships"]["deployment"] == ["cluster"]
 
 
+def test_the_next_aws_types_render_in_one_picture_with_only_aws_and_generic_rights(
+    rendered: dict[tuple[str, str], RenderResult],
+) -> None:
+    result = rendered[("providers/aws-edge-api-data.json", "overview")]
+    graph = graph_of(result)
+    drawn = {node["type_id"]: node for node in graph["nodes"]}
+    for type_id in (
+        "aws.network.cloudfront",
+        "aws.security.waf_cloudfront",
+        "aws.security.waf",
+        "aws.integration.api_gateway_rest",
+        "aws.integration.api_gateway_v2",
+        "aws.network.route53_public_zone",
+        "aws.network.route53_private_zone",
+        "aws.network.network_load_balancer",
+        "aws.database.dynamodb",
+        "aws.database.elasticache",
+        "aws.database.elasticache_serverless",
+        "aws.integration.sqs",
+        "aws.integration.sns",
+        "aws.identity.cognito_user_pool",
+        "aws.security.secrets_manager",
+        "aws.security.kms",
+        "aws.containers.ecr",
+    ):
+        item = catalog().records[type_id].representation
+        assert drawn[type_id]["drawing"] == "icon"
+        assert drawn[type_id]["icon"]["reference"] == item.class_path
+        assert drawn[type_id]["fallback"] is False
+    manifest = manifest_of(result)
+    assert manifest["validation"]["draft"] is False
+    # This picture can be shown, because it holds no icon under D-018's private-use limit.
+    assert manifest["rights"]["private_use_only"] is False
+    assert {item["id"] for item in manifest["rights"]["packs"]} == {
+        "aws-architecture-icons",
+        "diagrams-generic",
+    }
+    # A global type sits outside the Region's box, and a regional one inside it.
+    nodes = {node["id"]: node for node in graph["nodes"]}
+    for identifier in ("cdn", "cdn-acl", "public-dns"):
+        assert nodes[identifier]["group"] == "acct", identifier
+    for identifier in ("api", "table", "pool", "api-acl"):
+        assert nodes[identifier]["group"] == "region", identifier
+
+
+def test_a_private_hosted_zone_on_vpcs_in_two_regions_renders() -> None:
+    model = json.loads((FIXTURES / "providers/aws-edge-api-data.json").read_text())
+    model["boundaries"] += [
+        {"id": "region-2", "name": "Other Region", "provider": "aws", "kind": "region"},
+        {"id": "vpc-2", "name": "Other VPC", "provider": "aws", "kind": "network"}
+        | {"parent_ref": "region-2"},
+    ]
+    zone = next(item for item in model["resources"] if item["id"] == "private-dns")
+    zone["placement"]["network_attachments"] = [{"network_ref": "vpc"}, {"network_ref": "vpc-2"}]
+    view = model["views"][0]
+    view["entity_refs"] += ["region-2", "vpc-2"]
+    result = render(encode(model), OUTPUT.parent / "render-smoke-zone")
+    assert result.rendered, [item.model_dump() for item in result.diagnostics]
+    node = next(item for item in graph_of(result)["nodes"] if item["id"] == "private-dns")
+    # A tree cannot hold both, so one VPC holds it and the record keeps the other.
+    assert set(node["memberships"]["network"]) == {"vpc", "vpc-2"}
+
+
 def test_every_catalog_icon_resolves_to_its_locked_bytes() -> None:
     data = catalog()
     resolved = 0

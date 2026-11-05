@@ -1,5 +1,5 @@
 {
-  "catalog_version": "2026.11.1",
+  "catalog_version": "2026.11.2",
   "taxonomy": [
     {
       "id": "governance.scope",
@@ -23,7 +23,7 @@
     },
     {
       "id": "network.routing",
-      "meaning": "Routers, switches and NAT or internet gateways"
+      "meaning": "Routers, switches, NAT or internet gateways and DNS routing"
     },
     {
       "id": "network.connectivity",
