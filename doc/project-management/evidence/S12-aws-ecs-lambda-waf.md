@@ -92,7 +92,7 @@ The picture holds AWS and generic icons only, and a test requires its manifest t
 
 ## Validation
 
-The local gate's counts below come from the run at `fe1e472`, where `release-audit` failed only on the proof this change then replaced. The final commit's result is in [the activity log](../ACTIVITY-LOG.md).
+`uv run --frozen python scripts/quality_gate.py` passes all 17 lanes with 1712 tests, none skipped, on a clean checkout of `2460844`. Actual Quality gate [run 42032378161](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/42032378161) passes all 17 lanes at that commit on the project's runner. The commit after it records only this. An earlier [run 42030777942](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/42030777942) at `fe1e472` failed `release-audit` alone, as expected, because the proof was replaced after it.
 
 | Lane | Tests, none skipped | What it adds here |
 |---|---:|---|
