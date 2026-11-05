@@ -702,6 +702,91 @@ def test_shutdown_stops_setup_caught_between_its_start_and_its_registration(
     assert report["children"] == report["started"] == 1
 
 
+def test_a_readiness_check_reads_only_a_setup_as_a_setup(
+    package: Path, home: dict[str, str], tmp_path: Path
+) -> None:
+    report = inside_the_adapter(
+        package,
+        home,
+        tmp_path,
+        """
+import fcntl
+lock = box.data / "setup.lock"
+with open(lock, "a") as other:
+    # Another call's readiness check, caught in its instant.
+    fcntl.flock(other, fcntl.LOCK_SH)
+    check = box._setup_locked_elsewhere()
+    state_during_check = box.state()["state"]
+    fcntl.flock(other, fcntl.LOCK_UN)
+    # A setup, here or in another chat's process.
+    fcntl.flock(other, fcntl.LOCK_EX)
+    setup = box._setup_locked_elsewhere()
+    state_during_setup = box.state()["state"]
+print(json.dumps({"check": check, "state_during_check": state_during_check, "setup": setup,
+                  "state_during_setup": state_during_setup}))
+""",
+    )
+    assert report == {
+        "check": False,
+        "state_during_check": "not_installed",
+        "setup": True,
+        "state_during_setup": "installing",
+    }
+
+
+def test_setup_waits_out_a_readiness_check_but_not_a_setup(
+    package: Path, home: dict[str, str], tmp_path: Path
+) -> None:
+    report = inside_the_adapter(
+        package,
+        home,
+        tmp_path,
+        """
+import fcntl
+lock = box.data / "setup.lock"
+other = open(lock, "a")
+fcntl.flock(other, fcntl.LOCK_SH)
+threading.Timer(0.2, lambda: fcntl.flock(other, fcntl.LOCK_UN)).start()
+with open(lock, "a") as mine:
+    waited = runtime._take_setup_lock(mine)
+    fcntl.flock(mine, fcntl.LOCK_UN)
+fcntl.flock(other, fcntl.LOCK_EX)
+started = time.monotonic()
+outcome = box.setup()
+took = time.monotonic() - started
+print(json.dumps({"waited": waited, "code": outcome.get("code"), "ready": outcome.get("ready"),
+                  "gave_up_in_time": 0.9 <= took < 5}))
+""",
+    )
+    assert report == {
+        "waited": True,
+        "code": "RUNTIME_SETUP_BUSY",
+        "ready": False,
+        "gave_up_in_time": True,
+    }
+
+
+def test_parallel_calls_on_a_ready_runtime_never_read_as_installing(client: Client) -> None:
+    # The real server answered 21 of 100 of these with RUNTIME_INSTALLING.
+    assert client.body("get_capabilities")["result"]["runtime"]["state"] == "ready"
+    for _ in range(20):
+        for number in range(5):
+            client.send(
+                {
+                    "jsonrpc": "2.0",
+                    "id": 1000 + number,
+                    "method": "tools/call",
+                    "params": {
+                        "name": "search_catalog",
+                        "arguments": {"provider": "gcp", "query": "gke", "limit": 1},
+                    },
+                }
+            )
+        bodies = [text_of(client.next_frame()["result"]) for _ in range(5)]
+        assert [body.get("code") for body in bodies] == [None] * 5
+        assert {body["status"] for body in bodies} == {"ok"}
+
+
 def test_a_cancel_arriving_before_the_child_starts_still_stops_it(
     package: Path, home: dict[str, str], tmp_path: Path
 ) -> None:

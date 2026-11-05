@@ -563,3 +563,4 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 
 - The owner upgraded the Work plugin to `0.1.0-alpha.1+2c3c9ea4f01c` and ran prompt 5 again in a new Work chat. Both views draw, and the chat read no `src`. Prompts 1 to 4 have not run, and the owner has not yet reported what the app showed.
 - The run found a fault that no reviewer or test had: parallel calls can read each other's readiness test as a running setup, and answer `RUNTIME_INSTALLING` on a ready runtime. Reproduced on the installed server, with 21 of 100 calls. See the [Work check](evidence/S09-Work-validation.md#second-run). It is not fixed, and M5 stays open.
+- The owner said to fix it first. Claude Opus 5.5 did, and all 6 sabotage changes failed a named test. `src` did not change, so the wheel and the proof stand. The Work plugin's version is now `0.1.0-alpha.1+d27ef23f6f94`.

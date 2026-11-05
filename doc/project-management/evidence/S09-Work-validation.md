@@ -2,13 +2,13 @@
 
 Target: the separate ChatGPT Work page or mode, not Codex (D-014). Automated checks and rehearsals stay in the [S09 evidence](S09-work-plugin.md), and only what the owner reports below counts as a Work result.
 
-**Status: check 5 passed in Work on 2026-11-04 and [ran again](#second-run) on 2026-11-05, on a newer version. Checks 2, 3 and 4 have never run, and the second run found a fault. M5 stays open.**
+**Status: check 5 passed in Work on 2026-11-04 and [ran again](#second-run) on 2026-11-05, on a newer version. Checks 2, 3 and 4 have never run. The second run found a fault, since fixed, so all five run on the expected version. M5 stays open.**
 
 ## What the owner runs
 
 Install, from a checkout of `main`, with the commands in the [plugin README](../../../plugins/cloud-architecture-work/README.md#install). Then restart the ChatGPT app, switch to Work mode, open a new chat and select **Cloud Architecture Diagrams**. The S04 plugin stays enabled and unchanged.
 
-The expected version is `0.1.0-alpha.1+2c3c9ea4f01c`, from the [S11 fixes](S11-gpt-reviews.md#fixes). The results below are for `0.1.0-alpha.1+f242304382f3`, the version before them, so check 5 runs again on this one. Each prompt runs in the same chat unless it says otherwise.
+The expected version is `0.1.0-alpha.1+d27ef23f6f94`, which has the [S11 fixes](S11-gpt-reviews.md#fixes) and the fix for the [second run's fault](#second-run). The results below are for earlier versions, so check 5 runs again on this one. Each prompt runs in the same chat unless it says otherwise.
 
 | # | Prompt | What it checks |
 |---|---|---|
@@ -78,7 +78,9 @@ The Claude session checked these from the files and the session record:
 - The chat read the plugin's skill, model guide and Kubernetes example. It did not read `src`, so this run supports the skill being enough, which the first could not. Its working folder was still this repository, and it ran `git status` and looked for `AGENTS.md` there.
 - It read no file through `read_artifact`, and its answer embedded both images and linked all six files.
 
-**A fault this run found.** One of five `search_catalog` calls sent at once answered `runtime_unavailable` with `RUNTIME_INSTALLING`, though the runtime was ready and no setup was running. The chat retried, and that worked. `_setup_locked_elsewhere` tests for a running setup by taking the setup lock exclusively without waiting, so two calls testing at once collide, and one reads the other as a setup. On the installed server with its ready runtime, 21 of 100 calls sent in fives gave this answer. This is open. The Claude session ranks it P2, because ordinary use reaches it and it states something false, though no data is at risk and waiting clears it. No test covers readiness under parallel calls, and no reviewer found it.
+**A fault this run found.** One of five `search_catalog` calls sent at once answered `runtime_unavailable` with `RUNTIME_INSTALLING`, though the runtime was ready and no setup was running. The chat retried, and that worked. `_setup_locked_elsewhere` tests for a running setup by taking the setup lock exclusively without waiting, so two calls testing at once collide, and one reads the other as a setup. On the installed server with its ready runtime, 21 of 100 calls sent in fives gave this answer. The Claude session ranked it P2, because ordinary use reaches it and it states something false, though no data was at risk and waiting cleared it. No test covered readiness under parallel calls, and no reviewer found it.
+
+The readiness test now takes the lock shared, which only a setup's exclusive lock can refuse, and a setup waits up to a second for a test to finish before it reports that another setup holds the lock. Three tests cover this, one of them sending the same parallel calls to the real server, and all 6 sabotage changes fail one of them.
 
 ## What is left
 

@@ -21,7 +21,7 @@ import time
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import Any, TextIO
 
 from .artifacts import BUNDLE
 
@@ -32,6 +32,7 @@ TOOL_DIRECTORIES = ("/opt/homebrew/bin", "/usr/local/bin")
 SETUP_SECONDS = 600
 PROBE_SECONDS = 30
 STOP_GRACE_SECONDS = 10
+SETUP_LOCK_WAIT_SECONDS = 1.0
 DETAIL_CHARACTERS = 2000
 # Same entry as the Claude plugin's wrapper: -I keeps the working directory and Python's environment
 # variables out of the import path, and the explicit insert accepts any plugin path.
@@ -99,6 +100,19 @@ def _tail(data: bytes) -> str:
 
 def _digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _take_setup_lock(handle: TextIO) -> bool:
+    """A readiness check holds this lock for an instant, so only a lasting refusal is a setup."""
+    deadline = time.monotonic() + SETUP_LOCK_WAIT_SECONDS
+    while True:
+        try:
+            fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            return True
+        except OSError:
+            if time.monotonic() >= deadline:
+                return False
+            time.sleep(0.02)
 
 
 def stop_group(popen: subprocess.Popen[bytes]) -> None:
@@ -309,8 +323,10 @@ class Runtime:
     def _setup_locked_elsewhere(self) -> bool:
         try:
             with open(self.data / "setup.lock", "a") as handle:
+                # Shared, because only a setup holds this lock exclusively. Two exclusive checks at
+                # once would each read the other as a setup and report a ready runtime as installing.
                 try:
-                    fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    fcntl.flock(handle, fcntl.LOCK_SH | fcntl.LOCK_NB)
                 except OSError:
                     return True
                 fcntl.flock(handle, fcntl.LOCK_UN)
@@ -357,9 +373,7 @@ class Runtime:
         """Build or repair the private environment, then prove it can validate and render."""
         self.data.mkdir(parents=True, exist_ok=True, mode=0o700)
         with open(self.data / "setup.lock", "a") as handle:
-            try:
-                fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            except OSError:
+            if not _take_setup_lock(handle):
                 return {"ready": False, "code": "RUNTIME_SETUP_BUSY"}
             return self._setup_locked()
 
