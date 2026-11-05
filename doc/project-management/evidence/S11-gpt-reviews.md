@@ -152,7 +152,7 @@ D-026 records two defaults the owner can still change:
 ## Limits
 
 - These fixes changed the Work plugin's version to `0.1.0-alpha.1+2c3c9ea4f01c`, so the [Work check](S09-Work-validation.md) must run on that version.
-- The reproduction proof is now at `f62394a`, and all 26 views match in both routes. It keeps the [limits S10 states](S10-release-checks.md#core-reproduction).
+- The reproduction proof was at `f62394a` when these fixes landed, and all 26 views matched in both routes. D-030 has since moved it to `10d8398`. It keeps the [limits S10 states](S10-release-checks.md#core-reproduction).
 - G2's and G4's consequences need a fault or an exact timing, and neither was seen happening on its own.
 - No reviewer ran real Work, a second machine or the fresh-clone reproduction, and none audited all 71 report records.
 - Both reviewers share a vendor with each other, and neither shows the code is correct.
