@@ -2,7 +2,7 @@
 
 Target: the separate ChatGPT Work page or mode, not Codex (D-014). Automated checks and rehearsals stay in the [S09 evidence](S09-work-plugin.md), and only what the owner reports below counts as a Work result.
 
-**Status: check 5 passed in Work on 2026-11-04, and checks 2, 3 and 4 have not run. M5 stays open.**
+**Status: check 5 passed in Work on 2026-11-04 and [ran again](#second-run) on 2026-11-05, on a newer version. Checks 2, 3 and 4 have never run, and the second run found a fault. M5 stays open.**
 
 ## What the owner runs
 
@@ -66,6 +66,19 @@ The owner's Claude Code session checked the files and the host's session record 
 The chat read 12 files at once, all six of both bundles. Eight came back and four answered `busy` with `TOO_MANY_CALLS`, and it read those four again one at a time, which worked. `MAX_CALLS` is 8 in `protocol.py`, and no render was running. Sending 12 reads at once to the installed server again gave 4, 4 and 3 refusals in three tries, while 6 and 8 reads gave none.
 
 At that version the skill's `busy` row said "Another render is running", which was the wrong cause although its remedy worked, and no test covered `TOO_MANY_CALLS`. [S11](S11-gpt-reviews.md#fixes) fixed both.
+
+## Second run
+
+Run on 2026-11-05 on `0.1.0-alpha.1+2c3c9ea4f01c`, in a new Work chat. The session record has `codex_work_desktop` and GPT-6.1 Sol / High. The chat ran prompt 5's sentence as written, with the plugin selected, and no other prompt. The owner reported that the test was done, and has not yet said what the app showed or whether this run passes.
+
+The Claude session checked these from the files and the session record:
+
+- Both views validate in strict mode and draw. Both `model.json` files have the digest beginning `7be07b30`, so the IDs are the same in both views. Rendering each view again from `main` at `d5007d4` gives the same `diagram.svg`, `diagram.png` and `view.json`.
+- The runtime was already `ready`, so no setup ran, and this run says nothing about an approval prompt.
+- The chat read the plugin's skill, model guide and Kubernetes example. It did not read `src`, so this run supports the skill being enough, which the first could not. Its working folder was still this repository, and it ran `git status` and looked for `AGENTS.md` there.
+- It read no file through `read_artifact`, and its answer embedded both images and linked all six files.
+
+**A fault this run found.** One of five `search_catalog` calls sent at once answered `runtime_unavailable` with `RUNTIME_INSTALLING`, though the runtime was ready and no setup was running. The chat retried, and that worked. `_setup_locked_elsewhere` tests for a running setup by taking the setup lock exclusively without waiting, so two calls testing at once collide, and one reads the other as a setup. On the installed server with its ready runtime, 21 of 100 calls sent in fives gave this answer. This is open. The Claude session ranks it P2, because ordinary use reaches it and it states something false, though no data is at risk and waiting clears it. No test covers readiness under parallel calls, and no reviewer found it.
 
 ## What is left
 
