@@ -1,6 +1,6 @@
 # Session Plan and Starter Prompts
 
-Updated: 2026-11-04 | Status: S01-S08 complete; M2, M3 and M4 closed on 2026-11-03 for the private personal release. S09 is built and merged, and D-024 parks the owner's run in Work. S10 did what M6 can do without it, and its release stays blocked. Two authorized S04 chats completed; no new S05 chat has been created.
+Updated: 2026-11-05 | Status: S01-S09 complete; M2, M3 and M4 closed on 2026-11-03 for the private personal release, and M5 on 2026-11-05 under D-028. S10 did what M6 can do on one Mac, and its release waits for a second machine. Two authorized S04 chats completed; no new S05 chat has been created.
 
 This is an execution index for the existing [milestones](milestones.md), not a second requirement baseline. Use the [requirements](../requirements/requirements.md) for product scope and the [decision log](decisions.md) for confirmed choices. The deliverable remains an installable cross-machine plugin with a bundled skill.
 
@@ -26,7 +26,7 @@ S10 result, in part: [release checks](evidence/S10-release-checks.md). The core 
 
 S08 result: [reference diagrams](evidence/S08-reference-diagrams.md). M4-01..05 are complete, with six reference models, 26 views, a `visual-regression` lane with reviewed baselines, and measurements. [Fable/High approved](evidence/S08-fable-review.md) it at `a407a7a`, and the owner passed the images, so M4 closed under D-023.
 
-S09 status: [ChatGPT Work plugin](evidence/S09-work-plugin.md). The plugin, its runtime handling and the `package-contract` lane are built on `codex/s09-work-plugin`, and [Fable/High approved](evidence/S09-fable-review.md) the code at `aa813ed`. M5-04 needs the owner's run in actual Work, recorded in the [Work check](evidence/S09-Work-validation.md), so S09 and M5 stay open until they answer.
+S09 result: [ChatGPT Work plugin](evidence/S09-work-plugin.md). The plugin, its runtime handling and the `package-contract` lane are in `main`, and [Fable/High approved](evidence/S09-fable-review.md) the code at `aa813ed`. The owner's run in actual Work passes all five [Work checks](evidence/S09-Work-validation.md), on a later version with the S11 fixes, and M5 closed under D-028.
 
 S06 result: [catalogs, rules and rights](evidence/S06-provider-catalogs.md). M2-01, 02, 04, 05 and 06 are complete, with catalogs, rules, on-premises assets and two gate lanes passing actual CI at `6929253`. Under the owner's D-018, all 15 Huawei items that need an icon have one, for private personal use only. The owner accepted the on-premises and Huawei icon sheets. Astra/High reviewed `5569459` and requested changes. After the fixes, Claude Fable 5.1 / High approved `5f391eb` under D-020, and CI passes there. D-019 closes the asset-rights exit item for the private personal release, and M2 is closed.
 

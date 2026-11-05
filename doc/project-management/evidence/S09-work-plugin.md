@@ -19,7 +19,7 @@ Dates: 2026-11-03 to 2026-11-04 (Asia/Bangkok) | Tasks: M5-01..04 | Branch: `cod
 
 | Criterion | Status |
 |---|---|
-| Installed plugin works in the selected Work mode | Partly shown. The owner's [Work check](S09-Work-validation.md) has check 5 passed and checks 2 to 4 not run |
+| Installed plugin works in the selected Work mode | Shown. All five checks of the owner's [Work check](S09-Work-validation.md) pass, on one Mac |
 | Artifacts are retrievable | Through the host's engine, all six files read back and match their checksums. In the Work user interface: not yet known |
 | Supported host modes are stated accurately | Done in the [plugin README](../../../plugins/cloud-architecture-work/README.md#where-it-runs) and in `get_capabilities`. Work is named as selected, and the README sends the reader here for what has been checked |
 | Local CLI or protocol tests alone do not satisfy M5-04 | Respected: nothing here claims M5-04 |

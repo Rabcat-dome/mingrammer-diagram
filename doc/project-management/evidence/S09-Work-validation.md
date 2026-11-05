@@ -2,13 +2,13 @@
 
 Target: the separate ChatGPT Work page or mode, not Codex (D-014). Automated checks and rehearsals stay in the [S09 evidence](S09-work-plugin.md), and only what the owner reports below counts as a Work result.
 
-**Status: check 5 passed in Work on 2026-11-04 and [ran again](#second-run) on 2026-11-05, on a newer version. Checks 2, 3 and 4 have never run. The second run found a fault, since fixed, so all five run on the expected version. M5 stays open.**
+**Status: all five checks pass in Work on `0.1.0-alpha.1+d27ef23f6f94`, on the owner's report of 2026-11-05 (D-027). M5 closed on 2026-11-05 under D-028.**
 
 ## What the owner runs
 
 Install, from a checkout of `main`, with the commands in the [plugin README](../../../plugins/cloud-architecture-work/README.md#install). Then restart the ChatGPT app, switch to Work mode, open a new chat and select **Cloud Architecture Diagrams**. The S04 plugin stays enabled and unchanged.
 
-The expected version is `0.1.0-alpha.1+d27ef23f6f94`, which has the [S11 fixes](S11-gpt-reviews.md#fixes) and the fix for the [second run's fault](#second-run). The results below are for earlier versions, so check 5 runs again on this one. Each prompt runs in the same chat unless it says otherwise.
+The version that passed is `0.1.0-alpha.1+d27ef23f6f94`, which has the [S11 fixes](S11-gpt-reviews.md#fixes) and the fix for the [second run's fault](#second-run). A change to the plugin's content changes its version, so a fix after this needs its own run. Each prompt runs in the same chat unless it says otherwise.
 
 | # | Prompt | What it checks |
 |---|---|---|
@@ -19,6 +19,40 @@ The expected version is `0.1.0-alpha.1+d27ef23f6f94`, which has the [S11 fixes](
 | 5 | In Thai, ask for a GKE architecture with a Deployment, Service, Ingress and PVC, with both an overview view and a detail view, and with Thai names on the labels. The session that started this check gives the exact sentence, because repository documents stay English | Kubernetes overview and detail, Thai labels, same IDs in both views |
 
 ## Result
+
+Run on 2026-11-05 (Asia/Bangkok) in one new Work chat, with GPT-6.1 Sol / High, in a folder outside this repository, after removing the runtime. The session record has originator `codex_work_desktop`. "Owner" marks what only the owner could see, and the rest was checked from the session record and the files.
+
+| Check | Result |
+|---|---|
+| Plugin visible and selectable in Work | Passed. The owner's prompts selected it by its `plugin://` link |
+| Version the chat reports | `0.1.0-alpha.1+d27ef23f6f94`, as expected |
+| An approval prompt for `setup_runtime`, and what it looked like | None. Owner: the chat had full access, so the app did not ask. The session record has approval policy `never` and `danger-full-access`. How the app asks under a stricter setting is unverified |
+| Runtime reaches `ready` | Passed, in about 20 seconds from a removed runtime with a warm uv cache: `RUNTIME_NOT_READY`, `setup_runtime`, then `ready`. The marker names this version |
+| PNG visible in the chat, and how it appeared | Passed. Owner: it appears as a normal image and can be downloaded |
+| All six files open from Work | Passed. Owner: they open. Each bundle holds all six. The chat copied them to its own `outputs` folder by shell, and read `model.json` through `read_artifact` for the edit |
+| Edit keeps IDs and returns the updated source | Passed. All 10 IDs stayed, `s3`, `app-1-to-s3` and `app-2-to-s3` were added, and nothing else in the model changed. The new bundle holds the updated source |
+| Invalid model gives `REFERENCE_MISSING` and no image | Passed, at `/relationships/0/target_ref`, and no bundle was made |
+| Kubernetes overview and detail both draw, with readable Thai | Passed. Both views share one model, so their IDs agree. Owner: passed |
+| Anything unexpected | The chat's first AWS model failed with two `SCHEMA_FIELD_INVALID`, and it read the schema and corrected the model, which is the flow the skill describes. No `busy` answer, and no `RUNTIME_INSTALLING` |
+
+Rendering all four bundles again from `main` gives the same `diagram.svg`, `diagram.png` and `view.json`. Bundles under `~/Documents/CloudArchitectureDiagrams/work/`:
+
+- AWS `aws-three-tier-web-app--overview--a6fa5cb47c9027c8`, and after the edit `aws-three-tier-web-app--overview--3e6416cdcb809f60`
+- GKE `gke-web-app-th--overview--35a48b517c883c69` and `gke-web-app-th--detail--11eaebee4341d42f`
+
+Four more Work chats ran at the same time, each with one of prompts 2 to 5 and the same version. They drew their own bundles, and none of the five chats saw `RUNTIME_INSTALLING`, which is what the second run's fault would have shown.
+
+This result has limits:
+
+- One Mac and one model. A second machine, a Python download and the system's Documents prompt stay for M6.
+- The main chat read the plugin's skill and no `src`. It also read the runtime skill of the old S04 plugin, which stays installed, so this is not a run with this plugin alone.
+- The chats had full access, so nothing here shows how the app asks under a stricter setting.
+
+## Earlier runs
+
+These ran on earlier versions, and are the history of how this result came about.
+
+### First run
 
 Run on 2026-11-04 (Asia/Bangkok) in one chat, with GPT-6.1 Sol / High. The owner reports that the run was in Work, and the host's session record agrees: its originator is `codex_work_desktop`, where a Codex session on this Mac the same day has `Codex Desktop`.
 
@@ -35,7 +69,7 @@ Run on 2026-11-04 (Asia/Bangkok) in one chat, with GPT-6.1 Sol / High. The owner
 | Kubernetes overview and detail both draw, with readable Thai | [Passed](#check-5-in-work) |
 | Anything unexpected | [Four `busy` answers](#busy-answers), and the chat calling its own run Codex |
 
-## Check 5 in Work
+### Check 5 in Work
 
 The local `cloud-architecture-work` plugin validated the GKE model in strict mode and rendered both views with readable Thai labels. The detail view was rendered from the overview bundle's model. Ingress (`app-ingress`), Service (`app-service`), Deployment (`app-deployment`) and PVC (`app-pvc`) kept the same IDs in both views. The two `model.json` files have the same SHA-256 (`11a52f4a43debd030ec31d8abf11cc8fed3de4c4e6e3a1991b08e87301cdc7a7`). The owner then told the chat, translated from Thai: "record that it passed."
 
@@ -52,7 +86,7 @@ This run has limits as acceptance evidence:
 - It read `src` while writing the model, so it does not show that the plugin's skill alone is enough.
 - The prompt was not the sentence this check planned. It also asked outright to keep the IDs.
 
-### What the Claude session checked on disk
+#### What the Claude session checked on disk
 
 The owner's Claude Code session checked the files and the host's session record the same day. It read the chat's prompts, its messages to the owner, and the tool names and statuses, so this is not a second opinion on what the app showed.
 
@@ -61,13 +95,13 @@ The owner's Claude Code session checked the files and the host's session record 
 - Rendering each view again from the repository at `aefcdbc` gives the same `diagram.svg`, `diagram.png` and `view.json`. The four IDs are in both graphs, and the ReplicaSet is only in the detail view.
 - These are the only bundles in the folder, so no AWS bundle from checks 2 and 3 exists on this Mac. The session record shows no such prompt either.
 
-## Busy answers
+### Busy answers
 
 The chat read 12 files at once, all six of both bundles. Eight came back and four answered `busy` with `TOO_MANY_CALLS`, and it read those four again one at a time, which worked. `MAX_CALLS` is 8 in `protocol.py`, and no render was running. Sending 12 reads at once to the installed server again gave 4, 4 and 3 refusals in three tries, while 6 and 8 reads gave none.
 
 At that version the skill's `busy` row said "Another render is running", which was the wrong cause although its remedy worked, and no test covered `TOO_MANY_CALLS`. [S11](S11-gpt-reviews.md#fixes) fixed both.
 
-## Second run
+### Second run
 
 Run on 2026-11-05 on `0.1.0-alpha.1+2c3c9ea4f01c`, in a new Work chat. The session record has `codex_work_desktop` and GPT-6.1 Sol / High. The chat ran prompt 5's sentence as written, with the plugin selected, and no other prompt. The owner reported that the test was done, and has not yet said what the app showed or whether this run passes.
 
@@ -81,11 +115,3 @@ The Claude session checked these from the files and the session record:
 **A fault this run found.** One of five `search_catalog` calls sent at once answered `runtime_unavailable` with `RUNTIME_INSTALLING`, though the runtime was ready and no setup was running. The chat retried, and that worked. `_setup_locked_elsewhere` tests for a running setup by taking the setup lock exclusively without waiting, so two calls testing at once collide, and one reads the other as a setup. On the installed server with its ready runtime, 21 of 100 calls sent in fives gave this answer. The Claude session ranked it P2, because ordinary use reaches it and it states something false, though no data was at risk and waiting cleared it. No test covered readiness under parallel calls, and no reviewer found it.
 
 The readiness test now takes the lock shared, which only a setup's exclusive lock can refuse, and a setup waits up to a second for a test to finish before it reports that another setup holds the lock. Three tests cover this, one of them sending the same parallel calls to the real server, and all 6 sabotage changes fail one of them. Actual CI [run 41958019512](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41958019512) passed 17 lanes and 1,569 tests at `b0a8b4d`. Under D-021, Claude Fable 5.1 / Medium [approved it](S11-fable-lock-review.md) in a fresh agent, and found no way to run two setups at once or to report a ready runtime as installing, with threads or with several processes. Two P3 findings stay open: `remove` deletes the lock file without taking the lock, which predates this fix, and one half of a new test goes through a private helper.
-
-## What is left
-
-- All five prompts in Work, on the expected version. Prompts 2, 3 and 4 have never run, and prompt 1 did not run as its own prompt, though this chat went through each of its steps.
-- A new chat, opened outside this repository, so that the plugin's skill is all it has to go on.
-- The owner reports whether the app showed an approval prompt, how the PNG appeared and whether the file links open.
-
-A change to the plugin's content changes its version, so a fix after that run needs its own run.

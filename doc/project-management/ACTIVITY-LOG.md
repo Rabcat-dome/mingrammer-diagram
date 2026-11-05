@@ -565,3 +565,10 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - The run found a fault that no reviewer or test had: parallel calls can read each other's readiness test as a running setup, and answer `RUNTIME_INSTALLING` on a ready runtime. Reproduced on the installed server, with 21 of 100 calls. See the [Work check](evidence/S09-Work-validation.md#second-run). It is not fixed, and M5 stays open.
 - The owner said to fix it first. Claude Opus 5.5 did, and all 6 sabotage changes failed a named test. `src` did not change, so the wheel and the proof stand. The Work plugin's version is now `0.1.0-alpha.1+d27ef23f6f94`.
 - CI passed at `b0a8b4d` ([run 41958019512](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41958019512), 17 lanes and 1,569 tests), and Fable / Medium [approved the fix](evidence/S11-fable-lock-review.md), with two P3 findings left open. `main` fast-forwards here, under the owner's standing request to merge finished work in stages. M5 and M6 stay open, with no release or tag.
+
+## 2026-11-05 — All five checks in actual Work
+
+- The owner upgraded to `0.1.0-alpha.1+d27ef23f6f94`, removed the runtime, and ran all five prompts in one new Work chat outside this repository, with four more chats at once. The owner reports that no approval was asked under full access, that the PNG appears as an image and can be downloaded, that the six files open, and that each check passes (D-027).
+- The session record and the bundles agree: first setup reached `ready`, the edit kept all 10 IDs and added three, the invalid model gave `REFERENCE_MISSING` with no bundle, both GKE views draw from one model, no chat saw `RUNTIME_INSTALLING`, and rendering all four bundles again gives identical output. See the [Work check](evidence/S09-Work-validation.md#result).
+- The P0 report moves eight records to `met_with_owner` and FR-064 to `blocked_on_second_machine`, so none stays blocked on Work.
+- The owner closed M5 (D-028), and `main` fast-forwards here once this commit passes CI. M6 stays open, with no release or tag: it needs the second machine, the T-016 repeat, the final review and the package.

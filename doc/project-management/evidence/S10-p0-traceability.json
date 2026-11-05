@@ -169,7 +169,7 @@
  },
  {
   "id": "FR-005",
-  "state": "blocked_on_work",
+  "state": "met_with_owner",
   "summary": "Authoring produces data; never execute user or LLM-authored code.",
   "checks": [
    {
@@ -218,8 +218,8 @@
    "doc/project-management/evidence/S09-work-plugin.md#limits-and-what-this-does-not-establish",
    "doc/project-management/evidence/S09-Work-validation.md#result"
   ],
-  "open": "The never-execute half is met by the listed checks. The natural-language half is not checked: test_skill_keeps_the_rules_a_live_session_depends_on only finds sentences in the skill, and live authoring was rehearsed on Claude Code, not Work. No model has authored through this skill on the Work host (D-024).",
-  "owner": ""
+  "open": "",
+  "owner": "D-027: the owner reported the Work result on 2026-11-05, for one Mac with full access. GPT-6.1 Sol authored models from English and Thai requests through this skill in Work, with no `src` to read, on one model and one Mac."
  },
  {
   "id": "FR-006",
@@ -2051,7 +2051,7 @@
  },
  {
   "id": "FR-060",
-  "state": "blocked_on_work",
+  "state": "met_with_owner",
   "summary": "Install and invoke the plugin in actual Work; test discovery, delivery.",
   "checks": [
    {
@@ -2085,12 +2085,12 @@
    "doc/project-management/evidence/S09-work-plugin.md#through-the-real-host",
    "doc/project-management/evidence/S09-work-plugin.md#limits-and-what-this-does-not-establish"
   ],
-  "open": "Nothing has run in actual Work (D-024), and every row of the S09 Work result table is Pending. Install and selection in Work mode, tool discovery, invocation and output delivery there are unverified. scripts/work_host_check.py passed 35 of 35 in this audit, but it drives the host's engine with no account or model, so it is not a Work session.",
-  "owner": ""
+  "open": "",
+  "owner": "D-027: the owner reported the Work result on 2026-11-05, for one Mac with full access. Install, selection, discovery, invocation and output delivery ran in Work on one Mac. How the app asks for approval under a stricter setting is unverified."
  },
  {
   "id": "FR-061",
-  "state": "partly",
+  "state": "met_with_owner",
   "summary": "Skill guides lookup, assumptions, validation, rendering and ID-preserving edits.",
   "checks": [
    {
@@ -2129,12 +2129,12 @@
    "doc/project-management/evidence/S09-work-plugin.md#rehearsal-with-a-live-model",
    "doc/project-management/evidence/S09-Work-validation.md#result"
   ],
-  "open": "No real model has used this skill in Work. The one rehearsal ran on Claude Sonnet on another host, and no lane shows a model following the skill. The text of each workflow step is now pinned.",
-  "owner": ""
+  "open": "",
+  "owner": "D-027: the owner reported the Work result on 2026-11-05, for one Mac with full access. A real model used this skill in Work: lookup, stated assumptions, validation, rendering, and an edit that kept every ID. One model, on one Mac."
  },
  {
   "id": "FR-062",
-  "state": "blocked_on_work",
+  "state": "met_with_owner",
   "summary": "Preview and retrievable files, verified through actual Work access and export.",
   "checks": [
    {
@@ -2163,8 +2163,8 @@
    "doc/project-management/evidence/S09-work-plugin.md#exit-criteria",
    "doc/project-management/evidence/S09-work-plugin.md#through-the-real-host"
   ],
-  "open": "Nothing verifies actual Work: whether the preview appears, whether the six files open from Work, and attachment or export there are all Pending in the S09 Work result table (D-024). The tool contract, the inline PNG and the read-back of all six files are covered over pipes and, outside any lane, through the host's engine.",
-  "owner": ""
+  "open": "",
+  "owner": "D-027: the owner reported the Work result on 2026-11-05, for one Mac with full access. The owner reports that the preview appears as an image and can be downloaded, and that all six files open from Work."
  },
  {
   "id": "FR-063",
@@ -2230,7 +2230,7 @@
  },
  {
   "id": "FR-064",
-  "state": "blocked_on_work",
+  "state": "blocked_on_second_machine",
   "summary": "Native runtime setup on each machine, verified permissions and transport, documented.",
   "checks": [
    {
@@ -2272,9 +2272,10 @@
   "evidence": [
    "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage",
    "doc/project-management/evidence/S09-work-plugin.md#what-the-host-really-does",
-   "doc/project-management/evidence/S09-work-plugin.md#limits-and-what-this-does-not-establish"
+   "doc/project-management/evidence/S09-work-plugin.md#limits-and-what-this-does-not-establish",
+   "doc/project-management/evidence/S09-Work-validation.md#result"
   ],
-  "open": "Local Work transport and the app's approval prompt are unverified without a Work session (D-024). 'Each supported machine' has also run on one Mac only, with Python already present, so a Python download and the system's Documents permission prompt are unseen and need a second machine too. The README states first-install downloads and offline behavior, and this audit read it, but with that line removed in a scratch copy the README test still passes.",
+  "open": "Local Work transport and first setup ran in Work on one Mac (D-027), with Python already present and with full access, so a Python download, an approval prompt under a stricter setting and the system's Documents prompt are unseen. 'Each supported machine' needs the second machine.",
   "owner": ""
  },
  {
@@ -3728,7 +3729,7 @@
  },
  {
   "id": "T-011",
-  "state": "blocked_on_work",
+  "state": "met_with_owner",
   "summary": "M5/M6: install, discovery, tool calls, preview, bundle retrieval in actual Work.",
   "checks": [
    {
@@ -3777,8 +3778,8 @@
    "doc/project-management/evidence/S09-work-plugin.md#through-the-real-host",
    "doc/project-management/evidence/S09-work-plugin.md#limits-and-what-this-does-not-establish"
   ],
-  "open": "Nothing has run in actual Work (D-024): every result row in S09-Work-validation is Pending, including discovery, the approval prompt, the preview and opening all six files. The listed tests run the built package over real pipes, not in Work, and scripts/work_host_check.py drives the host's engine with a scripted stand-in, which is not a Work session. Local mode needs no authentication (P-034), so that clause does not apply.",
-  "owner": ""
+  "open": "",
+  "owner": "D-027: the owner reported the Work result on 2026-11-05, for one Mac with full access. Install, discovery, valid and invalid calls, the preview and the complete bundle ran in the local Work mode on one Mac. Local mode needs no authentication. The second machine stays with M6."
  },
  {
   "id": "T-012",
@@ -3831,7 +3832,7 @@
  },
  {
   "id": "T-013",
-  "state": "blocked_on_work",
+  "state": "met_with_owner",
   "summary": "M5: edits keep IDs and unrelated links, return updated source.",
   "checks": [
    {
@@ -3871,12 +3872,12 @@
    "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage",
    "doc/project-management/evidence/S08-reference-diagrams.md#scenario-checks"
   ],
-  "open": "M5-04's edit flow has not run in actual Work (D-024). The tests make each edit themselves and then check that the tools keep what they were given, so they cannot show that a session's model keeps IDs or unrelated relationships. Through the tool surface, test_edit_keeps_ids_and_the_earlier_bundle renames one resource and asserts nothing about relationships; that clause is asserted only in core-level reference tests. One rehearsal on Claude kept them, and that is not Work.",
-  "owner": ""
+  "open": "",
+  "owner": "D-027: the owner reported the Work result on 2026-11-05, for one Mac with full access. In Work, every ID stayed, the S3 bucket and two edges were added, nothing else in the model changed, and the new bundle holds the updated source. One edit, on one model."
  },
  {
   "id": "T-014",
-  "state": "blocked_on_work",
+  "state": "met_with_owner",
   "summary": "M4/M5: English/Thai label inspection; remote isolation and payload-log checks where applicable.",
   "checks": [
    {
@@ -3905,8 +3906,8 @@
    "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage",
    "doc/project-management/evidence/S09-Work-validation.md#result"
   ],
-  "open": "The M4 label inspection is accepted under D-023, and remote isolation and expiry do not apply to local mode (D-013). For M5, test_model_content_reaches_no_log_and_no_runtime_file covers the adapter's log and runtime files only. M5-04 lists T-014 for an actual Work run, including Thai labels, and that run is parked under D-024. What the Work host itself logs is unchecked, and S09 says its session record holds the model.",
-  "owner": ""
+  "open": "",
+  "owner": "D-027: the owner reported the Work result on 2026-11-05, for one Mac with full access. English and Thai labels are accepted in Work. Remote isolation and expiry do not apply to local mode. The host keeps its own record of each chat, which the README states."
  },
  {
   "id": "T-015",
@@ -4024,7 +4025,7 @@
  },
  {
   "id": "T-017",
-  "state": "partly",
+  "state": "met_with_owner",
   "summary": "M1/M2/M4/M5: Kubernetes catalog, views, rejections, stable IDs, no secret payloads.",
   "checks": [
    {
@@ -4118,9 +4119,10 @@
    "doc/project-management/evidence/S08-reference-diagrams.md#owner-inspection",
    "doc/project-management/evidence/S06-provider-catalogs.md#validation",
    "doc/project-management/evidence/S09-work-plugin.md#requirement-coverage",
-   "doc/project-management/evidence/S09-Work-validation.md#what-the-owner-runs"
+   "doc/project-management/evidence/S09-Work-validation.md#what-the-owner-runs",
+   "doc/project-management/evidence/S09-Work-validation.md#result"
   ],
-  "open": "M5's part, a Kubernetes overview and detail in actual Work, is parked under D-024. M1, M2 and M4's parts pass, including an edit that keeps every other ID and link.",
-  "owner": ""
+  "open": "",
+  "owner": "D-027: the owner reported the Work result on 2026-11-05, for one Mac with full access. A Kubernetes overview and detail ran in Work from one model, as M5 asks. M1, M2 and M4's parts pass."
  }
 ]

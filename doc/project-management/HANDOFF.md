@@ -1,6 +1,6 @@
 # Cross-Machine Handoff
 
-Updated: 2026-11-04 | S01-S08 complete. **S09 / M5 is built and in `main`, and M5 stays open: the owner's [run in actual Work](evidence/S09-Work-validation.md) has check 5 passed and checks 2 to 4 not run; see the [S09 evidence](evidence/S09-work-plugin.md). [GPT reviews](evidence/S11-gpt-reviews.md) of everything after S06 gave 15 findings, and Fable and Astra rechecks gave more, all fixed and in `main`. Next is all five Work prompts on plugin version `0.1.0-alpha.1+d27ef23f6f94`, which must be installed first.** **S08 / M4 closed on 2026-11-03 under D-023 and is in `main`. Its code passes actual CI at `a407a7a`, Fable/High approved it there, and the owner passed the images.** M2 closed on 2026-11-03 for the private personal release, at `5f391eb` on `codex/s06-provider-catalogs`, which passes CI with 12 lanes and 652 tests. Claude Fable 5.1 / High approved the fixes under D-020 as a substitute for Astra/High, and D-019 settles the asset-rights exit item. **S07 / M3 closed on 2026-11-03 under D-022, on `codex/s07-controlled-rendering`, branched from `f3f0789`. Its code passes actual CI at `c8fc687`, Fable/High approved its P2 fixes there, and the owner passed three samples of its output.** M7 Claude Code preparation started early under D-015. D-021 moves every remaining review from Astra to Claude Fable 5.1.
+Updated: 2026-11-05 | S01-S09 complete. **S09 / M5 closed on 2026-11-05 under D-028: the owner's [run in actual Work](evidence/S09-Work-validation.md) passes all five checks; see the [S09 evidence](evidence/S09-work-plugin.md). [GPT reviews](evidence/S11-gpt-reviews.md) of everything after S06 gave 15 findings, and Fable and Astra rechecks gave more, all fixed and in `main`. All five Work checks then passed on plugin version `0.1.0-alpha.1+d27ef23f6f94`, on the owner's report (D-027). A second machine, M6-03 and M6-04 remain.** **S08 / M4 closed on 2026-11-03 under D-023 and is in `main`. Its code passes actual CI at `a407a7a`, Fable/High approved it there, and the owner passed the images.** M2 closed on 2026-11-03 for the private personal release, at `5f391eb` on `codex/s06-provider-catalogs`, which passes CI with 12 lanes and 652 tests. Claude Fable 5.1 / High approved the fixes under D-020 as a substitute for Astra/High, and D-019 settles the asset-rights exit item. **S07 / M3 closed on 2026-11-03 under D-022, on `codex/s07-controlled-rendering`, branched from `f3f0789`. Its code passes actual CI at `c8fc687`, Fable/High approved its P2 fixes there, and the owner passed three samples of its output.** M7 Claude Code preparation started early under D-015. D-021 moves every remaining review from Astra to Claude Fable 5.1.
 
 ## Goal and current source
 
@@ -43,7 +43,7 @@ Core changes reach the plugin through symlinks, so no copy step exists, and Clau
 1. M2 is closed. Its deferred P3 findings, N2-N4, are in the [Fable review](evidence/S06-fable-review.md#follow-up-n1-fix-and-deferrals). The [Fable review](evidence/M7-fable-review.md) now covers the earlier M7 Medium/Low fixes and leaves three P3 findings open.
 2. The owner passed one Kubernetes sample in S07. The full set of Kubernetes representations has not been shown to them, and M4 inspects it.
 3. Update the owner's installed plugin only if asked. It follows `main` and holds `43b444d`, which has the renderer and the skill correction from S08. The first render through the installed plugin in a live session is done, on one Mac, in headless mode; see the [M7 evidence](evidence/M7-claude-plugin.md). A second machine and interactive permission prompts stay open.
-4. M3 is closed under D-022, and four of its P3 findings stay open. M4 is closed under D-023, and [its review](evidence/S08-fable-review.md) leaves four P3 findings open. D-024 parks the owner's [Work check](evidence/S09-Work-validation.md), so M5 stays open. [S10](evidence/S10-release-checks.md) did what M6 can do without it, and its [P0 report](evidence/S10-p0-traceability.md) lists the gaps the owner can decide. M6's two-machine acceptance, final review and release stay blocked.
+4. M3 is closed under D-022, and four of its P3 findings stay open. M4 is closed under D-023, and [its review](evidence/S08-fable-review.md) leaves four P3 findings open. M5 is closed under D-028 on the owner's [Work check](evidence/S09-Work-validation.md), and two P3 findings stay open. [S10](evidence/S10-release-checks.md) did what M6 can do on one Mac, and its [P0 report](evidence/S10-p0-traceability.md) lists the gaps the owner can decide. M6's second machine, final review and release remain.
 
 ## Keeping the Work plugin in step
 
@@ -58,8 +58,8 @@ the private personal release: D-019 settles its asset-rights exit item, and D-01
 it does not clear their rights.
 
 S07 / M3 is closed under D-022, with code at c8fc687. Its five P3 findings stay open.
-S08 / M4 is closed under D-023. S09 / M5 is built and in main, and D-024 parks its run in Work.
-S10 did what M6 can do without Work. Read the S10 evidence and its P0 report, and M5 and M6 in
+S08 / M4 is closed under D-023, and S09 / M5 under D-028.
+S10 did what M6 can do on one Mac. Read the S10 evidence and its P0 report, and M6 in
 milestones.md. Branch
 from main with a codex/ prefix; keep docs English.
 Huawei source availability is not redistribution permission: keep public

@@ -1,6 +1,6 @@
 # Milestones and Work Breakdown
 
-Updated: 2026-11-04 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 complete on 2026-11-03 for the private personal release. S07 / M3 complete on 2026-11-03 under D-022. S08 / M4 complete on 2026-11-03 under D-023. S09 / M5 is built and merged, and D-024 parks the owner's run in Work, so M5 stays open. Huawei rights are not cleared: D-018 allows private personal use only, D-019 settles the asset-rights exit item for that use, and O-002 blocks public distribution. M7 Claude Code preparation started early under D-015.
+Updated: 2026-11-05 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 complete on 2026-11-03 for the private personal release. S07 / M3 complete on 2026-11-03 under D-022. S08 / M4 complete on 2026-11-03 under D-023. S09 / M5 complete on 2026-11-05 under D-028. Huawei rights are not cleared: D-018 allows private personal use only, D-019 settles the asset-rights exit item for that use, and O-002 blocks public distribution. M7 Claude Code preparation started early under D-015.
 
 Source of scope: [requirements](../requirements/requirements.md). Model abbreviations and review rules: [model strategy](model-strategy.md). Quality check definitions: [quality gate](quality-gate.md).
 
@@ -91,7 +91,7 @@ Exit: six reference scenario families and their required Kubernetes detail subvi
 
 ## M5 — ChatGPT Work integration
 
-Status: **Open. D-024 parked M5-04, and the owner's [first run in Work](evidence/S09-Work-validation.md) passed check 5, with checks 2 to 4 not run. The [S11 fixes](evidence/S11-gpt-reviews.md#fixes) change the plugin's version, so all five run on the new one.** M5-01..03 are built and merged into `main`, and M5-04's automated part passes through the host's real engine. See the [S09 evidence](evidence/S09-work-plugin.md). [Fable/High approved](evidence/S09-fable-review.md) the code at `aa813ed`, which passes actual CI [run 41695136756](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41695136756). M5-04 itself needs the owner's run in an actual Work session, recorded in the [Work check](evidence/S09-Work-validation.md), so M5 cannot close before they answer. Planned implementation: Sol/High for local adapter/isolation, Sol/Medium for skill/docs; actual: Claude Opus 5.5. Review: Fable/High.
+Status: **Complete on 2026-11-05 under D-028, and merged into `main`. M5-04's [five checks in Work](evidence/S09-Work-validation.md#result) pass on `0.1.0-alpha.1+d27ef23f6f94`, on the owner's report (D-027).** M5-01..03 are built and merged into `main`, and M5-04's automated part passes through the host's real engine. See the [S09 evidence](evidence/S09-work-plugin.md). [Fable/High approved](evidence/S09-fable-review.md) the code at `aa813ed`, which passes actual CI [run 41695136756](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/41695136756). Planned implementation: Sol/High for local adapter/isolation, Sol/Medium for skill/docs; actual: Claude Opus 5.5. Review: Fable/High.
 
 | Task | Work | Dependency / output |
 |---|---|---|
@@ -104,7 +104,7 @@ Exit: installed plugin works in the selected Work mode, artifacts are retrievabl
 
 ## M6 — Reproduction and personal release
 
-Status: Open. Under D-024, [S10](evidence/S10-release-checks.md) did the clean-runtime core reproduction in M6-01 and all of M6-02, including the [P0 report](evidence/S10-p0-traceability.md), and [Fable/High approved](evidence/S10-fable-review.md) that part at `debd754`. The two-machine Work run, M6-03 and M6-04 stay blocked, so nothing is released. Implementation: Sol/Medium; final review: Fable/High and owner inspection.
+Status: Open. Under D-024, [S10](evidence/S10-release-checks.md) did the clean-runtime core reproduction in M6-01 and all of M6-02, including the [P0 report](evidence/S10-p0-traceability.md), and [Fable/High approved](evidence/S10-fable-review.md) that part at `debd754`. M6-01's run on a second machine, M6-03 and M6-04 remain, so nothing is released. Implementation: Sol/Medium; final review: Fable/High and owner inspection.
 
 | Task | Work | Dependency / output |
 |---|---|---|
