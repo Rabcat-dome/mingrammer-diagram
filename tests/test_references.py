@@ -1056,10 +1056,18 @@ def _mapped_text(model: dict[str, Any], identifier: str) -> str:
     return " ".join(lines)
 
 
-def _with_edge(model: dict[str, Any], source: str, target: str, kind: str) -> dict[str, Any]:
+def _with_edge(
+    model: dict[str, Any], source: str, target: str, kind: str, direction: str = "directed"
+) -> dict[str, Any]:
     changed = copy.deepcopy(model)
     changed["relationships"] = [
-        {"id": "edge", "source_ref": source, "target_ref": target, "kind": kind}
+        {
+            "id": "edge",
+            "source_ref": source,
+            "target_ref": target,
+            "kind": kind,
+            "direction": direction,
+        }
     ]
     changed["views"][0]["relationship_refs"] = ["edge"]
     return changed
@@ -1072,11 +1080,64 @@ def test_every_kind_of_typed_reference_has_a_note(field: str) -> None:
     name = next(item["name"] for item in model["resources"] if item["id"] == target)
     note = f"{label}: {name}"
     assert note in _mapped_text(model, entity)
-    for source, sink in ((entity, target), (target, entity)):
-        drawn = _with_edge(model, source, sink, drawing_kind)
-        assert note not in _mapped_text(drawn, entity)
+    # An owner draws ownership toward its dependent, which holds owner_ref.
+    meant = (target, entity) if drawing_kind == "ownership" else (entity, target)
+    assert note not in _mapped_text(_with_edge(model, *meant, drawing_kind), entity)
+    assert note in _mapped_text(_with_edge(model, *meant[::-1], drawing_kind), entity)
+    for source, sink in (meant, meant[::-1]):
+        undirected = _with_edge(model, source, sink, drawing_kind, "undirected")
+        assert note not in _mapped_text(undirected, entity)
         for kind in sorted(EDGE_STYLES.keys() - {drawing_kind}):
             assert note in _mapped_text(_with_edge(model, source, sink, kind), entity), kind
+
+
+def test_a_reversed_traffic_line_keeps_the_reference_it_does_not_state() -> None:
+    # A Pod sending traffic to a Service does not say that the Service selects the Pod.
+    model: dict[str, Any] = json.loads((FIXTURES / "kubernetes-valid.json").read_text())
+    service = next(item for item in model["resources"] if item["kubernetes"].get("target_refs"))
+    pod = service["kubernetes"]["target_refs"][0]
+    pod_name = resource(model, pod)["name"]
+    model["relationships"].append(
+        {"id": "pod-to-service", "source_ref": pod, "target_ref": service["id"], "kind": "traffic"}
+    )
+    model["relationships"] = [
+        edge
+        for edge in model["relationships"]
+        if edge["id"] == "pod-to-service"
+        or {edge["source_ref"], edge["target_ref"]} != {pod, service["id"]}
+    ]
+    model["views"] = [
+        {
+            "id": "detail",
+            "title": "Detail",
+            "grouping": "namespace",
+            "entity_refs": [service["id"], pod],
+            "relationship_refs": ["pod-to-service"],
+        }
+    ]
+    assert errors(model) == []
+    assert f"target: {pod_name}" in _mapped_text(model, service["id"])
+
+
+def test_a_line_to_one_target_keeps_the_others_in_the_note() -> None:
+    model: dict[str, Any] = json.loads((FIXTURES / "kubernetes-valid.json").read_text())
+    service = next(
+        item for item in model["resources"] if len(item["kubernetes"].get("target_refs", [])) > 1
+    )
+    first, *rest = service["kubernetes"]["target_refs"]
+    model["views"] = [
+        {
+            "id": "detail",
+            "title": "Detail",
+            "grouping": "namespace",
+            "entity_refs": [service["id"], first, *rest],
+        }
+    ]
+    drawn = _with_edge(model, service["id"], first, "traffic")
+    text = _mapped_text(drawn, service["id"])
+    others = ", ".join(resource(model, item)["name"] for item in rest)
+    assert f"target: {others}" in text
+    assert resource(model, first)["name"] not in text.split("target:")[1]
 
 
 @pytest.mark.parametrize(

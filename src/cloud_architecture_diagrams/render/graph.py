@@ -252,10 +252,16 @@ class Mapper:
             and self._kubernetes_kind(self.entities.get(edge.target_ref)) == "Node"
         }
         selected_edges = set(view.relationship_refs)
+        # An undirected line runs both ways, so it draws a reference in either direction.
         self.linked = {
-            (frozenset((edge.source_ref, edge.target_ref)), edge.kind)
+            (source, target, edge.kind)
             for edge in model.relationships
             if edge.id in selected_edges
+            for source, target in (
+                [(edge.source_ref, edge.target_ref), (edge.target_ref, edge.source_ref)]
+                if edge.direction == "undirected"
+                else [(edge.source_ref, edge.target_ref)]
+            )
         }
 
     def _kubernetes_kind(self, entity: Entity | None) -> str | None:
@@ -433,9 +439,9 @@ class Mapper:
     def _typed_references(self, entity: Resource) -> list[str]:
         """A declared reference stays visible unless a selected relationship already draws it.
 
-        Only the kind that means this reference draws it, in either direction: a line of another
-        kind between the same two says something else. Only an entity's name appears, so a
-        Secret's reference never carries a value.
+        Only the kind that means this reference draws it, and only in the direction it means: a
+        line of another kind, or running the other way, says something else. Only an entity's
+        name appears, so a Secret's reference never carries a value.
         """
         context = entity.kubernetes
         if context is None:
@@ -464,7 +470,7 @@ class Mapper:
             names = [
                 self.entities[target].name
                 for target in targets
-                if (frozenset((entity.id, target)), kind) not in self.linked
+                if (_drawn_as(entity.id, target, kind)) not in self.linked
             ]
             if names:
                 lines.append(f"{label}: {', '.join(names)}")
@@ -725,6 +731,11 @@ class Mapper:
         for identifier in self.group_ids:
             if len(self._chain(identifier)) > limit:
                 raise RenderFailure("RENDER_GROUP_DEPTH_LIMIT", "/views", identifier)
+
+
+def _drawn_as(holder: str, target: str, kind: str) -> tuple[str, str, str]:
+    """The line that states a reference. An owner draws ownership toward its dependent."""
+    return (target, holder, kind) if kind == "ownership" else (holder, target, kind)
 
 
 def _port_text(port: Port) -> str:
