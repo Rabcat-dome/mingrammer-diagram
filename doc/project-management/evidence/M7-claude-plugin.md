@@ -2,7 +2,7 @@
 
 Recorded: 2026-11-02 (Asia/Bangkok) | Base: `c5f74b4` | First tested code: `22fc85e` | Review fixes: `0220e94`, `87acce5` and `917f46f` | Branch: `codex/m7-claude-plugin` | Host: macOS ARM64, Claude Code 2.1.309.
 
-**M7-01 and M7-02 are complete, and M7-04 brought catalog discovery and rendering to the plugin. M7-03 is verified on one Mac, most recently [at the release commit](#acceptance-measurements-at-97b0841). A second machine and permission dialogs in a real chat remain, so M7 stays open.** This is a preparation build under D-015. It authors and validates models, and since S07 it also renders them. It does not change the Work first-release target.
+**M7-01 and M7-02 are complete, and M7-04 brought catalog discovery and rendering to the plugin. M7-03 is verified on one Mac, most recently [at the release commit](#acceptance-measurements-at-97b0841). Permission dialogs in a real chat remain, so M7 stays open, and D-035 accepts one Mac in place of two.** This is a preparation build under D-015. It authors and validates models, and since S07 it also renders them. It does not change the Work first-release target.
 
 Actual CI and the GitHub and real-config installs below ran against commit `22fc85e`, before the review fixes. See [Same-session review](#same-session-review) and [Separate-session review](#separate-session-review) for what changed afterward and what has been rerun.
 
@@ -171,7 +171,7 @@ An interactive terminal session. This Mac's CLI has never finished first-run set
 
 ## Not verified
 
-- A second machine and any other operating system.
+- A second machine, which D-035 accepts, and any other operating system.
 - Permission dialogs, in the Code tab or a terminal. Headless runs show what needs approval, and the Code tab check ran under bypass permissions.
 - Authoring a model from the Code tab.
 
