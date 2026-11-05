@@ -24,12 +24,13 @@ from .checks import (
     check_undistorted,
     finalize_svg,
     png_scale,
+    undrawable_text,
 )
 from .draw import build_dot
 from .errors import MESSAGES, REQUEST_CODES, RenderFailure, diagnostic
 from .execution import ENGINE_LOG, ISOLATION, Engine, check_fonts_used, find_engine, run_engine
 from .graph import RenderGraph, map_view
-from .icons import VerifiedIcon, verified_fonts, verified_icons
+from .icons import VerifiedIcon, drawable_characters, verified_fonts, verified_icons
 from .limits import LIMITS, Limits
 from .paths import read_regular, write_new
 
@@ -324,6 +325,10 @@ def render_model(
             ),
         ]
         validation = validation.model_copy(update={"diagnostics": result.diagnostics})
+        undrawable = undrawable_text(graph, drawable_characters(limits))
+        if undrawable:
+            result.diagnostics = [*result.diagnostics, *undrawable]
+            return result
         engine = find_engine()
         with OutputRoot(output) as root:
             bundle_id, files, diagnostics = _draw(

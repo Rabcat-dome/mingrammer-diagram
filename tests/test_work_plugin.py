@@ -1517,6 +1517,15 @@ def test_private_use_limit_reaches_the_tool_result(client: Client) -> None:
     assert any(d["code"] == "ASSET_PRIVATE_USE_ONLY" for d in body["result"]["diagnostics"])
 
 
+def test_a_label_no_font_holds_is_a_validation_failure(client: Client) -> None:
+    model = fixture("core-valid.json")
+    model["metadata"]["title"] = "a → b"
+    body = client.body("render_model", model=model)
+    assert body["status"] == "validation_failed"
+    assert body["code"] == "RENDER_TEXT_UNDRAWABLE"
+    assert "U+2192" in body["message"]
+
+
 def test_view_that_cannot_be_drawn_is_a_validation_failure(client: Client) -> None:
     model: dict[str, Any] = {
         "schema_version": "1.0.0",

@@ -159,7 +159,9 @@ Sessions still try chained commands although the skill says not to, and each rec
 
 ### What real use found
 
-**Some characters draw as boxes.** Neither bundled font has `→ ← ↔ ↑ ↓ ⇒ ✓ ✗ ✔ ✘ ≥ ≤ ≠`. A label holding one draws as a hex box in the PNG, and neither validation nor render reports it. The Thai AWS session wrote `→` in its title at once, and found the box only because the skill tells it to look at the PNG. A title holding `→ ← ✓` reproduces it. I rate this P2, as silent unreadable text against FR-042, and no reviewer has rated it. It is not fixed. A fix reaches the core, so it changes the Work plugin's version.
+**Some characters draw as boxes.** Neither bundled font has `→ ← ↔ ↑ ↓ ⇒ ✓ ✗ ✔ ✘ ≥ ≤ ≠`. A label holding one draws as a hex box in the PNG, and neither validation nor render reports it. The Thai AWS session wrote `→` in its title at once, and found the box only because the skill tells it to look at the PNG. A title holding `→ ← ✓` reproduces it. I rate this P2, as silent unreadable text against FR-042. **Fixed on the owner's word under D-034:** `render` now refuses such a label with `RENDER_TEXT_UNDRAWABLE`, exit 2, naming the element and the code points, and [the reasons are in the contract](../../design/core-contract.md). The fonts do hold the bidi and format controls, so [S07's P3-2](S07-fable-review.md) stays open.
+
+A new headless session on Sonnet 5.5 through `--plugin-dir` then checked the fix. Asked for the title `ALB → EC2 → RDS` and the view title `Web ✓`, it validated, got the refusal from `render`, changed them to `ALB > EC2 > RDS` and `Web OK`, rendered, and told the requester what it had changed and why.
 
 **The AWS catalog has gaps that ordinary requests hit.** It holds 48 types. ECS, Lambda and WAF are not among them, and Fargate appears only as the EKS profile. The P0 provider list does not name them, and [the milestones](../milestones.md) leave expanded coverage as later P1 work, so this is within scope. Both AWS requests here still ended as drafts. Lenient mode did its job: each type kept its name, and the picture says draft.
 
