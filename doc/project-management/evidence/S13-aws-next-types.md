@@ -134,9 +134,19 @@ The picture holds AWS and generic icons only, and a test requires its manifest t
 
 ## Validation
 
-Pending: the gate, actual CI and the reproduction proof are recorded here once the review's fixes are in.
+Pending: the gate and actual CI at the commit that holds the proof.
 
-**Sabotage.** Each of these was made in the real repository at `1485f27`, failed its tests and was restored, with the `src` digest identical afterwards:
+| Lane | Tests, none skipped | What it adds here |
+|---|---:|---|
+| `provider-semantics` | 721 | The 54 new negative cases on the new fixture, and positive and boundary tests. A new test requires each of these, and the 36 on S12's fixture, to fail for one reason alone, which S12's review noted nothing guarded |
+| `catalog-license` | 135 | Each new type's icon from the listed pack, with sharing allowed only between the four variant pairs, and no new type in the P0 inventory. The names a request uses find their types, and the skill's example of a missing service really is missing |
+| `render-smoke` | 370 | One picture with all 17 web ACL and new types, marked strict, not draft and not private-use. A global type sits outside the Region's box and a regional one inside it. A private hosted zone on VPCs in two regions renders, and keeps both |
+| `visual-regression` | 65 | All 26 baselines unchanged, with no baseline file edited and `update_visual_baselines.py` not run |
+| Other test lanes | 644 | `schema-core` 97, `claude-plugin` 60, `package-contract` 169, `release-audit` 67 and `render-security` 251 |
+
+**Reproduction.** `scripts/reproduce_core.py` rebuilt the core from a new clone of the pushed `b54375f`, in a runtime that shares nothing with this checkout. All 26 reference views match their baselines by both routes, and the wheel's SHA-256 `05336718...de85` matches the local build. It reports core `0.5.0a2` and catalog `2026.11.2`. It ran on this one Mac, so it proves a clean runtime and not a second machine.
+
+**Sabotage.** Each of these was made in the real repository at `1485f27`, failed its tests and was restored, with the `src` digest identical afterwards. Later commits changed one taxonomy meaning in `src`, and the negative cases these name still pass:
 
 | Change | Result |
 |---|---|
@@ -171,7 +181,7 @@ Pending: the gate, actual CI and the reproduction proof are recorded here once t
 
 ## Model and review
 
-Implementation used **Claude Opus 5.5 (`claude-opus-5-5`)**, the model of the session that ran this, rather than the planned Sol, with no setting changed. Claude Fable 5.1's review under D-021 is [recorded separately](S13-fable-review.md).
+Implementation used **Claude Opus 5.5 (`claude-opus-5-5`)**, the model of the session that ran this, rather than the planned Sol, with no setting changed. **Claude Fable 5.1 approved it** under D-021, with three P3 findings and then one more on the follow-up, and it is [recorded separately](S13-fable-review.md) with what is open.
 
 ## Next steps
 
