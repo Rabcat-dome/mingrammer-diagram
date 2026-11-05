@@ -49,6 +49,8 @@ The skill runs `bin/cloud-diagrams` from the plugin root by its full path:
 
 Exit codes: `0` success, `2` invalid model or a view that cannot be drawn as asked, with JSON diagnostics on stdout, `3` the runtime could not be prepared or failed unexpectedly, `4` a render failed and published nothing, with JSON diagnostics on stdout, `64` the command was used incorrectly.
 
+The skill pre-approves this command and its arguments, and nothing joined to it. A `&&`, `;`, pipe, stdout redirect, variable prefix or any other command needs your approval, and so does reading a model from outside the working folder. Arguments are not read: `render --output` at an absolute path outside the working folder runs with no question, and adds a bundle folder there.
+
 Each bundle holds `diagram.svg`, `diagram.png`, `model.json`, `view.json`, `diagnostics.json` and `manifest.json`. The SVG embeds its icons, and the manifest records versions, checksums and the terms of every icon pack shown. A bundle that shows Huawei icons states that it is for private personal use only.
 
 ## Update

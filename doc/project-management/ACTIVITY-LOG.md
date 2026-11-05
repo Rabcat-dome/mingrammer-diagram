@@ -598,3 +598,9 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 ## 2026-11-05 — The first release
 
 - The owner said to tag it (D-033). M6 closes, and `v0.1.0-alpha.1` marks the private personal release, with the plugin at `0.1.0-alpha.1+88ce2c0cd0dc`. It is a tag on this private repository, with no GitHub Release and no uploaded package. See [the release record](evidence/M6-release.md).
+
+## 2026-11-05 — M7 measurements at the release commit
+
+- On the owner's word to go to the next step, M7 resumed on `codex/m7-acceptance`. Claude Opus 5.5 [measured](evidence/M7-claude-plugin.md#acceptance-measurements-at-97b0841) the installed `97b0841eb926` on the first Mac: the copy itself, a first run with nothing cached, 24 cases of what the pre-approval admits, and four new sessions through to a rendered bundle.
+- The measurements found that `→`, `✓` and similar characters draw as boxes in the PNG with no diagnostic, which is not fixed, and that ordinary AWS requests hit catalog gaps such as ECS, Lambda and WAF. The plugin README now states what the pre-approval admits.
+- No interactive terminal ran, because finishing the CLI's first-run setup would change the owner's config. M7 stays open for a check in a Code tab chat that asks before acting, and the second machine.

@@ -1,0 +1,136 @@
+{
+  "recorded": "2026-11-05",
+  "host": "Claude Code 2.1.309, macOS arm64",
+  "plugin_commit": "97b0841eb926",
+  "session": {
+    "model": "claude-haiku-5-5",
+    "permission_mode": "default",
+    "setting_sources": "project",
+    "allowed_tools_flag": "Skill",
+    "headless": true
+  },
+  "method": "Each case is one new session that invokes the skill, then issues the command once. Every issued command was compared byte for byte with the case, and matched.",
+  "marker_files_created": [],
+  "cases": [
+    {
+      "case": "01-plain",
+      "command": "\"$PLUGIN/bin/cloud-diagrams\" capabilities",
+      "admitted": true
+    },
+    {
+      "case": "02-no-arguments",
+      "command": "\"$PLUGIN/bin/cloud-diagrams\"",
+      "admitted": true
+    },
+    {
+      "case": "03-stdin-file",
+      "command": "\"$PLUGIN/bin/cloud-diagrams\" validate < \"$REPO/tests/fixtures/references/aws-three-tier.json\"",
+      "admitted": false
+    },
+    {
+      "case": "04-redirect-in-cwd",
+      "command": "\"$PLUGIN/bin/cloud-diagrams\" schema > \"$CWD/marker-redirect.json\"",
+      "admitted": false
+    },
+    {
+      "case": "05-redirect-outside-cwd",
+      "command": "\"$PLUGIN/bin/cloud-diagrams\" schema > \"$OUTSIDE/marker-redirect-outside.json\"",
+      "admitted": false
+    },
+    {
+      "case": "06-and-chain",
+      "command": "\"$PLUGIN/bin/cloud-diagrams\" capabilities && touch \"$CWD/marker-and\"",
+      "admitted": false
+    },
+    {
+      "case": "07-semicolon-chain",
+      "command": "\"$PLUGIN/bin/cloud-diagrams\" capabilities; touch \"$CWD/marker-semicolon\"",
+      "admitted": false
+    },
+    {
+      "case": "08-pipe-out",
+      "command": "\"$PLUGIN/bin/cloud-diagrams\" capabilities | tee \"$CWD/marker-pipe\"",
+      "admitted": false
+    },
+    {
+      "case": "09-newline-chain",
+      "command": "\"$PLUGIN/bin/cloud-diagrams\" capabilities\ntouch \"$CWD/marker-newline\"",
+      "admitted": false
+    },
+    {
+      "case": "10-command-substitution",
+      "command": "\"$PLUGIN/bin/cloud-diagrams\" catalog --query \"$(touch \"$CWD/marker-subst\"; echo x)\" --limit 1",
+      "admitted": false
+    },
+    {
+      "case": "11-backticks",
+      "command": "\"$PLUGIN/bin/cloud-diagrams\" catalog --query \"`touch $CWD/marker-backtick; echo x`\" --limit 1",
+      "admitted": false
+    },
+    {
+      "case": "12-background",
+      "command": "\"$PLUGIN/bin/cloud-diagrams\" capabilities & touch \"$CWD/marker-background\"",
+      "admitted": false
+    },
+    {
+      "case": "13-pipe-in",
+      "command": "cat \"$REPO/tests/fixtures/references/aws-three-tier.json\" | \"$PLUGIN/bin/cloud-diagrams\" validate",
+      "admitted": false
+    },
+    {
+      "case": "14-control-other-command",
+      "command": "touch \"$CWD/marker-control\"",
+      "admitted": false
+    },
+    {
+      "case": "15-name-prefix",
+      "command": "\"$PLUGIN/bin/cloud-diagrams-other\" capabilities",
+      "admitted": false
+    },
+    {
+      "case": "16-harmless-variable",
+      "command": "FOO=1 \"$PLUGIN/bin/cloud-diagrams\" capabilities",
+      "admitted": false
+    },
+    {
+      "case": "17-data-home-variable",
+      "command": "XDG_DATA_HOME=\"$OUTSIDE/data\" \"$PLUGIN/bin/cloud-diagrams\" capabilities",
+      "admitted": false
+    },
+    {
+      "case": "18-render-output-outside-cwd",
+      "command": "\"$PLUGIN/bin/cloud-diagrams\" render --output \"$OUTSIDE/rendered\" --view eks-namespaces < \"$REPO/tests/fixtures/references/aws-three-tier.json\"",
+      "admitted": false
+    },
+    {
+      "case": "19-stdin-in-cwd",
+      "command": "\"$PLUGIN/bin/cloud-diagrams\" validate < \"$CWD/model.json\"",
+      "admitted": true
+    },
+    {
+      "case": "20-stdin-in-cwd-relative",
+      "command": "\"$PLUGIN/bin/cloud-diagrams\" validate < model.json",
+      "admitted": true
+    },
+    {
+      "case": "21-render-relative-output",
+      "command": "\"$PLUGIN/bin/cloud-diagrams\" render --output ./rendered --view eks-namespaces < model.json",
+      "admitted": true
+    },
+    {
+      "case": "22-render-outside-cwd-stdin-inside",
+      "command": "\"$PLUGIN/bin/cloud-diagrams\" render --output \"$OUTSIDE/rendered\" --view eks-namespaces < model.json",
+      "admitted": true
+    },
+    {
+      "case": "23-render-home-output",
+      "command": "\"$PLUGIN/bin/cloud-diagrams\" render --output \"$HOME/Documents/CloudArchitectureDiagrams/m7-probe\" --view eks-namespaces < model.json",
+      "admitted": false
+    },
+    {
+      "case": "24-catalog-quoted",
+      "command": "\"$PLUGIN/bin/cloud-diagrams\" catalog --provider aws --query \"load balancer\" --limit 1",
+      "admitted": true
+    }
+  ]
+}

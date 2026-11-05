@@ -2,7 +2,7 @@
 
 Recorded: 2026-11-02 (Asia/Bangkok) | Base: `c5f74b4` | First tested code: `22fc85e` | Review fixes: `0220e94`, `87acce5` and `917f46f` | Branch: `codex/m7-claude-plugin` | Host: macOS ARM64, Claude Code 2.1.309.
 
-**M7-01 and M7-02 are complete. M7-03 is verified on one Mac for local-path, GitHub and real-config installs and for updating an installed plugin; a second machine and interactive permission prompts remain. M7-04 has not started.** This is a preparation build under D-015. It authors and validates models, and since S07 it also renders them. It does not change the Work first-release target.
+**M7-01 and M7-02 are complete, and M7-04 brought catalog discovery and rendering to the plugin. M7-03 is verified on one Mac, most recently [at the release commit](#acceptance-measurements-at-97b0841). A second machine and permission dialogs in a real chat remain, so M7 stays open.** This is a preparation build under D-015. It authors and validates models, and since S07 it also renders them. It does not change the Work first-release target.
 
 Actual CI and the GitHub and real-config installs below ran against commit `22fc85e`, before the review fixes. See [Same-session review](#same-session-review) and [Separate-session review](#separate-session-review) for what changed afterward and what has been rerun.
 
@@ -10,7 +10,7 @@ Actual CI and the GitHub and real-config installs below ran against commit `22fc
 
 | Item | Result |
 |---|---|
-| [Plugin](../../../plugins/cloud-architecture-diagrams/README.md) | `cloud-architecture-diagrams`, versioned by Git commit, running core `0.2.0a4` |
+| [Plugin](../../../plugins/cloud-architecture-diagrams/README.md) | `cloud-architecture-diagrams`, versioned by Git commit, running core `0.5.0a1` at `97b0841` |
 | [Marketplace](../../../.claude-plugin/marketplace.json) | `mingrammer-local`, with a relative source. The Codex marketplace and S04 plugin are unchanged |
 | Skill | `architecture-model`, with a model guide and the two valid core fixtures as examples |
 | Command | `bin/cloud-diagrams` runs the core in a private hash-locked environment. It installs dependencies only, so no build backend runs and no install writes into the plugin |
@@ -124,10 +124,53 @@ S06 / M2 moved the core, and the checks built to catch that fired as intended. F
 
 Under D-021, Claude Fable 5.1 / High reviewed `c5f74b4..c6a59e5` in a fresh agent, with priority on the Medium and Low fixes, and [approved the range](M7-fable-review.md). It found one P2 at the head, in a skill sentence S06 changed, and three P3 findings. None is fixed yet. Claude Opus 5.5 wrote the code, so reviewer and implementer share a vendor.
 
+## Acceptance measurements at `97b0841`
+
+Measured on 2026-11-05 by Claude Opus 5.5 on the first Mac, with Claude Code 2.1.309, on the owner's installed copy `97b0841eb926`, which `plugin update` fetched from the private repository. None of this is an owner's report, and no second Mac took part.
+
+| Check | Result |
+|---|---|
+| Installed copy | The cache has 0 symlinks and 1.6 MB. `capabilities` reports catalog `2026.11.0`, `render_available: true` and no host blockers. The AWS reference validates, and its `eks-namespaces` PNG matches the baseline digest `49b713ed...` |
+| First run with nothing cached | With a new data folder, a new uv cache and a new folder for uv's Python, the first `capabilities` downloaded Python 3.13.7 and the packages and exited 0 in 3 seconds on this network. The environment took 59 MB, the cache 59 MB and Python 48 MB. The second run took 1 second, and the PNG has the same digest |
+
+### What the skill's pre-approval admits
+
+There are [24 cases](M7-permission-probe.json). Each is a new headless session on Haiku 5.5 in the default permission mode, with only project settings loaded and only Skill pre-approved. It invokes the skill and issues one command, and every issued command matched its case byte for byte. A refused command is one the host says needs approval.
+
+| Outcome | Forms |
+|---|---|
+| Admitted | The command with or without arguments; stdin from a file inside the working folder, by relative or absolute path; `render --output` at a relative path, or at an absolute path outside the working folder |
+| Refused | `&&`, `;`, a newline and `&`; a pipe in either direction; a stdout redirect, inside or outside the working folder; `$(...)` and backticks; a longer command name; any variable prefix, harmless or not; `$HOME` in an argument; stdin from a file outside the working folder; and, as the control, another command |
+
+No refused command left its marker file. This settles the open question on redirects: `schema > file` is refused. One limit remains: the pre-approval does not read arguments, so a session that spells out a path can add a bundle folder anywhere the user can write, with no question. The [plugin README](../../../plugins/cloud-architecture-diagrams/README.md#use) now says so.
+
+### New sessions through the installed copy
+
+Each is a new headless session on Sonnet 5.5, with the owner's real config, no `--plugin-dir`, and only Skill, Read, Write and Edit pre-approved. Each took its request through to a rendered bundle. I looked at the pictures from the first three, and not the edit's.
+
+| Request | Turns | Refused | Result |
+|---|---|---|---|
+| Thai: AWS ALB, ECS Fargate and RDS | 25 | A `for` loop of catalog searches, and a chained `sed` | Lenient draft, marked as one. ECS Fargate is not in the catalog, and the session said so and did not swap in EKS |
+| English: GKE Deployment, Service, Ingress and PVC | 15 | `mkdir` chained to a Python generator, twice, and `mkdir` alone | Strict. The picture shows the declared replicas, Service type and ports |
+| Thai: Huawei Cloud ELB, two ECS, RDS and OBS | 19 | `cd` into a path it had mistyped, twice | Strict, with `ASSET_PRIVATE_USE_ONLY` relayed and no suggestion to share |
+| Thai: edit the AWS model to add WAF | 21 | None | Existing IDs kept. WAF is not in the catalog either, so it stays a lenient draft |
+
+Sessions still try chained commands although the skill says not to, and each recovered. With Write pre-approved for this test, the GKE session wrote a generator at `../gen/gen.py`, and the Huawei session first wrote its model under its mistyped path, both outside the working folder. A session that asks before acting would have asked.
+
+### What real use found
+
+**Some characters draw as boxes.** Neither bundled font has `→ ← ↔ ↑ ↓ ⇒ ✓ ✗ ✔ ✘ ≥ ≤ ≠`. A label holding one draws as a hex box in the PNG, and neither validation nor render reports it. The Thai AWS session wrote `→` in its title at once, and found the box only because the skill tells it to look at the PNG. A title holding `→ ← ✓` reproduces it. I rate this P2, as silent unreadable text against FR-042, and no reviewer has rated it. It is not fixed. A fix reaches the core, so it changes the Work plugin's version.
+
+**The AWS catalog has gaps that ordinary requests hit.** It holds 48 types. ECS, Lambda and WAF are not among them, and Fargate appears only as the EKS profile. The P0 provider list does not name them, and [the milestones](../milestones.md) leave expanded coverage as later P1 work, so this is within scope. Both AWS requests here still ended as drafts. Lenient mode did its job: each type kept its name, and the picture says draft.
+
+### What did not run
+
+An interactive terminal session. This Mac's CLI has never finished first-run setup, because the owner uses the app, and a session driven through a pseudo-terminal stopped at the theme chooser. Finishing it would change the owner's `~/.claude.json`, so the run stopped there, and that file shows no onboarding state afterward. So no permission dialog has been seen: the refusals above say what needs approval, not how the host asks.
+
 ## Not verified
 
-- A second machine, any other operating system, and first-run setup with an empty uv cache.
-- Interactive permission prompts, and how much `allowed-tools` admits at runtime, including whether a redirect such as `schema > file` prompts. Headless runs exercised `allowed-tools`, but the Code tab check ran under bypass permissions, so it did not.
+- A second machine and any other operating system.
+- Permission dialogs, in the Code tab or a terminal. Headless runs show what needs approval, and the Code tab check ran under bypass permissions.
 - Authoring a model from the Code tab.
 
 Prompts were run once each, so trigger rates are observations rather than measurements. Provider semantics are unchanged from M1: a passing result does not establish that a service type exists or that a placement is legal.
