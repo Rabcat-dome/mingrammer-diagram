@@ -1,6 +1,6 @@
 # S12 — AWS ECS, Fargate for ECS, Lambda and WAF
 
-Date: 2026-11-05 | Branch: `codex/aws-ecs-fargate-lambda-waf`, from `a4bf065` | Decision: D-034
+Date: 2026-11-05 | Branch: `codex/aws-ecs-fargate-lambda-waf`, from `a4bf065` | Decision: D-036
 
 **Result: strict validation and rendering now accept five new AWS types, each with one taxonomy ID, a placement rule from AWS's own pages and AWS's own icon. The branch is not merged, the tag `v0.1.0-alpha.1` does not move, and no live session has used it yet.**
 
@@ -28,7 +28,7 @@ The catalog gained one capability, `container_workload`, because no existing one
 
 ## What each rule rests on
 
-Each page was fetched on 2026-11-05 and is recorded in `S06-source-checks.json`, where these 15 pages carry their own `checked` date. The patterns there match the page text, as in S06. The quotes below are AWS's.
+Each page was fetched on 2026-11-05 and is recorded in `S06-source-checks.json`, where these 16 pages carry their own `checked` date. The patterns there match the page text, as in S06. The quotes below are AWS's.
 
 | Rule | AWS says | Source |
 |---|---|---|
@@ -36,6 +36,7 @@ Each page was fetched on 2026-11-05 and is recorded in `S06-source-checks.json`,
 | A cluster takes no network | Its seven properties name no VPC or subnet | [`AWS::ECS::Cluster`](https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-ecs-cluster.html) |
 | A workload's subnets share one VPC, at most 16 | "All specified subnets must be from the same VPC"; "limit of 16 subnets" | [AwsVpcConfiguration](https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_AwsVpcConfiguration.html) |
 | A service names one cluster | "the cluster that you run your service on" | [`AWS::ECS::Service`](https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-ecs-service.html) |
+| A service may run on an on-premises host | "registering an external instance such as an on-premises server" | [ECS Anywhere](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-anywhere.html) |
 | Fargate has no EC2 host | "without having to manage servers or clusters of Amazon EC2 instances" | [AWS Fargate](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html) |
 | Fargate means subnets are meaningful | "the awsvpc network mode is required" | [RegisterTaskDefinition](https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_RegisterTaskDefinition.html) |
 | A function's subnets share one VPC, at most 16 | "security groups and subnets in the VPC"; one `VpcId`; 16 items | [`AWS::Lambda::Function`](https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-lambda-function.html), [VpcConfigResponse](https://docs.aws.amazon.com/lambda/latest/api/API_VpcConfigResponse.html), [VpcConfig](https://docs.aws.amazon.com/lambda/latest/api/API_VpcConfig.html) |
@@ -44,17 +45,19 @@ Each page was fetched on 2026-11-05 and is recorded in `S06-source-checks.json`,
 | A regional web ACL shares its resource's Region | "must be in the same region as your resource" | [Associating](https://docs.aws.amazon.com/waf/latest/developerguide/web-acl-associating-aws-resource.html) |
 | One web ACL for each resource | "with only one" protection pack (web ACL) | [Associating](https://docs.aws.amazon.com/waf/latest/developerguide/web-acl-associating-aws-resource.html) |
 
+The last two rows are why a web ACL with no region of its own still fails when it protects ALBs in two regions: AWS's rule holds for each one.
+
 ## Calls that could have gone another way
 
 **An ECS cluster refuses a network attachment, although AWS's words are loose here.** The clusters page lists "the network (VPC and subnet) where your tasks and services run" among what a cluster consists of, and the services page says "your cluster VPC". Reference pictures often draw a cluster inside a VPC. But neither CloudFormation nor the cluster's own settings give a cluster a VPC or subnet: the service or task holds that, and the page's own sentence places the network with the tasks and services. S06 reads a type's network form from its real configuration, as it does for S3, so this follows that, and the remedy says where the network belongs. A model that attaches one fails in both modes and is corrected in one step. S06 also says a false rejection is worse than a gap, so this is the one rule here that a reviewer or the owner may reasonably reverse, by changing `network` on that record.
 
 **One WAF type, not two.** A web ACL's `Scope` is `REGIONAL` or `CLOUDFRONT`, which differ in location, and S06 gives product variants their own types where a rule differs. A CloudFront-scope type would have nothing in this catalog to protect, because CloudFront is not in it. So one record stays regional, a region stays optional, and a draft that attaches one to an unknown CloudFront type gets no WAF rule. CloudFront's addition is the time to split it.
 
-**`attachment` and `policy` both count as an association, and `traffic` does not.** Authors often draw users through a WAF to a service. That claims nothing about what the web ACL protects, so it stays free. Both of the other kinds do claim it, so a web ACL on an EC2 instance fails either way and in either direction.
+**Only `attachment` claims what a web ACL protects.** Authors often draw users through a WAF to a service, which claims nothing about what it protects, and an IAM policy may govern who edits a web ACL. So a `traffic` or `policy` edge stays free, and a web ACL `attachment` on an EC2 instance fails in either direction. The model guide tells authors to use `attachment`.
 
-**An EC2 host is allowed on an ECS service only.** A service on EC2 capacity really runs on those instances, so naming them is true. Several instances are not several clusters.
+**An EC2 or on-premises host is allowed on an ECS service only.** A service on EC2 or external capacity really runs on those machines, so naming them is true, and ECS Anywhere makes that cross a provider. Several hosts are not several clusters. Fargate names neither. A host of an unknown type gets no host rule, because lenient mode keeps it as a disclosed draft. That also changes an existing path: a virtual machine on an unknown hypervisor is now a draft in lenient mode instead of a failure, and strict mode still refuses the unknown type.
 
-**The core package stays `0.5.0a1`.** A new version would change `uv.lock`, and both plugins name their private runtime by its digest, so every machine would need a new runtime for a catalog addition. Earlier core changes under D-030 also kept the version. The catalog version is what results report for this, and it does change.
+**The core package takes no new version here.** It stays at the `0.5.0a2` that D-034 set on `main`. A further version would change `uv.lock` again, and both plugins name their private runtime by its digest. D-034's own move already means one new runtime, so this adds nothing further. The catalog version is what results report for this change, and it does change.
 
 ## Deliberately not enforced
 
@@ -77,7 +80,7 @@ The picture holds AWS and generic icons only, and a test requires its manifest t
 | Area | Change |
 |---|---|
 | Catalog version | `2026.11.0` to `2026.11.1` in every catalog file |
-| Existing models | Valid models stay valid. No existing type or rule tightened, and only a type that lists targets is limited |
+| Existing models | Valid models stay valid. No existing type or rule tightened, and only a type that lists targets is limited. One path loosened, in lenient mode: see the draft host above |
 | Catalog search | `ECS` with `--provider aws` now finds three AWS types, and with no provider finds those and Huawei's. FR-054 still holds, because only a provider chooses between them. The skill already asks which one is meant |
 | Model guide | States how to place these types |
 | Work skill | Its example of a missing service moves from AWS WAF to Amazon CloudFront |

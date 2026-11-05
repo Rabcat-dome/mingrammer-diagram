@@ -604,3 +604,8 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - On the owner's word to go to the next step, M7 resumed on `codex/m7-acceptance`. Claude Opus 5.5 [measured](evidence/M7-claude-plugin.md#acceptance-measurements-at-97b0841) the installed `97b0841eb926` on the first Mac: the copy itself, a first run with nothing cached, 24 cases of what the pre-approval admits, and four new sessions through to a rendered bundle.
 - The measurements found that `→`, `✓` and similar characters draw as boxes in the PNG with no diagnostic, which is not fixed, and that ordinary AWS requests hit catalog gaps such as ECS, Lambda and WAF. The plugin README now states what the pre-approval admits.
 - No interactive terminal ran, because finishing the CLI's first-run setup would change the owner's config. M7 stays open for a check in a Code tab chat that asks before acting, and the second machine.
+
+## 2026-11-05 — Characters the fonts lack
+
+- The owner said to fix the boxes (D-034). `render` now reads the character tables of the verified fonts and refuses, before the engine runs, a label holding anything absent from both, with `RENDER_TEXT_UNDRAWABLE`, exit 2, in both modes. Each error names the element and up to eight code points, never the label. Core moves to `0.5.0a2`. Noncharacters XML cannot hold now stop here too, in place of `RENDER_SVG_UNSAFE`.
+- Claude Fable 5.1 / Medium [approved it](evidence/M7-fable-glyph-review.md) at `3835439` with five P3 findings. Four are fixed after that commit, and U+2028 and U+2029 drawing as a line break stays open because it predates the change. The core proof was redone from a new clone for the final source.

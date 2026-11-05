@@ -173,7 +173,7 @@ Taxonomy availability does not require every provider to implement every categor
 
 ## 6. Minimum release catalog
 
-These are required catalog targets. M2 froze exact type IDs, product variants and icon mappings in a machine-readable inventory (`catalog_data/inventory.json`, catalog `2026.11.0`), which a check compares with this table, so edit both together. A supported item needs a valid record, approved visual representation, applicable rules, positive fixtures, and negative fixtures for its rules (D-030). Scope/group items may use labeled boundaries instead of service icons.
+These are required catalog targets. M2 froze exact type IDs, product variants and icon mappings in a machine-readable inventory (`catalog_data/inventory.json`, frozen at catalog `2026.11.0`), which a check compares with this table, so edit both together. A supported item needs a valid record, approved visual representation, applicable rules, positive fixtures, and negative fixtures for its rules (D-030). Scope/group items may use labeled boundaries instead of service icons.
 
 | Environment | Minimum scope and services |
 |---|---|
@@ -187,7 +187,7 @@ For the eight on-premises gaps, use the [draw.io-type generic mappings](../proje
 
 Support networking, compute, containers, data/storage, identity/security, connectivity, and observability in every environment. Expanded analytics/AI, messaging, vendor appliances, and additional database variants are P1.
 
-The catalog also holds types beyond this minimum, selected from P1 under [D-034](../project-management/decisions.md#confirmed-user-direction): the AWS ECS cluster, ECS service, AWS Fargate for ECS, Lambda function and WAF web ACL. The inventory does not list them, so they add nothing to P0. They meet the same standard: one taxonomy ID, a sourced placement rule, an approved icon, and positive and negative fixtures. See [S12](../project-management/evidence/S12-aws-ecs-lambda-waf.md).
+The catalog also holds types beyond this minimum, selected from P1 under [D-036](../project-management/decisions.md#confirmed-user-direction): the AWS ECS cluster, ECS service, AWS Fargate for ECS, Lambda function and WAF web ACL. The inventory does not list them, so they add nothing to P0. They meet the same standard: one taxonomy ID, a sourced placement rule, an approved icon, and positive and negative fixtures. See [S12](../project-management/evidence/S12-aws-ecs-lambda-waf.md).
 
 ### 6.1 Detailed Kubernetes coverage (P0)
 

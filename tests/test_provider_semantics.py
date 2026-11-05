@@ -558,6 +558,49 @@ def test_a_workload_may_leave_its_cluster_unspecified() -> None:
     assert not codes(document)["error"]
 
 
+def hosted_on(document: dict[str, Any], service_type: str, taxonomy: str) -> None:
+    """Add a host of the given type, with no location of its own."""
+    provider = service_type.split(".")[0]
+    document["resources"].append(
+        {
+            "id": "probe-host",
+            "name": "Host",
+            "provider": provider,
+            "service_type": service_type,
+            "taxonomy": taxonomy,
+        }
+    )
+
+
+@pytest.mark.parametrize(
+    "service_type", ["onprem.compute.physical_server", "onprem.compute.virtual_machine"]
+)
+def test_ecs_anywhere_hosts_are_valid_on_a_service_and_not_on_fargate(service_type: str) -> None:
+    # ECS Anywhere registers an on-premises server or VM to a cluster, with the EXTERNAL launch type.
+    document = load(ECS_LAMBDA_WAF)
+    taxonomy = catalog().records[service_type].taxonomy
+    hosted_on(document, service_type, taxonomy)
+    context = ["cluster", "probe-host"]
+    entity(document, "resources", "worker")["placement"]["deployment_context"] = context
+    assert not codes(document)["error"]
+    entity(document, "resources", "web")["placement"]["deployment_context"] = context
+    assert codes(document)["error"] == {"PLACEMENT_HOST_TYPE_INVALID"}
+
+
+@pytest.mark.parametrize(
+    ("base", "target"),
+    [(ECS_LAMBDA_WAF, "worker"), (ECS_LAMBDA_WAF, "web"), ("providers/onprem", "vm")],
+)
+def test_a_draft_host_gets_no_host_rule(base: str, target: str) -> None:
+    # An unknown type has no record to judge: strict refuses it once, and lenient keeps a draft.
+    document = load(base)
+    hosted_on(document, "aws.compute.not_a_service", "compute.vm")
+    entity(document, "resources", target)["placement"]["deployment_context"] = ["probe-host"]
+    assert codes(document)["error"] == {"CATALOG_TYPE_UNKNOWN"}
+    lenient = validate_json(json.dumps(document).encode(), mode="lenient")
+    assert lenient.valid and lenient.draft
+
+
 def test_only_an_ecs_service_may_name_an_ec2_host() -> None:
     document = load(ECS_LAMBDA_WAF)
     worker = entity(document, "resources", "worker")["placement"]["deployment_context"]
@@ -581,24 +624,61 @@ def test_several_ec2_hosts_are_not_several_clusters() -> None:
     [
         {"source_ref": "waf", "target_ref": "alb", "kind": "attachment"},
         {"source_ref": "alb", "target_ref": "waf", "kind": "attachment"},
-        {"source_ref": "waf", "target_ref": "alb", "kind": "policy"},
         # Repeating one association is still one web ACL.
         {"source_ref": "waf", "target_ref": "alb", "kind": "attachment", "label": "Again"},
     ],
 )
-def test_a_web_acl_may_associate_with_an_alb_either_way(relationship: dict[str, str]) -> None:
+def test_a_web_acl_may_attach_to_an_alb_either_way(relationship: dict[str, str]) -> None:
     document = load(ECS_LAMBDA_WAF)
     document["relationships"].append({"id": "probe", **relationship})
     assert not codes(document)["error"]
 
 
-def test_traffic_through_a_web_acl_is_not_an_association() -> None:
-    # Authors often draw users -> WAF -> service. That is a drawing choice, and it claims no target.
+@pytest.mark.parametrize(
+    "relationship",
+    [
+        # Authors often draw users -> WAF -> service. That claims nothing about what it protects.
+        {"source_ref": "waf", "target_ref": "worker-host", "kind": "traffic"},
+        {"source_ref": "waf", "target_ref": "worker-host", "kind": "policy"},
+        {"source_ref": "bucket", "target_ref": "waf", "kind": "observability"},
+    ],
+)
+def test_only_an_attachment_claims_what_a_web_acl_protects(relationship: dict[str, str]) -> None:
     document = load(ECS_LAMBDA_WAF)
+    document["relationships"].append({"id": "probe", **relationship})
+    assert not codes(document)["error"]
+
+
+def test_an_iam_policy_on_a_web_acl_is_not_refused() -> None:
+    document = load(ECS_LAMBDA_WAF)
+    document["resources"].append(
+        {
+            "id": "iam",
+            "name": "AWS IAM",
+            "provider": "aws",
+            "service_type": "aws.identity.iam",
+            "taxonomy": "identity.access",
+        }
+    )
     document["relationships"].append(
-        {"id": "probe", "source_ref": "waf", "target_ref": "worker-host", "kind": "traffic"}
+        {"id": "probe", "source_ref": "iam", "target_ref": "waf", "kind": "policy"}
     )
     assert not codes(document)["error"]
+
+
+@pytest.mark.parametrize("position", [0, -1])
+def test_two_web_acls_are_reported_on_the_resource_in_either_edge_order(position: int) -> None:
+    document = load(ECS_LAMBDA_WAF)
+    second = copy.deepcopy(entity(document, "resources", "waf"))
+    second["id"] = "waf-2"
+    document["resources"].append(second)
+    edge = {"id": "probe", "source_ref": "waf-2", "target_ref": "alb", "kind": "attachment"}
+    edges = document["relationships"]
+    edges.insert(0 if position == 0 else len(edges), edge)
+    found = validate_json(json.dumps(document).encode()).diagnostics
+    [item] = [item for item in found if item.code == "AWS_WAF_ACL_MULTIPLE"]
+    index = next(n for n, resource in enumerate(document["resources"]) if resource["id"] == "alb")
+    assert item.entity_id == "alb" and item.field == f"/resources/{index}"
 
 
 def test_one_web_acl_may_protect_several_albs() -> None:

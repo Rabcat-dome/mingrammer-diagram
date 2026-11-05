@@ -6,6 +6,7 @@ import json
 import random
 import re
 import shutil
+import struct
 import subprocess
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -38,7 +39,14 @@ from cloud_architecture_diagrams.catalog import catalog
 from cloud_architecture_diagrams.cli import capabilities
 from cloud_architecture_diagrams.models import Architecture
 from cloud_architecture_diagrams.render import BUNDLE_FILES, RenderResult, exit_status
-from cloud_architecture_diagrams.render.checks import DATA_PNG, HREF, SVG, check_png, png_scale
+from cloud_architecture_diagrams.render.checks import (
+    DATA_PNG,
+    HREF,
+    SVG,
+    check_png,
+    png_scale,
+    undrawable_text,
+)
 from cloud_architecture_diagrams.render.draw import (
     EDGE_STYLES,
     GROUP_STYLES,
@@ -48,7 +56,13 @@ from cloud_architecture_diagrams.render.draw import (
 from cloud_architecture_diagrams.render.errors import MESSAGES
 from cloud_architecture_diagrams.render.execution import find_engine
 from cloud_architecture_diagrams.render.graph import GraphIcon, map_view, visible_width, wrap
-from cloud_architecture_diagrams.render.icons import verified_fonts, verified_icon, verified_icons
+from cloud_architecture_diagrams.render.icons import (
+    drawable_characters,
+    font_characters,
+    verified_fonts,
+    verified_icon,
+    verified_icons,
+)
 from cloud_architecture_diagrams.render.limits import LIMITS
 from cloud_architecture_diagrams.validation import Mode
 
@@ -1049,6 +1063,157 @@ def test_thai_and_english_labels_survive_literally(tmp_path: Path) -> None:
     assert "".join(name.split()) in joined_text(element["node:app"])
     assert "สถาปัตยกรรม" in joined_text(element["graph:root"])
     assert json.loads(bundle_files(result)["model.json"])["resources"][0]["name"] == name
+
+
+def _with_arrow(place: str) -> tuple[dict[str, Any], str, str | None]:
+    """Put an arrow in one drawn field, and name the element a diagnostic should point at."""
+    model = load("providers/aws.json")
+    arrow = "left → right"
+    if place == "resource name":
+        target = model["resources"][0]
+        target["name"] = arrow
+        return model, "/labels", target["id"]
+    if place == "group name":
+        target = next(item for item in model["boundaries"] if item["id"] == "vpc")
+        target["name"] = arrow
+        return model, "/labels", "vpc"
+    if place == "relationship label":
+        target = model["relationships"][0]
+        target["label"] = arrow
+        return model, "/labels", target["id"]
+    if place == "metadata title":
+        model["metadata"]["title"] = arrow
+    elif place == "view title":
+        model["views"][0]["title"] = arrow
+    else:
+        model["metadata"]["environment"] = arrow
+    return model, "/title", None
+
+
+@pytest.mark.parametrize("mode", ["strict", "lenient"])
+@pytest.mark.parametrize(
+    "place",
+    [
+        "resource name",
+        "group name",
+        "relationship label",
+        "metadata title",
+        "view title",
+        "environment",
+    ],
+)
+def test_a_label_the_fonts_cannot_draw_is_refused(place: str, mode: Mode, tmp_path: Path) -> None:
+    # The engine can draw an empty box and reports nothing, so this is the place to catch it.
+    model, field, entity = _with_arrow(place)
+    output = tmp_path / "out"
+    result = render(model, output, mode=mode)
+    assert not result.rendered and not result.artifacts and not output.exists()
+    assert result.valid
+    assert codes(result) == ["RENDER_TEXT_UNDRAWABLE"]
+    assert exit_status(result) == 2
+    found = next(item for item in result.diagnostics if item.severity == "error")
+    assert (found.field, found.entity_id) == (field, entity)
+    assert "U+2192" in found.message and "→" not in found.message
+    assert "left" not in found.message and "left" not in found.remedy
+
+
+def test_each_undrawable_element_is_named_at_once(tmp_path: Path) -> None:
+    model = load("providers/aws.json")
+    model["metadata"]["title"] = "ก → ข"
+    model["resources"][0]["name"] = "ok ✓"
+    model["relationships"][0]["label"] = "≥ 2"
+    result = render(model, tmp_path / "out")
+    found = {
+        (item.field, item.entity_id): item.message
+        for item in result.diagnostics
+        if item.severity == "error"
+    }
+    assert set(found) == {
+        ("/title", None),
+        ("/labels", model["resources"][0]["id"]),
+        ("/labels", model["relationships"][0]["id"]),
+    }
+    assert "U+2713" in found["/labels", model["resources"][0]["id"]]
+    assert "U+2265" in found["/labels", model["relationships"][0]["id"]]
+
+
+def test_a_long_list_of_absent_characters_stays_short(tmp_path: Path) -> None:
+    name = "".join(chr(0x4E00 + index) for index in range(30))
+    result = render(single_resource_model(name), tmp_path / "out")
+    found = next(item for item in result.diagnostics if item.severity == "error")
+    assert found.message.count("U+") == 8 and found.message.endswith("and more.")
+
+
+@pytest.mark.parametrize(
+    "character",
+    ["→", "←", "↔", "↑", "↓", "⇒", "✓", "✗", "✔", "✘", "≥", "≤", "≠", "🚀", "中", "あ", "한", "️"],
+)
+def test_characters_seen_or_likely_in_labels_are_refused(character: str, tmp_path: Path) -> None:
+    result = render(single_resource_model(f"a{character}b"), tmp_path / "out")
+    assert codes(result) == ["RENDER_TEXT_UNDRAWABLE"]
+
+
+def test_english_thai_and_common_punctuation_still_draw(tmp_path: Path) -> None:
+    name = "ระบบงาน เก่า ๆ ฿100 – — … • × ÷ ± ° © ® ™ € £ ¥ “a” ‘b’ § ¶ é ñ ü -> >= <= & < > \\ \" '"
+    result = render(single_resource_model(name), tmp_path / "out")
+    assert result.rendered, codes(result)
+
+
+def test_a_font_character_list_comes_from_the_font_itself() -> None:
+    fonts = {font.family: font_characters(data) for font, data in verified_fonts(LIMITS)}
+    latin, thai = fonts["Noto Sans"], fonts["Noto Sans Thai"]
+    # Counted with fontTools 4.60.1, which the project does not depend on.
+    assert (len(latin), len(thai)) == (2965, 101)
+    assert {ord(item) for item in "A z 0 ~ é € – …"} <= latin
+    assert {ord(item) for item in "กฮ่ิ๙"} <= thai
+    assert not {ord(item) for item in "→✓≥中"} & (latin | thai)
+    # A format 4 subtable always ends in a marker segment, which is no character.
+    assert 0xFFFF not in latin | thai
+
+
+def _font_with(platform: int, encoding: int, subtable: bytes) -> bytes:
+    cmap = struct.pack(">2H", 0, 1) + struct.pack(">HHI", platform, encoding, 12) + subtable
+    font = struct.pack(">IHHHH", 0x00010000, 1, 0, 0, 0)
+    return font + struct.pack(">4sIII", b"cmap", 0, 28, len(cmap)) + cmap
+
+
+def test_a_character_mapped_to_the_empty_box_counts_as_absent() -> None:
+    # One format 4 subtable: "A" maps through a delta, and "B" through an array to glyph 0, where
+    # the delta must not apply.
+    subtable = struct.pack(">7H", 4, 40, 0, 6, 0, 0, 0)
+    subtable += struct.pack(">3H", 0x41, 0x42, 0xFFFF) + struct.pack(">H", 0)
+    subtable += struct.pack(">3H", 0x41, 0x42, 0xFFFF) + struct.pack(">3H", 0xFFC0, 5, 1)
+    subtable += struct.pack(">3H", 0, 4, 0) + struct.pack(">H", 0)
+    assert font_characters(_font_with(3, 1, subtable)) == {0x41}
+
+
+def test_a_run_starting_at_the_empty_box_leaves_out_only_its_first_character() -> None:
+    subtable = struct.pack(">HHIII", 12, 0, 40, 0, 2)
+    subtable += struct.pack(">3I", 0x41, 0x42, 0) + struct.pack(">3I", 0x43, 0x43, 7)
+    assert font_characters(_font_with(3, 10, subtable)) == {0x42, 0x43}
+
+
+def test_a_notice_the_fonts_cannot_draw_is_refused() -> None:
+    # Notices come from the catalog, which the next test holds drawable, so this path is forced.
+    model = Architecture.model_validate(load("providers/aws.json"))
+    graph = map_view(model, model.views[0], "strict", LIMITS)
+    found = undrawable_text(
+        graph.model_copy(update={"notice_lines": ("a → b",)}), drawable_characters(LIMITS)
+    )
+    assert [(item.field, item.entity_id) for item in found] == [("/notices", None)]
+
+
+def test_every_catalog_text_can_be_drawn() -> None:
+    # A catalog label that failed here would refuse every model using that type.
+    held = drawable_characters(LIMITS)
+    data = catalog()
+    texts_used = [
+        *(record.display_name for record in data.records.values()),
+        *(record.representation.label or "" for record in data.records.values()),
+        *(pack.attribution or "" for pack in data.packs.values()),
+    ]
+    absent = {text for text in texts_used if {ord(character) for character in text} - held}
+    assert not absent, absent
 
 
 def test_wrapping_never_splits_a_mark_from_its_base() -> None:

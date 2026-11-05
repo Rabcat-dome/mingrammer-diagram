@@ -1144,12 +1144,15 @@ def test_a_strict_mapper_refuses_an_unresolved_type() -> None:
     assert caught.value.code == "RENDER_TYPE_UNRESOLVED"
 
 
-def test_text_xml_cannot_hold_fails_closed(tmp_path: Path) -> None:
-    # The schema allows these noncharacters, Graphviz writes them, and XML forbids them.
+def test_text_xml_cannot_hold_never_reaches_the_engine(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # The schema allows these noncharacters, and XML forbids them. No font holds them either.
+    monkeypatch.setattr(renderer, "find_engine", lambda: pytest.fail("the engine ran"))
     output = tmp_path / "out"
     result = render(single_resource_model("bad￾ text"), output)
-    assert codes(result) == ["RENDER_SVG_UNSAFE"]
-    assert tree(output) == []
+    assert codes(result) == ["RENDER_TEXT_UNDRAWABLE"]
+    assert not output.exists()
 
 
 def test_only_literal_and_controlled_values_reach_engine_environment(tmp_path: Path) -> None:

@@ -5,6 +5,7 @@ import importlib
 import json
 import os
 import re
+import struct
 from dataclasses import dataclass
 from importlib import metadata
 from pathlib import Path
@@ -18,6 +19,7 @@ from .paths import open_directory, read_regular
 
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 RELATIVE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_./-]*$")
+UNICODE_SUBTABLES = {(0, 3), (0, 4), (3, 1), (3, 10)}
 
 
 @dataclass(frozen=True)
@@ -124,3 +126,57 @@ def verified_fonts(limits: Limits) -> list[tuple[Font, bytes]]:
         (font, _read(PACKAGE, font.path, font.sha256, limits.file_bytes, font.family))
         for font in fonts
     ]
+
+
+def _segment_map(data: bytes, start: int) -> set[int]:
+    """A cmap format 4 subtable: each segment maps by a delta, or through an array of glyphs."""
+    count = struct.unpack_from(">H", data, start + 6)[0] // 2
+    offsets_at = start + 16 + 6 * count
+    columns = (start + 14, start + 16 + 2 * count, start + 16 + 4 * count, offsets_at)
+    rows = zip(*(struct.unpack_from(f">{count}H", data, at) for at in columns), strict=True)
+    found: set[int] = set()
+    for index, (last, first, delta, offset) in enumerate(rows):
+        for point in range(first, last + 1):
+            glyph = point
+            if offset:
+                at = offsets_at + 2 * index + offset + 2 * (point - first)
+                glyph = struct.unpack_from(">H", data, at)[0]
+                if not glyph:
+                    continue
+            # Glyph 0 is the font's empty box, so a character mapped to it counts as absent.
+            if (glyph + delta) & 0xFFFF:
+                found.add(point)
+    return found
+
+
+def _group_map(data: bytes, start: int) -> set[int]:
+    """A cmap format 12 subtable: runs of characters mapped to runs of glyphs."""
+    found: set[int] = set()
+    for index in range(struct.unpack_from(">I", data, start + 12)[0]):
+        first, last, glyph = struct.unpack_from(">3I", data, start + 16 + 12 * index)
+        found.update(range(first + (glyph == 0), last + 1))
+    return found
+
+
+def font_characters(data: bytes) -> set[int]:
+    """What a font really holds, read from its own table rather than from a copied list."""
+    tables = (
+        struct.unpack_from(">4sIII", data, 12 + 16 * index)
+        for index in range(struct.unpack_from(">H", data, 4)[0])
+    )
+    cmap = next(offset for tag, _, offset, _ in tables if tag == b"cmap")
+    readers = {4: _segment_map, 12: _group_map}
+    found: set[int] = set()
+    for index in range(struct.unpack_from(">H", data, cmap + 2)[0]):
+        platform, encoding, offset = struct.unpack_from(">HHI", data, cmap + 4 + 8 * index)
+        if (platform, encoding) in UNICODE_SUBTABLES:
+            start = cmap + offset
+            found |= readers[struct.unpack_from(">H", data, start)[0]](data, start)
+    return found
+
+
+def drawable_characters(limits: Limits) -> set[int]:
+    found: set[int] = set()
+    for _, data in verified_fonts(limits):
+        found |= font_characters(data)
+    return found

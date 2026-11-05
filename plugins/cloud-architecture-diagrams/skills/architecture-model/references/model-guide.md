@@ -19,7 +19,7 @@ A working summary of the contract. The plugin's schema discovery (the `schema` s
 Unknown fields fail everywhere. At least one view is required. The input limit is 1 MiB, 1000 combined scopes/boundaries/resources, 4000 relationships and 32 views.
 
 - **IDs:** lowercase, start with a letter, then letters, digits, `.`, `_` or `-`, at most 64 characters. Scope, boundary, resource, relationship and view IDs share one namespace, so each must be unique across all five.
-- **Text:** English and Thai are both fine. Names and labels are 1-256 characters with no control characters, so no newlines.
+- **Text:** English and Thai are both fine. Names and labels are 1-256 characters with no control characters, so no newlines. Whatever a view draws must be in the bundled fonts, so `render` refuses `→`, `✓`, `≥`, emoji and scripts the fonts lack, such as Chinese, Japanese and Korean, with `RENDER_TEXT_UNDRAWABLE`. Write `to`, `>=` or words instead; `-`, `>`, `–`, `—` and `…` are fine.
 - **Provider:** `aws`, `azure`, `gcp`, `huawei`, `onprem` or `external`. Use `external` for users, the Internet, partners and SaaS.
 
 ## Scopes: administrative ownership
@@ -66,7 +66,7 @@ Each dimension is independent. Do not encode one through another: a multi-subnet
 
 Each type's catalog record states which of these apply (an omitted `location` means any and an omitted `network` means none), and the validator enforces only what you declare, so an unspecified zone or subnet stays valid while a contradictory one fails. Examples: an ALB or EKS cluster that lists subnets needs at least two in different zones, an S3 bucket takes no network attachment, IAM takes no location, and a regional NAT gateway attaches to a VPC while a zonal one sits in one subnet.
 
-On AWS, an ECS cluster and a WAF web ACL take no network attachment. An ECS service, a Fargate workload or a Lambda function holds the network instead: subnets from one VPC, at most 16, and a function may have none. Name the ECS cluster in the workload's `deployment_context`, and an EC2 host too for a service on EC2 capacity, but never for Fargate. Associate a web ACL with an ALB through an `attachment` relationship, in one region and with one web ACL for each ALB.
+On AWS, an ECS cluster and a WAF web ACL take no network attachment. An ECS service, a Fargate workload or a Lambda function holds the network instead: subnets from one VPC, at most 16, and a function may have none. Name the ECS cluster in the workload's `deployment_context`, and an EC2 host or an on-premises server too for a service on that capacity, but never for Fargate. Associate a web ACL with an ALB through an `attachment` relationship, in one region and with one web ACL for each ALB.
 
 Labels follow the platform's syntax: Kubernetes rules on a Kubernetes resource, otherwise AWS tags, Azure tags or GCP labels. Huawei Cloud and on-premises labels are not syntax-checked.
 

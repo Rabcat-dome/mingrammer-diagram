@@ -19,6 +19,10 @@ MESSAGES = {
         "A selected entity has no catalog representation to draw.",
         "Use a catalog type; an unknown service type is drawable only in lenient mode.",
     ),
+    "RENDER_TEXT_UNDRAWABLE": (
+        "A label holds a character neither bundled font has, so it can draw as an empty box.",
+        "Reword it in English or Thai with common punctuation, such as 'to' for an arrow or '>=' for a sign.",
+    ),
     "RENDER_ASSET_UNSAFE": (
         "A catalog icon or font is unlisted, outside its controlled root or differs from its recorded digest.",
         "Reinstall the package from its lock; never replace the file with another one.",
@@ -57,7 +61,7 @@ MESSAGES = {
     ),
     "RENDER_SVG_UNSAFE": (
         "The generated SVG failed its safety check.",
-        "No bundle was published. Remove characters XML cannot hold from labels, then retry.",
+        "No bundle was published. Report this as a renderer defect.",
     ),
     "RENDER_PNG_INVALID": (
         "The generated PNG is not a complete, valid image.",
@@ -115,6 +119,7 @@ REQUEST_CODES = frozenset(
         "RENDER_VIEW_TOO_LARGE",
         "RENDER_GROUP_DEPTH_LIMIT",
         "RENDER_TYPE_BLOCKED",
+        "RENDER_TEXT_UNDRAWABLE",
         "RENDER_PIXEL_LIMIT",
         "RENDER_PNG_SCALE_LIMIT",
         "RENDER_ARTIFACT_LIMIT",

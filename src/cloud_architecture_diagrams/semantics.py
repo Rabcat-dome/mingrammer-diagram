@@ -68,8 +68,6 @@ EKS_CLUSTER_VPC_POOLS = {
     "aws.containers.eks_self_managed_nodes",
 }
 ECS_CLUSTER = "aws.containers.ecs_cluster"
-# Both say what governs a resource. A traffic edge through a firewall stays free, as drawn.
-ASSOCIATION_KINDS = {"attachment", "policy"}
 QUALIFIED = re.compile(r"^[A-Za-z0-9]([A-Za-z0-9_.-]{0,61}[A-Za-z0-9])?$")
 SUBDOMAIN = re.compile(r"^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$")
 AZURE_FORBIDDEN = set("<>%&\\?/")
@@ -115,6 +113,7 @@ class Semantics:
         self.subnet_types: dict[str, set[str]] = defaultdict(set)
         self.attached: dict[str, set[str]] = defaultdict(set)
         self.web_acls: dict[str, set[str]] = defaultdict(set)
+        self.web_acl_regions: dict[str, set[str]] = defaultdict(set)
 
     def emit(self, code: str, field: str, entity_id: str | None = None) -> None:
         if sum(item.severity == "error" for item in self.diagnostics) >= 100:
@@ -403,7 +402,8 @@ class Semantics:
         clusters: set[str] = set()
         for number, identifier in enumerate(placement.deployment_context):
             host = self.resource(identifier)
-            if host is None or not rule.host_types:
+            # An unknown draft type has no record to judge, and lenient mode keeps it as a draft.
+            if host is None or host.id not in self.types or not rule.host_types:
                 continue
             field = f"{path}/deployment_context/{number}"
             if host.service_type not in rule.host_types:
@@ -724,6 +724,10 @@ class Semantics:
                             self.emit("K8S_RELATIONSHIP_INVALID", field, edge.id)
                 continue
             self.kubernetes_edge(field, edge.kind, edge.id, source, target)
+        # Collected first, so the report names the resource whichever edge came first.
+        for index, resource in enumerate(self.model.resources):
+            if len(self.web_acls[resource.id]) > 1:
+                self.emit("AWS_WAF_ACL_MULTIPLE", f"/resources/{index}", resource.id)
 
     def provider_edge(
         self,
@@ -733,13 +737,10 @@ class Semantics:
         source: Resource | None,
         target: Resource | None,
     ) -> None:
-        if source is None or target is None:
+        if kind != "attachment" or source is None or target is None:
             return
-        if kind in ASSOCIATION_KINDS:
-            self.association(field, identifier, source, target)
-            self.association(field, identifier, target, source)
-        if kind != "attachment":
-            return
+        self.attachment_target(field, identifier, source, target)
+        self.attachment_target(field, identifier, target, source)
         pair = {source.service_type, target.service_type}
         if pair == {"azure.compute.virtual_machine", "azure.network.network_interface"}:
             first = self.scope_ancestor(source.placement.scope_refs, "subscription")
@@ -749,20 +750,27 @@ class Semantics:
         if "huawei.network.eip" in pair and self.regions_differ(source, target):
             self.emit("HUAWEI_EIP_REGION_MISMATCH", field, identifier)
 
-    def association(self, field: str, identifier: str, owner: Resource, target: Resource) -> None:
-        """A type with listed targets governs only those. An unknown draft type has no rule yet."""
+    def attachment_target(
+        self, field: str, identifier: str, owner: Resource, target: Resource
+    ) -> None:
+        """A type that lists targets attaches only to those. An unknown draft type has no rule yet.
+
+        Only a WAF web ACL lists targets today, so the region and one-owner rules are AWS's for it.
+        A second type that lists targets must say whether they apply to it.
+        """
         record = self.types.get(owner.id)
         if record is None or not record.placement.attachment_targets or target.id not in self.types:
             return
         if target.service_type not in record.placement.attachment_targets:
             self.emit("PLACEMENT_ATTACHMENT_TARGET_INVALID", field, identifier)
             return
-        own, other = self.declared_region(owner), self.declared_region(target)
-        if own and other and own.id != other.id:
-            self.emit("AWS_WAF_RESOURCE_REGION_MISMATCH", field, identifier)
         self.web_acls[target.id].add(owner.id)
-        if len(self.web_acls[target.id]) > 1:
-            self.emit("AWS_WAF_ACL_MULTIPLE", field, identifier)
+        # A web ACL with no region of its own still cannot protect resources in two regions.
+        regions = self.web_acl_regions[owner.id]
+        declared = (self.declared_region(owner), self.declared_region(target))
+        regions |= {region.id for region in declared if region}
+        if len(regions) > 1:
+            self.emit("AWS_WAF_RESOURCE_REGION_MISMATCH", field, identifier)
 
     def regions_differ(self, first: Resource, second: Resource) -> bool:
         def region(resource: Resource) -> Boundary | None:

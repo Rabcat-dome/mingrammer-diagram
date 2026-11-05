@@ -683,7 +683,7 @@ def test_added_aws_types_have_distinct_icons() -> None:
 
 
 def test_added_aws_types_are_not_required_items() -> None:
-    # They are selected P1 work (D-034), so the P0 inventory and its requirements table stay as is.
+    # They are selected P1 work (D-036), so the P0 inventory and its requirements table stay as is.
     listed = {type_id for item in catalog().inventory["aws"].values() for type_id in item}
     assert not listed & set(AWS_ADDED)
 

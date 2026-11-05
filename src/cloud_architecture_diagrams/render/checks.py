@@ -9,7 +9,8 @@ import struct
 import xml.etree.ElementTree as ET
 import zlib
 
-from .errors import RenderFailure
+from ..diagnostics import Diagnostic
+from .errors import RenderFailure, diagnostic
 from .graph import RenderGraph
 from .icons import PNG_SIGNATURE, VerifiedIcon
 from .limits import Limits
@@ -43,6 +44,30 @@ ICON_HREF = re.compile(r"^icons/(?P<sha>[0-9a-f]{64})\.png$")
 DATA_PNG = "data:image/png;base64,"
 SVG_SIZE = re.compile(r"^(?P<points>[0-9]+(?:\.[0-9]+)?)pt$")
 PIXELS_PER_POINT = 96 / 72
+UNDRAWABLE_SHOWN = 8
+
+
+def undrawable_text(graph: RenderGraph, characters: set[int]) -> list[Diagnostic]:
+    """Graphviz can draw an absent character as an empty box and reports nothing, so ask first."""
+    drawn: list[tuple[str, str | None, tuple[str, ...]]] = [
+        ("/title", None, graph.title_lines),
+        ("/notices", None, graph.notice_lines),
+        *(("/labels", group.id, group.lines) for group in graph.groups),
+        *(("/labels", node.id, node.lines) for node in graph.nodes),
+        *(("/labels", edge.id, edge.lines) for edge in graph.edges),
+    ]
+    found = []
+    for field, entity, lines in drawn:
+        absent = sorted({ord(character) for line in lines for character in line} - characters)
+        if absent:
+            # Code points name the problem without carrying the label itself (NFR-005).
+            named = ", ".join(f"U+{point:04X}" for point in absent[:UNDRAWABLE_SHOWN])
+            more = " and more" if len(absent) > UNDRAWABLE_SHOWN else ""
+            item = diagnostic("RENDER_TEXT_UNDRAWABLE", field, entity)
+            found.append(
+                item.model_copy(update={"message": f"{item.message} Found {named}{more}."})
+            )
+    return found
 
 
 def _local(tag: str) -> str:

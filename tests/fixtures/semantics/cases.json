@@ -2626,6 +2626,17 @@
    "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
    "ops": [
     {
+     "set": "resources/id:worker/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "app-a"
+       ]
+      }
+     ]
+    },
+    {
      "set": "resources/id:worker/placement/location",
      "value": {
       "zone_ref": "az-a"
@@ -2943,6 +2954,17 @@
    "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
    "ops": [
     {
+     "set": "resources/id:web/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "app-a"
+       ]
+      }
+     ]
+    },
+    {
      "set": "resources/id:web/placement/location",
      "value": {
       "zone_ref": "az-a"
@@ -3076,6 +3098,17 @@
    "base": "providers/aws-ecs-lambda-waf",
    "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
    "ops": [
+    {
+     "set": "resources/id:receipts/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "app-a"
+       ]
+      }
+     ]
+    },
     {
      "set": "resources/id:receipts/placement/location",
      "value": {
@@ -3279,21 +3312,6 @@
    ]
   },
   {
-   "id": "aws-waf-on-ec2-as-policy",
-   "base": "providers/aws-ecs-lambda-waf",
-   "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
-   "ops": [
-    {
-     "set": "relationships/id:a-waf-alb/target_ref",
-     "value": "worker-host"
-    },
-    {
-     "set": "relationships/id:a-waf-alb/kind",
-     "value": "policy"
-    }
-   ]
-  },
-  {
    "id": "aws-waf-on-ec2-reversed",
    "base": "providers/aws-ecs-lambda-waf",
    "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
@@ -3394,6 +3412,54 @@
     }
    ],
    "note": "Each resource has only one web ACL."
+  },
+  {
+   "id": "aws-waf-undeclared-albs-in-two-regions",
+   "base": "providers/aws-ecs-lambda-waf",
+   "expect": "AWS_WAF_RESOURCE_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-other",
+      "name": "us-east-1",
+      "provider": "aws",
+      "kind": "region",
+      "scope_refs": [
+       "acct"
+      ]
+     }
+    },
+    {
+     "set": "resources/id:waf/placement/location",
+     "value": {}
+    },
+    {
+     "add": "resources",
+     "value": {
+      "id": "alb-other",
+      "name": "Other ALB",
+      "provider": "aws",
+      "service_type": "aws.network.application_load_balancer",
+      "taxonomy": "network.load_balancing",
+      "placement": {
+       "location": {
+        "region_ref": "region-other"
+       }
+      }
+     }
+    },
+    {
+     "add": "relationships",
+     "value": {
+      "id": "a-waf-alb-other",
+      "source_ref": "waf",
+      "target_ref": "alb-other",
+      "kind": "attachment"
+     }
+    }
+   ],
+   "note": "A web ACL with no region of its own still cannot protect resources in two regions."
   }
  ],
  "warnings": [

@@ -1581,6 +1581,25 @@
      "matched": true
     }
    ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-anywhere.html",
+   "http_status": 200,
+   "checked": "2026-11-05",
+   "text_sha256": "759e9cf4127e4b8d4d936632d8957fae1d8dd7b5d107f7b1748cd9ec47978ae9",
+   "characters": 10396,
+   "claims": [
+    {
+     "claim": "An on-premises server or VM can register to a cluster",
+     "pattern": "registering an external instance such as an on-premises server or virtual machine",
+     "matched": true
+    },
+    {
+     "claim": "Services can use the EXTERNAL launch type",
+     "pattern": "EXTERNAL launch type",
+     "matched": true
+    }
+   ]
   }
  ]
 }
