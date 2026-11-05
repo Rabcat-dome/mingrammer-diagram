@@ -610,3 +610,10 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - The owner said to fix the boxes (D-034). `render` now reads the character tables of the verified fonts and refuses, before the engine runs, a label holding anything absent from both, with `RENDER_TEXT_UNDRAWABLE`, exit 2, in both modes. Each error names the element and up to eight code points, never the label. Core moves to `0.5.0a2`. Noncharacters XML cannot hold now stop here too, in place of `RENDER_SVG_UNSAFE`.
 - Claude Fable 5.1 / Medium [approved it](evidence/M7-fable-glyph-review.md) at `3835439` with five P3 findings. Four are fixed after that commit, and U+2028 and U+2029 drawing as a line break stays open because it predates the change. The core proof was redone from a new clone for the final source.
 - The owner updated the Claude plugin to `c6c7490`, and that copy refuses `→` with exit 2 and draws the reference view to its baseline digest. The owner then accepted M7 on the first Mac alone (D-035). M7 stays open for a check in a Code tab chat that asks before acting, and an independent review.
+
+## 2026-11-05 — AWS ECS, Fargate for ECS, Lambda and WAF
+
+- Under D-036, at the request of the session that started it, a Claude Opus 5.5 session added five AWS types as catalog `2026.11.1`: ECS cluster, ECS service, AWS Fargate for ECS, Lambda function and WAF web ACL. Each has a placement rule from AWS's own pages and its icon from the AWS pack already listed. No other type was added, and no baseline changed. See [S12](evidence/S12-aws-ecs-lambda-waf.md).
+- [Fable requested changes](evidence/S12-fable-review.md) on two P2 findings, both false rejections, then approved the fixes. Two P3 findings stay open by choice.
+- `codex/aws-ecs-fargate-lambda-waf` is pushed and not merged, and the tag does not move. The core reproduces from a new clone at `fe1e472`. No live session has used these types, and the owner has not yet accepted the picture.
+

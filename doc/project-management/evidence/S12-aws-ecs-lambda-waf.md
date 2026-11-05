@@ -1,8 +1,8 @@
 # S12 — AWS ECS, Fargate for ECS, Lambda and WAF
 
-Date: 2026-11-05 | Branch: `codex/aws-ecs-fargate-lambda-waf`, from `a4bf065` | Decision: D-036
+Date: 2026-11-05 | Branch: `codex/aws-ecs-fargate-lambda-waf`, from `a4bf065`, with `main` merged at `0aa040f` | Decision: D-036
 
-**Result: strict validation and rendering now accept five new AWS types, each with one taxonomy ID, a placement rule from AWS's own pages and AWS's own icon. The branch is not merged, the tag `v0.1.0-alpha.1` does not move, and no live session has used it yet.**
+**Result: strict validation and rendering now accept five new AWS types, each with one taxonomy ID, a placement rule from AWS's own pages and AWS's own icon. The branch is pushed and not merged, the tag `v0.1.0-alpha.1` does not move, and no live session has used it yet.**
 
 ## Why
 
@@ -88,3 +88,50 @@ The picture holds AWS and generic icons only, and a test requires its manifest t
 | Work skill | Its example of a missing service moves from AWS WAF to Amazon CloudFront |
 | Reference baselines | Unchanged. `visual-regression` passes with no update, because no renderer code and no reference model changed |
 | Claude plugin | Versioned by commit, so a merge reaches it with no bump |
+| Work plugin | Becomes `0.1.0-alpha.1+74722031cdf1` when built from this branch. It holds the 15 Huawei icon pairs, so it stays private under D-018 and O-002 |
+
+## Validation
+
+The local gate's counts below come from the run at `fe1e472`, where `release-audit` failed only on the proof this change then replaced. The final commit's result is in [the activity log](../ACTIVITY-LOG.md).
+
+| Lane | Tests, none skipped | What it adds here |
+|---|---:|---|
+| `provider-semantics` | 539 | The 36 new negative cases on the new fixture, and positive and boundary tests, including 16 and 17 subnets |
+| `catalog-license` | 98 | Each new type's own icon from the listed pack, and no new type in the P0 inventory. Placement targets must name real types |
+| `render-smoke` | 366 | One picture with all five types, marked strict, not draft and not private-use. The icons resolve to their locked digests |
+| `visual-regression` | 65 | All 26 baselines unchanged, with no baseline file edited and `update_visual_baselines.py` not run |
+| Other test lanes | 644 | `schema-core` 97, `claude-plugin` 60, `package-contract` 169, `release-audit` 67 and `render-security` 251 |
+
+**Reproduction.** `scripts/reproduce_core.py` rebuilt the core from a new clone of the pushed `fe1e472`, in a runtime that shares nothing with this checkout. All 26 reference views match their baselines by both routes, and the wheel's SHA-256 `2f35d73a...13c6` matches the local build. It reports core `0.5.0a2` and catalog `2026.11.1`. It ran on this one Mac, so it proves a clean runtime and not a second machine.
+
+**Sabotage.** Each of these was made in the real repository, failed its tests and was restored, with the `src` digest identical afterwards:
+
+| Change | Result |
+|---|---|
+| An ECS cluster may sit in a subnet | `aws-ecs-cluster-in-vpc` failed |
+| Fargate may name an EC2 host | `aws-fargate-on-ec2` failed |
+| Lambda may use two VPCs | `aws-lambda-two-vpcs` failed |
+| A web ACL may attach to anything | `aws-waf-on-ec2` failed |
+| The two-cluster check is switched off | `aws-ecs-service-two-clusters` failed |
+| Lambda borrows the EC2 icon | The catalog check failed |
+| Fargate names an icon the lock does not hold | The catalog check failed |
+| Fargate gets a second taxonomy | The positive fixture failed |
+
+These ran at the first code commit, before the review's fixes moved some of the same code. The negative cases they name still pass at this head.
+
+## Limits
+
+- **No live session has used these types.** The two M7 requests that ended as drafts were not repeated, so this does not yet show they now end strict. A request that names CloudFront or API Gateway still ends as a draft.
+- **Neither plugin was reinstalled**, and no Work session ran this version. The owner's installed copies are unchanged.
+- **FR-048's comparison was not repeated.** The picture was looked at, and it was not compared with an AWS reference diagram. It has no reviewed baseline, and the owner has not yet accepted it.
+- **Sources were checked once.** Nothing re-fetches them, as S06 says of its own pages.
+- **AWS gaps that remain.** These returned nothing from the catalog: CloudFront, API Gateway, Route 53, DynamoDB, ElastiCache, Network Load Balancer, SQS, SNS, EventBridge, Step Functions, Cognito, Secrets Manager, KMS and App Runner. ECR has no record either, since the search's one hit for `ecr` is the Kubernetes Secret. Which of these to add next is the owner's call.
+
+## Model and review
+
+Implementation used **Claude Opus 5.5 (`claude-opus-5-5`)**, the model of the session that ran this, rather than the planned Sol, with no setting changed. **Claude Fable 5.1 approved it**, after requesting changes on two P2 findings, and it is [recorded separately](S12-fable-review.md) with what is open.
+
+## Next steps
+
+1. The owner reads the picture and decides whether to merge. Merging confirms D-036, which this session recorded from the session that started it and not from the owner's own words.
+2. After a merge, rebuild and reinstall the Work plugin, run `scripts/work_host_check.py` as the handoff says, and repeat one of M7's AWS requests in a live session.
