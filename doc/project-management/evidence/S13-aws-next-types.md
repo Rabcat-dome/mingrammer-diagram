@@ -54,7 +54,7 @@ Variants of one service draw its one icon, as the two NAT gateway types do. A te
 
 ## What each rule rests on
 
-Each page was fetched on 2026-11-05 and is recorded in `S06-source-checks.json`, with a short pattern that matched its text and its own `checked` date. That record holds 41 new pages and updates the five it already held. The table below restates AWS's rules rather than quoting them.
+Each page was fetched on 2026-11-05 and is recorded in `S06-source-checks.json`, with a short pattern that matched its text and its own `checked` date. That record holds 45 new pages and updates the four it already held. The table below restates AWS's rules rather than quoting them.
 
 | Rule | What AWS states | Source |
 |---|---|---|
