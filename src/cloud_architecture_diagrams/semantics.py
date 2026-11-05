@@ -728,6 +728,8 @@ class Semantics:
         for index, resource in enumerate(self.model.resources):
             if len(self.web_acls[resource.id]) > 1:
                 self.emit("AWS_WAF_ACL_MULTIPLE", f"/resources/{index}", resource.id)
+            if len(self.web_acl_regions[resource.id]) > 1:
+                self.emit("AWS_WAF_RESOURCE_REGION_MISMATCH", f"/resources/{index}", resource.id)
 
     def provider_edge(
         self,
@@ -739,8 +741,9 @@ class Semantics:
     ) -> None:
         if kind != "attachment" or source is None or target is None:
             return
-        self.attachment_target(field, identifier, source, target)
-        self.attachment_target(field, identifier, target, source)
+        # An edge is refused once, even where both of its ends list targets.
+        if not self.attachment_refused(field, identifier, source, target):
+            self.attachment_refused(field, identifier, target, source)
         pair = {source.service_type, target.service_type}
         if pair == {"azure.compute.virtual_machine", "azure.network.network_interface"}:
             first = self.scope_ancestor(source.placement.scope_refs, "subscription")
@@ -750,9 +753,9 @@ class Semantics:
         if "huawei.network.eip" in pair and self.regions_differ(source, target):
             self.emit("HUAWEI_EIP_REGION_MISMATCH", field, identifier)
 
-    def attachment_target(
+    def attachment_refused(
         self, field: str, identifier: str, owner: Resource, target: Resource
-    ) -> None:
+    ) -> bool:
         """A type that lists targets attaches only to those. An unknown draft type has no rule yet.
 
         Only a WAF web ACL lists targets today, so the region and one-owner rules are AWS's for it.
@@ -760,17 +763,15 @@ class Semantics:
         """
         record = self.types.get(owner.id)
         if record is None or not record.placement.attachment_targets or target.id not in self.types:
-            return
+            return False
         if target.service_type not in record.placement.attachment_targets:
             self.emit("PLACEMENT_ATTACHMENT_TARGET_INVALID", field, identifier)
-            return
+            return True
         self.web_acls[target.id].add(owner.id)
         # A web ACL with no region of its own still cannot protect resources in two regions.
-        regions = self.web_acl_regions[owner.id]
         declared = (self.declared_region(owner), self.declared_region(target))
-        regions |= {region.id for region in declared if region}
-        if len(regions) > 1:
-            self.emit("AWS_WAF_RESOURCE_REGION_MISMATCH", field, identifier)
+        self.web_acl_regions[owner.id] |= {region.id for region in declared if region}
+        return False
 
     def regions_differ(self, first: Resource, second: Resource) -> bool:
         def region(resource: Resource) -> Boundary | None:

@@ -681,6 +681,41 @@ def test_two_web_acls_are_reported_on_the_resource_in_either_edge_order(position
     assert item.entity_id == "alb" and item.field == f"/resources/{index}"
 
 
+@pytest.mark.parametrize("position", [0, -1])
+def test_a_web_acl_across_regions_is_reported_once_in_either_edge_order(position: int) -> None:
+    document = load(ECS_LAMBDA_WAF)
+    document["boundaries"].append(
+        {"id": "region-other", "name": "Other", "provider": "aws", "kind": "region"}
+    )
+    entity(document, "resources", "waf")["placement"]["location"] = {}
+    for identifier in ("alb-2", "alb-3"):
+        other = copy.deepcopy(entity(document, "resources", "alb"))
+        other["id"] = identifier
+        other["placement"] = {"location": {"region_ref": "region-other"}}
+        document["resources"].append(other)
+        edge = {"id": f"p-{identifier}", "source_ref": "waf", "target_ref": identifier}
+        edges = document["relationships"]
+        edges.insert(0 if position == 0 else len(edges), {**edge, "kind": "attachment"})
+    found = validate_json(json.dumps(document).encode()).diagnostics
+    [item] = [item for item in found if item.code == "AWS_WAF_RESOURCE_REGION_MISMATCH"]
+    index = next(n for n, resource in enumerate(document["resources"]) if resource["id"] == "waf")
+    assert item.entity_id == "waf" and item.field == f"/resources/{index}"
+
+
+def test_an_edge_between_two_web_acls_is_refused_once() -> None:
+    document = load(ECS_LAMBDA_WAF)
+    second = copy.deepcopy(entity(document, "resources", "waf"))
+    second["id"] = "waf-2"
+    document["resources"].append(second)
+    document["relationships"].append(
+        {"id": "probe", "source_ref": "waf", "target_ref": "waf-2", "kind": "attachment"}
+    )
+    found = validate_json(json.dumps(document).encode()).diagnostics
+    assert [item.code for item in found if item.severity == "error"] == [
+        "PLACEMENT_ATTACHMENT_TARGET_INVALID"
+    ]
+
+
 def test_one_web_acl_may_protect_several_albs() -> None:
     document = load(ECS_LAMBDA_WAF)
     second = copy.deepcopy(entity(document, "resources", "alb"))

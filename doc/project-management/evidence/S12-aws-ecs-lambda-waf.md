@@ -68,6 +68,8 @@ The last two rows are why a web ACL with no region of its own still fails when i
 | A public or private subnet for Fargate or Lambda | No documented requirement applies to what a model states |
 | A workload and its cluster in one account | No statement was verified, and the model can leave either unspecified |
 | Which capacity an `aws.containers.ecs_service` uses | The type stays neutral. Use `aws.containers.ecs_fargate` when it is Fargate |
+| A service on an on-premises host that also lists VPC subnets | This is a known gap that accepts a wrong model. AWS says "The awsvpc network mode isn't supported" on external instances, and the model guide says so. A rule would need a new check, and S06 prefers a gap to a false rejection, so it waits for a real case |
+| A service naming both an EC2 host and an on-premises host | This is the same kind of gap. One service has one launch type, but `host_types` is a flat list |
 
 ## Icons and rights
 
