@@ -2,7 +2,7 @@
 
 Date: 2026-11-05 (Asia/Bangkok) | Decision: D-030 | Branch: `codex/m6-p0-gaps`
 
-**Result: on the owner's word, 13 records left partly met are settled, and the [P0 report](S10-p0-traceability.md) now has 32 met, 37 met with the owner's acceptance and 2 partly met.** T-015 and T-016 stay partly met until M6-03, M6-04 and the owner's inspection. M6 stays open.
+**Result: on the owner's word, 13 records left partly met are settled, and the [P0 report](S10-p0-traceability.md) then had 32 met, 37 met with the owner's acceptance and 2 partly met.** The owner then passed the changed images (D-031), so only T-015 stays partly met, until M6-03 and M6-04. M6 stays open.
 
 ## What the owner decided
 
@@ -38,7 +38,7 @@ The references now declare a Service type and ports. Exactly the 11 Kubernetes d
 - `hybrid-five`: `k8s-detail`
 - `onprem-physical-logical`: `k8s-namespaces`, `k8s-nodes`
 
-The other 15 views are unchanged. An edge can still start across a node's lower label lines, as it did before, and more lines make that a little more visible. The owner reviews these images under T-016, and D-023's acceptance does not cover them.
+The other 15 views are unchanged. An edge can still start across a node's lower label lines, as it did before, and more lines make that a little more visible. The owner opened all 11 and passed them on 2026-11-05 (D-031). Since M4's acceptance, only these 11 of the 26 images have changed.
 
 ## Effect on the Work checks
 

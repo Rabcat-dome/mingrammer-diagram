@@ -4048,7 +4048,7 @@
  },
  {
   "id": "T-016",
-  "state": "partly",
+  "state": "met_with_owner",
   "summary": "M4/M6: compare samples with official examples; record deviations; visual acceptance.",
   "checks": [
    {
@@ -4080,10 +4080,11 @@
   "evidence": [
    "doc/project-management/evidence/S08-reference-diagrams.md#provider-references",
    "doc/project-management/evidence/S08-reference-diagrams.md#deviations",
-   "doc/project-management/evidence/S08-reference-diagrams.md#owner-inspection"
+   "doc/project-management/evidence/S08-reference-diagrams.md#owner-inspection",
+   "doc/project-management/evidence/M6-p0-gaps.md#fr-018"
   ],
-  "open": "The M4 comparison, deviations and acceptance stand under D-023. D-023 says T-016 repeats in M6, and the M6 inspection has not happened. The comparison is by eye against one page per provider, and the lane only detects change from the accepted baselines, not fidelity. S08's provider-references section and P-029 still say the owner has not accepted, which D-023 superseded.",
-  "owner": ""
+  "open": "",
+  "owner": "D-023 and D-031: the owner accepted the 26 reference views, 15 of them unchanged since M4 and the 11 Kubernetes detail views again on 2026-11-05. The comparison with official pages was by eye, against one page per provider, in M4, and the lane only detects change from the accepted baselines, not fidelity."
  },
  {
   "id": "T-017",
