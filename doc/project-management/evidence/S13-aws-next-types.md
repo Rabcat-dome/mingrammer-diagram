@@ -128,19 +128,19 @@ The picture holds AWS and generic icons only, and a test requires its manifest t
 | Reference baselines | Unchanged. `update_visual_baselines.py` was not run, and no renderer code or reference model changed |
 | S12's picture | Drawn at `2026.11.1`, so its web ACL label predates the new display name. It is left as that record's evidence |
 | Claude plugin | Versioned by commit, so a merge reaches it with no bump |
-| Work plugin | Takes a new version when built from this branch. It holds the 15 Huawei icon pairs, so it stays private under D-018 and O-002 |
+| Work plugin | Becomes `0.1.0-alpha.1+44aa26b1a6e3` when built from this branch. It holds the 15 Huawei icon pairs, so it stays private under D-018 and O-002 |
 
 **The core package takes no new version here,** for S12's reason: `uv.lock` and both plugins' private runtime would otherwise change, and the catalog version is what results report for this change.
 
 ## Validation
 
-Pending: the gate and actual CI at the commit that holds the proof.
+`uv run --frozen python scripts/quality_gate.py` passes all 17 lanes with 1935 tests, none skipped, on a clean checkout of `cec1d21`. Actual Quality gate [run 42040895164](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/42040895164) passes at that commit on the project's runner. The commit after it records only this. An earlier [run 42040056459](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/42040056459) at `b54375f` failed `release-audit` alone, as expected, because the proof was replaced after it.
 
 | Lane | Tests, none skipped | What it adds here |
 |---|---:|---|
 | `provider-semantics` | 721 | The 54 new negative cases on the new fixture, and positive and boundary tests. A new test requires each of these, and the 36 on S12's fixture, to fail for one reason alone, which S12's review noted nothing guarded |
 | `catalog-license` | 135 | Each new type's icon from the listed pack, with sharing allowed only between the four variant pairs, and no new type in the P0 inventory. The names a request uses find their types, and the skill's example of a missing service really is missing |
-| `render-smoke` | 370 | One picture with all 17 web ACL and new types, marked strict, not draft and not private-use. A global type sits outside the Region's box and a regional one inside it. A private hosted zone on VPCs in two regions renders, and keeps both |
+| `render-smoke` | 370 | One picture with all 16 new types and the regional web ACL, marked strict, not draft and not private-use. A global type sits outside the Region's box and a regional one inside it. A private hosted zone on VPCs in two regions renders, and keeps both |
 | `visual-regression` | 65 | All 26 baselines unchanged, with no baseline file edited and `update_visual_baselines.py` not run |
 | Other test lanes | 644 | `schema-core` 97, `claude-plugin` 60, `package-contract` 169, `release-audit` 67 and `render-security` 251 |
 
