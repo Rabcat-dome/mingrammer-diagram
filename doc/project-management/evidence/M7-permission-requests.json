@@ -1,0 +1,102 @@
+{
+  "recorded": "2026-11-05",
+  "host": "Claude Code 2.1.309, macOS arm64",
+  "plugin_commit": "c6c7490d8ca7",
+  "model": "claude-sonnet-5-5",
+  "permission_mode": "default",
+  "method": "Each run is a new headless session with no tool pre-approved. Its --permission-prompt-tool is a small MCP server standing in for the person who answers: it records every request, allows the skill, reads of the plugin or the project, writes inside the project and a bare mkdir there, and denies the rest. How the app draws a request is not measured.",
+  "runs": [
+    {
+      "run": "real-config-create",
+      "config": "the owner's real config",
+      "request": "Thai: a new AWS model with ALB, two EC2 and RDS, through to a picture",
+      "turns": 13,
+      "bash_calls_naming_the_command": 6,
+      "requests": [
+        {
+          "tool": "Skill",
+          "target": "cloud-architecture-diagrams:architecture-model",
+          "stand_in_answer": "allow"
+        },
+        {
+          "tool": "Write",
+          "target": "$PROJECT/architecture/web-alb-ec2-rds.json",
+          "stand_in_answer": "allow"
+        }
+      ]
+    },
+    {
+      "run": "real-config-edit",
+      "config": "the owner's real config",
+      "request": "Thai: add S3 to that model, keep its IDs, and draw again",
+      "turns": 18,
+      "bash_calls_naming_the_command": 5,
+      "requests": [
+        {
+          "tool": "Skill",
+          "target": "cloud-architecture-diagrams:architecture-model",
+          "stand_in_answer": "allow"
+        },
+        {
+          "tool": "Bash",
+          "target": "python3 -I - <<'E'",
+          "stand_in_answer": "deny"
+        },
+        {
+          "tool": "Edit",
+          "target": "$PROJECT/architecture/web-alb-ec2-rds.json",
+          "stand_in_answer": "allow"
+        },
+        {
+          "tool": "Edit",
+          "target": "$PROJECT/architecture/web-alb-ec2-rds.json",
+          "stand_in_answer": "allow"
+        },
+        {
+          "tool": "Edit",
+          "target": "$PROJECT/architecture/web-alb-ec2-rds.json",
+          "stand_in_answer": "allow"
+        },
+        {
+          "tool": "Edit",
+          "target": "$PROJECT/architecture/web-alb-ec2-rds.json",
+          "stand_in_answer": "allow"
+        }
+      ]
+    },
+    {
+      "run": "fresh-config-create",
+      "config": "project settings only, with --plugin-dir",
+      "request": "Thai: the same new AWS model",
+      "turns": 14,
+      "bash_calls_naming_the_command": 7,
+      "requests": [
+        {
+          "tool": "Skill",
+          "target": "cloud-architecture-diagrams:architecture-model",
+          "stand_in_answer": "allow"
+        },
+        {
+          "tool": "Read",
+          "target": "$PLUGIN/skills/architecture-model/references/model-guide.md",
+          "stand_in_answer": "allow"
+        },
+        {
+          "tool": "Read",
+          "target": "$PLUGIN/skills/architecture-model/examples/core-valid.json",
+          "stand_in_answer": "allow"
+        },
+        {
+          "tool": "Bash",
+          "target": "B=\"$PLUGIN/bin/cloud-diagrams\"; \"$B\" catalog --provider aws --query \"a",
+          "stand_in_answer": "deny"
+        },
+        {
+          "tool": "Write",
+          "target": "$PROJECT/architecture/alb-ec2-rds.json",
+          "stand_in_answer": "allow"
+        }
+      ]
+    }
+  ]
+}

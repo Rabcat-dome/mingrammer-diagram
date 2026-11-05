@@ -617,3 +617,6 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - [Fable requested changes](evidence/S12-fable-review.md) on two P2 findings, both false rejections, then approved the fixes. Two P3 findings stay open by choice.
 - On the owner's answer "merge into main", translated from Thai, `codex/aws-ecs-fargate-lambda-waf` is fast-forwarded into `main`, and the tag does not move. The core reproduces from a new clone at `fe1e472`, and the gate passes 17 lanes locally and in actual [run 42032378161](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/42032378161) at `2460844`. No live session has used these types, and the owner has not yet accepted the picture.
 
+## 2026-11-05 — What a real session asks for
+
+- The owner's Code tab check had not run when they said to go to the next step, so Claude Opus 5.5 [recorded what the host asks for](evidence/M7-claude-plugin.md#what-a-real-session-asks-for) on the installed `c6c7490d8ca7`, in three new sessions whose permission requests went to a recording stand-in. The plugin's own command asked nothing, and a person answers once for the skill and once per file change. How a dialog looks stays unseen.

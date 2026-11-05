@@ -2,7 +2,7 @@
 
 Recorded: 2026-11-02 (Asia/Bangkok) | Base: `c5f74b4` | First tested code: `22fc85e` | Review fixes: `0220e94`, `87acce5` and `917f46f` | Branch: `codex/m7-claude-plugin` | Host: macOS ARM64, Claude Code 2.1.309.
 
-**M7-01 and M7-02 are complete, and M7-04 brought catalog discovery and rendering to the plugin. M7-03 is verified on one Mac, most recently [at the release commit](#acceptance-measurements-at-97b0841). Permission dialogs in a real chat remain, so M7 stays open, and D-035 accepts one Mac in place of two.** This is a preparation build under D-015. It authors and validates models, and since S07 it also renders them. It does not change the Work first-release target.
+**M7-01 and M7-02 are complete, and M7-04 brought catalog discovery and rendering to the plugin. M7-03 is verified on one Mac, most recently [at the release commit](#acceptance-measurements-at-97b0841), including [what a real session asks for](#what-a-real-session-asks-for). Nobody has seen a permission dialog drawn, and D-035 accepts one Mac in place of two. M7 stays open for the owner's word.** This is a preparation build under D-015. It authors and validates models, and since S07 it also renders them. It does not change the Work first-release target.
 
 Actual CI and the GitHub and real-config installs below ran against commit `22fc85e`, before the review fixes. See [Same-session review](#same-session-review) and [Separate-session review](#separate-session-review) for what changed afterward and what has been rerun.
 
@@ -163,16 +163,32 @@ Sessions still try chained commands although the skill says not to, and each rec
 
 A new headless session on Sonnet 5.5 through `--plugin-dir` then checked the fix. Asked for the title `ALB → EC2 → RDS` and the view title `Web ✓`, it validated, got the refusal from `render`, changed them to `ALB > EC2 > RDS` and `Web OK`, rendered, and told the requester what it had changed and why. [Fable/Medium approved the change](M7-fable-glyph-review.md), with five P3 findings, of which four are fixed. The fifth predates it: U+2028 and U+2029 pass the schema and draw as a line break.
 
+**Some lines start in mid-air.** A line leaving a node from above can start above its icon, with nothing visibly attached. It showed in two of the four pictures I looked at, Huawei ECS to OBS and EC2 to S3. This is [S08's P3-2](S08-fable-review.md), which the owner's image pass already covers, and it stays open.
+
 **The AWS catalog has gaps that ordinary requests hit.** [S12](S12-aws-ecs-lambda-waf.md) later adds ECS, Fargate for ECS, Lambda and WAF, and these measurements describe the catalog before that. It holds 48 types. ECS, Lambda and WAF are not among them, and Fargate appears only as the EKS profile. The P0 provider list does not name them, and [the milestones](../milestones.md) leave expanded coverage as later P1 work, so this is within scope. Both AWS requests here still ended as drafts. Lenient mode did its job: each type kept its name, and the picture says draft.
+
+### What a real session asks for
+
+Measured on the installed copy `c6c7490d8ca7`. There are [three runs](M7-permission-requests.json), each a new headless session on Sonnet 5.5 in the default permission mode, with no tool pre-approved. Its `--permission-prompt-tool` is a small server standing in for the person who answers: it records every request, allows the skill, reads of the plugin or the project, writes inside the project and a bare `mkdir` there, and denies the rest. All three ended with a rendered bundle, and I looked at the edit's picture.
+
+| Run | Requests |
+|---|---|
+| New model, the owner's real config | 2: the skill, and writing the model |
+| Edit that model, the owner's real config | 6: the skill, one Python script to change the model, denied, and four edits of the model |
+| New model, project settings only | 5: the skill, reading the guide, reading an example, a line of catalog searches joined together, denied, and writing the model |
+
+**The plugin's own command asked nothing in any run.** It ran 17 times in all, including `validate` and `render`. So a person in this mode answers once for the skill and once per file change, and more only when a session runs anything else. The owner's rule that allows reading their home folder is why the real config asks for no reads.
+
+This is the host's own request stream, but not its look. How the app draws a request, and whether an "always allow" answer removes the repeats, stay unseen.
 
 ### What did not run
 
-An interactive terminal session. This Mac's CLI has never finished first-run setup, because the owner uses the app, and a session driven through a pseudo-terminal stopped at the theme chooser. Finishing it would change the owner's `~/.claude.json`, so the run stopped there, and that file shows no onboarding state afterward. So no permission dialog has been seen: the refusals above say what needs approval, not how the host asks.
+An interactive terminal session. This Mac's CLI has never finished first-run setup, because the owner uses the app, and a session driven through a pseudo-terminal stopped at the theme chooser. Finishing it would change the owner's `~/.claude.json`, so the run stopped there, and that file shows no onboarding state afterward. So no permission dialog has been seen by anyone: the runs above record what the host asks, not how it looks.
 
 ## Not verified
 
 - A second machine, which D-035 accepts, and any other operating system.
-- Permission dialogs, in the Code tab or a terminal. Headless runs show what needs approval, and the Code tab check ran under bypass permissions.
+- How a permission dialog looks, in the Code tab or a terminal, and what an "always allow" answer does. Headless runs record what the host asks, and the Code tab check ran under bypass permissions.
 - Authoring a model from the Code tab.
 
 Prompts were run once each, so trigger rates are observations rather than measurements. Provider semantics are unchanged from M1: a passing result does not establish that a service type exists or that a placement is legal.
