@@ -18,6 +18,14 @@ The model guide states the rule for P3-1. The owner's reference images are unaff
 
 Five sabotaged versions each fail a test for the reason named: any kind hiding the note, the `owner` line removed, the `service` line removed, and `claim` and `owner` tied to the wrong kind.
 
+The test for each of the nine fields drives the mapper directly, so it also tries directions the validator would refuse. One real model through the validator covers `secret_refs`, in both directions, with `management` and `observability` lines.
+
+No fixture draws a typed reference with a line outside the table, in any of the fixtures, and every view matches its baseline. The core reproduces from a new clone at `cad6098`, and the gate passes 17 lanes.
+
+## Review
+
+**No independent review has finished.** Fable's credit is used up (D-038). Codex CLI with `gpt-6-astra` at medium effort started on `cad6098`, then stopped at its usage limit with no report and no disposition. Before it stopped, its log said the selected tests passed, each sabotage failed as named, and the table matched the rules it had inspected so far. That is progress, not approval.
+
 ## Limits
 
 - **The core version does not change.** As with D-036 and D-037, this waits for the next tag, so `0.5.0a2` covers more than one behaviour on `main`. A bundle's catalog version does not tell these apart here, and the plugin's commit or digest does.
