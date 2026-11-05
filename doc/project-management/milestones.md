@@ -130,7 +130,7 @@ Exit: the same plugin version installs from the private repository on two machin
 
 Later work, not scheduled:
 
-- P1 view presets, YAML, aliases, enterprise packs, PDF/DOT, automatic splitting, 200/300 stress validation, and expanded catalog coverage. [S12](evidence/S12-aws-ecs-lambda-waf.md) takes the first part of that coverage under D-036: AWS ECS, Fargate for ECS, Lambda and WAF, on `codex/aws-ecs-fargate-lambda-waf` and not merged. Its record lists the AWS gaps that remain.
+- P1 view presets, YAML, aliases, enterprise packs, PDF/DOT, automatic splitting, 200/300 stress validation, and expanded catalog coverage. [S12](evidence/S12-aws-ecs-lambda-waf.md) takes the first part of that coverage under D-036: AWS ECS, Fargate for ECS, Lambda and WAF, on `codex/aws-ecs-fargate-lambda-waf` and not merged. [S13](evidence/S13-aws-next-types.md) takes the next part under D-037, on `codex/aws-next-types` and not merged. Its record lists the AWS gaps that remain.
 - Optional shared-team features, IaC import/discovery, or public publication only under a separate scope decision.
 
 ## Planning discipline

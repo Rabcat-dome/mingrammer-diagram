@@ -1,6 +1,6 @@
 # Cloud Architecture Diagram Plugin Requirements
 
-Document: CADP-REQ-001 | Revision: 0.15 | Updated: 2026-11-05
+Document: CADP-REQ-001 | Revision: 0.16 | Updated: 2026-11-05
 
 Status: The baseline of the private personal release `v0.1.0-alpha.1`, accepted under D-033. [The release record](../project-management/evidence/M6-release.md) says what the evidence covers.
 
@@ -187,7 +187,7 @@ For the eight on-premises gaps, use the [draw.io-type generic mappings](../proje
 
 Support networking, compute, containers, data/storage, identity/security, connectivity, and observability in every environment. Expanded analytics/AI, messaging, vendor appliances, and additional database variants are P1.
 
-The catalog also holds types beyond this minimum, selected from P1 under [D-036](../project-management/decisions.md#confirmed-user-direction): the AWS ECS cluster, ECS service, AWS Fargate for ECS, Lambda function and WAF web ACL. The inventory does not list them, so they add nothing to P0. They meet the same standard: one taxonomy ID, a sourced placement rule, an approved icon, and positive and negative fixtures. See [S12](../project-management/evidence/S12-aws-ecs-lambda-waf.md).
+The catalog also holds types beyond this minimum, selected from P1 under [D-036](../project-management/decisions.md#confirmed-user-direction): the AWS ECS cluster, ECS service, AWS Fargate for ECS, Lambda function and WAF web ACL. The inventory does not list them, so they add nothing to P0. They meet the same standard: one taxonomy ID, a sourced placement rule, an approved icon, and positive and negative fixtures. See [S12](../project-management/evidence/S12-aws-ecs-lambda-waf.md). [D-037](../project-management/decisions.md#confirmed-user-direction) selects more on the same terms: the CloudFront distribution and its web ACL, API Gateway REST and HTTP or WebSocket APIs, Route 53 public and private hosted zones, the Network Load Balancer, the DynamoDB table, ElastiCache node-based and serverless caches, the SQS queue, the SNS topic, the Cognito user pool, the Secrets Manager secret, the KMS key and the ECR repository. See [S13](../project-management/evidence/S13-aws-next-types.md).
 
 ### 6.1 Detailed Kubernetes coverage (P0)
 

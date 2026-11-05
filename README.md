@@ -24,6 +24,7 @@ A preparation build of the [Claude Code plugin](plugins/cloud-architecture-diagr
 | [S02 icon research](doc/project-management/evidence/S02-icon-sources-and-rights.md) | Candidate sources, Huawei rights gap, on-premises gaps and detailed Kubernetes asset readiness |
 | [S06 catalogs and rights](doc/project-management/evidence/S06-provider-catalogs.md) | Provider and Kubernetes catalogs, semantic rules, on-premises assets, Huawei blocker and validation results |
 | [S12 AWS additions](doc/project-management/evidence/S12-aws-ecs-lambda-waf.md) | AWS ECS, Fargate for ECS, Lambda and WAF, with the placement rules and what each rests on |
+| [S13 AWS additions](doc/project-management/evidence/S13-aws-next-types.md) | AWS edge, API, data, messaging and security types, with the placement rules and what each rests on |
 | [S03 runner preflight](doc/project-management/evidence/S03-repository-runner-preflight.md) | Installed runner, two successful GitHub jobs, tooling and current limitations |
 
 [Current S04 native evidence](doc/project-management/evidence/S04-native-runtime.md) and [local plugin setup](spikes/s04-local-plugin/README.md) distinguish installed SDK feasibility from actual Work behavior. The earlier [loopback HTTP experiment](spikes/s04-runtime/README.md) is historical research.

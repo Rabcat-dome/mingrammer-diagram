@@ -2,6 +2,8 @@
 
 Date: 2026-11-05 | Branch: `codex/aws-ecs-fargate-lambda-waf`, from `a4bf065`, with `main` merged at `0aa040f` | Decision: D-036
 
+**Later change:** this record describes catalog `2026.11.1`. [S13](S13-aws-next-types.md) reverses the choice of one WAF type below, because CloudFront is now in the catalog. The type `aws.security.waf` keeps its ID and stays regional, and now also protects an API Gateway REST API and a Cognito user pool. The gaps listed under Limits are updated there.
+
 **Result: strict validation and rendering now accept five new AWS types, each with one taxonomy ID, a placement rule from AWS's own pages and AWS's own icon. The branch is pushed and not merged, the tag `v0.1.0-alpha.1` does not move, and no live session has used it yet.**
 
 ## Why

@@ -926,7 +926,7 @@ def test_the_one_subnet_rule_stays_off_for_an_alb() -> None:
 
 
 def test_a_node_based_cache_may_state_a_zone_and_its_subnet() -> None:
-    # AWS: "All nodes belonging to this cluster are placed in the preferred Availability Zone."
+    # AWS lets a node-based cluster name a preferred zone that holds all of its nodes.
     document = load(EDGE_API_DATA)
     placement = entity(document, "resources", "cache")["placement"]
     placement["location"] = {"zone_ref": "az-a"}

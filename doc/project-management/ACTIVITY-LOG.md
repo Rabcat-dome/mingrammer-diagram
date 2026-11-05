@@ -617,3 +617,9 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - [Fable requested changes](evidence/S12-fable-review.md) on two P2 findings, both false rejections, then approved the fixes. Two P3 findings stay open by choice.
 - `codex/aws-ecs-fargate-lambda-waf` is pushed and not merged, and the tag does not move. The core reproduces from a new clone at `fe1e472`, and the gate passes 17 lanes locally and in actual [run 42032378161](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/42032378161) at `2460844`. No live session has used these types, and the owner has not yet accepted the picture.
 
+
+## 2026-11-05 — AWS edge, API, data, messaging and security types
+
+- The owner chose 12 of S12's 15 listed gaps. A Claude Opus 5.5 session added them under D-037 as 16 types in catalog `2026.11.2`: CloudFront and a CloudFront web ACL, API Gateway REST and HTTP or WebSocket APIs, Route 53 public and private hosted zones, the NLB, DynamoDB, ElastiCache node-based and serverless, SQS, SNS, Cognito, Secrets Manager, KMS and ECR. Each has a placement rule from AWS's own pages and its icon from the AWS pack already listed. EventBridge, Step Functions and App Runner stay out, and no baseline changed. See [S13](evidence/S13-aws-next-types.md).
+- This reverses S12's choice of one WAF type. A regional web ACL now also protects a REST API and a Cognito user pool, and a CloudFront web ACL protects only a distribution.
+- `codex/aws-next-types` is built on S12's branch, because that is not merged. It is pushed and not merged, and the tag does not move.

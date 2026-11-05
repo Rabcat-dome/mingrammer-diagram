@@ -1585,7 +1585,7 @@
     },
     {
      "claim": "A distribution's web ACL serves no other resource type",
-     "pattern": "You cannot associate a protection pack (web ACL) that you have associated with a CloudFront distribution with any other AWS resource type",
+     "pattern": "with a CloudFront distribution with any other AWS resource type",
      "matched": true
     }
    ]
@@ -1699,7 +1699,7 @@
    "claims": [
     {
      "claim": "A distribution names one web ACL",
-     "pattern": "A unique identifier that specifies the AWS WAF web ACL, if any, to associate with this distribution",
+     "pattern": "the AWS WAF web ACL, if any, to associate with this distribution",
      "matched": true
     }
    ]
@@ -1807,7 +1807,7 @@
    "claims": [
     {
      "claim": "A private API is a REST API inside a VPC",
-     "pattern": "A private API is a REST API that is only callable from within an Amazon VPC",
+     "pattern": "REST API that is only callable from within an Amazon VPC",
      "matched": true
     },
     {
@@ -1935,7 +1935,7 @@
    "claims": [
     {
      "claim": "An NLB needs one or more zones",
-     "pattern": "[Network Load Balancers and Gateway Load Balancers] You can specify subnets from one or more Availability Zones",
+     "pattern": "[Network Load Balancers] You can specify subnets from one or more Availability Zones",
      "matched": true
     }
    ]
@@ -2043,7 +2043,7 @@
    "claims": [
     {
      "claim": "A node-based cluster uses a subnet group",
-     "pattern": "If you create a node-based cluster in an Amazon VPC, you must use a subnet group",
+     "pattern": "you must use a subnet group",
      "matched": true
     },
     {
