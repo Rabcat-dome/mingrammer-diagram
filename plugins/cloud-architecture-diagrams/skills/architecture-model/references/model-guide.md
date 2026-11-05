@@ -169,11 +169,11 @@ Relationship kinds between Kubernetes resources stay distinct:
 | `membership` | A resource in that scope | `Cluster`, its own `Namespace`, or a `NodePool` for a `Node` |
 | `policy` | `NetworkPolicy` | `Pod`, workload kind or `Namespace`, same namespace |
 | `storage` | `Pod`, workload kind, `PersistentVolumeClaim` or `PersistentVolume` | `PersistentVolumeClaim`, `PersistentVolume` or `StorageClass` |
-| `configuration` | `Pod`, workload kind, `ServiceAccount`, `Ingress` or `IngressController` | `ConfigMap`, `Secret` or `ServiceAccount`, same namespace |
+| `configuration` | `Pod`, workload kind, `ServiceAccount`, `Ingress` or `IngressController` | `ConfigMap`, `Secret` or `ServiceAccount`, same namespace, except that an `IngressController` may reach another namespace in its cluster |
 | `traffic` | Any except the kinds listed below | Any except the kinds listed below |
 
 `traffic` cannot touch `Namespace`, `ConfigMap`, `Secret`, `ServiceAccount`, `StorageClass`, `NetworkPolicy`, `PersistentVolumeClaim`, `PersistentVolume` or `NodePool`. An external load balancer the user supplied links to a Service with a `traffic` relationship, and an `Ingress` and its `IngressController` are separate resources, linked with `management`.
 
 `replicas` applies to `Deployment`, `ReplicaSet` and `StatefulSet`; `service_type` to `Service`; `ports` to Pods, workloads, `Service`, `Ingress` and `IngressController`. An `ExternalName` Service lists no `target_refs`.
 
-A namespace is logical grouping and does not place a Pod on a Node, so `deployment_context` cannot name a `Node` or `NodePool`. Leave `node_ref` unset when placement was not supplied; missing placement is valid, while invented placement is not. Do not model hidden managed control-plane machines or node pools the user did not describe. `Secret` resources cannot carry `properties`.
+A namespace is logical grouping and does not place a Pod on a Node, so only a `Node` may name a `Node` or `NodePool` in `deployment_context`, as a Node does with its `NodePool`. Leave `node_ref` unset when placement was not supplied; missing placement is valid, while invented placement is not. Do not model hidden managed control-plane machines or node pools the user did not describe. `Secret` resources cannot carry `properties`.
