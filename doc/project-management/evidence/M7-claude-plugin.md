@@ -189,7 +189,7 @@ Three new headless sessions on Sonnet 5.5 then used that copy, with the owner's 
 
 | Request | Turns | Requests | Result |
 |---|---|---|---|
-| Thai: WAF, ALB, an ECS service on Fargate, RDS, S3 and Lambda | 19 | 3: the skill, a `for` loop of catalog searches, denied, and writing the model | Strict, with no draft. All the new types drew with their icons, and the session added the ECS cluster the service needs and said why |
+| Thai: WAF, ALB, an ECS service on Fargate, RDS, S3 and Lambda | 19 | 3: the skill, a `for` loop of catalog searches, denied, and writing the model | Strict, with no draft. The four new types it used, ECS cluster, Fargate for ECS, Lambda and WAF, drew with their icons, and the session added the cluster and said why. It did not use the plain ECS service type, which the [recheck](M7-astra-recheck.md) validated and rendered through this copy directly |
 | Thai: add a cache if the catalog has one, keep the IDs, draw again | 20 | 1: the skill | The catalog has none. The session said so, changed nothing and invented no ID, then validated and drew again |
 | English: a Kubernetes detail on EKS | 11 | 2: the skill and writing the model | Strict. The picture shows the declared replicas, labels, Service type and ports |
 
@@ -214,6 +214,8 @@ Fable's credit ran out, so on the owner's word (D-038) this milestone's review w
 | C1: no test for a relative `HOME` | Fixed |
 | C2: a damaged environment names no way out | Fixed. The message names the environment, and a test removes it and recovers |
 | C3: a symbolic link from elsewhere exits 3 | Documented in the README and the wrapper, and a test pins it |
+
+A [bounded recheck](M7-astra-recheck.md) through the same route approved closing M7 for `ea6c802`, under D-035's one Mac. It found two wording problems, both fixed: this table overstated which new types the session used, and two summaries still called the earlier P3 findings open. F5 and F6 hold, and it ran no Claude session.
 
 ## Not verified
 
