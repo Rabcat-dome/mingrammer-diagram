@@ -24,7 +24,7 @@ No fixture draws a typed reference with a line outside the table, in any of the 
 
 ## Review
 
-**No independent review has finished.** Fable's credit is used up (D-038). Codex CLI with `gpt-6-astra` at medium effort started on `cad6098`, then stopped at its usage limit with no report and no disposition. Before it stopped, its log said the selected tests passed, each sabotage failed as named, and the table matched the rules it had inspected so far. That is progress, not approval.
+**No independent review has finished.** Fable's credit is used up (D-038). Codex CLI with `gpt-6-astra` at medium effort started on `cad6098`, then stopped at its usage limit with no report and no disposition. Before it stopped, its log said the selected tests passed, each sabotage failed as named, and the table matched the rules it had inspected so far. That is progress, not approval. The owner chose to merge first and have it reviewed afterward (D-041).
 
 ## Limits
 

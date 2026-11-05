@@ -637,3 +637,4 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 
 - On the owner's word, the Work plugin was built from `201792c` as `0.1.0-alpha.1+b3b15252a0c2`, twice with the same ZIP digest, and it passed 35 host checks in a throwaway profile. The owner installed it, then asked to skip Work for now (D-040), so no prompt has run on it in Work.
 - The owner said to go to the next step, so [S14](evidence/S14-open-p3-fixes.md) fixes P3-1, P3-2 and P3-3 of the final review. A typed reference's note now hides only for the relationship kind that draws it. No baseline changed.
+- Codex CLI stopped at its usage limit before reporting, and Fable's credit is used up. The owner chose to merge S14 first and review it afterward (D-041).
