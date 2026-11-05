@@ -1,8 +1,8 @@
 # Cloud Architecture Diagram Plugin Requirements
 
-Document: CADP-REQ-001 | Revision: 0.13 | Updated: 2026-11-05
+Document: CADP-REQ-001 | Revision: 0.14 | Updated: 2026-11-05
 
-Status: Draft baseline with confirmed granularity/style and per-machine local-runtime direction; product implementation and release acceptance remain pending.
+Status: The baseline of the private personal release `v0.1.0-alpha.1`, accepted under D-033. [The release record](../project-management/evidence/M6-release.md) says what the evidence covers.
 
 ## 1. Authority and release scope
 

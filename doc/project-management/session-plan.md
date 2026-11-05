@@ -1,6 +1,6 @@
 # Session Plan and Starter Prompts
 
-Updated: 2026-11-05 | Status: S01-S09 complete; M2, M3 and M4 closed on 2026-11-03 for the private personal release, and M5 on 2026-11-05 under D-028. S10 did what M6 can do on one Mac, and the [second machine](evidence/M6-second-machine.md) passes under D-029. Its final review and release remain. Two authorized S04 chats completed; no new S05 chat has been created.
+Updated: 2026-11-05 | Status: S01-S09 complete; M2, M3 and M4 closed on 2026-11-03 for the private personal release, and M5 on 2026-11-05 under D-028. S10 did what M6 can do on one Mac, the [second machine](evidence/M6-second-machine.md) passed, and the first release is tagged `v0.1.0-alpha.1` under [D-033](evidence/M6-release.md). Two authorized S04 chats completed; no new S05 chat has been created.
 
 This is an execution index for the existing [milestones](milestones.md), not a second requirement baseline. Use the [requirements](../requirements/requirements.md) for product scope and the [decision log](decisions.md) for confirmed choices. The deliverable remains an installable cross-machine plugin with a bundled skill.
 

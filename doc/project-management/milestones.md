@@ -1,6 +1,6 @@
 # Milestones and Work Breakdown
 
-Updated: 2026-11-05 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 complete on 2026-11-03 for the private personal release. S07 / M3 complete on 2026-11-03 under D-022. S08 / M4 complete on 2026-11-03 under D-023. S09 / M5 complete on 2026-11-05 under D-028. Huawei rights are not cleared: D-018 allows private personal use only, D-019 settles the asset-rights exit item for that use, and O-002 blocks public distribution. M7 Claude Code preparation started early under D-015.
+Updated: 2026-11-05 | Status: S01-S04 / M0 feasibility complete; S05 / M1 complete; S06 / M2 complete on 2026-11-03 for the private personal release. S07 / M3 complete on 2026-11-03 under D-022. S08 / M4 complete on 2026-11-03 under D-023. S09 / M5 complete on 2026-11-05 under D-028, and M6 under D-033, tagged `v0.1.0-alpha.1`. Huawei rights are not cleared: D-018 allows private personal use only, D-019 settles the asset-rights exit item for that use, and O-002 blocks public distribution. M7 Claude Code preparation started early under D-015.
 
 Source of scope: [requirements](../requirements/requirements.md). Model abbreviations and review rules: [model strategy](model-strategy.md). Quality check definitions: [quality gate](quality-gate.md).
 
@@ -104,7 +104,7 @@ Exit: installed plugin works in the selected Work mode, artifacts are retrievabl
 
 ## M6 — Reproduction and personal release
 
-Status: Open. Under D-024, [S10](evidence/S10-release-checks.md) did the clean-runtime core reproduction in M6-01 and all of M6-02, including the [P0 report](evidence/S10-p0-traceability.md), and [Fable/High approved](evidence/S10-fable-review.md) that part at `debd754`. [M6-01's second machine](evidence/M6-second-machine.md) passes on the owner's report (D-029). [D-030](evidence/M6-p0-gaps.md) settles the records left partly met and changes the plugin's version, so the five prompts ran again, and passed on the first Mac only, which the owner accepts (D-032). The owner passed the changed images (D-031). M6-03 and M6-04 remain, so nothing is released. Implementation: Sol/Medium; final review: Fable/High and owner inspection.
+Status: **Complete on 2026-11-05 under D-033, tagged `v0.1.0-alpha.1`.** See [the release record](evidence/M6-release.md). Under D-024, [S10](evidence/S10-release-checks.md) did the clean-runtime reproduction and M6-02, [M6-01](evidence/M6-second-machine.md) ran on a second Mac, and D-032 accepts the final version on the first Mac alone. [Fable/High approved tagging](evidence/M6-fable-final-review.md) at `e167deb`, with four P3 findings left open. Planned implementation: Sol/Medium; actual: Claude Opus 5.5. Final review: Fable/High and owner inspection.
 
 | Task | Work | Dependency / output |
 |---|---|---|

@@ -818,11 +818,6 @@
    {
     "lane": "render-smoke",
     "file": "tests/test_references.py",
-    "test": "test_every_kind_of_typed_reference_has_a_note"
-   },
-   {
-    "lane": "render-smoke",
-    "file": "tests/test_references.py",
     "test": "test_every_host_fixture_holds_every_kubernetes_kind"
    },
    {
@@ -3984,7 +3979,7 @@
  },
  {
   "id": "T-015",
-  "state": "partly",
+  "state": "met_with_owner",
   "summary": "M6: clean install, notices and assets, checks at release SHA, review.",
   "checks": [
    {
@@ -4052,10 +4047,11 @@
    "doc/project-management/evidence/S07-controlled-rendering.md#clean-setup",
    "doc/project-management/evidence/S09-work-plugin.md#validation",
    "doc/project-management/evidence/S09-Work-validation.md#result",
-   "doc/project-management/evidence/S10-core-reproduction-proof.json"
+   "doc/project-management/evidence/S10-core-reproduction-proof.json",
+   "doc/project-management/evidence/M6-release.md"
   ],
-  "open": "No release SHA exists, because M6-03 and M6-04 have not run. Clean install, notices, assets and every lane pass at the current head.",
-  "owner": ""
+  "open": "",
+  "owner": "D-033: the owner tagged `v0.1.0-alpha.1` on the final review's approval at `e167deb`. Later commits change only records and one sentence in the report's page script. Clean install, notices, assets and every lane pass at the tagged commit."
  },
  {
   "id": "T-016",
