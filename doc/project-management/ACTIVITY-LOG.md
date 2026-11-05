@@ -608,3 +608,4 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 ## 2026-11-05 — Characters the fonts lack
 
 - The owner said to fix the boxes (D-034). `render` now reads the character tables of the verified fonts and refuses, before the engine runs, a label holding anything absent from both, with `RENDER_TEXT_UNDRAWABLE`, exit 2, in both modes. Each error names the element and up to eight code points, never the label. Core moves to `0.5.0a2`. Noncharacters XML cannot hold now stop here too, in place of `RENDER_SVG_UNSAFE`.
+- Claude Fable 5.1 / Medium [approved it](evidence/M7-fable-glyph-review.md) at `3835439` with five P3 findings. Four are fixed after that commit, and U+2028 and U+2029 drawing as a line break stays open because it predates the change. The core proof was redone from a new clone for the final source.

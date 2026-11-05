@@ -1,6 +1,6 @@
 # Core Contract v1.0.0
 
-S05 / M1, S06 / M2, S07 / M3 and S09 / M5 implementation guide, subordinate to the single [requirements](../requirements/requirements.md). Package `0.5.0a1` is a core development version; installed Work plugin `0.1.0-alpha.3` remains the independent S04 fixture, and the product's [Work adapter](#work-adapter) is a separate plugin that does not replace it. The renderer is an engineering slice, so coverage, visual quality and official-reference comparison stay with M4.
+S05 / M1, S06 / M2, S07 / M3 and S09 / M5 implementation guide, subordinate to the single [requirements](../requirements/requirements.md). Package `0.5.0a2` is a core development version; installed Work plugin `0.1.0-alpha.3` remains the independent S04 fixture, and the product's [Work adapter](#work-adapter) is a separate plugin that does not replace it. The renderer is an engineering slice, so coverage, visual quality and official-reference comparison stay with M4.
 
 ## Setup and discovery
 
@@ -152,7 +152,7 @@ The bundle is then written to a stage directory, read back and renamed into plac
 
 Bundled fonts are Noto Sans 2.015 and Noto Sans Thai 2.002 under the SIL Open Font License, recorded in `catalog_data/assets.json`. Rendering downloads nothing, and it needs no second model call.
 
-**Characters the fonts lack (D-034).** Graphviz draws a character neither font has as an empty box and reports nothing. So before the engine runs, everything the view would draw is compared with the character tables read from the verified font files. A miss refuses the render with `RENDER_TEXT_UNDRAWABLE`, exit 2, in both modes, with one error per element naming up to eight code points and never the label. `field` is `/title` for the title lines, `/notices` for the notice lines, and otherwise `/labels` with the element's `entity_id`. `validate` does not make this check, because it depends on what a view draws, and text no view draws may hold any character the schema allows.
+**Characters the fonts lack (D-034).** Graphviz can draw a character neither font has as an empty box, and it reports nothing. So before the engine runs, everything the view would draw is compared with the character tables read from the verified font files. A miss refuses the render with `RENDER_TEXT_UNDRAWABLE`, exit 2, in both modes, with one error per element naming up to eight code points and never the label. `field` is `/title` for the title lines, `/notices` for the notice lines, and otherwise `/labels` with the element's `entity_id`. `validate` does not make this check, because it depends on what a view draws, and text no view draws may hold any character the schema allows.
 
 ## Work adapter
 

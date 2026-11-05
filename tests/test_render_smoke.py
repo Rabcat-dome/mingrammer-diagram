@@ -39,7 +39,14 @@ from cloud_architecture_diagrams.catalog import catalog
 from cloud_architecture_diagrams.cli import capabilities
 from cloud_architecture_diagrams.models import Architecture
 from cloud_architecture_diagrams.render import BUNDLE_FILES, RenderResult, exit_status
-from cloud_architecture_diagrams.render.checks import DATA_PNG, HREF, SVG, check_png, png_scale
+from cloud_architecture_diagrams.render.checks import (
+    DATA_PNG,
+    HREF,
+    SVG,
+    check_png,
+    png_scale,
+    undrawable_text,
+)
 from cloud_architecture_diagrams.render.draw import (
     EDGE_STYLES,
     GROUP_STYLES,
@@ -1067,7 +1074,7 @@ def _with_arrow(place: str) -> tuple[dict[str, Any], str, str | None]:
     ],
 )
 def test_a_label_the_fonts_cannot_draw_is_refused(place: str, mode: Mode, tmp_path: Path) -> None:
-    # The engine draws an empty box and reports nothing, so this is the only place to catch it.
+    # The engine can draw an empty box and reports nothing, so this is the place to catch it.
     model, field, entity = _with_arrow(place)
     output = tmp_path / "out"
     result = render(model, output, mode=mode)
@@ -1135,6 +1142,12 @@ def test_a_font_character_list_comes_from_the_font_itself() -> None:
     assert 0xFFFF not in latin | thai
 
 
+def _font_with(platform: int, encoding: int, subtable: bytes) -> bytes:
+    cmap = struct.pack(">2H", 0, 1) + struct.pack(">HHI", platform, encoding, 12) + subtable
+    font = struct.pack(">IHHHH", 0x00010000, 1, 0, 0, 0)
+    return font + struct.pack(">4sIII", b"cmap", 0, 28, len(cmap)) + cmap
+
+
 def test_a_character_mapped_to_the_empty_box_counts_as_absent() -> None:
     # One format 4 subtable: "A" maps through a delta, and "B" through an array to glyph 0, where
     # the delta must not apply.
@@ -1142,10 +1155,23 @@ def test_a_character_mapped_to_the_empty_box_counts_as_absent() -> None:
     subtable += struct.pack(">3H", 0x41, 0x42, 0xFFFF) + struct.pack(">H", 0)
     subtable += struct.pack(">3H", 0x41, 0x42, 0xFFFF) + struct.pack(">3H", 0xFFC0, 5, 1)
     subtable += struct.pack(">3H", 0, 4, 0) + struct.pack(">H", 0)
-    cmap = struct.pack(">2H", 0, 1) + struct.pack(">HHI", 3, 1, 12) + subtable
-    font = struct.pack(">IHHHH", 0x00010000, 1, 0, 0, 0)
-    font += struct.pack(">4sIII", b"cmap", 0, 28, len(cmap)) + cmap
-    assert font_characters(font) == {0x41}
+    assert font_characters(_font_with(3, 1, subtable)) == {0x41}
+
+
+def test_a_run_starting_at_the_empty_box_leaves_out_only_its_first_character() -> None:
+    subtable = struct.pack(">HHIII", 12, 0, 40, 0, 2)
+    subtable += struct.pack(">3I", 0x41, 0x42, 0) + struct.pack(">3I", 0x43, 0x43, 7)
+    assert font_characters(_font_with(3, 10, subtable)) == {0x42, 0x43}
+
+
+def test_a_notice_the_fonts_cannot_draw_is_refused() -> None:
+    # Notices come from the catalog, which the next test holds drawable, so this path is forced.
+    model = Architecture.model_validate(load("providers/aws.json"))
+    graph = map_view(model, model.views[0], "strict", LIMITS)
+    found = undrawable_text(
+        graph.model_copy(update={"notice_lines": ("a → b",)}), drawable_characters(LIMITS)
+    )
+    assert [(item.field, item.entity_id) for item in found] == [("/notices", None)]
 
 
 def test_every_catalog_text_can_be_drawn() -> None:

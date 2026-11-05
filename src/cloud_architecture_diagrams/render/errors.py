@@ -20,7 +20,7 @@ MESSAGES = {
         "Use a catalog type; an unknown service type is drawable only in lenient mode.",
     ),
     "RENDER_TEXT_UNDRAWABLE": (
-        "A label holds a character neither bundled font has, which would draw as an empty box.",
+        "A label holds a character neither bundled font has, so it can draw as an empty box.",
         "Reword it in English or Thai with common punctuation, such as 'to' for an arrow or '>=' for a sign.",
     ),
     "RENDER_ASSET_UNSAFE": (

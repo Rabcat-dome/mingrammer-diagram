@@ -48,7 +48,7 @@ UNDRAWABLE_SHOWN = 8
 
 
 def undrawable_text(graph: RenderGraph, characters: set[int]) -> list[Diagnostic]:
-    """Graphviz draws an absent character as an empty box and reports nothing, so ask first."""
+    """Graphviz can draw an absent character as an empty box and reports nothing, so ask first."""
     drawn: list[tuple[str, str | None, tuple[str, ...]]] = [
         ("/title", None, graph.title_lines),
         ("/notices", None, graph.notice_lines),
