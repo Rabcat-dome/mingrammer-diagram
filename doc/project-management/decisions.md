@@ -1,6 +1,6 @@
 # Decisions, Open Questions and Source Reconciliation
 
-Updated: 2026-11-05 | Status: Joint-planning record; D-013 selects per-machine local plugin/runtime installation.
+Updated: 2026-11-07 | Status: Joint-planning record; D-013 selects per-machine local plugin/runtime installation.
 
 ## Confirmed user direction
 
