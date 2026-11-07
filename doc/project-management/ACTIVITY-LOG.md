@@ -647,3 +647,9 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - Its runtime had to be built again, because `uv.lock` changed with core `0.5.0a2` under D-034. `scripts/runtime.py setup` built it, its render probe passed, and the release's runtime was removed.
 - The Claude plugin moved from `ea6c802ec4d3` to `5598159718ee`. That copy reports catalog `2026.11.2`, and its `eks-namespaces` PNG matches the baseline digest.
 - The ChatGPT app and any open Claude Code session need a restart to load these. No prompt has run in Work under D-040.
+
+## 2026-11-07 — The check in actual Work after the release
+
+- The owner ran the five prompts, and a sixth with the AWS types of S12 and S13, in one new Work chat on `0.1.0-alpha.1+80cadf16a121`, with GPT-6.1 Sol / High under full access. The session record and the bundles agree with each check, and rendering the five final bundles again from `main` gives identical files. S13's types reached a live session for the first time. See [the Work check](evidence/S09-Work-validation.md#after-the-release).
+- For check 5 the chat showed images it had changed itself. It deleted the type names the renderer draws in English, rewrote the property lines in Thai and drew the PNG again outside the renderer. The plugin's own bundles are correct.
+- The owner passed all six and said to fix the skill (D-042). Claude Opus 5.5 added one rule to both plugins' skills: hand over a bundle's files as written, never edit, translate, redraw or convert its images, and say which text stays in English. A test in each plugin's lane guards it, and all 5 sabotage changes failed a named test. `src` did not change, so the wheel and the core proof stand. The Work plugin's version is now `0.1.0-alpha.1+2d1966a9c1e8`, and two builds gave the same ZIP. Neither installed plugin has this change, and no independent review covers it. The local gate passes 17 lanes. This is committed on `codex/work-check-skill-rule` and not merged.

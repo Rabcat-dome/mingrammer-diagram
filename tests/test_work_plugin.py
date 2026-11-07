@@ -2159,6 +2159,19 @@ def test_skill_names_every_tool_and_no_other(skill: str) -> None:
     }
 
 
+def test_skill_keeps_the_images_as_the_plugin_wrote_them(skill: str) -> None:
+    # In Work on 2026-11-07, a chat asked for Thai labels deleted the type names from
+    # diagram.svg, translated its property lines and redrew the PNG outside the renderer.
+    assert "Never edit, translate, redraw or convert `diagram.svg` or `diagram.png`" in skill
+    rule = next(line for line in skill.splitlines() if line.startswith("Hand over a bundle"))
+    drawn = "".join(path.read_text() for path in (ROOT / "tests/baselines").glob("*.graph.json"))
+    source = (ROOT / "src/cloud_architecture_diagrams/render/graph.py").read_text()
+    for line in ("type: ClusterIP", "ports: 80:8080/TCP"):
+        assert f"`{line}`" in rule and line in drawn, line
+    assert "`node: unspecified`" in rule and '"node: unspecified"' in source
+    assert "stays in English" in rule
+
+
 def test_skill_explains_every_result_status(skill: str) -> None:
     for status in STATUSES:
         assert f"`{status}`" in skill

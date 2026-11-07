@@ -20,6 +20,8 @@ A `"valid": true` result means the model passed the core, catalog and documented
 
 If `render` is unavailable or fails, say so and offer the validated model. Do not fill the gap by writing `diagrams` Python, Graphviz DOT or other generated code to execute: the project accepts architecture input as data only, and an image made outside the controlled renderer would skip its checks and approved icons.
 
+Hand over a bundle's files as the plugin wrote them. Never edit, translate, redraw or convert `diagram.svg` or `diagram.png`, and never show a changed image in their place, even when the user asks for every label in Thai. Copying the files unchanged is fine. The model's names, labels, titles and relationship labels are drawn as written, so write those in Thai. The renderer adds English text of its own: provider and legend headings, each node's type name, and in Kubernetes detail views property lines such as `type: ClusterIP`, `ports: 80:8080/TCP` and `node: unspecified`. Tell the user that this text stays in English.
+
 ### Huawei Cloud icons
 
 Huawei Cloud service icons are accepted by the owner for private personal use only. Their rights are not cleared, so any model using them returns one `ASSET_PRIVATE_USE_ONLY` warning. A rendered bundle that shows them states the same limit in its `rights` and in the image. Report it, and do not suggest publishing the output or sharing it outside private use.

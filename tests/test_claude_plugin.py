@@ -227,6 +227,20 @@ def test_skill_says_lenient_mode_bypasses_no_other_error() -> None:
     assert "It bypasses no other error" in skill and "bypasses every" not in skill
 
 
+def test_skill_keeps_the_images_as_the_plugin_wrote_them() -> None:
+    # In Work on 2026-11-07, a chat asked for Thai labels deleted the type names from
+    # diagram.svg, translated its property lines and redrew the PNG outside the renderer.
+    skill = (SKILL / "SKILL.md").read_text()
+    assert "Never edit, translate, redraw or convert `diagram.svg` or `diagram.png`" in skill
+    rule = next(line for line in skill.splitlines() if line.startswith("Hand over a bundle"))
+    drawn = "".join(path.read_text() for path in (ROOT / "tests/baselines").glob("*.graph.json"))
+    source = (ROOT / "src/cloud_architecture_diagrams/render/graph.py").read_text()
+    for line in ("type: ClusterIP", "ports: 80:8080/TCP"):
+        assert f"`{line}`" in rule and line in drawn, line
+    assert "`node: unspecified`" in rule and '"node: unspecified"' in source
+    assert "stays in English" in rule
+
+
 def test_skill_names_the_render_size_outcomes() -> None:
     skill = (SKILL / "SKILL.md").read_text()
     for code in ("RENDER_PIXEL_LIMIT", "RENDER_PNG_SCALE_LIMIT", "RENDER_PNG_SCALED"):

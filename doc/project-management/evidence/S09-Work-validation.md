@@ -2,7 +2,7 @@
 
 Target: the separate ChatGPT Work page or mode, not Codex (D-014). Automated checks and rehearsals stay in the [S09 evidence](S09-work-plugin.md), and only what the owner reports below counts as a Work result.
 
-**Status: all five checks pass in Work on the final version, `0.1.0-alpha.1+88ce2c0cd0dc`, on the first Mac (D-032), after passing on `0.1.0-alpha.1+d27ef23f6f94` on both Macs (D-027, D-029). M5 closed on 2026-11-05 under D-028.**
+**Status: all five checks pass in Work on the final version, `0.1.0-alpha.1+88ce2c0cd0dc`, on the first Mac (D-032), after passing on `0.1.0-alpha.1+d27ef23f6f94` on both Macs (D-027, D-029). M5 closed on 2026-11-05 under D-028.** **After the release, the five prompts and a sixth pass on `0.1.0-alpha.1+80cadf16a121` on the first Mac (D-042), as [After the release](#after-the-release) records.**
 
 ## What the owner runs
 
@@ -17,6 +17,39 @@ The final version is `0.1.0-alpha.1+88ce2c0cd0dc`, which adds [D-030's detail li
 | 3 | `In that diagram, add an S3 bucket that both app servers read from, and draw it again. Keep everything else as it is. Tell me which IDs you kept and added.` | Edit flow, stable IDs, updated source |
 | 4 | `Validate this model and tell me what is wrong, without fixing it: {"schema_version":"1.0.0","metadata":{"id":"x","title":"X","environment":"prod","assumptions":[]},"resources":[{"id":"app","name":"App","provider":"aws","service_type":"aws.compute.ec2","taxonomy":"compute.vm"}],"relationships":[{"id":"r1","source_ref":"app","target_ref":"ghost","kind":"traffic"}],"views":[{"id":"v","title":"V","entity_refs":["app"]}]}` | Invalid input: expects `REFERENCE_MISSING` and no image |
 | 5 | Do not paste this row. Paste a Thai sentence asking for a GKE architecture with a Deployment, Service, Ingress and PVC, with both an overview view and a detail view, and with Thai names on the labels. The session that started this check gives the exact sentence, because repository documents stay English. Pasting this row made a chat draft a sentence and call no tool | Kubernetes overview and detail, Thai labels, same IDs in both views |
+
+## After the release
+
+Run on 2026-11-07 (Asia/Bangkok) on `0.1.0-alpha.1+80cadf16a121`, built from `5598159`, on the first Mac, in one new Work chat outside this repository. The runtime stayed as its setup that day left it, `ready` with a passing render probe, so `setup_runtime` did not run. The session record has originator `codex_work_desktop` and GPT-6.1 Sol / High, with approval policy `never` and `danger-full-access`. Prompts 1 to 4 are the table's. Prompt 5 was a Thai sentence, translated here: "Use Cloud Architecture Diagrams to draw an application architecture on GKE with a Deployment, Service, Ingress and PVC. I want both an overview and a detail view, with Thai names on every label." A sixth prompt, for the AWS types of S12 and S13, asked for a CloudFront distribution protected by a CloudFront web ACL, in front of an API Gateway HTTP API, with a Lambda function behind it that reads and writes a DynamoDB table, and a Cognito user pool for sign-in.
+
+The owner passed all six and asked for the skill change below (D-042). The owner did not report separately on how the images appeared or whether the files opened. The rest was checked from the session record and the files.
+
+| Check | Result |
+|---|---|
+| 1. Install and runtime | Passed. The chat reports this version and core `0.5.0a2`, with the runtime `ready`, rendering available and no blockers |
+| 2. AWS drawing | Passed. The first model failed with `SCHEMA_FIELD_INVALID` on its `environment`, and the chat read the schema and corrected it, as in the earlier run. Strict, no warnings, and all six files |
+| 3. Edit | Passed. All 10 IDs stayed unchanged, and `s3`, `app-1-to-s3` and `app-2-to-s3` were added. The chat rendered twice, the second time only to name each read line's server in its label |
+| 4. Invalid model | Passed. `REFERENCE_MISSING` at `/relationships/0/target_ref`, and no bundle |
+| 5. GKE with Thai labels | Passed on the plugin's bundles, which the chat did not show, as the next paragraph says. Both views share one `model.json`, SHA-256 `e3477a3831a8d43921e396b33aaa2de8daf11a1b701b0616fb53be694ba75eca`, and the Thai names and labels draw. The detail view shows the D-030 lines and follows S14's rule: the Ingress keeps its `service:` note, because its line to the Service is `dependency`, not `traffic`, and the PVC's storage class note hides, because a `storage` line from the PVC draws it |
+| 6. AWS serverless | Passed. Strict, no warnings, with `aws.network.cloudfront`, `aws.security.waf_cloudfront`, `aws.integration.api_gateway_v2`, `aws.compute.lambda`, `aws.database.dynamodb` and `aws.identity.cognito_user_pool`. This is the first live session to use S13's types |
+
+For check 5, the chat did not show the plugin's images. It judged that the English text the renderer adds broke the request for Thai on every label, so it changed `diagram.svg` itself. It translated the provider headings, deleted each node's type name, and rewrote the property lines in Thai, losing `TCP` and `app=web`. Then it drew the PNG again with `rsvg-convert`, outside the sandbox and the font check. It linked the plugin's six files beside them as a ZIP. The skills of both plugins now forbid this, and say which text stays in English (D-042).
+
+Other things seen in the session record:
+
+- The chat started check 5's model from the GKE chat of 2026-11-05, through the app's memory and that chat's bundle, so that model was not written fresh.
+- The chat read the plugin's `src` and server code in prompts 1, 3 and 5, and the runtime skill of the old S04 plugin, which stays installed.
+- In prompt 3, the lines to S3 start short of the EC2 icons, which is S08's open P3-2.
+- Prompt 6 also searched the web for AWS documents.
+- No `busy` answer and no `RUNTIME_INSTALLING` appeared.
+
+Rendering the five final bundles again from `main` gives the same `diagram.svg`, `diagram.png` and `view.json`. Bundles under `~/Documents/CloudArchitectureDiagrams/work/`:
+
+- AWS `aws-three-tier-web-app--overview--16f6e9c6c9645a75`, and after the edit `aws-three-tier-web-app--overview--b0d81fdd84d860f6`
+- GKE `gke-web-with-pvc--overview--148c236ad466e6fe` and `gke-web-with-pvc--detail--77312d4c8ee9383f`
+- AWS serverless `aws-serverless-http-api--overview--61cf1e2cf18e3e56`
+
+The skill change makes the Work plugin `0.1.0-alpha.1+2d1966a9c1e8`, which is not installed and has run no prompt in Work. This run covers one Mac and one model, under full access, with a runtime that was already set up.
 
 ## Final version
 

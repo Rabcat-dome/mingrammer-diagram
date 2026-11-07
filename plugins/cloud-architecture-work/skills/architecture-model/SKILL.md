@@ -36,6 +36,8 @@ Every answer's `status` says what happened, with `code`, `message` and `remedy` 
 
 If rendering is unavailable or fails, say so and offer the validated model. Do not fill the gap by writing `diagrams` Python, Graphviz DOT, Mermaid or other generated code, and do not use another diagram or image tool: an image made outside the controlled renderer skips its checks and approved icons. PDF and DOT export and automatic overview/detail generation do not exist.
 
+Hand over a bundle's files as the plugin wrote them. Never edit, translate, redraw or convert `diagram.svg` or `diagram.png`, and never show a changed image in their place, even when the user asks for every label in Thai. Copying the files unchanged is fine. The model's names, labels, titles and relationship labels are drawn as written, so write those in Thai. The renderer adds English text of its own: provider and legend headings, each node's type name, and in Kubernetes detail views property lines such as `type: ClusterIP`, `ports: 80:8080/TCP` and `node: unspecified`. Tell the user that this text stays in English.
+
 The plugin's tools run on this Mac, so they work only in a chat that runs locally. If its tools are not available in this chat, say that rather than simulating them.
 
 ### Huawei Cloud icons
