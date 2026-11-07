@@ -49,3 +49,7 @@ The implementer confirmed F1 in both skills at `cdee5f0`. For F2, the six sessio
 ## Fixes after the review
 
 On the owner's word on 2026-11-07, "Fix all three", Claude Opus 5.5 fixed each finding. For F1, "Causes" says which skill named which field. For F2, "What happened" names the six session records, their originator and their start times, and says they are outside the repository. For F3, the handoff says "and" in place of "so". Only records changed, so the core, the skills, the tests and the Work plugin's version stay as they were.
+
+## Run in Work
+
+On 2026-11-08 the owner ran four prompts on `0.1.0-alpha.1+594b3683feb0` in one new Work chat, after restarting the ChatGPT app, and passed them (D-045). The first model of each drawing named `metadata.environment` and passed strict at once: `"conceptual"` for an AWS view, and the same word in Thai for an Azure view with Thai labels. Each view's title draws it in brackets. A model without the field gave `SCHEMA_FIELD_MISSING` at `/metadata/environment`, with no image, and the chat left the model unchanged. [The Work check](S09-Work-validation.md#the-missing-field-in-work) records the prompts and results. This run covers one Mac and one model.

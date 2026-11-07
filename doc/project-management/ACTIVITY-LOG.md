@@ -693,3 +693,10 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - The Claude plugin moved from `9388fee49347` to `54a7b11e4cea`, which reports package `0.5.0a3` and catalog `2026.11.2`. Its `eks-namespaces` PNG for the AWS three-tier model matches the baseline byte for byte.
 - A model without `metadata.environment` gives `SCHEMA_FIELD_MISSING` at `/metadata/environment`, with the remedy to add it, through both installed copies. Both installed skills and the guide name the field. The ChatGPT app and any open Claude Code session need a restart to load these. No prompt has run in Work on this version.
 - On the owner's answer "Commit, push, merge", these records go on `codex/install-54a7b11`, and `main` fast-forwards to them once they pass CI.
+
+## 2026-11-08 — D-044 in actual Work
+
+- The owner restarted the ChatGPT app and Claude Code, so both load the plugins from `54a7b11`. Claude Opus 5.5 wrote four prompts for D-044: prompt 1, two drawings no earlier Work chat had made, one AWS and one Azure with Thai labels, and a model without `metadata.environment`, whose result it first checked against the core here.
+- The owner ran them in one new Work chat on `0.1.0-alpha.1+594b3683feb0`, with GPT-6.1 Sol / High under full access. The first model of each drawing named `environment` and passed strict at once, the first of seven Work sessions to do so, and each view's title draws it in brackets, in Thai for the Thai view. The missing field gave `SCHEMA_FIELD_MISSING` at `/metadata/environment`, and the chat left the model unchanged.
+- The chat showed the plugin's own images, and all 12 copies match the bundles. Rendering both models again from `main` gives the same files apart from each manifest's `bundle_id`. The chat did not name the two zones the AWS view leaves out. See [the Work check](evidence/S09-Work-validation.md#the-missing-field-in-work).
+- The owner passed it (D-045). On the owner's word, translated from Thai, "go to the next step", these records go on `codex/work-missing-field-check`, and `main` fast-forwards to them once they pass CI. The tag does not move.

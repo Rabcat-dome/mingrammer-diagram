@@ -2,7 +2,7 @@
 
 Target: the separate ChatGPT Work page or mode, not Codex (D-014). Automated checks and rehearsals stay in the [S09 evidence](S09-work-plugin.md), and only what the owner reports below counts as a Work result.
 
-**Status: all five checks pass in Work on the final version, `0.1.0-alpha.1+88ce2c0cd0dc`, on the first Mac (D-032), after passing on `0.1.0-alpha.1+d27ef23f6f94` on both Macs (D-027, D-029). M5 closed on 2026-11-05 under D-028.** **After the release, the five prompts and a sixth pass on `0.1.0-alpha.1+80cadf16a121` on the first Mac (D-042), as [After the release](#after-the-release) records.** **On `0.1.0-alpha.1+5fc47e5a0839`, prompt 1 and check 5 pass (D-043), and the chat shows the plugin's images unchanged, as [The image rule in Work](#the-image-rule-in-work) records.**
+**Status: all five checks pass in Work on the final version, `0.1.0-alpha.1+88ce2c0cd0dc`, on the first Mac (D-032), after passing on `0.1.0-alpha.1+d27ef23f6f94` on both Macs (D-027, D-029). M5 closed on 2026-11-05 under D-028.** **After the release, the five prompts and a sixth pass on `0.1.0-alpha.1+80cadf16a121` on the first Mac (D-042), as [After the release](#after-the-release) records.** **On `0.1.0-alpha.1+5fc47e5a0839`, prompt 1 and check 5 pass (D-043), and the chat shows the plugin's images unchanged, as [The image rule in Work](#the-image-rule-in-work) records.** **On `0.1.0-alpha.1+594b3683feb0`, four prompts written for D-044 pass (D-045), and the first model of each drawing names `metadata.environment`, as [The missing field in Work](#the-missing-field-in-work) records.**
 
 ## What the owner runs
 
@@ -17,6 +17,36 @@ The final version is `0.1.0-alpha.1+88ce2c0cd0dc`, which adds [D-030's detail li
 | 3 | `In that diagram, add an S3 bucket that both app servers read from, and draw it again. Keep everything else as it is. Tell me which IDs you kept and added.` | Edit flow, stable IDs, updated source |
 | 4 | `Validate this model and tell me what is wrong, without fixing it: {"schema_version":"1.0.0","metadata":{"id":"x","title":"X","environment":"prod","assumptions":[]},"resources":[{"id":"app","name":"App","provider":"aws","service_type":"aws.compute.ec2","taxonomy":"compute.vm"}],"relationships":[{"id":"r1","source_ref":"app","target_ref":"ghost","kind":"traffic"}],"views":[{"id":"v","title":"V","entity_refs":["app"]}]}` | Invalid input: expects `REFERENCE_MISSING` and no image |
 | 5 | Do not paste this row. Paste a Thai sentence asking for a GKE architecture with a Deployment, Service, Ingress and PVC, with both an overview view and a detail view, and with Thai names on the labels. The session that started this check gives the exact sentence, because repository documents stay English. Pasting this row made a chat draft a sentence and call no tool | Kubernetes overview and detail, Thai labels, same IDs in both views |
+
+## The missing field in Work
+
+Run on 2026-11-08 (Asia/Bangkok) on `0.1.0-alpha.1+594b3683feb0`, with core `0.5.0a3`, built from `54a7b11`, on the first Mac, in one new Work chat outside this repository, after the owner restarted the ChatGPT app. The runtime was `ready`, and the chat's render probe passed, so `setup_runtime` did not run. The session record, started at 00:24:50, has originator `codex_work_desktop` and GPT-6.1 Sol / High, with approval policy `never` and `danger-full-access`. A Claude Opus 5.5 session wrote prompts 2 to 4 for [D-044](S09-missing-field.md). Prompts 2 and 3 ask for architectures no earlier Work chat drew, so the app's memory could not hand the chat a model that already held `environment`.
+
+| # | Prompt | What it checks |
+|---|---|---|
+| 1 | The table's prompt 1 | Version and runtime |
+| 2 | `Draw an AWS architecture: an Application Load Balancer in front of an ECS service running on Fargate in two private subnets of one VPC. The service reads and writes an RDS database and pulls its images from ECR. Show me the picture and give me all six files.` | The first model names `metadata.environment` |
+| 3 | A Thai sentence, translated here: "Use Cloud Architecture Diagrams to draw a web architecture on Azure: an Application Gateway in front of two VMs in the same VNet, and both VMs read and write an Azure SQL Database. Put Thai names on every label. Show the picture and give me all six files." | `environment` written in the labels' language, and the image rule |
+| 4 | `Validate this model and tell me what is wrong, without fixing it: {"schema_version":"1.0.0","metadata":{"id":"x","title":"X","assumptions":[]},"resources":[{"id":"app","name":"App","provider":"aws","service_type":"aws.compute.ec2","taxonomy":"compute.vm"}],"relationships":[],"views":[{"id":"v","title":"V","entity_refs":["app"]}]}` | A missing field: expects `SCHEMA_FIELD_MISSING` at `/metadata/environment` and no image |
+
+The owner passed the run (D-045). The owner did not report separately on how the images appeared or whether the files opened. The rest was checked from the session record and the files.
+
+| Check | Result |
+|---|---|
+| 1. Install and runtime | Passed. The chat reports this version and core `0.5.0a3`, with the runtime `ready`, rendering available and no blockers. It ran the runtime's render probe by importing the plugin's server code with `python3`, not through a tool |
+| 2. AWS on ECS and Fargate | Passed. The first model held `"environment": "conceptual"` and passed strict at once, with only a `VIEW_EXCLUSIONS` warning for the two zones. This is the first of seven Work sessions whose first model did not fail on `metadata.environment`. The chat rendered three times: to shorten four names, retitle the view and add the service's `attachment` lines to both subnets and its `membership` line to the cluster, then to turn the view top to bottom. The final view's title draws as "Application architecture (conceptual)", and it uses the ALB, ECS cluster, Fargate for ECS, RDS and ECR types |
+| 3. Azure with Thai labels | Passed. The first model held an `environment` written in Thai, translated here as "conceptual", and passed strict at once with no diagnostics. The title draws as the Thai for "Web system overview" with that word in brackets. The chat told the user, in Thai, that the titles, resource names, network names and arrow labels are Thai, and that type labels the plugin adds, such as `Subnet` and `Azure SQL Database`, stay in English |
+| 4. Missing field | Passed. `SCHEMA_FIELD_MISSING` at `/metadata/environment`, with the message and remedy D-044 sets, and no bundle. The chat said validation stopped at the schema and left the model unchanged |
+
+Other things seen in the session record and the files:
+
+- For checks 2 and 3 the chat showed the plugin's own images. It copied each final bundle's six files into its folder with `shutil.copyfile` and checked each copy's SHA-256 against the renderer's, and in check 3 it also checked the SVG's text for every Thai label. All 12 copies match the bundles byte for byte.
+- In check 2 the chat said that the overview shows the zones as subnet labels, but did not name `az-a` and `az-b` as left out of the view, although the skill asks it to disclose every view's exclusions. This is close to what [the image rule in Work](#the-image-rule-in-work) records.
+- In prompt 1 the chat read the runtime skill and scripts of the old S04 plugin, and the app's memory summary of an earlier runtime chat. It read no memory in prompts 2 to 4, and both models were written fresh.
+- Prompts 2 and 3 searched the web for AWS and Azure documents.
+- No `busy` answer and no `RUNTIME_INSTALLING` appeared.
+
+Rendering both final models again from `main` at `8d39d0f` gives the same `diagram.svg`, `diagram.png`, `model.json`, `view.json` and `diagnostics.json`, and the manifests differ only in `bundle_id`. Bundles under `~/Documents/CloudArchitectureDiagrams/work/`: AWS `aws-alb-ecs-fargate-rds-ecr--overview--acc5053d40bf13e8`, after `--85d5706b6d7014c5` and `--d4397177ba684ff6`, and Azure `azure-web-gateway-vms-sql-th--overview--aec032ebb1f7a96f`. This run covers one Mac and one model, under full access, with a runtime that was already set up. The table's prompts 2, 3 and 5 and [the sixth prompt](#after-the-release) did not run on this version, and prompt 4 ran in the changed form above.
 
 ## The image rule in Work
 
