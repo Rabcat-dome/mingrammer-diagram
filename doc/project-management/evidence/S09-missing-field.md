@@ -24,7 +24,8 @@ In six Work sessions from 2026-11-05 to 2026-11-07, the first model a chat wrote
 
 - Four new tests. The contract lane has `test_a_missing_field_has_its_own_code_and_remedy`. The Work plugin lane has `test_a_missing_field_tells_the_chat_to_add_it` and `test_skill_names_the_required_metadata`. The Claude plugin lane has `test_skill_and_guide_name_the_required_metadata`. The skill tests read the schema's required fields, and check the brackets against the title of the `aws-three-tier--overview` baseline.
 - Ten sabotage edits each failed a named test, with twelve failures in all, because each of the two core edits fails in two lanes.
-- The local gate passes 16 of 17 lanes. `release-audit` fails only because the [core reproduction proof](S10-core-reproduction-proof.json) describes the old source. `scripts/reproduce_core.py` clones a pushed commit, so the proof can follow only once this change is committed, as it did after D-034.
+- At `2f60661`, the local gate passed 16 of 17 lanes. `release-audit` failed only because the [core reproduction proof](S10-core-reproduction-proof.json) described the old source. `scripts/reproduce_core.py` clones a pushed commit, so the proof followed in the next commit, as it did after D-034.
+- The core reproduces from a new clone at `2f60661`. The clean runtime builds the wheel with SHA-256 `81bc0cedaf55f70ec5ef6e63ab81889f93d5d047a3172a280294904b8c51bccb`, the same as the local build, and all 26 reference views match their baselines by both routes. With that proof, the local gate passes 17 lanes.
 - The Work plugin builds as `0.1.0-alpha.1+594b3683feb0` twice, with the same ZIP. `uv.lock` changed, so an install must build the runtime again.
 
-Not done when this was written: the core's reproduction from a new clone, an independent review, an install, and a Work run of this version.
+Not done when this was written: an independent review, an install, and a Work run of this version.
