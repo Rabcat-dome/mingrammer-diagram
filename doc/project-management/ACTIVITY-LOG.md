@@ -685,3 +685,11 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - Claude Fable 5.1 / High, in a fresh agent, [approved D-044](evidence/S09-missing-field.md#review) at `b478a5d` with three P3 findings in the records: which skill names which metadata field, where the six sessions are recorded, and a "so" in the handoff. The Claude session confirmed each, and none is fixed. Nothing is merged or installed.
 - On the owner's word, Claude Opus 5.5 [fixed all three](evidence/S09-missing-field.md#fixes-after-the-review) in the records. Only records changed, so the Work plugin stays `0.1.0-alpha.1+594b3683feb0`. The docs check passes.
 - On the owner's answer "Commit, push, merge", the review and its fixes go on `codex/environment-guidance` with this entry, and `main` fast-forwards to it once it passes CI. The tag does not move, and neither installed plugin has D-044.
+
+## 2026-11-08 — Both plugins installed from `54a7b11`
+
+- On the owner's word, Claude Opus 5.5 built the Work plugin from `main` at `54a7b11` as `0.1.0-alpha.1+594b3683feb0`, with core `0.5.0a3`. Two builds gave the same ZIP, SHA-256 `24f739e4a1411ecfc231724a523c57629c35ccab2e4476c2b0d156d641cb18f8`, and the host check passed 35 checks in a throwaway profile. It is installed with `codex plugin add`, replacing `5fc47e5a0839`.
+- `uv.lock` changed with the core version, so `scripts/runtime.py setup` built the runtime again for lock `d8d8163c50b1026c`. Its render probe passed under the new version, and setup removed the old runtime.
+- The Claude plugin moved from `9388fee49347` to `54a7b11e4cea`, which reports package `0.5.0a3` and catalog `2026.11.2`. Its `eks-namespaces` PNG for the AWS three-tier model matches the baseline byte for byte.
+- A model without `metadata.environment` gives `SCHEMA_FIELD_MISSING` at `/metadata/environment`, with the remedy to add it, through both installed copies. Both installed skills and the guide name the field. The ChatGPT app and any open Claude Code session need a restart to load these. No prompt has run in Work on this version.
+- On the owner's answer "Commit, push, merge", these records go on `codex/install-54a7b11`, and `main` fast-forwards to them once they pass CI.
