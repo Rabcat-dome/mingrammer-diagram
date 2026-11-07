@@ -18,6 +18,7 @@ A working summary of the contract. The plugin's schema discovery (the `schema` s
 
 Unknown fields fail everywhere. At least one view is required. The input limit is 1 MiB, 1000 combined scopes/boundaries/resources, 4000 relationships and 32 views.
 
+- **Metadata:** `id`, `title` and `environment` are required, and `assumptions` lists working choices. `environment` is a short label such as `production`, `staging` or `development`. Each view's title shows it in brackets, so write it in the labels' language. Leaving it out fails with `SCHEMA_FIELD_MISSING`.
 - **IDs:** lowercase, start with a letter, then letters, digits, `.`, `_` or `-`, at most 64 characters. Scope, boundary, resource, relationship and view IDs share one namespace, so each must be unique across all five.
 - **Text:** English and Thai are both fine. Names and labels are 1-256 characters with no control characters, so no newlines. Whatever a view draws must be in the bundled fonts, so `render` refuses `→`, `✓`, `≥`, emoji and scripts the fonts lack, such as Chinese, Japanese and Korean, with `RENDER_TEXT_UNDRAWABLE`. Write `to`, `>=` or words instead; `-`, `>`, `–`, `—` and `…` are fine.
 - **Provider:** `aws`, `azure`, `gcp`, `huawei`, `onprem` or `external`. Use `external` for users, the Internet, partners and SaaS.

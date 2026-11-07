@@ -101,6 +101,10 @@ def _error(code: str, field: str, entity_id: str | None = None) -> Diagnostic:
             "Field violates the closed, strict schema.",
             "Use schema discovery; remove unknown fields and correct field types/bounds.",
         ),
+        "SCHEMA_FIELD_MISSING": (
+            "A required field is missing.",
+            "Add the field at this path; schema discovery lists each object's required fields.",
+        ),
         "ID_DUPLICATE": (
             "An ID is reused across entities, relationships or views.",
             "Assign unique stable IDs across these collections.",
@@ -479,9 +483,10 @@ def validate_model(
         return result, None
     except (UnicodeError, ValueError, RecursionError) as error:
         if isinstance(error, ValidationError):
+            # A missing field needs adding, so it must not share the remedy for a wrong one.
             result.diagnostics = [
                 _error(
-                    "SCHEMA_FIELD_INVALID",
+                    "SCHEMA_FIELD_MISSING" if item["type"] == "missing" else "SCHEMA_FIELD_INVALID",
                     "/"
                     + "/".join(
                         str(part).replace("~", "~0").replace("/", "~1")[:128]

@@ -124,6 +124,21 @@ def test_bounded_parser(payload: bytes, expected: str) -> None:
     assert not result.valid and result.diagnostics[0].code == expected
 
 
+def test_a_missing_field_has_its_own_code_and_remedy() -> None:
+    # Work chats left metadata.environment out of their first model, and the remedy for an
+    # unknown field sent each one to read the whole schema to find what was missing.
+    data = fixture()
+    del data["metadata"]["environment"]
+    result = validate_json(json.dumps(data).encode())
+    assert not result.valid
+    [missing] = result.diagnostics
+    assert (missing.code, missing.field) == ("SCHEMA_FIELD_MISSING", "/metadata/environment")
+    assert missing.remedy.startswith("Add the field")
+    data = fixture()
+    data["metadata"]["extra"] = "unknown"
+    assert codes(data) == {"SCHEMA_FIELD_INVALID"}
+
+
 def test_labels_are_literal_utf8_and_json_depth_ignores_braces_in_strings() -> None:
     data = fixture()
     data["resources"][0]["name"] = "Application \u0e23\u0e30\u0e1a\u0e1a " + "{" * 70

@@ -16,6 +16,7 @@ from cloud_architecture_diagrams.catalog import catalog
 from cloud_architecture_diagrams.cli import capabilities
 from cloud_architecture_diagrams.models import (
     CLUSTER_SCOPED,
+    Architecture,
     Boundary,
     BoundaryRelation,
     KubernetesKind,
@@ -266,6 +267,24 @@ def test_skill_keeps_the_images_as_the_plugin_wrote_them() -> None:
     for example in ("type: ClusterIP", "ports: 80:8080/TCP", "storage class:"):
         assert f"`{example}`" in detail, example
         assert starts(namespaces, example) and not starts(overview, example), example
+
+
+def test_skill_and_guide_name_the_required_metadata() -> None:
+    skill = (SKILL / "SKILL.md").read_text()
+    # Six Work chats left metadata.environment out of their first model.
+    required = Architecture.model_json_schema()["$defs"]["Metadata"]["required"]
+    assert sorted(required) == ["environment", "id", "title"]
+    assert "Its `metadata` needs `id`, `title` and `environment`" in skill
+    assert "titles, `environment` and relationship labels are drawn as written" in skill
+    # Each view's title shows the environment in brackets, as the skill says.
+    assert "that each view's title shows in brackets" in skill
+    model = json.loads((ROOT / "tests/fixtures/references/aws-three-tier.json").read_text())
+    graph = json.loads((ROOT / "tests/baselines/aws-three-tier--overview.graph.json").read_text())
+    view = next(item for item in model["views"] if item["id"] == "overview")
+    assert f"{view['title']} ({model['metadata']['environment']})" in graph["title_lines"]
+    guide = (SKILL / "references/model-guide.md").read_text()
+    assert "`id`, `title` and `environment` are required" in guide
+    assert "`SCHEMA_FIELD_MISSING`" in guide
 
 
 def test_skill_names_the_render_size_outcomes() -> None:

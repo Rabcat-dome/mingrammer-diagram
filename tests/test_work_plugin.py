@@ -1365,6 +1365,17 @@ def test_invalid_model_is_a_validation_failure_with_its_diagnostics(client: Clie
     assert body["result"]["valid"] is False
 
 
+def test_a_missing_field_tells_the_chat_to_add_it(client: Client) -> None:
+    model = fixture("core-valid.json")
+    del model["metadata"]["environment"]
+    body = client.body("validate_model", model=model)
+    assert body["status"] == "validation_failed"
+    assert body["code"] == "SCHEMA_FIELD_MISSING"
+    [missing] = body["result"]["diagnostics"]
+    assert missing["field"] == "/metadata/environment"
+    assert missing["remedy"].startswith("Add the field")
+
+
 def test_lenient_turns_only_an_unknown_type_into_a_draft(client: Client) -> None:
     model = fixture("core-valid.json")
     model["resources"][0]["service_type"] = "aws.made.up"
@@ -2197,6 +2208,20 @@ def test_skill_keeps_the_images_as_the_plugin_wrote_them(skill: str) -> None:
     for example in ("type: ClusterIP", "ports: 80:8080/TCP", "storage class:"):
         assert f"`{example}`" in detail, example
         assert starts(namespaces, example) and not starts(overview, example), example
+
+
+def test_skill_names_the_required_metadata(skill: str) -> None:
+    # Six Work chats left metadata.environment out of their first model.
+    required = Architecture.model_json_schema()["$defs"]["Metadata"]["required"]
+    assert sorted(required) == ["environment", "id", "title"]
+    assert "Its `metadata` needs `id`, `title` and `environment`" in skill
+    assert "titles, `environment` and relationship labels are drawn as written" in skill
+    # Each view's title shows the environment in brackets, as the skill says.
+    assert "that each view's title shows in brackets" in skill
+    model = json.loads((ROOT / "tests/fixtures/references/aws-three-tier.json").read_text())
+    graph = json.loads((ROOT / "tests/baselines/aws-three-tier--overview.graph.json").read_text())
+    view = next(item for item in model["views"] if item["id"] == "overview")
+    assert f"{view['title']} ({model['metadata']['environment']})" in graph["title_lines"]
 
 
 def test_skill_explains_every_result_status(skill: str) -> None:

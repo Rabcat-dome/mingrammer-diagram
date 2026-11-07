@@ -675,3 +675,9 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - The chat showed the plugin's own images. It copied the bundles' files unchanged and checked their SHA-256, and it told the user which text stays in English. All 12 copies match the bundles, and rendering both views again from `main` gives the same files.
 - The owner passed it (D-043). The chat did not list every view's exclusions, and its first model failed on `metadata.environment` again, which it corrected. [The record](evidence/S09-Work-validation.md#the-image-rule-in-work) lists both.
 - On the owner's answer "Commit, push, merge", these records go on `codex/work-image-rule-check`, and `main` fast-forwards to them once they pass CI.
+
+## 2026-11-07 — A missing field gets its own code
+
+- Every Work chat's first model left `metadata.environment` out. Neither skill named the field, the guide showed it only in its example, and the core's remedy for a missing field told the chat to remove unknown fields.
+- The owner chose to fix the skills and guide, and then also the error (D-044). Claude Opus 5.5 [named the field](evidence/S09-missing-field.md) in both skills and the guide. The core now reports a missing field with `SCHEMA_FIELD_MISSING` and a remedy to add it. Core moves to `0.5.0a3`, and the tag does not move.
+- Four new tests guard it, and each of 10 sabotage edits failed a named test. The Work plugin is now `0.1.0-alpha.1+594b3683feb0`. The local gate passes 16 of 17 lanes, and `release-audit` waits for a reproduction proof of the committed source. These changes are committed on `codex/environment-guidance` with this entry, and the reproduction proof follows in the next commit, because it clones this one.

@@ -32,7 +32,7 @@ The owner passed the run (D-043). The owner did not report separately on how the
 Other things seen in the session record and the images:
 
 - English appears where the skill says: `Google Cloud`, each type name, `node: unspecified` in both views, and `type: ClusterIP` and `replicas: 1` only in the detail view.
-- The first model failed with `SCHEMA_FIELD_INVALID` on `metadata.environment`, as check 2 did in earlier runs. The chat read the schema and corrected it.
+- The first model failed with `SCHEMA_FIELD_INVALID` on `metadata.environment`, as check 2 did in earlier runs. The chat read the schema and corrected it. D-044 [addresses the cause](S09-missing-field.md).
 - The chat said that the overview leaves the ReplicaSet and PV to the detail view. It did not list the three relationships the overview also leaves out, or the Deployment to Pod line the detail view leaves out, although the skill asks it to disclose every view's exclusions.
 - The app's memory listed an earlier GKE chat and its model `gke-web-with-pvc`, but the chat wrote a new model, `gke-app-th`, and did not read the earlier one.
 - As before, the chat read the runtime skill of the old S04 plugin in prompt 1, and searched the web for GKE and Kubernetes documents.

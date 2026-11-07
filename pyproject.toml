@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "cloud-architecture-diagrams"
-version = "0.5.0a2"
+version = "0.5.0a3"
 description = "Data-only architecture contracts, provider catalogs, deterministic validation and controlled rendering"
 requires-python = ">=3.13,<3.14"
 # Bundled Huawei icons are for private personal use only (D-017), and PyPI rejects this classifier.
