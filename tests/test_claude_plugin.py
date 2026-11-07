@@ -243,20 +243,29 @@ def test_skill_keeps_the_images_as_the_plugin_wrote_them() -> None:
         assert clause in rules[0], clause
     any_view, _, detail = rules[0].partition("Kubernetes detail views add")
     assert detail, "the rule must say what only Kubernetes detail views add"
-    for words in ("legend headings", "type name", "`subnet:`", "`node: unspecified`"):
+    for words in ("provider headings", "line kinds", "type name", "`node: unspecified`"):
         assert words in any_view, words
     assert "`service:`" in detail
 
-    def drawn(view: str) -> list[str]:
+    def drawn(view: str) -> tuple[list[str], list[str]]:
         path = ROOT / f"tests/baselines/aws-three-tier--{view}.graph.json"
-        return [line for node in json.loads(path.read_text())["nodes"] for line in node["lines"]]
+        graph = json.loads(path.read_text())
+        return [line for node in graph["nodes"] for line in node["lines"]], graph["legend"]
+
+    def starts(lines: list[str], example: str) -> bool:
+        # A long note wraps, so an example need only start a drawn line.
+        return any(line.startswith(example) for line in lines)
 
     # One overview and one detail view show each example where the rule puts it.
-    overview, namespaces = drawn("overview"), drawn("eks-namespaces")
-    assert any(line.startswith("subnet: ") for line in overview)
+    overview, overview_legend = drawn("overview")
+    namespaces, namespaces_legend = drawn("eks-namespaces")
+    for kind in ("traffic", "storage"):
+        assert f"`{kind}`" in any_view and kind in overview_legend + namespaces_legend, kind
+    for example in ("subnet:", "security:"):
+        assert f"`{example}`" in any_view and starts(overview, example), example
     for example in ("type: ClusterIP", "ports: 80:8080/TCP", "storage class:"):
         assert f"`{example}`" in detail, example
-        assert example in namespaces and example not in overview, example
+        assert starts(namespaces, example) and not starts(overview, example), example
 
 
 def test_skill_names_the_render_size_outcomes() -> None:

@@ -26,7 +26,7 @@ Not checked: the owner's Thai reply quoted in D-042, which is not in the session
 
 ## The implementer's check of the findings
 
-F1 is confirmed in `src/cloud_architecture_diagrams/render/graph.py`, where the Pod's `node: unspecified` line and the membership notes are added before the guard for detail views, and in check 5's overview SVG, which draws `node: unspecified`. F2, F3 and F4 are confirmed by reading. None is fixed, and they wait for the owner.
+F1 is confirmed in `src/cloud_architecture_diagrams/render/graph.py`, where the Pod's `node: unspecified` line and the membership notes are added before the guard for detail views, and in check 5's overview SVG, which draws `node: unspecified`. F2, F3 and F4 are confirmed by reading. That session fixed none of them before the owner's word below.
 
 ## Fixes
 
@@ -40,3 +40,31 @@ On the owner's word on 2026-11-07, "Fix all four", Claude Opus 5.5 fixed each fi
 | F4 | Check 3 now says "All 11 IDs" and lists what they are. The two earlier runs' edits also said 10, and their bundles hold the same 11, so they now say so too |
 
 Seven sabotage edits to each skill, 14 in all, each failed its test with a named assertion. They dropped the clause about showing a changed image, the copying sentence, the `DRAFT` sentence or the type name. They moved `node: unspecified` into the detail sentence, changed the paragraph's opening words, or changed `type: ClusterIP` to `type: NodePort`. `src` did not change. The Work plugin's version is now `0.1.0-alpha.1+189d172ffd72`, and two builds gave the same files. The local gate passes 17 lanes. Fable has not reviewed these fixes.
+
+## Review of the fixes
+
+Date: 2026-11-07 (Asia/Bangkok) | Range: `a4537a7..4ae6bf0` | Reviewer: Claude Fable 5.1 (`claude-fable-5-1`), started at Medium, in a fresh read-only agent | Implementer: Claude Opus 5.5
+
+**Disposition: approved, with three P3 findings and no P1 or P2.** The reviewer judged F1 to F4 resolved from the code and files. It counted the IDs in all six bundles, rebuilt the Work plugin from the clean tree at `4ae6bf0` as `0.1.0-alpha.1+189d172ffd72`, ran both tests and repeated one sabotage edit. Actual CI [run 42375980874](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/42375980874) passed at `4ae6bf0`.
+
+| ID | Severity | Where | Finding | Fix direction |
+|---|---|---|---|---|
+| R1 | P3 | Both tests, the check against the two baselines | It looks for whole drawn lines. `storage class:` is a whole line only because the PVC's note, `storage class: web-storage`, is longer than 20 characters and wraps after the colon. With a shorter storage class name the test fails, although the view draws what the rule says | Check that a drawn line starts with each example |
+| R2 | P3 | Both skills, the paragraph that starts "Hand over a bundle" | The legend draws each line kind, such as `traffic` and `storage`, in English, but the paragraph names only its headings. Group boxes carry notes too, and some notes are not about place, such as `security: ALB` in check 5's overview | Name the legend's line kinds, and describe the notes as a resource's or box's memberships, with `security:` as an example |
+| R3 | P3 | This record, the end of "The implementer's check of the findings" | "None is fixed, and they wait for the owner" still stands above "Fixes" | Say that none was fixed in that session |
+
+Not checked by the reviewer: a second build, the full gate, the other sabotage edits, the PNGs by eye, and the provider headings beyond `External`.
+
+The implementer confirmed R1 in the `aws-three-tier--eks-namespaces` baseline, where the PVC's lines are `storage class:` and then `web-storage`, and `LABEL_WIDTH` is 20. R2 is confirmed in `draw.py`, which labels each legend line with its kind, and in `graph.py`, which adds notes to group boxes. R3 is confirmed by reading. None was fixed before the owner's word below.
+
+## Fixes after the second review
+
+On the owner's word on 2026-11-07, "Fix all three", Claude Opus 5.5 fixed each finding.
+
+| ID | Fix |
+|---|---|
+| R1 | Both tests now match each example by the start of a drawn line. A storage class note short enough not to wrap, `storage class: gp3`, passes both |
+| R2 | Both skills now name the legend's line kinds, such as `traffic` and `storage`, and describe the notes as what a resource or box belongs to, with `security:` among the examples. Both tests check the two line kinds against the baselines' legends and `security:` against the overview |
+| R3 | The end of "The implementer's check of the findings" now says that none was fixed before the owner's word |
+
+Eleven sabotage edits to each skill, 22 in all, each failed its test with a named assertion. They repeat the earlier seven and also drop the provider headings, the legend's line kinds or `security:`, or name a line kind never drawn. `src` did not change. The Work plugin's version is now `0.1.0-alpha.1+5fc47e5a0839`, and two builds gave the same files. The local gate passes 17 lanes. Fable has not reviewed these fixes.
