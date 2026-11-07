@@ -640,3 +640,10 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - Codex CLI stopped at its usage limit before reporting, and Fable's credit is used up. The owner chose to merge S14 first and review it afterward (D-041).
 - Opus, in a fresh agent, approved S14 with seven P3 findings, and Codex, after its limit reset, approved it with none. On `codex/s14-review-fixes` a typed reference's note now also respects direction, as Opus's F1 asks, and the other six are settled. See [S14](evidence/S14-open-p3-fixes.md#follow-up-after-review).
 - Codex CLI [approved the follow-up](evidence/S14-astra-recheck.md) at `c3fdae4` with no findings, and agrees with the direction rule.
+
+## 2026-11-07 — Both plugins installed from `5598159`
+
+- On the owner's word, Claude Opus 5.5 built the Work plugin from `main` at `5598159` as `0.1.0-alpha.1+80cadf16a121`. Two builds gave the same ZIP, SHA-256 `b9a61ba7f14286fdb3b7dd69ffe7aa93dcfb720bd05b6088d019a66b30b86730`, and the host check passed 35 checks in a throwaway profile. It is installed with `codex plugin add`, replacing `b3b15252a0c2`.
+- Its runtime had to be built again, because `uv.lock` changed with core `0.5.0a2` under D-034. `scripts/runtime.py setup` built it, its render probe passed, and the release's runtime was removed.
+- The Claude plugin moved from `ea6c802ec4d3` to `5598159718ee`. That copy reports catalog `2026.11.2`, and its `eks-namespaces` PNG matches the baseline digest.
+- The ChatGPT app and any open Claude Code session need a restart to load these. No prompt has run in Work under D-040.
