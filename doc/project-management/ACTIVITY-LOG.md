@@ -668,3 +668,10 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - The Claude plugin moved from `5598159718ee` to `9388fee49347`. That copy reports catalog `2026.11.2`, and its `eks-namespaces` PNG for the AWS three-tier model matches the baseline byte for byte.
 - Both installed skills hold D-042's rule as fixed after its three reviews. The ChatGPT app and any open Claude Code session need a restart to load these. No prompt has run in Work on this version.
 - On the owner's answer "Commit, push, merge", this record goes on `codex/install-9388fee`, and `main` fast-forwards to it once it passes CI.
+
+## 2026-11-07 — The image rule in actual Work
+
+- The owner restarted the ChatGPT app and ran prompt 1 and check 5's Thai GKE prompt in one new Work chat on `0.1.0-alpha.1+5fc47e5a0839`, with GPT-6.1 Sol / High under full access.
+- The chat showed the plugin's own images. It copied the bundles' files unchanged and checked their SHA-256, and it told the user which text stays in English. All 12 copies match the bundles, and rendering both views again from `main` gives the same files.
+- The owner passed it (D-043). The chat did not list every view's exclusions, and its first model failed on `metadata.environment` again, which it corrected. [The record](evidence/S09-Work-validation.md#the-image-rule-in-work) lists both.
+- On the owner's answer "Commit, push, merge", these records go on `codex/work-image-rule-check`, and `main` fast-forwards to them once they pass CI.

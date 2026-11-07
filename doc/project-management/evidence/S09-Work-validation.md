@@ -2,7 +2,7 @@
 
 Target: the separate ChatGPT Work page or mode, not Codex (D-014). Automated checks and rehearsals stay in the [S09 evidence](S09-work-plugin.md), and only what the owner reports below counts as a Work result.
 
-**Status: all five checks pass in Work on the final version, `0.1.0-alpha.1+88ce2c0cd0dc`, on the first Mac (D-032), after passing on `0.1.0-alpha.1+d27ef23f6f94` on both Macs (D-027, D-029). M5 closed on 2026-11-05 under D-028.** **After the release, the five prompts and a sixth pass on `0.1.0-alpha.1+80cadf16a121` on the first Mac (D-042), as [After the release](#after-the-release) records.**
+**Status: all five checks pass in Work on the final version, `0.1.0-alpha.1+88ce2c0cd0dc`, on the first Mac (D-032), after passing on `0.1.0-alpha.1+d27ef23f6f94` on both Macs (D-027, D-029). M5 closed on 2026-11-05 under D-028.** **After the release, the five prompts and a sixth pass on `0.1.0-alpha.1+80cadf16a121` on the first Mac (D-042), as [After the release](#after-the-release) records.** **On `0.1.0-alpha.1+5fc47e5a0839`, prompt 1 and check 5 pass (D-043), and the chat shows the plugin's images unchanged, as [The image rule in Work](#the-image-rule-in-work) records.**
 
 ## What the owner runs
 
@@ -17,6 +17,28 @@ The final version is `0.1.0-alpha.1+88ce2c0cd0dc`, which adds [D-030's detail li
 | 3 | `In that diagram, add an S3 bucket that both app servers read from, and draw it again. Keep everything else as it is. Tell me which IDs you kept and added.` | Edit flow, stable IDs, updated source |
 | 4 | `Validate this model and tell me what is wrong, without fixing it: {"schema_version":"1.0.0","metadata":{"id":"x","title":"X","environment":"prod","assumptions":[]},"resources":[{"id":"app","name":"App","provider":"aws","service_type":"aws.compute.ec2","taxonomy":"compute.vm"}],"relationships":[{"id":"r1","source_ref":"app","target_ref":"ghost","kind":"traffic"}],"views":[{"id":"v","title":"V","entity_refs":["app"]}]}` | Invalid input: expects `REFERENCE_MISSING` and no image |
 | 5 | Do not paste this row. Paste a Thai sentence asking for a GKE architecture with a Deployment, Service, Ingress and PVC, with both an overview view and a detail view, and with Thai names on the labels. The session that started this check gives the exact sentence, because repository documents stay English. Pasting this row made a chat draft a sentence and call no tool | Kubernetes overview and detail, Thai labels, same IDs in both views |
+
+## The image rule in Work
+
+Run on 2026-11-07 (Asia/Bangkok) on `0.1.0-alpha.1+5fc47e5a0839`, built from `9388fee`, on the first Mac, in one new Work chat outside this repository, after the ChatGPT app was restarted. The runtime was `ready`, with a passing render probe under this version, so `setup_runtime` did not run. The session record has originator `codex_work_desktop` and GPT-6.1 Sol / High, with approval policy `never` and `danger-full-access`. Prompt 1 is the table's. The second prompt is check 5's Thai sentence, the same as in [After the release](#after-the-release). Prompts 2, 3, 4 and 6 did not run on this version.
+
+The owner passed the run (D-043). The owner did not report separately on how the images appeared or whether the files opened. The rest was checked from the session record and the files.
+
+| Check | Result |
+|---|---|
+| 1. Install and runtime | Passed. The chat reports this version and core `0.5.0a2`, with the runtime `ready`, rendering available and no blockers. It rendered the plugin's sample and copied its six files unchanged |
+| 5. GKE with Thai labels | Passed. The chat showed the plugin's own images. It copied each bundle's six files into its folder with `cp`, and checked each copy's SHA-256 against the plugin's. All 12 copies match the bundles byte for byte, and no command edited, translated, redrew or converted an image. It told the user, in Thai, that the names, titles and arrow labels are Thai, and that type names, text on icons and values the plugin adds stay in English. Both views share one `model.json`, SHA-256 `04a3cad5892ada5ec4d0a001fd72cf3afbf209f81ed1b3e7940c21c9905b4368`, and every name, title and relationship label in it is Thai |
+
+Other things seen in the session record and the images:
+
+- English appears where the skill says: `Google Cloud`, each type name, `node: unspecified` in both views, and `type: ClusterIP` and `replicas: 1` only in the detail view.
+- The first model failed with `SCHEMA_FIELD_INVALID` on `metadata.environment`, as check 2 did in earlier runs. The chat read the schema and corrected it.
+- The chat said that the overview leaves the ReplicaSet and PV to the detail view. It did not list the three relationships the overview also leaves out, or the Deployment to Pod line the detail view leaves out, although the skill asks it to disclose every view's exclusions.
+- The app's memory listed an earlier GKE chat and its model `gke-web-with-pvc`, but the chat wrote a new model, `gke-app-th`, and did not read the earlier one.
+- As before, the chat read the runtime skill of the old S04 plugin in prompt 1, and searched the web for GKE and Kubernetes documents.
+- No `busy` answer and no `RUNTIME_INSTALLING` appeared.
+
+Rendering both views again from `main` at `f22b75d` gives the same `diagram.svg`, `diagram.png` and `view.json`. Bundles under `~/Documents/CloudArchitectureDiagrams/work/`: GKE `gke-app-th--overview--cbde6c612099cbcc` and `gke-app-th--detail--e1461b068491d8ce`, and the sample `demo--overview--4ee9a80323d3e908`. This run covers one Mac and one model, under full access, with a runtime that was already set up, and two of the six prompts.
 
 ## After the release
 
@@ -49,7 +71,7 @@ Rendering the five final bundles again from `main` gives the same `diagram.svg`,
 - GKE `gke-web-with-pvc--overview--148c236ad466e6fe` and `gke-web-with-pvc--detail--77312d4c8ee9383f`
 - AWS serverless `aws-serverless-http-api--overview--61cf1e2cf18e3e56`
 
-Claude Fable 5.1 [approved the skill change and this record](S09-fable-image-rule-review.md) with four P3 findings, and they are [fixed](S09-fable-image-rule-review.md#fixes). Its [review of the fixes](S09-fable-image-rule-review.md#review-of-the-fixes) left three P3 findings, which are [fixed too](S09-fable-image-rule-review.md#fixes-after-the-second-review), and [a third review](S09-fable-image-rule-review.md#review-of-the-second-fixes) approved those fixes with two P3 findings in the records, which are [fixed too](S09-fable-image-rule-review.md#fixes-after-the-third-review). The change and its fixes make the Work plugin `0.1.0-alpha.1+5fc47e5a0839`, which is installed on the first Mac from `9388fee` and has run no prompt in Work. This run covers one Mac and one model, under full access, with a runtime that was already set up.
+Claude Fable 5.1 [approved the skill change and this record](S09-fable-image-rule-review.md) with four P3 findings, and they are [fixed](S09-fable-image-rule-review.md#fixes). Its [review of the fixes](S09-fable-image-rule-review.md#review-of-the-fixes) left three P3 findings, which are [fixed too](S09-fable-image-rule-review.md#fixes-after-the-second-review), and [a third review](S09-fable-image-rule-review.md#review-of-the-second-fixes) approved those fixes with two P3 findings in the records, which are [fixed too](S09-fable-image-rule-review.md#fixes-after-the-third-review). The change and its fixes make the Work plugin `0.1.0-alpha.1+5fc47e5a0839`, which is installed on the first Mac from `9388fee` and passes [the run of the image rule](#the-image-rule-in-work) (D-043). This run covers one Mac and one model, under full access, with a runtime that was already set up.
 
 ## Final version
 
