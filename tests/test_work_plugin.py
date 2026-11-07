@@ -2162,14 +2162,32 @@ def test_skill_names_every_tool_and_no_other(skill: str) -> None:
 def test_skill_keeps_the_images_as_the_plugin_wrote_them(skill: str) -> None:
     # In Work on 2026-11-07, a chat asked for Thai labels deleted the type names from
     # diagram.svg, translated its property lines and redrew the PNG outside the renderer.
-    assert "Never edit, translate, redraw or convert `diagram.svg` or `diagram.png`" in skill
-    rule = next(line for line in skill.splitlines() if line.startswith("Hand over a bundle"))
-    drawn = "".join(path.read_text() for path in (ROOT / "tests/baselines").glob("*.graph.json"))
-    source = (ROOT / "src/cloud_architecture_diagrams/render/graph.py").read_text()
-    for line in ("type: ClusterIP", "ports: 80:8080/TCP"):
-        assert f"`{line}`" in rule and line in drawn, line
-    assert "`node: unspecified`" in rule and '"node: unspecified"' in source
-    assert "stays in English" in rule
+    rules = [line for line in skill.splitlines() if line.startswith("Hand over a bundle")]
+    assert len(rules) == 1, "the skill needs one paragraph that starts 'Hand over a bundle'"
+    for clause in (
+        "Never edit, translate, redraw or convert `diagram.svg` or `diagram.png`",
+        "never show a changed image in their place",
+        "Copying the files unchanged is fine",
+        "`DRAFT` lines",
+        "Tell the user that this text stays in English",
+    ):
+        assert clause in rules[0], clause
+    any_view, _, detail = rules[0].partition("Kubernetes detail views add")
+    assert detail, "the rule must say what only Kubernetes detail views add"
+    for words in ("legend headings", "type name", "`subnet:`", "`node: unspecified`"):
+        assert words in any_view, words
+    assert "`service:`" in detail
+
+    def drawn(view: str) -> list[str]:
+        path = ROOT / f"tests/baselines/aws-three-tier--{view}.graph.json"
+        return [line for node in json.loads(path.read_text())["nodes"] for line in node["lines"]]
+
+    # One overview and one detail view show each example where the rule puts it.
+    overview, namespaces = drawn("overview"), drawn("eks-namespaces")
+    assert any(line.startswith("subnet: ") for line in overview)
+    for example in ("type: ClusterIP", "ports: 80:8080/TCP", "storage class:"):
+        assert f"`{example}`" in detail, example
+        assert example in namespaces and example not in overview, example
 
 
 def test_skill_explains_every_result_status(skill: str) -> None:

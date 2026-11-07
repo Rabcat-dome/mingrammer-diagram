@@ -28,7 +28,7 @@ The owner passed all six and asked for the skill change below (D-042). The owner
 |---|---|
 | 1. Install and runtime | Passed. The chat reports this version and core `0.5.0a2`, with the runtime `ready`, rendering available and no blockers |
 | 2. AWS drawing | Passed. The first model failed with `SCHEMA_FIELD_INVALID` on its `environment`, and the chat read the schema and corrected it, as in the earlier run. Strict, no warnings, and all six files |
-| 3. Edit | Passed. All 10 IDs stayed unchanged, and `s3`, `app-1-to-s3` and `app-2-to-s3` were added. The chat rendered twice, the second time only to name each read line's server in its label |
+| 3. Edit | Passed. All 11 IDs stayed unchanged: the model's own, the view, the VPC, four resources and four relationships. `s3`, `app-1-to-s3` and `app-2-to-s3` were added. The chat rendered twice, the second time only to name each read line's server in its label |
 | 4. Invalid model | Passed. `REFERENCE_MISSING` at `/relationships/0/target_ref`, and no bundle |
 | 5. GKE with Thai labels | Passed on the plugin's bundles, which the chat did not show, as the next paragraph says. Both views share one `model.json`, SHA-256 `e3477a3831a8d43921e396b33aaa2de8daf11a1b701b0616fb53be694ba75eca`, and the Thai names and labels draw. The detail view shows the D-030 lines and follows S14's rule: the Ingress keeps its `service:` note, because its line to the Service is `dependency`, not `traffic`, and the PVC's storage class note hides, because a `storage` line from the PVC draws it |
 | 6. AWS serverless | Passed. Strict, no warnings, with `aws.network.cloudfront`, `aws.security.waf_cloudfront`, `aws.integration.api_gateway_v2`, `aws.compute.lambda`, `aws.database.dynamodb` and `aws.identity.cognito_user_pool`. This is the first live session to use S13's types |
@@ -49,7 +49,7 @@ Rendering the five final bundles again from `main` gives the same `diagram.svg`,
 - GKE `gke-web-with-pvc--overview--148c236ad466e6fe` and `gke-web-with-pvc--detail--77312d4c8ee9383f`
 - AWS serverless `aws-serverless-http-api--overview--61cf1e2cf18e3e56`
 
-The skill change makes the Work plugin `0.1.0-alpha.1+2d1966a9c1e8`, which is not installed and has run no prompt in Work. This run covers one Mac and one model, under full access, with a runtime that was already set up.
+Claude Fable 5.1 [approved the skill change and this record](S09-fable-image-rule-review.md) with four P3 findings, and they are [fixed](S09-fable-image-rule-review.md#fixes). The change and its fixes make the Work plugin `0.1.0-alpha.1+189d172ffd72`, which is not installed and has run no prompt in Work. This run covers one Mac and one model, under full access, with a runtime that was already set up.
 
 ## Final version
 
@@ -59,7 +59,7 @@ Run on 2026-11-05 on `0.1.0-alpha.1+88ce2c0cd0dc`, on the first Mac, in one new 
 |---|---|
 | 1. Install and runtime | Passed. The chat reports this version, and setup reaches `ready` from `RUNTIME_NOT_READY` |
 | 2. AWS drawing | Passed. Strict, no warnings, and all six files |
-| 3. Edit | Passed. All 10 IDs stayed, `s3-bucket`, `app-1-s3` and `app-2-s3` were added, and no existing resource or relationship changed |
+| 3. Edit | Passed. All 11 IDs stayed: the model's own, the view, the VPC, four resources and four relationships. `s3-bucket`, `app-1-s3` and `app-2-s3` were added, and no existing resource or relationship changed |
 | 4. Invalid model | Passed. `REFERENCE_MISSING`, and no bundle |
 | 5. GKE with Thai labels | Passed, at the second attempt. The first paste was this page's own table row, so the chat drafted a sentence and called no tool, and its row now says not to. The drafted sentence then ran. Both views share one model, and the detail view shows D-030's new `type: ClusterIP` line, with no such line in the overview |
 
@@ -84,7 +84,7 @@ Run on 2026-11-05 (Asia/Bangkok) in one new Work chat, with GPT-6.1 Sol / High, 
 | Runtime reaches `ready` | Passed, in about 20 seconds from a removed runtime with a warm uv cache: `RUNTIME_NOT_READY`, `setup_runtime`, then `ready`. The marker names this version |
 | PNG visible in the chat, and how it appeared | Passed. Owner: it appears as a normal image and can be downloaded |
 | All six files open from Work | Passed. Owner: they open. Each bundle holds all six. The chat copied them to its own `outputs` folder by shell, and read `model.json` through `read_artifact` for the edit |
-| Edit keeps IDs and returns the updated source | Passed. All 10 IDs stayed, `s3`, `app-1-to-s3` and `app-2-to-s3` were added, and nothing else in the model changed. The new bundle holds the updated source |
+| Edit keeps IDs and returns the updated source | Passed. All 11 IDs stayed: the model's own, the view, the VPC, four resources and four relationships. `s3`, `app-1-to-s3` and `app-2-to-s3` were added, and nothing else in the model changed. The new bundle holds the updated source |
 | Invalid model gives `REFERENCE_MISSING` and no image | Passed, at `/relationships/0/target_ref`, and no bundle was made |
 | Kubernetes overview and detail both draw, with readable Thai | Passed. Both views share one model, so their IDs agree. Owner: passed |
 | Anything unexpected | The chat's first AWS model failed with two `SCHEMA_FIELD_INVALID`, and it read the schema and corrected the model, which is the flow the skill describes. No `busy` answer, and no `RUNTIME_INSTALLING` |
