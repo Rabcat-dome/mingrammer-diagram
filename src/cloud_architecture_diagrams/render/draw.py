@@ -483,9 +483,11 @@ class _Drawing:
         for identifier, node in self.drawn.items():
             if identifier in banded:
                 continue
-            if node.nodeid not in below or node.nodeid in looped:
+            # A level's ends are one node in the loop search, so look them up as their row.
+            on_loop = row_of.get(node.nodeid, node.nodeid) in looped
+            if node.nodeid not in below or on_loop:
                 markers[0].connect(node, Edge(style="invis", weight="0"))
-            if node.nodeid not in above or node.nodeid in looped:
+            if node.nodeid not in above or on_loop:
                 node.connect(markers[-1], Edge(style="invis", weight="0"))
 
     def _level(self, edge: GraphEdge) -> bool:

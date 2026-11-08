@@ -2022,3 +2022,44 @@ def test_lines_into_north_or_out_of_south_rank_nothing() -> None:
     assert "constraint=false" in lines["x-users"] and "constraint=false" in lines["router-y"]
     # A line from outside the bands into any later band still ranks its end above that band.
     assert "constraint=false" not in lines["x-alb"]
+
+
+def test_ends_of_a_free_level_on_loops_stay_between_north_and_south(smoke_root: Path) -> None:
+    # Recheck F11: a level's ends are one node in the loop search, so each end must be looked up
+    # as its row, or two databases drawn level, each replicating both ways with a reader, rise
+    # to the top row with the boxes around them.
+    model = load("compass-valid.json")
+    app_a = next(item for item in model["resources"] if item["id"] == "app-a")
+    view = model["views"][0]
+    for identifier in ("level-p", "level-q", "reader-r", "reader-s"):
+        model["resources"].append(copy.deepcopy(app_a) | {"id": identifier, "name": identifier})
+        view["entity_refs"].append(identifier)
+    pairs = [
+        ("level-p", "level-q"),
+        ("level-p", "reader-r"),
+        ("reader-r", "level-p"),
+        ("level-q", "reader-s"),
+        ("reader-s", "level-q"),
+    ]
+    for number, (source, target) in enumerate(pairs):
+        model["relationships"].append(
+            {
+                "id": f"loop-{number}",
+                "source_ref": source,
+                "target_ref": target,
+                "kind": "replication",
+            }
+        )
+        view["relationship_refs"].append(f"loop-{number}")
+    view["east_west_refs"].append("loop-0")
+    result = render(model, smoke_root, view="compass")
+    assert result.rendered, codes(result)
+    assert ["level-p", "level-q"] in graph_of(result)["levels"]
+    groups = by_id(svg_root(result))
+    north_bottom = _icon(groups, "users")[1]
+    south_top = _icon(groups, "onprem-router")[0]
+    for identifier in ("level-p", "level-q", "reader-r", "reader-s"):
+        top, bottom = _icon(groups, identifier)
+        assert north_bottom < top and bottom < south_top, identifier
+    ys = _path_ys(groups["group:_provider.aws"])
+    assert north_bottom < min(ys) and max(ys) < south_top

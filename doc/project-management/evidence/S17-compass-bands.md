@@ -147,3 +147,17 @@ This session reproduced F10 with Fable's probe script.
 On the owner's word, "Yes, finish it", Claude Opus 5.5 fixed F10 as Fable suggested: the loop search counts each row, band or level, as one node and adds the bands' order as lines, so a node on a loop through the rows takes both holding lines. Fable's two probe scripts, 32 probes in all, draw no unbanded node above north or below south and no AWS box outside them, with icon spreads of 0.0 pt on every row. The fixture's picture and the Kubernetes width do not change. Two new cases join the test of lines among unbanded nodes, and each of two sabotage edits, rows left out of the loop search and the bands' order left out, failed both. The local gate passes 16 of 17 lanes with 2,382 tests, `release-audit` waits for a reproduction proof of this source, and the Work plugin becomes `0.1.0-alpha.1+2df5c202a539`.
 
 - The core reproduces from a new clone of `f6f4841`: the same wheel, SHA-256 `43d4dab0d0373f5a0a30dc1ce8171800107801f6267c7cfe6a71fd3caa80ab4d`, and all 26 reference views match by both routes, with no mismatch. With that [proof](S10-core-reproduction-proof.json), `release-audit` passes its 67 tests.
+
+## Third recheck
+
+The same Fable agent reviewed `bc5f728..f6f4841` on its own clone. It confirmed F10 fixed and found no false loops: every earlier probe kept its width, and only true loops changed. It ran the four changed lanes with 623 tests, and the gate passed every lane but the reproduction test, which waited for its proof.
+
+**It requested changes, with no P0 or P1 finding.**
+
+| ID | Severity | Finding |
+|---|---|---|
+| F11 | P2 | The loop search folds each level into one node, but the holding check looked up each node by its own ID, which never appears among the folded names. So an end of a free level on a loop, such as two databases drawn level, each replicating both ways with a reader, took no holding line, rose to the top row and lifted the AWS box above north |
+
+## Fix after the third recheck
+
+F11 was a bug in the F10 fix the owner had approved, so Claude Opus 5.5 fixed it as part of finishing F10: each node is looked up as its row in the loop search's result. Fable's three probe scripts, 44 probes in all, now keep every unbanded node and the AWS box between north and south, and the two F11 probes are 1846 pt wide, as Fable measured with the same patch. A new test draws two levelled databases each with a two-way reader, and putting the bug back fails it. The local gate passes 16 of 17 lanes with 2,383 tests, `release-audit` waits for a reproduction proof of this source, and the Work plugin becomes `0.1.0-alpha.1+fee9566f6d58`.
