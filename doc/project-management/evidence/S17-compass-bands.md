@@ -102,3 +102,5 @@ On the owner's word, "Yes, fix them", Claude Opus 5.5 fixed F1, F3, F4 and F6, a
 - **F6:** four new render tests: icons line up on a row whose texts differ, a level line meets icons whose text runs to three lines, a node already ranked takes no holding line, and two bands keep the Kubernetes detail view within a quarter of its width without them.
 
 Each of five sabotage edits failed a named test: no row height, holding lines to every node from north or to south, no holding line from north, and `_arrange`'s lines left uncounted. The local gate passes 16 of 17 lanes with 2,374 tests, and `release-audit` waits for a reproduction proof of the fixed source. The Work plugin becomes `0.1.0-alpha.1+f6e08e40e0cf`.
+
+- The fixed core reproduces from a new clone of `a04e5b1`: the same wheel, SHA-256 `af26930fb84bb45c9b2891d196fa2da22184bedbc56d87463b00473f2bd6345d`, and all 26 reference views match by both routes, with no mismatch. With that [proof](S10-core-reproduction-proof.json), `release-audit` passes its 67 tests.
