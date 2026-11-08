@@ -47,3 +47,7 @@ The implementer confirmed F1 by repeating the reviewer's edit in the reviewer's 
 ## Fixes after the review
 
 On the owner's word on 2026-11-08, "Fix F1", Claude Opus 5.5 fixed it. `test_a_partial_view_names_what_it_leaves_out` now also cuts the overview of `core-valid.json` to `app` and expects the project scope and both boundaries, each by its name and ID. Each of three sabotage edits fails that test: names taken from resources only, from boundaries and resources, and from scopes and resources. Only a test changed, so the server, the skills and the Work plugin's version `0.1.0-alpha.1+f6b9f6134e60` stay as they were. The local gate passes 17 lanes with 1,962 tests and none skipped, because the check went into an existing test.
+
+## Run in Work
+
+On 2026-11-08 the owner ran prompt 1 and three prompts written for D-046 on `0.1.0-alpha.1+f6b9f6134e60`, built from `9b77c56`, in one new Work chat, after restarting the ChatGPT app, and passed them (D-047). No prompt asked the chat what a view leaves out. The chat named every item in each `disclose`, by name and ID: six for a fixed GCP model, 14 for an AWS overview, `az-a` and `az-b` among them, and four for an AKS overview with Thai names. It gave relationships by their ends, and a reason only after the names. [The Work check](S09-Work-validation.md#naming-what-a-view-leaves-out-in-work) records the prompts and results, and what the chat did to the S04 plugin's runtime state in prompt 1. This run covers one Mac and one model.
