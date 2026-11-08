@@ -249,3 +249,18 @@ On the owner's word, "Yes, all steps", Claude Opus 5.5 confirmed each finding an
 - F8: the record now says that valid models stay valid.
 - The fixes change `src`, so `release-audit` waits for a new reproduction proof, which follows the commit. The local gate passes 16 of 17 lanes with 2,325 tests and none skipped. The Work plugin builds as `0.1.0-alpha.1+8d2e5b054083` twice, with the same ZIP, SHA-256 `b43dddc5c553915439cd7c03ab3dbf868979e300de14dccba696ffe64548c3aa`, 127 files, and the host check passes 35 checks. Fable has not reviewed the fixes.
 - The core reproduces from a new clone of `7993055`: the same wheel, SHA-256 `260634f5ef2183a841e6950e4035b1200fb63dc63d3384147ac75bf339bcd735`, and all 26 reference views match by both routes, with no mismatch. With that [proof](S10-core-reproduction-proof.json), `release-audit` passes its 67 tests.
+
+## The owner's review
+
+The owner was sent the four pictures above, one for each provider, and passed them on 2026-11-08 with "Pass, merge, install". That covers these four pictures, which have no reviewed baselines: SHA-256 `0778d395` (Azure), `9c45e0d7` (GCP), `03363733` (AWS) and `0488b7f1` (Huawei Cloud). It is not a comparison with any provider's reference diagram.
+
+## Install
+
+- CI passed at `bfbce78`, and `main` fast-forwarded from `e56a188` to it, where actual CI [run 42475432741](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/42475432741) passed too. The tag does not move.
+- The Work plugin built from `main` at `bfbce78` is `0.1.0-alpha.1+8d2e5b054083`. Two builds gave the same ZIP, SHA-256 `b43dddc5c553915439cd7c03ab3dbf868979e300de14dccba696ffe64548c3aa`, the one recorded after the fixes, and the host check passed 35 checks in a throwaway profile. It is installed with `codex plugin add`, replacing `4ce48c4beb7c`. `uv.lock` did not change, so the runtime stays, and the installed server reports it `ready` with no blockers.
+- The Claude plugin moved from `ef792fc60079` to `bfbce78e481d`.
+- Through the installed Work server, `search_catalog` reports catalog `2026.11.3` and finds the new types, and all four S16 fixtures validate strict, the Huawei one with its private-use warning. The installed Claude plugin validates them too. The ChatGPT app and any open Claude Code session need a restart to load these. No prompt has run in Work on this version.
+
+## The run in Work
+
+The owner ran prompt 1 and four drawings written for S16 in one new Work chat on `0.1.0-alpha.1+8d2e5b054083`, and passed the run (D-054). [The record](S09-Work-validation.md#s16s-types-in-work) has the details. Each drawing, for Azure, AWS, GCP and Huawei Cloud with Thai labels, drew strict with no unknown type, and together they used 28 of the 54 new types. The Huawei chat drew its disk and vault attachments the opposite way from the records' targets, and the reading of an attachment either way accepted them.

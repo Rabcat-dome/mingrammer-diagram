@@ -20,7 +20,7 @@ S05 result: [core/CI evidence](evidence/S05-core-and-ci.md), [contract/setup](..
 
 S07 result: [controlled rendering](evidence/S07-controlled-rendering.md). M3-01..04 are implemented on `codex/s07-controlled-rendering` and pass the 14-lane gate in actual CI at `cddb497`, including new `render-security` and `render-smoke` lanes. [Fable/High requested changes](evidence/S07-fable-review.md) on three P2 findings and approved their fixes at `c8fc687`. The owner passed three samples of the first output, and M3 closed under D-022 with five P3 findings left open.
 
-S16 result: [Azure, GCP, AWS and Huawei Cloud coverage](evidence/S16-catalog-coverage.md). 54 new types from the owner's choice of service groups, as catalog `2026.11.3`, under D-053, on `codex/catalog-coverage-s16` and not merged.
+S16 result: [Azure, GCP, AWS and Huawei Cloud coverage](evidence/S16-catalog-coverage.md). 54 new types from the owner's choice of service groups, as catalog `2026.11.3`, under D-053, merged into `main` on 2026-11-08.
 
 S14 result: [Three open P3 findings](evidence/S14-open-p3-fixes.md), from the final review, with no baseline changed.
 
