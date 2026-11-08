@@ -1938,3 +1938,80 @@ def test_bands_do_not_widen_a_view_with_lines_through_every_rank(smoke_root: Pat
         {"id": "south", "entity_refs": ["pv"]},
     ]
     assert width(model) < plain * 1.25
+
+
+# Recheck F7 and F8: lines among unbanded nodes, or into the first band and out of the last, as
+# Fable's probes drew them. Each extra node is a copy of App A, so every case validates strict.
+UNBANDED_LINES = {
+    "a line to itself": [("bastion", "bastion")],
+    "two lines each way": [("cache-a", "cache-b"), ("cache-b", "cache-a")],
+    "a loop of three": [("c1", "c2"), ("c2", "c3"), ("c3", "c1")],
+    "a line into the first band": [("probe-x", "users")],
+    "a line out of the last band": [("onprem-router", "probe-y")],
+}
+
+
+@pytest.mark.parametrize("case", list(UNBANDED_LINES))
+def test_lines_among_unbanded_nodes_keep_them_between_north_and_south(
+    smoke_root: Path, case: str
+) -> None:
+    # dot turns a line round to break a loop, so a node on one can lose the line that ranked it,
+    # and a line into north or out of south could hold only with an end beyond them.
+    model = load("compass-valid.json")
+    app_a = next(item for item in model["resources"] if item["id"] == "app-a")
+    view = model["views"][0]
+    added: list[str] = []
+    for number, (source, target) in enumerate(UNBANDED_LINES[case]):
+        for identifier in (source, target):
+            if identifier not in view["entity_refs"]:
+                model["resources"].append(
+                    copy.deepcopy(app_a) | {"id": identifier, "name": identifier}
+                )
+                view["entity_refs"].append(identifier)
+                added.append(identifier)
+        model["relationships"].append(
+            {"id": f"extra-{number}", "source_ref": source, "target_ref": target, "kind": "traffic"}
+        )
+        view["relationship_refs"].append(f"extra-{number}")
+    result = render(model, smoke_root, view="compass")
+    assert result.rendered, codes(result)
+    groups = by_id(svg_root(result))
+    north_bottom = _icon(groups, "users")[1]
+    south_top = _icon(groups, "onprem-router")[0]
+    for identifier in added:
+        top, bottom = _icon(groups, identifier)
+        assert north_bottom < top and bottom < south_top, identifier
+    for identifier in ("_provider.aws", "aws-account", "region-a", "region-b"):
+        ys = _path_ys(groups[f"group:{identifier}"])
+        assert north_bottom < min(ys) and max(ys) < south_top, identifier
+
+
+def test_lines_into_north_or_out_of_south_rank_nothing() -> None:
+    # A line into the first band from outside the bands, or out of the last band, could hold only
+    # with an end above north or below south. dot happens to turn the second round itself, so the
+    # DOT is where both are guarded.
+    model = load("compass-valid.json")
+    app_a = next(item for item in model["resources"] if item["id"] == "app-a")
+    view = model["views"][0]
+    for identifier in ("probe-x", "probe-y"):
+        model["resources"].append(copy.deepcopy(app_a) | {"id": identifier, "name": identifier})
+        view["entity_refs"].append(identifier)
+    model["relationships"] += [
+        {"id": "x-users", "source_ref": "probe-x", "target_ref": "users", "kind": "traffic"},
+        {
+            "id": "router-y",
+            "source_ref": "onprem-router",
+            "target_ref": "probe-y",
+            "kind": "traffic",
+        },
+        {"id": "x-alb", "source_ref": "probe-x", "target_ref": "alb-a", "kind": "traffic"},
+    ]
+    view["relationship_refs"] += ["x-users", "router-y", "x-alb"]
+    lines = {
+        line.split('id="edge:', 1)[1].split('"', 1)[0]: line
+        for line in dot_of(model).splitlines()
+        if 'id="edge:' in line
+    }
+    assert "constraint=false" in lines["x-users"] and "constraint=false" in lines["router-y"]
+    # A line from outside the bands into any later band still ranks its end above that band.
+    assert "constraint=false" not in lines["x-alb"]

@@ -104,3 +104,27 @@ On the owner's word, "Yes, fix them", Claude Opus 5.5 fixed F1, F3, F4 and F6, a
 Each of five sabotage edits failed a named test: no row height, holding lines to every node from north or to south, no holding line from north, and `_arrange`'s lines left uncounted. The local gate passes 16 of 17 lanes with 2,374 tests, and `release-audit` waits for a reproduction proof of the fixed source. The Work plugin becomes `0.1.0-alpha.1+f6e08e40e0cf`.
 
 - The fixed core reproduces from a new clone of `a04e5b1`: the same wheel, SHA-256 `af26930fb84bb45c9b2891d196fa2da22184bedbc56d87463b00473f2bd6345d`, and all 26 reference views match by both routes, with no mismatch. With that [proof](S10-core-reproduction-proof.json), `release-audit` passes its 67 tests.
+
+## Recheck of the fixes
+
+On the owner's word, "Start recheck", the same Claude Fable 5.1 agent reviewed `000c024..0ddd2cc` on its own clone. It confirmed F1, F3, F4 and F6 fixed, with icons on each row and level at a spread of 0.0 pt and the Kubernetes detail view 1464 pt wide with two bands and 1378 pt with three, and accepted F2 and F5 as limits. It ran the four changed lanes with 615 tests and the whole gate, which passed every lane at `0ddd2cc`.
+
+**It requested changes again, with no P0 or P1 finding.**
+
+| ID | Severity | Finding |
+|---|---|---|
+| F7 | P2 | A regression from the F3 fix: an unbanded node with lines both in and out took no holding line, so a node on a loop, such as a line to itself, two lines each way between two caches or a loop of three, could lose its ranking line when dot turned a line round to break the loop. Cache A then sat on the top row and the AWS boxes rose above north. Before the fix all three were held |
+| F8 | P3 | An unbanded node whose only line runs into the first band rose above north, before and after the fix, because that line and the holding line from north form a loop and dot turned the holding line round |
+| F9 | P3 | The fixture without its `transit` band grew from 1333 to 1639 pt wide after the F3 fix |
+
+This session reproduced F7 with two caches each way, which put the AWS box above the customers.
+
+## Fixes after the recheck
+
+On the owner's word, "Yes, fix them", Claude Opus 5.5 fixed F7 and F8 and measured F9.
+
+- **F7:** every unbanded node on a loop of ranking lines, found as a strongly connected component, takes both holding lines, and a line from a node to itself ranks nothing. Other nodes keep the narrower holding of the F3 fix.
+- **F8:** a line into the first band from outside the bands, or out of the last band, takes `constraint=false` and ranks nothing, because it could hold only with an end above north or below south. The guide says such a line is drawn running up or down as it must. dot already turned a line out of the last band round by itself, so a DOT-level test guards that half.
+- **F9, measured:** the view is still 1639 pt wide. Its rows and lines are correct, and the width comes from dot placing the customers to the right of the AWS box. The Kubernetes width test still holds the case F3 was about.
+- Fable's probe script run against this tree draws every probe with no unbanded node above north or below south, no box above north, and icon spreads of 0.0 pt on every row.
+- Six new render tests: five cases of lines among unbanded nodes, each keeping the nodes and the AWS boxes between north and south, and one on the DOT for lines into north and out of south. Each of five sabotage edits failed a named test: no holding for loops, a loop search that finds nothing, self-loops ranking, and lines into north or out of south ranking. The local gate passes 16 of 17 lanes with 2,380 tests, `release-audit` waits for a reproduction proof of this source, and the Work plugin becomes `0.1.0-alpha.1+74c5538a3c35`.

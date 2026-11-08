@@ -76,6 +76,47 @@ def literal(lines: tuple[str, ...] | list[str], *, left: bool = False) -> Any:
     return nohtml(text + separator if left else text)
 
 
+def _looped(lines: list[tuple[str, str]]) -> set[str]:
+    """Every node on a loop of two or more lines: the strongly connected components (Kosaraju)."""
+    forward: dict[str, list[str]] = {}
+    backward: dict[str, list[str]] = {}
+    for upper, lower in lines:
+        forward.setdefault(upper, []).append(lower)
+        backward.setdefault(lower, []).append(upper)
+    order: list[str] = []
+    seen: set[str] = set()
+    for start in forward:
+        if start in seen:
+            continue
+        seen.add(start)
+        stack = [(start, iter(forward.get(start, [])))]
+        while stack:
+            node, rest = stack[-1]
+            following = next((item for item in rest if item not in seen), None)
+            if following is None:
+                stack.pop()
+                order.append(node)
+            else:
+                seen.add(following)
+                stack.append((following, iter(forward.get(following, []))))
+    looped: set[str] = set()
+    placed: set[str] = set()
+    for start in reversed(order):
+        if start in placed:
+            continue
+        placed.add(start)
+        component, waiting = [start], [start]
+        while waiting:
+            for earlier in backward.get(waiting.pop(), []):
+                if earlier not in placed:
+                    placed.add(earlier)
+                    component.append(earlier)
+                    waiting.append(earlier)
+        if len(component) > 1:
+            looped.update(component)
+    return looped
+
+
 def build_dot(graph: RenderGraph, icons: dict[str, VerifiedIcon]) -> str:
     return _Drawing(graph, icons).source()
 
@@ -417,24 +458,26 @@ class _Drawing:
         # anything, and one to south from each that no line ranks above anything, holds the rest
         # between them through the lines they already have. A line to every node would also hold
         # them, but dot gives a long line a point on every rank it crosses, and those points widen
-        # the picture.
+        # the picture. dot turns a line round to break a loop, so a node on a loop of lines can
+        # lose the line that ranked it, and every node on one keeps both.
         banded = {identifier for band in self.graph.bands for identifier in band}
         ranking = [
             *self.layout_lines,
             *(
                 (self.drawn[edge.source].nodeid, self.drawn[edge.target].nodeid)
                 for edge in self.graph.edges
-                if not self._level(edge)
+                if self._ranks(edge) and edge.source != edge.target
             ),
         ]
         below = {lower for _, lower in ranking}
         above = {upper for upper, _ in ranking}
+        looped = _looped(ranking)
         for identifier, node in self.drawn.items():
             if identifier in banded:
                 continue
-            if node.nodeid not in below:
+            if node.nodeid not in below or node.nodeid in looped:
                 markers[0].connect(node, Edge(style="invis", weight="0"))
-            if node.nodeid not in above:
+            if node.nodeid not in above or node.nodeid in looped:
                 node.connect(markers[-1], Edge(style="invis", weight="0"))
 
     def _level(self, edge: GraphEdge) -> bool:
@@ -443,6 +486,20 @@ class _Drawing:
         if source is None or target is None:
             return False
         return source[0] == target[0] or (source[1] and target[1])
+
+    def _ranks(self, edge: GraphEdge) -> bool:
+        """Whether a line may move its ends: not when rows fix both, nor when it runs into the
+        first band from outside the bands or out of the last band, since it could then hold only
+        by putting an end above north or below south."""
+        if self._level(edge):
+            return False
+        last = len(self.graph.bands) - 1
+        if last < 1:
+            return True
+        source, target = self.rows.get(edge.source), self.rows.get(edge.target)
+        into_north = target is not None and target == (0, True)
+        out_of_south = source is not None and source == (last, True)
+        return not (into_north or out_of_south)
 
     def _edges(self) -> None:
         for edge in self.graph.edges:
@@ -465,7 +522,7 @@ class _Drawing:
             # line up through it. An outside label is placed after layout and keeps the line level.
             flat = level and self.rows[edge.source][0] == self.rows[edge.target][0]
             attributes["xlabel" if flat else "label"] = literal(edge.lines)
-        if level:
+        if not self._ranks(edge):
             attributes["constraint"] = "false"
         # Clipping at a border needs the far end outside that group, or Graphviz drops the edge end.
         if edge.source in self.anchors and not self._inside(edge.target, edge.source):
