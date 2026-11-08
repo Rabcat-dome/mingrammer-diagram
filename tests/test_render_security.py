@@ -53,6 +53,7 @@ from cloud_architecture_diagrams.models import MAX_INPUT_BYTES, Architecture
 from cloud_architecture_diagrams.render import checks, execution, icons
 from cloud_architecture_diagrams.render.bundle import OutputRoot
 from cloud_architecture_diagrams.render.draw import build_dot
+from cloud_architecture_diagrams.render.drawio import check_drawio
 from cloud_architecture_diagrams.render.errors import RenderFailure
 from cloud_architecture_diagrams.render.execution import (
     Engine,
@@ -63,7 +64,7 @@ from cloud_architecture_diagrams.render.execution import (
     run_bounded,
     sandboxed,
 )
-from cloud_architecture_diagrams.render.graph import GraphIcon, Mapper, map_view
+from cloud_architecture_diagrams.render.graph import GraphIcon, Mapper, RenderGraph, map_view
 from cloud_architecture_diagrams.render.icons import PNG_SIGNATURE, verified_icon, verified_icons
 from cloud_architecture_diagrams.render.limits import LIMITS, Limits
 
@@ -1658,3 +1659,107 @@ def test_a_diagrams_version_other_than_the_lock_blocks_the_render(
     result = render(GOOD, output)
     assert codes(result) == ["RENDER_ASSET_UNSAFE"] and not result.rendered
     assert not output.exists() or tree(output) == []
+
+
+# D-049: the draw.io copy is checked like the SVG before anything is published.
+@pytest.fixture(scope="module")
+def drawio_copy(
+    tmp_path_factory: pytest.TempPathFactory,
+) -> tuple[bytes, RenderGraph, dict[str, Any]]:
+    model = (FIXTURES / "references/aws-three-tier.json").read_bytes()
+    result = render(model, tmp_path_factory.mktemp("drawio") / "out", view="overview")
+    assert result.rendered, codes(result)
+    graph = RenderGraph.model_validate(graph_of(result))
+    return bundle_files(result)["diagram.drawio"], graph, verified_icons(graph, LIMITS)
+
+
+def test_the_published_drawio_copy_passes_its_own_check(
+    drawio_copy: tuple[bytes, RenderGraph, dict[str, Any]],
+) -> None:
+    data, graph, verified = drawio_copy
+    check_drawio(data, graph, verified, LIMITS)
+
+
+def _first(data: bytes, prefix: bytes) -> bytes:
+    start = data.index(prefix)
+    return data[start : data.index(b">", start) + 1]
+
+
+def _swapped_ends(data: bytes) -> bytes:
+    cell = _first(data, b'<mxCell id="edge:')
+    source = re.search(rb'source="([^"]+)"', cell)
+    target = re.search(rb'target="([^"]+)"', cell)
+    assert source and target
+    swapped = cell.replace(source[0], b'source="' + target[1] + b'"', 1).replace(
+        target[0], b'target="' + source[1] + b'"', 1
+    )
+    return data.replace(cell, swapped, 1)
+
+
+FOREIGN_PNG = base64.b64encode(PNG_SIGNATURE + b"not one of the verified icons")
+
+
+def _foreign_icon(data: bytes) -> bytes:
+    return re.sub(
+        rb"image=data:image/png,[A-Za-z0-9+/=]+",
+        b"image=data:image/png," + FOREIGN_PNG,
+        data,
+        count=1,
+    )
+
+
+DRAWIO_TAMPERING: dict[str, Callable[[bytes], bytes]] = {
+    "html label": lambda data: data.replace(b"html=0;", b"html=1;", 1),
+    "unknown style key": lambda data: data.replace(
+        b"html=0;", b"html=0;link=https://example.com;", 1
+    ),
+    "active style value": lambda data: data.replace(
+        b"fillColor=none;", b"fillColor=javascript:x;", 1
+    ),
+    "extra cell attribute": lambda data: data.replace(
+        b'<mxCell id="title"', b'<mxCell link="x" id="title"', 1
+    ),
+    # A parent of its own, so only the element's name can give it away.
+    "foreign element": lambda data: data.replace(
+        b'<mxCell id="1"', b'<UserObject id="u" parent="0" /><mxCell id="1"', 1
+    ),
+    # Only the vocabulary sees an image where no resource is, since no resource check reads it.
+    "image on the title": lambda data: data.replace(
+        b'style="text=;', b'style="image=data:image/png,' + FOREIGN_PNG + b";text=;", 1
+    ),
+    "document type": lambda data: data.replace(
+        b"<mxfile", b'<!DOCTYPE x [<!ENTITY e "x">]><mxfile', 1
+    ),
+    "foreign icon": _foreign_icon,
+    "swapped ends": _swapped_ends,
+    "missing line": lambda data: data.replace(b'id="edge:', b'id="gone:', 1),
+    "changed name": lambda data: data.replace(b'value="Internet gateway"', b'value="Internet"', 1),
+    "dangling parent": lambda data: data.replace(
+        b'parent="group:vpc"', b'parent="group:nowhere"', 1
+    ),
+    "lost notice": lambda data: re.sub(
+        rb'(<mxCell id="title"[^>]*value=")[^"]*', rb"\1Title", data, count=1
+    ),
+}
+
+
+@pytest.mark.parametrize("change", sorted(DRAWIO_TAMPERING))
+def test_a_tampered_drawio_copy_is_refused(
+    drawio_copy: tuple[bytes, RenderGraph, dict[str, Any]], change: str
+) -> None:
+    data, graph, verified = drawio_copy
+    tampered = DRAWIO_TAMPERING[change](data)
+    assert tampered != data, f"{change} changed nothing, so it tests nothing"
+    with pytest.raises(RenderFailure) as caught:
+        check_drawio(tampered, graph, verified, LIMITS)
+    assert caught.value.diagnostic().code == "RENDER_CONTENT_MISSING"
+    assert caught.value.diagnostic().field == "/drawio"
+
+
+def test_a_drawio_copy_over_the_file_limit_is_refused(
+    drawio_copy: tuple[bytes, RenderGraph, dict[str, Any]],
+) -> None:
+    data, graph, verified = drawio_copy
+    with pytest.raises(RenderFailure) as caught:
+        check_drawio(data, graph, verified, replace(LIMITS, file_bytes=len(data) - 1))
+    assert caught.value.diagnostic().code == "RENDER_ARTIFACT_LIMIT"

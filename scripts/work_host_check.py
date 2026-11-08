@@ -40,6 +40,7 @@ TOOLS = {
 BUNDLE_FILES = {
     "diagram.png",
     "diagram.svg",
+    "diagram.drawio",
     "model.json",
     "view.json",
     "diagnostics.json",
@@ -458,7 +459,7 @@ def run(codex: str, work: Path, check: Check) -> None:
                 and hashlib.sha256(on_disk).hexdigest() == item["sha256"]
             )
         check.record(
-            "all six files come back through the host and match their checksums",
+            "all seven files come back through the host and match their checksums",
             set(retrieved) == BUNDLE_FILES and all(retrieved.values()),
             files=retrieved,
         )

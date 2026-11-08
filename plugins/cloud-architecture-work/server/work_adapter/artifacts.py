@@ -19,6 +19,8 @@ MEDIA_TYPES = {
     "view.json": "application/json",
     "diagnostics.json": "application/json",
     "manifest.json": "application/json",
+    # D-049: an editable copy of the picture for draw.io.
+    "diagram.drawio": "application/vnd.jgraph.mxfile",
 }
 # The core names a bundle `<metadata id>--<view id>--<16 hex>`, and its IDs cannot start with a dot.
 BUNDLE = re.compile(r"[a-z][a-z0-9._-]{0,63}--[a-z][a-z0-9._-]{0,63}--[0-9a-f]{16}")

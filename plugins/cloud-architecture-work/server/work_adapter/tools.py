@@ -185,7 +185,7 @@ TOOLS: list[dict[str, Any]] = [
         "description": (
             "Returns one bundle file by its fixed name. Use it for model.json when editing an "
             "earlier model, and for the PNG. A file's path is already in the render result, so "
-            "you rarely need this for diagram.svg, which is large."
+            "you rarely need this for diagram.svg or diagram.drawio, which are large."
         ),
         "inputSchema": _closed(
             {

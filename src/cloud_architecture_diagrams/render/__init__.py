@@ -27,6 +27,8 @@ from .checks import (
     undrawable_text,
 )
 from .draw import build_dot
+from .drawio import MEDIA_TYPE as DRAWIO_MEDIA_TYPE
+from .drawio import build_drawio, check_drawio
 from .errors import MESSAGES, REQUEST_CODES, RenderFailure, diagnostic
 from .execution import ENGINE_LOG, ISOLATION, Engine, check_fonts_used, find_engine, run_engine
 from .graph import RenderGraph, map_view
@@ -41,6 +43,7 @@ MEDIA_TYPES = {
     "view.json": "application/json",
     "diagnostics.json": "application/json",
     "manifest.json": "application/json",
+    "diagram.drawio": DRAWIO_MEDIA_TYPE,
 }
 BUNDLE_FILES = sorted(MEDIA_TYPES)
 
@@ -177,7 +180,7 @@ def _manifest(
     """FR-047. No timestamps or host paths, so the same input stays comparable across machines."""
     packs = catalog().packs
     return {
-        "manifest_version": "1.1.0",
+        "manifest_version": "1.2.0",
         "status": "complete",
         "bundle_id": bundle_id,
         "package_version": __version__,
@@ -254,6 +257,9 @@ def _draw(
     tree = check_svg(svg, {icon.sha256 for icon in icons.values()})
     check_undistorted(tree)
     check_content(tree, graph, icons)
+    # D-049: the editable copy comes from the SVG just checked, and is checked in its turn.
+    drawio = build_drawio(tree, graph, limits)
+    check_drawio(drawio, graph, icons, limits)
     scale = png_scale(tree, size, limits)
     if scale < 1:
         warning = diagnostic("RENDER_PNG_SCALED", "/png", severity="warning")
@@ -263,6 +269,7 @@ def _draw(
     files = {
         "diagram.svg": svg,
         "diagram.png": png,
+        "diagram.drawio": drawio,
         "model.json": payload,
         "view.json": _json(
             {

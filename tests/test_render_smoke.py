@@ -3,6 +3,7 @@
 import base64
 import hashlib
 import json
+import math
 import random
 import re
 import shutil
@@ -123,6 +124,193 @@ def test_every_fixture_view_produces_a_complete_bundle(
         assert len(files[artifact]) == entry["bytes"]
     assert "manifest.json" not in manifest["artifacts"]
     assert files["model.json"] == (FIXTURES / name).read_bytes()
+
+
+def _drawio_cells(data: bytes) -> dict[str, ET.Element]:
+    document = ET.fromstring(data)
+    assert document.tag == "mxfile"
+    [diagram] = list(document)
+    [model] = list(diagram)
+    [root] = list(model)
+    return {cell.get("id", ""): cell for cell in root}
+
+
+def _drawio_style(cell: ET.Element) -> dict[str, str]:
+    return dict(item.split("=", 1) for item in cell.get("style", "").split(";") if item)
+
+
+def _drawio_origin(cells: dict[str, ET.Element], identifier: str) -> tuple[float, float]:
+    """draw.io places a child relative to its container, so add up the containers it sits in."""
+    x = y = 0.0
+    while identifier not in {"0", "1"}:
+        geometry = cells[identifier].find("mxGeometry")
+        assert geometry is not None
+        x += float(geometry.get("x", "0"))
+        y += float(geometry.get("y", "0"))
+        identifier = cells[identifier].get("parent", "")
+    return x, y
+
+
+@pytest.mark.parametrize(("name", "view"), SCENARIOS, ids=["/".join(s) for s in SCENARIOS])
+def test_every_bundle_holds_an_editable_drawio_copy_of_the_same_picture(
+    rendered: dict[tuple[str, str], RenderResult], name: str, view: str
+) -> None:
+    # D-049: the owner edits diagrams further in draw.io, so each one comes with a copy for it.
+    result = rendered[(name, view)]
+    files = bundle_files(result)
+    cells = _drawio_cells(files["diagram.drawio"])
+    graph = graph_of(result)
+    nodes = {node["id"] for node in graph["nodes"]}
+    digests = {asset["reference"]: asset["sha256"] for asset in manifest_of(result)["assets"]}
+    images = {
+        element.get("id", "").removeprefix("node:"): element.find(f"{{{SVG}}}image")
+        for element in svg_root(result).iter(f"{{{SVG}}}g")
+        if element.get("id", "").startswith("node:")
+    }
+    for cell in cells.values():
+        if cell.get("value"):
+            assert _drawio_style(cell)["html"] == "0", "text must stay plain text"
+    for group in graph["groups"]:
+        cell = cells[f"group:{group['id']}"]
+        assert cell.get("value") == "\n".join(group["lines"])
+        assert cell.get("parent") == (f"group:{group['parent']}" if group["parent"] else "1")
+        assert _drawio_style(cell)["container"] == "1"
+    for node in graph["nodes"]:
+        cell = cells[f"node:{node['id']}"]
+        assert cell.get("value") == "\n".join(node["lines"])
+        assert cell.get("parent") == (f"group:{node['group']}" if node["group"] else "1")
+        if node["icon"]:
+            holder = cells[f"icon:{node['id']}"] if node["fallback"] else cell
+            image = _drawio_style(holder)["image"]
+            assert image.startswith("data:image/png,")
+            data = base64.b64decode(image.removeprefix("data:image/png,"))
+            assert hashlib.sha256(data).hexdigest() == digests[node["icon"]["reference"]]
+            # The icon sits where the SVG drew it, across the page, inside its containers.
+            svg_image = images[node["id"]]
+            assert svg_image is not None
+            geometry = cell.find("mxGeometry")
+            assert geometry is not None
+            left = _drawio_origin(cells, f"node:{node['id']}")[0]
+            centre = left + float(geometry.get("width", "0")) / 2
+            canvas = by_id(svg_root(result))["graph:root"].get("transform", "")
+            scale = float(re.findall(r"scale\(([0-9.]+)", canvas)[0])
+            shift = float(re.findall(r"translate\((-?[0-9.]+)", canvas)[0])
+            width = float(svg_image.get("width", "0").removesuffix("px"))
+            drawn = (float(svg_image.get("x", "0")) + width / 2 + shift) * scale
+            assert abs(centre - drawn) < 1, node["id"]
+    paths = {
+        element.get("id", "").removeprefix("edge:"): element.find(f"{{{SVG}}}path")
+        for element in svg_root(result).iter(f"{{{SVG}}}g")
+        if element.get("id", "").startswith("edge:")
+    }
+    canvas = by_id(svg_root(result))["graph:root"].get("transform", "")
+    scale = float(re.findall(r"scale\(([0-9.]+)", canvas)[0])
+    shift_x, shift_y = (
+        float(n) for n in re.findall(r"translate\((-?[0-9.]+) (-?[0-9.]+)", canvas)[0]
+    )
+
+    def placed(x: float, y: float) -> tuple[float, float]:
+        return round((x + shift_x) * scale, 2), round((y + shift_y) * scale, 2)
+
+    for node in graph["nodes"]:
+        if not node["icon"] or node["fallback"]:
+            continue
+        # One box for the icon and its text, as Graphviz drew it, so lines stop where they do.
+        element = by_id(svg_root(result))[f"node:{node['id']}"]
+        geometry = cells[f"node:{node['id']}"].find("mxGeometry")
+        assert geometry is not None
+        top = _drawio_origin(cells, f"node:{node['id']}")[1]
+        bottom = top + float(geometry.get("height", "0"))
+        for text in element.findall(f"{{{SVG}}}text"):
+            assert bottom >= placed(0, float(text.get("y", "0")))[1], node["id"]
+    for edge in graph["edges"]:
+        cell = cells[f"edge:{edge['id']}"]
+        assert cell.get("value") == "\n".join(edge["lines"])
+        # The bends are the SVG line's own points between its ends, in order from the source.
+        path = paths[edge["id"]]
+        assert path is not None
+        numbers = [float(n) for n in re.findall(r"-?[0-9]+(?:\.[0-9]+)?", path.get("d", ""))]
+        pairs = list(zip(numbers[::2], numbers[1::2], strict=True))
+        on_line = [placed(*point) for point in [pairs[0], *pairs[3::3]]]
+        bends = [
+            (float(point.get("x", "0")), float(point.get("y", "0")))
+            for point in cell.iter("mxPoint")
+        ]
+        assert sorted(bends) == sorted(on_line[1:-1]), edge["id"]
+        if len(bends) > 1:
+            source = cells[cell.get("source", "")]
+            box = source.find("mxGeometry")
+            assert box is not None
+            left, top = _drawio_origin(cells, cell.get("source", ""))
+            middle = (
+                left + float(box.get("width", "0")) / 2,
+                top + float(box.get("height", "0")) / 2,
+            )
+            assert math.dist(bends[0], middle) <= math.dist(bends[-1], middle), edge["id"]
+        ends = [
+            f"node:{end}" if end in nodes else f"group:{end}"
+            for end in (edge["source"], edge["target"])
+        ]
+        assert [cell.get("source"), cell.get("target")] == ends
+        assert _drawio_style(cell)["endArrow"] == ("block" if edge["directed"] else "none")
+    title = cells["title"].get("value", "")
+    assert title == "\n".join([*graph["title_lines"], *graph["notice_lines"]])
+    assert ("legend" in cells) == bool(graph["legend"])
+
+
+def test_the_drawio_copy_keeps_model_text_as_plain_text(tmp_path: Path) -> None:
+    # draw.io reads a label as HTML when its style says html=1, so a name must never get there.
+    model = single_resource_model("<b>App</b> & <img src=x> แอป")
+    result = render(model, tmp_path / "out")
+    assert result.rendered, codes(result)
+    data = bundle_files(result)["diagram.drawio"]
+    cells = _drawio_cells(data)
+    [node] = [cell for cell in cells.values() if cell.get("id", "").startswith("node:")]
+    # The name wraps like any other, and every character arrives as written.
+    assert node.get("value", "").startswith("<b>App</b> & <img")
+    assert node.get("value") == "\n".join(graph_of(result)["nodes"][0]["lines"])
+    assert _drawio_style(node)["html"] == "0"
+    assert b"<b>" not in data and b"<img" not in data
+
+
+def test_a_drawio_copy_that_fails_its_check_publishes_nothing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import cloud_architecture_diagrams.render as renderer
+    from cloud_architecture_diagrams.render import drawio
+
+    real = drawio.build_drawio
+
+    def tampered(*arguments: Any) -> bytes:
+        return real(*arguments).replace(b"html=0;", b"html=1;", 1)
+
+    monkeypatch.setattr(renderer, "build_drawio", tampered)
+    result = render(single_resource_model(), tmp_path / "out")
+    assert not result.rendered
+    assert codes(result) == ["RENDER_CONTENT_MISSING"]
+    assert result.diagnostics[-1].field == "/drawio"
+    assert tree(tmp_path / "out") == []
+
+
+@pytest.mark.parametrize(("name", "view"), SCENARIOS, ids=["/".join(s) for s in SCENARIOS])
+def test_lines_are_drawn_as_straight_segments(
+    rendered: dict[tuple[str, str], RenderResult], name: str, view: str
+) -> None:
+    # D-048: Graphviz writes every line as cubic pieces, and a straight piece has its control
+    # points on the line between its ends, as `splines=polyline` gives and a curve does not.
+    for element in svg_root(rendered[(name, view)]).iter(f"{{{SVG}}}g"):
+        if not element.get("id", "").startswith("edge:"):
+            continue
+        path = element.find(f"{{{SVG}}}path")
+        assert path is not None
+        numbers = [float(item) for item in re.findall(r"-?[0-9]+(?:\.[0-9]+)?", path.get("d", ""))]
+        points = list(zip(numbers[::2], numbers[1::2], strict=True))
+        for start in range(0, len(points) - 3, 3):
+            (x0, y0), *controls, (x1, y1) = points[start : start + 4]
+            length = math.hypot(x1 - x0, y1 - y0) or 1
+            for x, y in controls:
+                off = abs((x1 - x0) * (y0 - y) - (x0 - x) * (y1 - y0)) / length
+                assert off < 1, (element.get("id"), off)
 
 
 def test_all_fixture_views_draw_every_catalog_type(

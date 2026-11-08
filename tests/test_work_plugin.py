@@ -48,6 +48,7 @@ TOOLS = {
 BUNDLE_FILES = {
     "diagram.png",
     "diagram.svg",
+    "diagram.drawio",
     "model.json",
     "view.json",
     "diagnostics.json",
@@ -1523,6 +1524,26 @@ def test_render_publishes_a_verified_bundle_with_a_preview(
     assert BUNDLE_NAME.fullmatch(body["result"]["bundle_id"])
 
 
+def test_the_drawio_copy_comes_back_through_the_tool(client: Client) -> None:
+    # D-049: the owner edits diagrams further in draw.io, so the copy is one of the bundle's files.
+    files = published(client.body("render_model", model=fixture("kubernetes-valid.json")))
+    item = files["diagram.drawio"]
+    assert item["media_type"] == "application/vnd.jgraph.mxfile"
+    answer = client.call(
+        "read_artifact", bundle_id=Path(item["path"]).parent.name, file="diagram.drawio"
+    )
+    assert text_of(answer)["status"] == "ok"
+    resource = answer["content"][1]["resource"]
+    assert resource["mimeType"] == "application/vnd.jgraph.mxfile"
+    data = base64.b64decode(resource["blob"])
+    assert data == Path(item["path"]).read_bytes()
+    assert hashlib.sha256(data).hexdigest() == item["sha256"]
+    assert data.startswith(b"<?xml") and b"<mxfile" in data
+    tools = {tool["name"]: tool for tool in client.request("tools/list")["result"]["tools"]}
+    files_schema = tools["read_artifact"]["inputSchema"]["properties"]["file"]["enum"]
+    assert files_schema == sorted(BUNDLE_FILES)
+
+
 def test_thai_labels_survive_from_call_to_source(client: Client) -> None:
     model = fixture("core-valid.json")
     model["metadata"]["title"] = "สถาปัตยกรรมระบบ"
@@ -1545,8 +1566,9 @@ def test_each_file_reads_back_through_the_tool(client: Client) -> None:
         if name == "diagram.png":
             assert content["type"] == "image"
             data = base64.b64decode(content["data"])
-        elif name == "diagram.svg":
-            assert content["resource"]["mimeType"] == "image/svg+xml"
+        elif name in {"diagram.svg", "diagram.drawio"}:
+            expected = "image/svg+xml" if name == "diagram.svg" else "application/vnd.jgraph.mxfile"
+            assert content["resource"]["mimeType"] == expected
             data = base64.b64decode(content["resource"]["blob"])
         else:
             # The model needs to read these, so they cannot be opaque.
@@ -1918,7 +1940,7 @@ def main():
     bundle = "stand--in--0123456789abcdef"
     folder = os.path.join(output, bundle)
     os.makedirs(folder, mode=0o700, exist_ok=True)
-    names = ["diagram.png", "diagram.svg", "model.json", "view.json", "diagnostics.json", "manifest.json"]
+    names = ["diagram.png", "diagram.svg", "diagram.drawio", "model.json", "view.json", "diagnostics.json", "manifest.json"]
     artifacts = []
     for name in names:
         size = 6 * 1024 * 1024 if behavior == "big-png" and name == "diagram.png" else 3
@@ -2264,6 +2286,9 @@ def test_skill_keeps_the_images_as_the_plugin_wrote_them(skill: str) -> None:
         "Never edit, translate, redraw or convert `diagram.svg` or `diagram.png`",
         "never show a changed image in their place",
         "Copying the files unchanged is fine",
+        # D-049: the draw.io copy is for the user to edit in draw.io, not for the chat.
+        "`diagram.drawio` is an editable copy of the same picture for draw.io",
+        "hand it over unchanged too and never write one yourself",
         "`DRAFT` lines",
         "Tell the user that this text stays in English",
     ):
@@ -2355,8 +2380,9 @@ def test_skill_keeps_the_rules_a_live_session_depends_on(skill: str) -> None:
         "never propose a generic symbol",
         # Lenient mode is not an escape.
         "It bypasses no other error",
-        # Retrieval: all six files, by path.
-        "link all six files",
+        # Retrieval: all seven files, by path, the draw.io copy among them (D-049).
+        "link all seven files",
+        "`diagram.drawio` opens in draw.io for editing",
         "`RENDER_PNG_SCALED`",
         "`PLUGIN_UPDATED`",
         # Measured on the host: tools are reached through `exec`, under these exact names, and an

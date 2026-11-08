@@ -1,6 +1,6 @@
 # Core Contract v1.0.0
 
-S05 / M1, S06 / M2, S07 / M3 and S09 / M5 implementation guide, subordinate to the single [requirements](../requirements/requirements.md). Package `0.5.0a3` is a core development version; installed Work plugin `0.1.0-alpha.3` remains the independent S04 fixture, and the product's [Work adapter](#work-adapter) is a separate plugin that does not replace it. The renderer is an engineering slice, so coverage, visual quality and official-reference comparison stay with M4.
+S05 / M1, S06 / M2, S07 / M3 and S09 / M5 implementation guide, subordinate to the single [requirements](../requirements/requirements.md). Package `0.6.0a1` is a core development version; installed Work plugin `0.1.0-alpha.3` remains the independent S04 fixture, and the product's [Work adapter](#work-adapter) is a separate plugin that does not replace it. The renderer is an engineering slice, so coverage, visual quality and official-reference comparison stay with M4.
 
 ## Setup and discovery
 
@@ -138,6 +138,7 @@ The entity and relationship limit is an upper bound, not a promise that a view f
 - An allowlist over the final SVG's elements and attributes. Every `image` must be a base64 PNG whose digest is one of this render's verified icons; a script, an event handler, an external reference, a `style` or a document type fails.
 - Every selected entity, relationship, label, title line and icon really being in the SVG. Graphviz exits 0 even when an image cannot load, so its exit status proves little here.
 - No distortion: uniform root scaling, no rotation, and `preserveAspectRatio` that keeps each icon's proportions, as Azure's terms require.
+- D-049: the draw.io copy is built from that checked SVG, so no second Graphviz run is needed, and is checked in its turn. It may hold only the elements, attributes and style keys the exporter writes, every text cell must be plain text (`html=0`), every image must be one of this render's verified icons, and every selected group, resource, relationship, title line and notice line must be in it, each relationship joined to its own two ends.
 
 The bundle is then written to a stage directory, read back and renamed into place.
 
@@ -145,6 +146,7 @@ The bundle is then written to a stage directory, read back and renamed into plac
 |---|---|
 | `diagram.svg` | Portable image with icons embedded. Text stays text and names Noto first, so a viewer without those fonts falls back and its metrics can differ |
 | `diagram.png` | The same layout as a raster, at the `png.scale` the manifest records |
+| `diagram.drawio` | D-049: an editable draw.io copy of the same layout. Groups are containers holding their contents, each resource is its verified icon with its text below in one box, as Graphviz drew it, and each relationship is attached to its two ends with Graphviz's bend points. Text is plain text, and a viewer without Noto falls back as for the SVG |
 | `model.json` | The exact input bytes |
 | `view.json` | The view, its excluded IDs and the normalized graph |
 | `diagnostics.json` | Validation and render warnings |

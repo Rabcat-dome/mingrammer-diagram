@@ -124,7 +124,10 @@ class _Drawing:
                 # A label can pass its node's width by about half an inch each side, here and in a
                 # group's margin, so neither the canvas nor a border clips it.
                 "pad": "0.6",
-                "splines": "spline",
+                # D-048: straight segments read as lines rather than curves, and keep their labels.
+                # Right angles were tried and refused: `ortho` drops edge labels and ends lines on
+                # the label's box rather than the icon.
+                "splines": "polyline",
                 "compound": "true",
                 # Icon nodes keep a fixed width so that their icon keeps its size, and a wrapped
                 # label can pass that width by up to 0.35 inches each side. These leave it room.

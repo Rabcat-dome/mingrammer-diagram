@@ -1,6 +1,6 @@
 # Cloud Architecture Diagram Plugin Requirements
 
-Document: CADP-REQ-001 | Revision: 0.16 | Updated: 2026-11-05
+Document: CADP-REQ-001 | Revision: 0.17 | Updated: 2026-11-08
 
 Status: The baseline of the private personal release `v0.1.0-alpha.1`, accepted under D-033. [The release record](../project-management/evidence/M6-release.md) says what the evidence covers.
 
@@ -137,6 +137,7 @@ The plugin is the installable product; its skill supplies instructions/reference
 | FR-064 | P0 | Install/preflight the native local Python/Graphviz/assets/fonts runtime on each supported machine without requiring Docker; verify execution permissions and local Work transport. Document OS/runtime prerequisites, first-install downloads, offline rendering behavior and supported host modes. |
 | FR-065 | P0 | Keep the core independent of Work-specific APIs so a later Claude Code adapter reuses its model, catalogs, tests, and renderer. |
 | FR-066 | P0 | Distribute an identifiable, versioned plugin through a supported installation/enablement route. Demonstrate its complete local Work diagram workflow from two supported machines with independently installed runtimes; document any per-machine setup/authentication. A standalone skill folder or manual source checkout is not the final user deliverable. |
+| FR-067 | P1 | Selected by D-049. With every rendered view, publish an editable draw.io copy of the same picture: built from the checked layout without a second engine run, groups as containers that hold their contents, each relationship attached to its two ends, the verified icons only, and plain text only. Check the copy like the SVG before the bundle is published. |
 
 ## 5. Canonical model and taxonomy
 

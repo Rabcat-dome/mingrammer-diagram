@@ -75,7 +75,7 @@ Ask for an architecture in English or Thai, or for a change to an earlier one. T
 
 Every result starts with JSON text. `status` is `ok`, `validation_failed`, `runtime_failure`, `timeout`, `artifact_unavailable`, `runtime_unavailable`, `invalid_arguments` or `busy`, and anything but `ok` also has a stable `code`, a `message` and a `remedy`.
 
-Each bundle holds `diagram.svg`, `diagram.png`, `model.json`, `view.json`, `diagnostics.json` and `manifest.json`. The SVG embeds its icons, and the manifest records versions, checksums and the terms of every icon pack shown. A bundle that shows Huawei icons states that it is for private personal use only. A file larger than 8 MiB cannot come back through the tool, because the host's transport hangs on results far smaller than the 16 MiB a file may reach, so that file stays available by its path.
+Each bundle holds `diagram.svg`, `diagram.png`, `diagram.drawio`, `model.json`, `view.json`, `diagnostics.json` and `manifest.json`. `diagram.drawio` is an editable copy of the same picture for draw.io, for example its desktop app: boxes are containers that carry what they hold, lines stay attached to their ends, and text stays plain text. The SVG embeds its icons, and the manifest records versions, checksums and the terms of every icon pack shown. A bundle that shows Huawei icons states that it is for private personal use only. A file larger than 8 MiB cannot come back through the tool, because the host's transport hangs on results far smaller than the 16 MiB a file may reach, so that file stays available by its path.
 
 ## Where your data goes
 

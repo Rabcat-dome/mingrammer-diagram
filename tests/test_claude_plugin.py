@@ -238,10 +238,14 @@ def test_skill_keeps_the_images_as_the_plugin_wrote_them() -> None:
         "Never edit, translate, redraw or convert `diagram.svg` or `diagram.png`",
         "never show a changed image in their place",
         "Copying the files unchanged is fine",
+        # D-049: the draw.io copy is for the user to edit in draw.io, not for the chat.
+        "`diagram.drawio` is an editable copy of the same picture for draw.io",
+        "hand it over unchanged too and never write one yourself",
         "`DRAFT` lines",
         "Tell the user that this text stays in English",
     ):
         assert clause in rules[0], clause
+    assert "say that its `diagram.drawio` opens in draw.io for editing" in skill
     any_view, _, detail = rules[0].partition("Kubernetes detail views add")
     assert detail, "the rule must say what only Kubernetes detail views add"
     for words in ("provider headings", "line kinds", "type name", "`node: unspecified`"):

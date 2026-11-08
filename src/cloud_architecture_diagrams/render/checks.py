@@ -78,7 +78,7 @@ def _strip(text: str | None) -> str:
     return "".join((text or "").split())
 
 
-def _decoded(href: str) -> bytes:
+def decoded_png(href: str) -> bytes:
     if not href.startswith(DATA_PNG):
         raise RenderFailure("RENDER_SVG_UNSAFE", "/svg")
     try:
@@ -107,7 +107,7 @@ def check_svg(data: bytes, allowed_icons: set[str]) -> ET.Element:
                 raise RenderFailure("RENDER_SVG_UNSAFE", "/svg")
             if key == HREF:
                 if name != "image" or (
-                    hashlib.sha256(_decoded(value)).hexdigest() not in allowed_icons
+                    hashlib.sha256(decoded_png(value)).hexdigest() not in allowed_icons
                 ):
                     raise RenderFailure("RENDER_SVG_UNSAFE", "/svg")
             elif ACTIVE_VALUE.search(value):
@@ -196,7 +196,7 @@ def check_content(root: ET.Element, graph: RenderGraph, icons: dict[str, Verifie
             expected = icons[node.icon.reference].sha256
             if (
                 len(images) != 1
-                or hashlib.sha256(_decoded(images[0].get(HREF, ""))).hexdigest() != expected
+                or hashlib.sha256(decoded_png(images[0].get(HREF, ""))).hexdigest() != expected
             ):
                 raise missing(node.id)
         elif images:

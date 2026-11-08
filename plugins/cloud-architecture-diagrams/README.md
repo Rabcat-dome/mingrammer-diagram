@@ -53,7 +53,7 @@ The skill pre-approves this command and its arguments, and the host decides the 
 
 Run the command by its real path. A symbolic link to it from another folder exits `3`, because it finds its project from its own location. If the runtime keeps failing with exit `3`, the message names the private environment to remove, and the next run builds it again.
 
-Each bundle holds `diagram.svg`, `diagram.png`, `model.json`, `view.json`, `diagnostics.json` and `manifest.json`. The SVG embeds its icons, and the manifest records versions, checksums and the terms of every icon pack shown. A bundle that shows Huawei icons states that it is for private personal use only.
+Each bundle holds `diagram.svg`, `diagram.png`, `diagram.drawio`, `model.json`, `view.json`, `diagnostics.json` and `manifest.json`. `diagram.drawio` is an editable copy of the same picture for draw.io, for example its desktop app: boxes are containers that carry what they hold, lines stay attached to their ends, and text stays plain text. The SVG embeds its icons, and the manifest records versions, checksums and the terms of every icon pack shown. A bundle that shows Huawei icons states that it is for private personal use only.
 
 ## Update
 
