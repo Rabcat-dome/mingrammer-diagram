@@ -248,3 +248,4 @@ On the owner's word, "Yes, all steps", Claude Opus 5.5 confirmed each finding an
 - F7: the table of what is not enforced says so.
 - F8: the record now says that valid models stay valid.
 - The fixes change `src`, so `release-audit` waits for a new reproduction proof, which follows the commit. The local gate passes 16 of 17 lanes with 2,325 tests and none skipped. The Work plugin builds as `0.1.0-alpha.1+8d2e5b054083` twice, with the same ZIP, SHA-256 `b43dddc5c553915439cd7c03ab3dbf868979e300de14dccba696ffe64548c3aa`, 127 files, and the host check passes 35 checks. Fable has not reviewed the fixes.
+- The core reproduces from a new clone of `7993055`: the same wheel, SHA-256 `260634f5ef2183a841e6950e4035b1200fb63dc63d3384147ac75bf339bcd735`, and all 26 reference views match by both routes, with no mismatch. With that [proof](S10-core-reproduction-proof.json), `release-audit` passes its 67 tests.
