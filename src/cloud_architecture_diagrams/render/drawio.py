@@ -28,7 +28,6 @@ ROOT_TRANSFORM = re.compile(
 )
 NUMBER = re.compile(r"-?[0-9]+(?:\.[0-9]+)?(?:e-?[0-9]+)?")
 TITLE_LINE_POINTS = 16
-LEGEND_SAMPLE_INSET = 12
 # Graphviz's own patterns, so a line looks the same in both files.
 DASHES = {"dashed": "5 2", "dotted": "1 5"}
 Box = tuple[float, float, float, float]
@@ -47,6 +46,13 @@ SAFE_VALUE = re.compile(r"^[A-Za-z0-9#., -]*$")
 NAMED_COLORS = {"white": "#ffffff", "black": "#000000"}
 CELL_ATTRIBUTES = {"id", "parent", "value", "style", "vertex", "edge", "source", "target"}
 GEOMETRY_ATTRIBUTES = {"x", "y", "width", "height", "relative", "as"}
+MODEL_ATTRIBUTES = {
+    "grid", "guides", "tooltips", "connect", "arrows", "fold", "page", "pageScale", "pageWidth",
+    "pageHeight", "background", "math", "shadow",
+}  # fmt: skip
+XML_DECLARATION = b"<?xml version='1.0' encoding='utf-8'?>\n"
+# A view ID, as the schema allows it, names the draw.io page.
+IDENTIFIER = re.compile(r"^[a-z][a-z0-9._-]*$")
 TEXT_STYLE = {
     "html": "0",
     "fontFamily": FONT_STACK,
@@ -101,6 +107,7 @@ class _Page:
 
     def __init__(self, root: ET.Element) -> None:
         self.by_id = {element.get("id"): element for element in root.iter(f"{{{SVG}}}g")}
+        self.lines = [g for g in root.iter(f"{{{SVG}}}g") if g.get("class") == "edge"]
         self.canvas = self.element("graph:root")
         match = ROOT_TRANSFORM.match(self.canvas.get("transform", ""))
         sizes = NUMBER.findall(root.get("width", "")), NUMBER.findall(root.get("height", ""))
@@ -198,6 +205,10 @@ class _Writer:
         self.graph = graph
         self.page = page
         self.nodes = {node.id for node in graph.nodes}
+        # A resource drawn as a box, such as a cluster, is both a group and a node in that group,
+        # so the two kinds keep separate maps, or the cluster would be its own parent.
+        self.node_groups = {node.id: node.group for node in graph.nodes}
+        self.group_parents = {group.id: group.parent for group in graph.groups}
         self.boxes: dict[str, Box] = {}
         self.cells = ET.Element("root")
         _add(self.cells, "mxCell", {"id": "0"})
@@ -324,6 +335,18 @@ class _Writer:
     def _end(self, identifier: str) -> str:
         return f"node:{identifier}" if identifier in self.nodes else f"group:{identifier}"
 
+    def _holds(self, outer: str, inner: str) -> bool:
+        """Whether the group `outer` contains `inner`, a line end as `_end` reads it."""
+        if inner in self.node_groups:
+            parent = self.node_groups[inner]
+        else:
+            parent = self.group_parents.get(inner)
+        while parent is not None:
+            if parent == outer:
+                return True
+            parent = self.group_parents.get(parent)
+        return False
+
     def add_edges(self) -> None:
         for edge in self.graph.edges:
             path = self.page.element(f"edge:{edge.id}").find(f"{{{SVG}}}path")
@@ -346,10 +369,19 @@ class _Writer:
                 },
             )
             geometry = _add(cell, "mxGeometry", {"relative": "1", "as": "geometry"})
-            if len(points) > 2:
-                bends = _add(geometry, "Array", {"as": "points"})
-                for x, y in points[1:-1]:
-                    _add(bends, "mxPoint", {"x": _number(x), "y": _number(y)})
+            # draw.io starts a line at the border of the box it is attached to. A line to a group
+            # that holds its other end, or a loop, starts inside or beside that box in Graphviz,
+            # so it keeps Graphviz's own ends as bends too, and draws the same route.
+            nested = (
+                edge.source == edge.target
+                or self._holds(edge.source, edge.target)
+                or self._holds(edge.target, edge.source)
+            )
+            bends = points if nested else points[1:-1]
+            if bends:
+                holder = _add(geometry, "Array", {"as": "points"})
+                for x, y in bends:
+                    _add(holder, "mxPoint", {"x": _number(x), "y": _number(y)})
 
     def add_legend(self) -> None:
         if not self.graph.legend:
@@ -358,11 +390,9 @@ class _Writer:
         box = self.page.box(_outline_points(outline))
         style = {**_shape_style(outline), **CONTAINER_STYLE, **TEXT_STYLE}
         self._vertex("legend", None, box, "Legend", style)
-        _, _, width, height = box
-        step = (height - 2 * TITLE_LINE_POINTS) / len(self.graph.legend)
         directed = {edge.kind for edge in self.graph.edges if edge.directed}
-        for index, kind in enumerate(self.graph.legend):
-            y = _number(2 * TITLE_LINE_POINTS + step * (index + 0.5))
+        for kind in self.graph.legend:
+            (x0, y0), *_, (x1, y1) = self._sample(kind)
             cell = _add(
                 self.cells,
                 "mxCell",
@@ -375,10 +405,21 @@ class _Writer:
                 },
             )
             geometry = _add(cell, "mxGeometry", {"relative": "1", "as": "geometry"})
-            start = {"x": _number(LEGEND_SAMPLE_INSET), "y": y, "as": "sourcePoint"}
-            end = {"x": _number(width - LEGEND_SAMPLE_INSET), "y": y, "as": "targetPoint"}
+            start = {"x": _number(x0 - box[0]), "y": _number(y0 - box[1]), "as": "sourcePoint"}
+            end = {"x": _number(x1 - box[0]), "y": _number(y1 - box[1]), "as": "targetPoint"}
             _add(geometry, "mxPoint", start)
             _add(geometry, "mxPoint", end)
+
+    def _sample(self, kind: str) -> list[tuple[float, float]]:
+        """`draw` names a legend sample `_legend.<kind>.a` to `.b`, and Graphviz titles it so."""
+        title = f"_legend.{kind}.a->_legend.{kind}.b"
+        for element in self.page.lines:
+            path = element.find(f"{{{SVG}}}path")
+            if element.findtext(f"{{{SVG}}}title") == title and path is not None:
+                points = [self.page.point(x, y) for x, y in _line_points(path)]
+                if len(points) >= 2:
+                    return points
+        raise RenderFailure("RENDER_CONTENT_MISSING", "/drawio")
 
     def add_title(self) -> None:
         lines = (*self.graph.title_lines, *self.graph.notice_lines)
@@ -460,20 +501,33 @@ def _cells(data: bytes, allowed_icons: set[str]) -> dict[str, ET.Element]:
     def unsafe() -> RenderFailure:
         return RenderFailure("RENDER_CONTENT_MISSING", "/drawio")
 
-    if b"<!" in data:
+    if b"<!" in data or not data.startswith(XML_DECLARATION) or data.count(b"<?") != 1:
         raise unsafe()
     try:
         document = ET.fromstring(data)
     except ET.ParseError as error:
         raise unsafe() from error
+    if any((part.text or "").strip() or (part.tail or "").strip() for part in document.iter()):
+        raise unsafe()
     diagrams = list(document)
     if document.tag != "mxfile" or len(diagrams) != 1 or diagrams[0].tag != "diagram":
         raise unsafe()
     models = list(diagrams[0])
     if len(models) != 1 or models[0].tag != "mxGraphModel" or len(models[0]) != 1:
         raise unsafe()
+    root = models[0][0]
+    if (
+        document.attrib != {"host": "cloud-architecture-diagrams"}
+        or set(diagrams[0].attrib) != {"id", "name"}
+        or not all(IDENTIFIER.match(value) for value in diagrams[0].attrib.values())
+        or set(models[0].attrib) != MODEL_ATTRIBUTES
+        or not all(SAFE_VALUE.match(value) for value in models[0].attrib.values())
+        or root.tag != "root"
+        or root.attrib
+    ):
+        raise unsafe()
     cells: dict[str, ET.Element] = {}
-    for cell in models[0][0]:
+    for cell in root:
         identifier = cell.get("id", "")
         if cell.tag != "mxCell" or set(cell.attrib) - CELL_ATTRIBUTES or identifier in cells:
             raise unsafe()
@@ -516,14 +570,29 @@ def check_drawio(
     def missing(entity: str | None = None) -> RenderFailure:
         return RenderFailure("RENDER_CONTENT_MISSING", "/drawio", entity)
 
+    def container_of(parent: str | None) -> str:
+        return "1" if parent is None else f"group:{parent}"
+
+    # Each box sits in the container its group is drawn in, so moving a box carries its contents.
     for group in graph.groups:
         found = cells.get(f"group:{group.id}")
-        if found is None or found.get("value") != _text(group.lines):
+        if (
+            found is None
+            or found.get("value") != _text(group.lines)
+            or found.get("vertex") != "1"
+            or found.get("parent") != container_of(group.parent)
+            or _style_entries(found.get("style", "")).get("container") != "1"
+        ):
             raise missing(group.id)
     nodes = {node.id for node in graph.nodes}
     for node in graph.nodes:
         found = cells.get(f"node:{node.id}")
-        if found is None or found.get("value") != _text(node.lines):
+        if (
+            found is None
+            or found.get("value") != _text(node.lines)
+            or found.get("vertex") != "1"
+            or found.get("parent") != container_of(node.group)
+        ):
             raise missing(node.id)
         if node.icon:
             holder = cells.get(f"icon:{node.id}") if node.fallback else found
@@ -541,6 +610,8 @@ def check_drawio(
         if (
             found is None
             or found.get("value") != _text(edge.lines)
+            or found.get("edge") != "1"
+            or found.get("parent") != "1"
             or found.get("source") != end(edge.source)
             or found.get("target") != end(edge.target)
             or _style_entries(found.get("style", "")).get("endArrow")

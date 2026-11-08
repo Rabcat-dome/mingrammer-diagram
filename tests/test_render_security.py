@@ -1737,6 +1737,31 @@ DRAWIO_TAMPERING: dict[str, Callable[[bytes], bytes]] = {
     "dangling parent": lambda data: data.replace(
         b'parent="group:vpc"', b'parent="group:nowhere"', 1
     ),
+    # Review F1: the outer elements, stray text and processing instructions.
+    "attribute on the file": lambda data: data.replace(
+        b"<mxfile host=", b'<mxfile agent="x" host=', 1
+    ),
+    "attribute on the page": lambda data: data.replace(
+        b"<diagram id=", b'<diagram link="x" id=', 1
+    ),
+    "attribute on the model": lambda data: data.replace(
+        b"<mxGraphModel grid=", b'<mxGraphModel foo="javascript:x" grid=', 1
+    ),
+    "text between cells": lambda data: data.replace(b'parent="0" />', b'parent="0" />text', 1),
+    "processing instruction": lambda data: data.replace(
+        b"?>\n", b'?>\n<?xml-stylesheet href="x"?>', 1
+    ),
+    # Review F2: what makes the copy editable as the picture, not only present.
+    "flattened resource": lambda data: data.replace(
+        b'id="node:nat-gateway" parent="group:subnet-public-a"',
+        b'id="node:nat-gateway" parent="1"',
+        1,
+    ),
+    "container turned off": lambda data: data.replace(b"container=1;", b"container=0;", 1),
+    "line as a box": lambda data: data.replace(b'edge="1" source=', b'vertex="1" source=', 1),
+    # Review F3: a line's arrow and label are the picture too.
+    "arrow removed": lambda data: data.replace(b"endArrow=block;", b"endArrow=none;", 1),
+    "changed line label": lambda data: data.replace(b'value="HTTPS"', b'value="HTTP"', 1),
     "lost notice": lambda data: re.sub(
         rb'(<mxCell id="title"[^>]*value=")[^"]*', rb"\1Title", data, count=1
     ),

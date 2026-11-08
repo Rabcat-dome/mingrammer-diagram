@@ -223,10 +223,25 @@ def test_every_bundle_holds_an_editable_drawio_copy_of_the_same_picture(
         bottom = top + float(geometry.get("height", "0"))
         for text in element.findall(f"{{{SVG}}}text"):
             assert bottom >= placed(0, float(text.get("y", "0")))[1], node["id"]
+    node_groups = {node["id"]: node["group"] for node in graph["nodes"]}
+    group_parents = {group["id"]: group["parent"] for group in graph["groups"]}
+
+    def holds(outer: str, inner: str) -> bool:
+        parent = node_groups[inner] if inner in node_groups else group_parents.get(inner)
+        while parent is not None and parent != outer:
+            parent = group_parents.get(parent)
+        return parent == outer
+
     for edge in graph["edges"]:
         cell = cells[f"edge:{edge['id']}"]
         assert cell.get("value") == "\n".join(edge["lines"])
         # The bends are the SVG line's own points between its ends, in order from the source.
+        # A line to a group holding its other end, or a loop, keeps Graphviz's ends as well.
+        nested = (
+            edge["source"] == edge["target"]
+            or holds(edge["source"], edge["target"])
+            or holds(edge["target"], edge["source"])
+        )
         path = paths[edge["id"]]
         assert path is not None
         numbers = [float(n) for n in re.findall(r"-?[0-9]+(?:\.[0-9]+)?", path.get("d", ""))]
@@ -236,7 +251,7 @@ def test_every_bundle_holds_an_editable_drawio_copy_of_the_same_picture(
             (float(point.get("x", "0")), float(point.get("y", "0")))
             for point in cell.iter("mxPoint")
         ]
-        assert sorted(bends) == sorted(on_line[1:-1]), edge["id"]
+        assert sorted(bends) == sorted(on_line if nested else on_line[1:-1]), edge["id"]
         if len(bends) > 1:
             source = cells[cell.get("source", "")]
             box = source.find("mxGeometry")
@@ -256,6 +271,48 @@ def test_every_bundle_holds_an_editable_drawio_copy_of_the_same_picture(
     title = cells["title"].get("value", "")
     assert title == "\n".join([*graph["title_lines"], *graph["notice_lines"]])
     assert ("legend" in cells) == bool(graph["legend"])
+    # Each legend sample is where the PNG draws it, so their order matches the PNG's.
+    titles = {
+        element.findtext(f"{{{SVG}}}title"): element.find(f"{{{SVG}}}path")
+        for element in svg_root(result).iter(f"{{{SVG}}}g")
+        if element.get("class") == "edge"
+    }
+    for kind in graph["legend"]:
+        sample = titles[f"_legend.{kind}.a->_legend.{kind}.b"]
+        assert sample is not None
+        numbers = [float(n) for n in re.findall(r"-?[0-9]+(?:\.[0-9]+)?", sample.get("d", ""))]
+        sample_start = placed(numbers[0], numbers[1])
+        legend_left, legend_top = _drawio_origin(cells, "legend")
+        start = next(
+            point
+            for point in cells[f"legend:{kind}"].iter("mxPoint")
+            if point.get("as") == "sourcePoint"
+        )
+        copied = (
+            legend_left + float(start.get("x", "0")),
+            legend_top + float(start.get("y", "0")),
+        )
+        assert math.dist(copied, sample_start) < 0.02, kind
+
+
+def test_lines_to_an_enclosing_group_or_a_loop_keep_graphvizs_route(tmp_path: Path) -> None:
+    # draw.io starts a line on the border of the box it is attached to, which for a group holding
+    # the line's other end, or for a loop, is not where Graphviz drew the line (review F5).
+    model = load("core-valid.json")
+    model["relationships"] = [
+        {"id": "into", "source_ref": "vpc", "target_ref": "subnet", "kind": "dependency"},
+        {"id": "self", "source_ref": "app", "target_ref": "app", "kind": "traffic"},
+    ]
+    model["views"][0]["relationship_refs"] = ["into", "self"]
+    result = render(model, tmp_path / "out")
+    assert result.rendered, codes(result)
+    cells = _drawio_cells(bundle_files(result)["diagram.drawio"])
+    for identifier in ("into", "self"):
+        path = by_id(svg_root(result))[f"edge:{identifier}"].find(f"{{{SVG}}}path")
+        assert path is not None
+        on_line = len(re.findall(r"-?[0-9]+(?:\.[0-9]+)?", path.get("d", ""))) // 2
+        bends = list(cells[f"edge:{identifier}"].iter("mxPoint"))
+        assert len(bends) == 1 + (on_line - 1) // 3, identifier
 
 
 def test_the_drawio_copy_keeps_model_text_as_plain_text(tmp_path: Path) -> None:

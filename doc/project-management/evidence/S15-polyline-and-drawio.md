@@ -61,3 +61,33 @@ The core moves to `0.6.0a1` in `pyproject.toml`, `__init__.py` and `uv.lock`, an
 - The core reproduces from a new clone of `51ce3e7` in a clean runtime. It builds the wheel with SHA-256 `d5fddbc5099e7fddb35af0443db27f20cdbfa2e983d0cfaafb7b3ef6fa285331`, the same as the local build, and all 26 reference views match their baselines by both routes, with no mismatch. With that [proof](S10-core-reproduction-proof.json), the `release-audit` lane passes its 67 tests, so the local gate's only failure is gone.
 
 Not done when this was written: an independent review, the owner's review of the 15 changed views, an install, and a run in Work.
+
+## Review
+
+Date: 2026-11-08 (Asia/Bangkok) | Range: `60f4904..3847358` | Reviewer: Claude Fable 5.1 (`claude-fable-5-1`), at High for renderer and security work under D-021, in a fresh agent working from its own clone | Implementer: Claude Opus 5.5, so reviewer and implementer share a vendor
+
+**Disposition: approved, with six P3 findings and no P0 to P2.** No model text reached markup, a link, a style entry or an active attribute: a crafted lenient left-to-right model with `<script>`, `<b>`, `<img onerror>`, `javascript:` links, `%name%` placeholders, `;` style separators in names and labels, a name closing an `mxCell` element, an environment written as style entries, and Thai with a zero-width space rendered, passed `check_drawio`, and draw.io's own export showed every string as literal text. The reviewer's clone passed the full gate, 17 lanes with 2,074 tests, with the proof matching the source, and built the same wheel and the same Work plugin ZIP as recorded. The host check passed 35 checks with seven files. Rendering the AWS overview at `60f4904` and at `3847358` gave the same position for all 23 nodes and groups. It exported eight copies with draw.io and looked at seven. Of its own eight sabotage edits, six failed a test, and two are F3.
+
+| ID | Severity | Where | Finding | Fix direction |
+|---|---|---|---|---|
+| F1 | P3 | `drawio.py`, `_cells`; the contract and this record | Only `mxCell` elements and what they hold were checked. An attribute on `mxfile`, `diagram` or `mxGraphModel`, text between elements, and a processing instruction passed, so "only the elements, attributes and style keys the exporter writes" overstated the check. None had an effect in draw.io | Check the outer elements' attributes, refuse stray text, and refuse a second `<?` |
+| F2 | P3 | `drawio.py`, `check_drawio` | A copy could pass while differing from the picture: a resource moved out of its container, a group with `container=0`, a line written as a box, all positions zeroed or a colour changed. Only presence, text, ends and arrows were checked | Check each box's container, `container=1` on groups, and `edge="1"` on lines |
+| F3 | P3 | `test_render_security.py` | Removing the arrow or the label comparison from `check_drawio` left every test passing, because no tamper case changed a line's arrow or label | Add those two cases |
+| F4 | P3 | `drawio.py`, `add_legend` | The legend listed its kinds in the reverse of the PNG's order, because it was laid out from the graph rather than read from the SVG like everything else | Read each sample from the SVG |
+| F5 | P3 | `drawio.py`, `add_edges` | A line to a group that holds its other end, such as `vpc` to `subnet`, started on the group's far border and crossed the subnet, and a loop became a short V above the icon, because draw.io starts a line on the border of the box it is attached to. 10 of the 270 fixture lines have an end inside the other, and none is a loop | Keep Graphviz's own ends for such lines |
+| F6 | P3 | `HANDOFF.md`, item 11 | It still said there was no reproduction proof after `3847358` added one | Update it |
+
+Not checked by the reviewer: the implementer's 16 sabotage edits and six exports, the owner's review of the 15 views, a run in Work, editing in draw.io, such as moving a container whose lines have fixed bend points, views near the size limits, and CI. CI [run 42449922130](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/42449922130) passed at `3847358`, and [run 42449824519](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/42449824519) at `51ce3e7` failed only `release-audit`, before the proof.
+
+## Fixes after the review
+
+On the owner's word on 2026-11-08, translated from Thai, "Go ahead as you recommend, 1 to 6", Claude Opus 5.5 confirmed and fixed each finding.
+
+- F1: `check_drawio` now requires the file's one `host` attribute, a page named by a view ID, the model's own attributes with safe values, and a `root` without attributes. It refuses text outside attributes anywhere, and any processing instruction but the XML declaration. The contract's sentence is now true.
+- F2: it requires every group's and every resource's cell to sit in the container its group is drawn in, every group to be a container, and every line to be a line at the page level.
+- F3: ten new tamper cases cover F1 to F3: an attribute on the file, on the page and on the model, text between cells, a processing instruction, a resource moved out of its container, a container turned off, a line written as a box, an arrow removed and a changed line label. The `render-security` lane now refuses 23 tampered copies.
+- F4: each legend sample is now read from the SVG, by the name `draw` gives it, so its place, order and length match the PNG. In hybrid `data-flows`, `traffic` is above `replication` in both. The per-view test compares every sample's start with the SVG.
+- F5: a line to a group that holds its other end, and a loop, keep Graphviz's own ends as bends, so draw.io draws Graphviz's route. A new test draws `vpc` to `subnet` and a loop on `app`. The first version of this fix put resources and groups in one map, and a cluster drawn as both a group and a resource in it became its own parent, so the render never ended. They now have separate maps.
+- F6: item 11 says the proof exists and CI passed.
+- Each of 26 sabotage edits failed a named test: the 16 before, and one for each new check, the legend and the kept ends.
+- The Work plugin builds as `0.1.0-alpha.1+a0465bcceca9` twice, with the same ZIP, SHA-256 `33597136bffb5f426e8959d31fd23e682c9770961d850f891c93d944ccc39e0f`, 99 files and lock `bf76c5683b8799d1`. The host check passes 35 checks. The local gate passes 16 of 17 lanes with 2,085 tests and none skipped, after one test's variables were renamed for `types`. The fixes change `src`, so `release-audit` waits for a new reproduction proof, which follows the commit.
