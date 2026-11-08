@@ -5834,6 +5834,378 @@
      }
     }
    ]
+  },
+  {
+   "id": "gcp-private-zone-linked-twice",
+   "base": "providers/gcp-edge-security",
+   "expect": "PLACEMENT_NETWORK_COUNT_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:private-dns/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      },
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-shield-on-certificate",
+   "base": "providers/aws-network-security",
+   "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
+   "ops": [
+    {
+     "add": "relationships",
+     "value": {
+      "id": "x-shield-cdn-cert",
+      "source_ref": "shield-cdn",
+      "target_ref": "cert",
+      "kind": "attachment"
+     }
+    }
+   ]
+  },
+  {
+   "id": "huawei-cache-zone-in-another-region",
+   "base": "providers/huawei-data-messaging",
+   "expect": "PLACEMENT_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-2",
+      "name": "CN-Hong Kong",
+      "provider": "huawei",
+      "kind": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "az-2",
+      "name": "AZ1",
+      "provider": "huawei",
+      "kind": "zone",
+      "parent_ref": "region-2"
+     }
+    },
+    {
+     "set": "resources/id:cache/placement",
+     "value": {
+      "scope_refs": [
+       "ep"
+      ],
+      "location": {
+       "zone_ref": "az-2"
+      },
+      "network_attachments": [
+       {
+        "network_ref": "vpc",
+        "subnet_refs": [
+         "data"
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "huawei-docs-zone-in-another-region",
+   "base": "providers/huawei-data-messaging",
+   "expect": "PLACEMENT_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-2",
+      "name": "CN-Hong Kong",
+      "provider": "huawei",
+      "kind": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "az-2",
+      "name": "AZ1",
+      "provider": "huawei",
+      "kind": "zone",
+      "parent_ref": "region-2"
+     }
+    },
+    {
+     "set": "resources/id:docs/placement",
+     "value": {
+      "scope_refs": [
+       "ep"
+      ],
+      "location": {
+       "zone_ref": "az-2"
+      },
+      "network_attachments": [
+       {
+        "network_ref": "vpc",
+        "subnet_refs": [
+         "data"
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "huawei-ledger-zone-in-another-region",
+   "base": "providers/huawei-data-messaging",
+   "expect": "PLACEMENT_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-2",
+      "name": "CN-Hong Kong",
+      "provider": "huawei",
+      "kind": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "az-2",
+      "name": "AZ1",
+      "provider": "huawei",
+      "kind": "zone",
+      "parent_ref": "region-2"
+     }
+    },
+    {
+     "set": "resources/id:ledger/placement",
+     "value": {
+      "scope_refs": [
+       "ep"
+      ],
+      "location": {
+       "zone_ref": "az-2"
+      },
+      "network_attachments": [
+       {
+        "network_ref": "vpc",
+        "subnet_refs": [
+         "data"
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "huawei-kafka-zone-in-another-region",
+   "base": "providers/huawei-data-messaging",
+   "expect": "PLACEMENT_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-2",
+      "name": "CN-Hong Kong",
+      "provider": "huawei",
+      "kind": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "az-2",
+      "name": "AZ1",
+      "provider": "huawei",
+      "kind": "zone",
+      "parent_ref": "region-2"
+     }
+    },
+    {
+     "set": "resources/id:kafka/placement",
+     "value": {
+      "scope_refs": [
+       "ep"
+      ],
+      "location": {
+       "zone_ref": "az-2"
+      },
+      "network_attachments": [
+       {
+        "network_ref": "vpc",
+        "subnet_refs": [
+         "data"
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "huawei-rabbit-zone-in-another-region",
+   "base": "providers/huawei-data-messaging",
+   "expect": "PLACEMENT_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-2",
+      "name": "CN-Hong Kong",
+      "provider": "huawei",
+      "kind": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "az-2",
+      "name": "AZ1",
+      "provider": "huawei",
+      "kind": "zone",
+      "parent_ref": "region-2"
+     }
+    },
+    {
+     "set": "resources/id:rabbit/placement",
+     "value": {
+      "scope_refs": [
+       "ep"
+      ],
+      "location": {
+       "zone_ref": "az-2"
+      },
+      "network_attachments": [
+       {
+        "network_ref": "vpc",
+        "subnet_refs": [
+         "data"
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "huawei-turbo-zone-in-another-region",
+   "base": "providers/huawei-data-messaging",
+   "expect": "PLACEMENT_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-2",
+      "name": "CN-Hong Kong",
+      "provider": "huawei",
+      "kind": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "az-2",
+      "name": "AZ1",
+      "provider": "huawei",
+      "kind": "zone",
+      "parent_ref": "region-2"
+     }
+    },
+    {
+     "set": "resources/id:turbo/placement",
+     "value": {
+      "scope_refs": [
+       "ep"
+      ],
+      "location": {
+       "zone_ref": "az-2"
+      },
+      "network_attachments": [
+       {
+        "network_ref": "vpc",
+        "subnet_refs": [
+         "data"
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "huawei-router-zone-in-another-region",
+   "base": "providers/huawei-data-messaging",
+   "expect": "PLACEMENT_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-2",
+      "name": "CN-Hong Kong",
+      "provider": "huawei",
+      "kind": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "az-2",
+      "name": "AZ1",
+      "provider": "huawei",
+      "kind": "zone",
+      "parent_ref": "region-2"
+     }
+    },
+    {
+     "set": "resources/id:router/placement",
+     "value": {
+      "scope_refs": [
+       "ep"
+      ],
+      "location": {
+       "zone_ref": "az-2"
+      },
+      "network_attachments": [
+       {
+        "network_ref": "vpc",
+        "subnet_refs": [
+         "app"
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "huawei-vpc-endpoint-in-zone",
+   "base": "providers/huawei-data-messaging",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "az-x",
+      "name": "AZ2",
+      "provider": "huawei",
+      "kind": "zone",
+      "parent_ref": "region"
+     }
+    },
+    {
+     "set": "resources/id:endpoint/placement/location",
+     "value": {
+      "zone_ref": "az-x"
+     }
+    }
+   ]
   }
  ],
  "warnings": [
@@ -5885,6 +6257,34 @@
    "ops": [
     {
      "set": "resources/id:images/placement/scope_refs",
+     "value": [
+      "proj",
+      "ep"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "huawei-vpc-endpoint-enterprise-project",
+   "base": "providers/huawei-data-messaging",
+   "expect": "HUAWEI_ENTERPRISE_PROJECT_UNSUPPORTED",
+   "ops": [
+    {
+     "set": "resources/id:endpoint/placement/scope_refs",
+     "value": [
+      "proj",
+      "ep"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "huawei-gateway-endpoint-enterprise-project",
+   "base": "providers/huawei-data-messaging",
+   "expect": "HUAWEI_ENTERPRISE_PROJECT_UNSUPPORTED",
+   "ops": [
+    {
+     "set": "resources/id:obs-endpoint/placement/scope_refs",
      "value": [
       "proj",
       "ep"

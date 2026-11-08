@@ -117,7 +117,7 @@ These are this session's calls, as S13's splits were. Correct them here if the o
 - **The Container Apps environment, not the container app**, because the environment holds the subnet and a container app holds no network property.
 - **One API Management type.** Microsoft's classic and v2 tiers differ: classic Premium may state a zone and share its subnet, and v2 is regional and needs a delegated subnet of its own. One type that allows a zone and no dedicated subnet refuses no valid model of either, and misses a v2 subnet shared with another service.
 - **Cloud CDN as a node with no native ID.** In Google's API it is a setting on a backend service or bucket of the global external Application Load Balancer. People draw it as its own node, and the record keeps a model from attaching it to another load balancer.
-- **One Shield protection type with location `any`.** AWS gives no Region for a protection. Its Config history splits global and regional resources, and its API is served from `us-east-1`, which a region name cannot express. A split on that basis would rest on inference.
+- **One Shield protection type with location `any`.** AWS gives no Region for a protection. Its Config history splits global and regional resources, and its API is served from `us-east-1`, which a region name cannot express. A split on that basis would rest on inference. `any` is wider than the evidence: it also admits a zone, a site or a rack, which nothing supports for a protection. Its EC2 and NLB targets stand in for the Elastic IP addresses AWS actually protects for them, because the catalog has no Elastic IP type.
 - **No region rule for an ACM certificate.** It must share the Region of an ALB, an NLB or an HTTP API, but sit in `us-east-1` for CloudFront and Cognito, and a region's name is a free label here.
 - **Left out:** AWS's Gateway Load Balancer endpoint, because the catalog has no Gateway Load Balancer; Huawei's VPC endpoint service, which is the provider's side; SWR Enterprise Edition, in open beta; and TaurusDB, the renamed GaussDB(for MySQL), which the owner did not name.
 - **Both DMS editions draw the DMS entry.** The library also holds entries titled "Kafka" and "RabbitMQ", but the catalog's check accepts an icon only where its title names the service, and these name the engine. Mapping them would break the rule S06 set against guessing.
@@ -159,6 +159,8 @@ The weakest facts are stated as inferences in the research and here: a network f
 | Tier conditions: Premium for private endpoints on a registry or Service Bus, Enterprise for Armor network edge policies | The model has no tier |
 | One transit gateway attachment per gateway and VPC, one GuardDuty detector per Region, five trails per Region | Rules across resources or quotas |
 | A gateway VPC endpoint serving only S3 and DynamoDB, or Huawei's only OBS-like services | The model does not name an endpoint's service |
+| A regional Cloud Armor policy only on an external passthrough Network Load Balancer, or on a VM with a public IP address | The catalog's one passthrough NLB type covers internal and external ones, and the model does not say whether a VM has a public address. A policy on an internal NLB validates |
+| What an `attachment` edge to a scope or a boundary joins | The attachment rule reads resources only, so a Shield protection or a private endpoint attached to a VPC or a subnet is not refused. This predates S16 and applies to the web ACLs too |
 | Two availability zones refused for DMS, which allows one or three or more | The model lists subnets, not a count of zones for a cluster |
 
 ## Icons and rights
@@ -172,7 +174,7 @@ The weakest facts are stated as inferences in the research and here: a network f
 | Area | Change |
 |---|---|
 | Catalog version | `2026.11.2` to `2026.11.3` in every catalog file |
-| Existing models | Valid models stay valid, except one that put two different delegated Azure types in one subnet, which only Application Gateway was before |
+| Existing models | Valid models stay valid, because Application Gateway was the only dedicated type before |
 | Model guide | One paragraph per provider says how to place these types and attach them |
 | Core package | Stays `0.6.0a1`, as S12 and S13 kept theirs, so `uv.lock` and the plugins' runtime do not change. The catalog version is what results report for this change |
 | Reference baselines | Unchanged |
@@ -181,7 +183,7 @@ The weakest facts are stated as inferences in the research and here: a network f
 ## Validation
 
 - **Fixtures.** Four new positive fixtures, `azure-paas`, `gcp-edge-security`, `aws-network-security` and `huawei-data-messaging`, use every new type and pass strict validation. A web app and a function app share one delegated subnet in the Azure one.
-- **Negative cases.** 72 new cases each fail with their code, in strict and in lenient mode, and a test requires each to fail for that reason alone, as S13's cases must. One new warning case puts SWR in an enterprise project.
+- **Negative cases.** 72 new cases each fail with their code, in strict and in lenient mode, and a test requires each to fail for that reason alone, as S13's cases must. One new warning case puts SWR in an enterprise project. The review's fixes add 10 more and two warnings, [below](#fixes-after-the-review).
 - **Direct tests** cover an attachment drawn either way, an edge between two types that both list targets, a web ACL counted apart from a certificate and a Shield protection, a certificate in another region, and two delegations in one subnet.
 - **License lane.** Each new Azure, GCP and AWS type draws its own class from its provider's pack, shares an icon only with a variant of its service, and is not a required item. The Huawei mapping table names all 16 new types and their exact titles.
 - **Render lane.** Each new fixture renders with every new type as its own icon, strict, with no fallback, and only the Huawei picture is private-use. Its `diagram.drawio` matches the picture too.
@@ -211,4 +213,38 @@ The weakest facts are stated as inferences in the research and here: a network f
 
 ## Model and review
 
-Implementation used Claude Opus 5.5 (`claude-opus-5-5`), the model of the session that ran it, with four research agents on the same model. No review has run.
+Implementation used Claude Opus 5.5 (`claude-opus-5-5`), the model of the session that ran it, with four research agents on the same model. Claude Fable 5.1 / High reviewed it under D-021, [below](#review).
+
+## Review
+
+On the owner's word, "Yes, all steps", Claude Fable 5.1 / High reviewed `e56a188..eb6a7fa` in a fresh agent on its own clone. It read the evidence, the code and data changes and every new case, ran the three changed lanes with the totals the evidence gives, ran 26 probe models of its own, fetched 12 provider pages, and decoded the 14 Huawei entries again from the six pinned libraries in a new folder.
+
+**It approved S16, with no P0 or P1 finding.** It confirmed that the web ACL rules still hold with an edge drawn either way, that the Azure network interface and Huawei EIP edges are unchanged, that a draft type stays silent, that an edge whose two ends list targets but not each other is refused, that the region rule reads a target's region through its network, that a web app and a function app share a delegated subnet while anything else is refused there, and that every Huawei icon decodes byte for byte at its index and exact title.
+
+| ID | Severity | Finding |
+|---|---|---|
+| F1 | P2 | A regional Cloud Armor policy validates on an internal passthrough NLB and on any Compute Engine instance, but Google applies network edge policies only to external passthrough NLBs and VMs with public IP addresses. Neither is in the table of what is not enforced |
+| F2 | P3 | The Huawei IAM and enterprise flags cite the IAM services table, but no phrase from its rows was recorded |
+| F3 | P3 | Global Accelerator's global authorization rests on "a global service for access from any region", where the same page states "Scope: Global-level service" for its policies |
+| F4 | P3 | Shield's location `any` also admits a zone, a site or a rack, and the evidence does not say so |
+| F5 | P3 | A Cloud DNS private zone may list one VPC network twice, unlike an Azure Private DNS zone |
+| F6 | P3 | No case covers an edge whose two ends list targets but not each other, no warning case covers the two Huawei VPC endpoints, and DCS, DDS, GaussDB, both DMS types, SFS Turbo, Enterprise Router and the interface VPC endpoint have no negative case |
+| F7 | P3 | An `attachment` edge to a scope or a boundary is not checked, which predates S16 and is not recorded |
+| F8 | P3 | "Valid models stay valid, except" an exception that no earlier model could meet |
+| F9 | P3 | Shield's EC2 and NLB targets stand in for the Elastic IP addresses AWS protects for them, and the evidence does not say so |
+
+It asked for F1, F2, F3 and F8 before a merge, and left the others to follow.
+
+## Fixes after the review
+
+On the owner's word, "Yes, all steps", Claude Opus 5.5 confirmed each finding and fixed all nine.
+
+- F1: the table of what is not enforced names both cases. The catalog keeps one passthrough NLB type, so an internal one still validates.
+- F2: the IAM services page was fetched again, and 12 phrases now record the rows for DCS, DDS, both DMS types, SMN, SWR, CCI, SFS, EVS, CBR and VPCEP, and that the last column means authorization by enterprise project. The two older phrases still match the page.
+- F3: the Global Accelerator page records "Scope: Global-level service".
+- F4 and F9: the Shield call above says both.
+- F5: a Cloud DNS private zone now lists each network once, as `unique_networks`. Google's page gives the networks as a list rather than stating this, so it is an inference, and a new case covers it.
+- F6: ten new cases: the private zone on one network twice, a Shield protection attached to a certificate, the interface VPC endpoint given a zone, and DCS, DDS, GaussDB, both DMS types, SFS Turbo and the Enterprise Router each placed in a zone of another region than their network, with two warning cases for the VPC endpoints in an enterprise project. Each fails for its one reason.
+- F7: the table of what is not enforced says so.
+- F8: the record now says that valid models stay valid.
+- The fixes change `src`, so `release-audit` waits for a new reproduction proof, which follows the commit. The local gate passes 16 of 17 lanes with 2,325 tests and none skipped. The Work plugin builds as `0.1.0-alpha.1+8d2e5b054083` twice, with the same ZIP, SHA-256 `b43dddc5c553915439cd7c03ab3dbf868979e300de14dccba696ffe64548c3aa`, 127 files, and the host check passes 35 checks. Fable has not reviewed the fixes.

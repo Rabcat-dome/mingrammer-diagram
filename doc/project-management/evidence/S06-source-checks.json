@@ -1151,8 +1151,8 @@
   {
    "url": "https://support.huaweicloud.com/intl/en-us/productdesc-iam/iam_01_0024.html",
    "http_status": 200,
-   "text_sha256": "55435efbcb7fe1edeeeec0793cd8452710bf66107103f96c6a748bc105ac4828",
-   "characters": 11014,
+   "text_sha256": "3a3e79547c4e5fe3b8a41891ee84f12f3064a63615b401f505fa6e6666b335af",
+   "characters": 11002,
    "claims": [
     {
      "claim": "IAM and OBS are authorized globally; VPN and Direct Connect lack enterprise-project authorization",
@@ -1163,8 +1163,69 @@
      "claim": "OBS is authorized in global regions",
      "pattern": "Object Storage Service \\(OBS\\) Global regions",
      "matched": true
+    },
+    {
+     "claim": "DCS is authorized per project and by enterprise project",
+     "pattern": "Distributed Cache Service \\(DCS\\) Specific regions √ √ √ √ √",
+     "matched": true
+    },
+    {
+     "claim": "DDS is authorized per project and by enterprise project",
+     "pattern": "Document Database Service \\(DDS\\) Specific regions √ x x √ √",
+     "matched": true
+    },
+    {
+     "claim": "DMS for Kafka is authorized per project and by enterprise project",
+     "pattern": "Distributed Message Service for Kafka \\(DMS for Kafka\\) Specific regions √ √ √ √ √",
+     "matched": true
+    },
+    {
+     "claim": "DMS for RabbitMQ is authorized per project and by enterprise project",
+     "pattern": "Distributed Message Service for RabbitMQ \\(DMS for RabbitMQ\\) Specific regions √ √ √ √ √",
+     "matched": true
+    },
+    {
+     "claim": "SMN is authorized per project and by enterprise project",
+     "pattern": "Simple Message Notification \\(SMN\\) Specific regions √ √ x x √",
+     "matched": true
+    },
+    {
+     "claim": "SWR is authorized per project and not by enterprise project",
+     "pattern": "Software Repository for Container \\(SWR\\) Specific regions √ √ x √ x",
+     "matched": true
+    },
+    {
+     "claim": "CCI is authorized per project and by enterprise project",
+     "pattern": "Cloud Container Instance \\(CCI\\) Specific regions √ √ x √ √",
+     "matched": true
+    },
+    {
+     "claim": "SFS is authorized per project and by enterprise project",
+     "pattern": "Scalable File Service \\(SFS\\) Specific regions √ √ x √ √",
+     "matched": true
+    },
+    {
+     "claim": "EVS is authorized per project and by enterprise project",
+     "pattern": "Elastic Volume Service \\(EVS\\) Specific regions √ √ x √ √",
+     "matched": true
+    },
+    {
+     "claim": "CBR is authorized per project and by enterprise project",
+     "pattern": "Cloud Backup and Recovery \\(CBR\\) Specific regions √ √ x √ √",
+     "matched": true
+    },
+    {
+     "claim": "VPCEP is authorized per project and not by enterprise project",
+     "pattern": "VPC Endpoint \\(VPCEP\\) Specific regions √ √ x x x",
+     "matched": true
+    },
+    {
+     "claim": "The last column is authorization by enterprise project",
+     "pattern": "Enterprise Project: Whether a service supports authorization by enterprise project\\.",
+     "matched": true
     }
-   ]
+   ],
+   "checked": "2026-11-08"
   },
   {
    "url": "https://support.huaweicloud.com/intl/en-us/productdesc-natgateway/en-us_topic_0086739762.html",
@@ -4183,6 +4244,11 @@
     {
      "claim": "Global service",
      "pattern": "Global Accelerator is a global service for access from any region.",
+     "matched": true
+    },
+    {
+     "claim": "Its system policies are scoped to a global-level service",
+     "pattern": "Scope: Global-level service",
      "matched": true
     }
    ]
