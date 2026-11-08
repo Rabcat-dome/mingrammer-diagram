@@ -129,3 +129,19 @@ On the owner's word, "Yes, fix them", Claude Opus 5.5 fixed F7 and F8 and measur
 - Fable's probe script run against this tree draws every probe with no unbanded node above north or below south, no box above north, and icon spreads of 0.0 pt on every row.
 - Six new render tests: five cases of lines among unbanded nodes, each keeping the nodes and the AWS boxes between north and south, and one on the DOT for lines into north and out of south. Each of five sabotage edits failed a named test: no holding for loops, a loop search that finds nothing, self-loops ranking, and lines into north or out of south ranking. The local gate passes 16 of 17 lanes with 2,380 tests, `release-audit` waits for a reproduction proof of this source, and the Work plugin becomes `0.1.0-alpha.1+74c5538a3c35`.
 - The core reproduces from a new clone of `03bdb6b`: the same wheel, SHA-256 `3e1345e57e5d3e448298054f76be61a2c9009212fe85e05c9e1c90e352ca3cff`, and all 26 reference views match by both routes, with no mismatch. With that [proof](S10-core-reproduction-proof.json), `release-audit` passes its 67 tests.
+
+## Second recheck
+
+On the owner's word, "Yes, fix them", the same Fable agent reviewed `0ddd2cc..03bdb6b` on its own clone. It confirmed F7 fixed for every loop among the lines it drew, including loops through a banded node, a level's anchor, a plain group's anchor and `_arrange`'s lines, confirmed F8 fixed, and accepted F9 as measured. It ran the four changed lanes with 621 tests, and the gate passed every lane but the reproduction test, which waited for its proof.
+
+**It requested changes, with no P0 or P1 finding.**
+
+| ID | Severity | Finding |
+|---|---|---|
+| F10 | P2 | A chain of unbanded nodes from a lower band back up to a higher one, such as the database to two nodes to the load balancer, or one node from the VPN's band to App A's, is a loop only through the bands' order, which the loop search did not see. Its nodes took no holding line, one fell to the south row, and the AWS box reached about 240 pt below the on-premises router. `000c024` held both cases |
+
+This session reproduced F10 with Fable's probe script.
+
+## Fixes after the second recheck
+
+On the owner's word, "Yes, finish it", Claude Opus 5.5 fixed F10 as Fable suggested: the loop search counts each row, band or level, as one node and adds the bands' order as lines, so a node on a loop through the rows takes both holding lines. Fable's two probe scripts, 32 probes in all, draw no unbanded node above north or below south and no AWS box outside them, with icon spreads of 0.0 pt on every row. The fixture's picture and the Kubernetes width do not change. Two new cases join the test of lines among unbanded nodes, and each of two sabotage edits, rows left out of the loop search and the bands' order left out, failed both. The local gate passes 16 of 17 lanes with 2,382 tests, `release-audit` waits for a reproduction proof of this source, and the Work plugin becomes `0.1.0-alpha.1+2df5c202a539`.

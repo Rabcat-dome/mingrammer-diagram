@@ -471,7 +471,15 @@ class _Drawing:
         ]
         below = {lower for _, lower in ranking}
         above = {upper for upper, _ in ranking}
-        looped = _looped(ranking)
+        # A row holds its entities on one rank, and the bands run in order, so a chain that runs
+        # from a lower band back up to a higher one is a loop too. Each row counts as one node.
+        row_of = {
+            self.drawn[identifier].nodeid: f"_row.{index}"
+            for identifier, (index, _) in self.rows.items()
+        }
+        folded = [(row_of.get(upper, upper), row_of.get(lower, lower)) for upper, lower in ranking]
+        folded += [(f"_row.{index}", f"_row.{index + 1}") for index in range(len(markers) - 1)]
+        looped = _looped(folded)
         for identifier, node in self.drawn.items():
             if identifier in banded:
                 continue

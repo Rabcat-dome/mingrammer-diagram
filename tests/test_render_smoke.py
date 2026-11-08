@@ -1948,6 +1948,13 @@ UNBANDED_LINES = {
     "a loop of three": [("c1", "c2"), ("c2", "c3"), ("c3", "c1")],
     "a line into the first band": [("probe-x", "users")],
     "a line out of the last band": [("onprem-router", "probe-y")],
+    # Recheck F10: these close their loop through the bands' order, not through their own lines.
+    "a chain from a lower band back up": [
+        ("db-a", "back-x"),
+        ("back-x", "back-y"),
+        ("back-y", "alb-a"),
+    ],
+    "one node from a lower band back up": [("vpn-a", "back-z"), ("back-z", "app-a")],
 }
 
 
