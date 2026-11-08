@@ -169,3 +169,16 @@ F11 was a bug in the F10 fix the owner had approved, so Claude Opus 5.5 fixed it
 The same Fable agent reviewed `3e21947..1435e98` on its own clone. **It approved S17, with no finding at P2 or above.** It confirmed F11 fixed, and checked that the lookup cannot give a holding line to a banded node, since those are skipped first, and that a looped band row cannot mark a free level's end. Its three probe sets, 44 probes, render strict with every unbanded node and the AWS box between north and south, the bands in order, and icon spreads of 0.0 pt on every row. Against `f6f4841`, no view without a loop through a level changed width. It ran the four changed lanes with 624 tests, and the gate passed every lane but the reproduction test, which waited for its proof.
 
 It would leave four P3 items open: F2 and F5, which the guide records as limits; F9, a view 1639 pt wide against 1333 pt at `000c024`, with correct rows; and the top-down legend stretched to the full height of every top-down view, which predates S17.
+
+## The owner's review
+
+On 2026-11-08 the owner passed the picture with "Pass" (D-056). They were sent the banded view `compass` of `tests/fixtures/compass-valid.json` and the same selection without bands, `plain`, both rendered at `60e72f8`, with the replication line meeting the database's text named as the F2 limit. The owner then answered "Merge and install" to whether to merge `codex/compass-bands` into `main` and install both plugins.
+
+## Install
+
+- `main` fast-forwarded from `186b26d` to `60e72f8`, where actual CI [run 42499797932](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/42499797932) passed. The tag does not move.
+- The Work plugin built from `main` at `60e72f8` is `0.1.0-alpha.1+fee9566f6d58`, with core `0.7.0a1`, the version recorded after the F11 fix. Two builds gave the same ZIP, SHA-256 `1de557c464d10a44e69685058696c42f5fa5d920493518c5bd84cc00103ce960`, 127 files, and the host check passed 35 checks in a throwaway profile on `codex-cli 0.167.0-alpha.3.2`. It is installed with `codex plugin add`, replacing `8d2e5b054083`.
+- `uv.lock` changed, so the plugin's `runtime.py setup` built the runtime again. It is `ready` on lock `c25c52c4a5698959`, with Python 3.13.7, and its render probe passes. The earlier runtime is gone.
+- The Claude plugin moved from `bfbce78e481d` to `60e72f8e7cf6`, and its skills equal `main`'s. Both installed model guides hold the section on bands and east-west lines.
+- Through the installed Work server, `compass-valid.json` validates strict, and a copy whose `compass` view is `LR` fails with `VIEW_BAND_DIRECTION`. Both views, `compass` and `plain`, draw bundles of seven files whose SVG and PNG are the same bytes as the repository's render at `60e72f8`, the one the owner passed. The installed Claude plugin validates the fixture strict and draws both views to the same bytes.
+- The ChatGPT app and any open Claude Code session need a restart to load these. No prompt has run in Work on this version.
