@@ -1911,6 +1911,31 @@ def test_a_level_line_meets_icons_whose_text_runs_to_three_lines(smoke_root: Pat
         assert top < ys[0] < bottom, identifier
 
 
+@pytest.mark.parametrize(
+    ("labeled", "after", "level"),
+    [(True, "app", False), (False, "app", True), (True, "data", True)],
+    ids=["text-crosses-the-row", "no-text", "band-below-the-lines"],
+)
+def test_text_on_a_line_across_a_level_row_bends_the_level_line(
+    smoke_root: Path, labeled: bool, after: str, level: bool
+) -> None:
+    # The S17 run in Work: dot sets a line's text on the middle row it crosses, so the app
+    # servers' labeled lines to their databases put their text on a band of the two VPCs between
+    # those rows, and the peering bends around it. The guide keeps such a band off that row.
+    model = load("compass-valid.json")
+    if labeled:
+        for item in model["relationships"]:
+            if item["id"] in ("app-a-db-a", "app-b-db-b"):
+                item |= {"label": "Orders", "protocol": "TCP", "purpose": "Database access"}
+    bands = model["views"][0]["bands"]
+    place = next(i for i, band in enumerate(bands) if band["id"] == after) + 1
+    bands.insert(place, {"id": "vpcs", "entity_refs": ["vpc-a", "vpc-b"]})
+    result = render(model, smoke_root, view="compass")
+    assert result.rendered, codes(result)
+    ys = _path_ys(by_id(svg_root(result))["edge:peering-ab"])
+    assert (max(ys) - min(ys) < 1) == level, ys
+
+
 def test_holding_lines_go_only_where_no_line_ranks_a_node() -> None:
     # Review F3: the VPN's own line already ranks it above the router, so it needs no line to
     # south, and none ranks it below anything, so it needs one from north.
