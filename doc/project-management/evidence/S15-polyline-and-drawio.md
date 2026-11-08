@@ -58,4 +58,6 @@ The core moves to `0.6.0a1` in `pyproject.toml`, `__init__.py` and `uv.lock`, an
 - The Work plugin builds as `0.1.0-alpha.1+8c1b507a536f` twice, with the same ZIP, SHA-256 `3947a4cf42bddd452f917881c9a4c7aca647bb2d94d8947661114e5d87387ecf`, 99 files and lock `bf76c5683b8799d1`. `scripts/work_host_check.py` passes 35 checks through the host's own engine, on `codex-cli 0.167.0-alpha.3.2`, all seven files among them.
 - The local gate passes 16 of 17 lanes with 2,074 tests and none skipped, on the uncommitted change over `60f4904`. `release-audit` fails only `test_the_reproduction_proof_passes_and_still_describes_this_source`, because the core reproduction proof describes the source before this change, and it can be made again only from a commit, as for D-044.
 
-Not done when this was written: the reproduction proof, which follows in the next commit because it clones this one, an independent review, the owner's review of the 15 changed views, an install, and a run in Work.
+- The core reproduces from a new clone of `51ce3e7` in a clean runtime. It builds the wheel with SHA-256 `d5fddbc5099e7fddb35af0443db27f20cdbfa2e983d0cfaafb7b3ef6fa285331`, the same as the local build, and all 26 reference views match their baselines by both routes, with no mismatch. With that [proof](S10-core-reproduction-proof.json), the `release-audit` lane passes its 67 tests, so the local gate's only failure is gone.
+
+Not done when this was written: an independent review, the owner's review of the 15 changed views, an install, and a run in Work.
