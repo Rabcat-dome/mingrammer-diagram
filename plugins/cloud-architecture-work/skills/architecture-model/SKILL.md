@@ -66,6 +66,8 @@ If a type returns `ICON_UNAVAILABLE`, it has no usable icon, and `render_model` 
 
 Start from the bundle's source: call `read_artifact` with its `bundle_id` and `file` `model.json`, or use `list_bundles` first if the bundle is not in this chat. Keep existing IDs, including those of unrelated resources and relationships, so diffs and future diagrams stay comparable. Change only what was asked, tell the user what changed, then validate and render again. A render never changes an earlier bundle, so the new `model.json` is the updated source, and the earlier bundle stays as it was.
 
+A request to change a diagram is a request to change its model, even when the user names `diagram.drawio` or asks for an updated draw.io file. Make the change in the model, render again, and hand over the new bundle as step 8 says: the new picture and all seven files, its `diagram.drawio` among them. Never edit, patch, merge or restyle a `diagram.drawio`, and never copy cells from one into another, even to keep the earlier layout: a file you write matches no picture in any bundle and skips the plugin's checks. The renderer lays the view out again, so boxes can move. Tell the user so, and that changes they made by hand in draw.io are not in the new copy and need making again there.
+
 ## Data the model must not contain
 
 Do not place secret values, credentials or real tokens anywhere in the model. A Kubernetes `Secret` resource is a reference marker with no properties; the name is fine, the payload is not.

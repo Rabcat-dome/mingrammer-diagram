@@ -228,6 +228,26 @@ def test_skill_says_lenient_mode_bypasses_no_other_error() -> None:
     assert "It bypasses no other error" in skill and "bypasses every" not in skill
 
 
+def test_skill_redraws_a_changed_diagram_instead_of_writing_a_drawio_copy() -> None:
+    skill = (SKILL / "SKILL.md").read_text()
+    # In Work on 2026-11-08, a chat asked to open the draw.io file and add a resource drew the
+    # change, then handed over its own copy: the earlier file with the new cells placed by hand.
+    section = skill.split("## Editing an existing model", 1)[1].split("\n## ", 1)[0]
+    rules = [
+        line for line in section.splitlines() if line.startswith("A request to change a diagram")
+    ]
+    assert len(rules) == 1, "the edit section needs one paragraph that starts 'A request to change'"
+    for clause in (
+        "is a request to change its model, even when the user names `diagram.drawio`",
+        "validate and render again, and report the new bundle as step 8 says",
+        "Never edit, patch, merge or restyle a `diagram.drawio`",
+        "never copy cells from one into another, even to keep the earlier layout",
+        "so boxes can move. Tell the user so",
+        "changes they made by hand in draw.io are not in the new copy",
+    ):
+        assert clause in rules[0], clause
+
+
 def test_skill_keeps_the_images_as_the_plugin_wrote_them() -> None:
     # In Work on 2026-11-07, a chat asked for Thai labels deleted the type names from
     # diagram.svg, translated its property lines and redrew the PNG outside the renderer.

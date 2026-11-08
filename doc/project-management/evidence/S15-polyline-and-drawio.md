@@ -92,3 +92,30 @@ On the owner's word on 2026-11-08, translated from Thai, "Go ahead as you recomm
 - Each of 26 sabotage edits failed a named test: the 16 before, and one for each new check, the legend and the kept ends.
 - The Work plugin builds as `0.1.0-alpha.1+a0465bcceca9` twice, with the same ZIP, SHA-256 `33597136bffb5f426e8959d31fd23e682c9770961d850f891c93d944ccc39e0f`, 99 files and lock `bf76c5683b8799d1`. The host check passes 35 checks. The local gate passes 16 of 17 lanes with 2,085 tests and none skipped, after one test's variables were renamed for `types`. The fixes change `src`, so `release-audit` waits for a new reproduction proof, which follows the commit.
 - The core reproduces from a new clone of `192d554`: the same wheel, SHA-256 `5c9eaa6795ffa01b8c3b23b42c03e4e90b836995b0b1c45593d8c0e899b2f71d`, and all 26 reference views match their baselines by both routes, with no mismatch. With that [proof](S10-core-reproduction-proof.json), `release-audit` passes its 67 tests.
+
+## The owner's review
+
+- Claude Opus 5.5 sent the owner a page with the 15 changed views, each beside its curved version, and two draw.io copies: the AWS overview, and an AKS detail view with Thai labels.
+- The owner passed the 15 views on 2026-11-08 with "Pass, merge, install" (D-050), so their baselines stand as accepted. The other 11 reference views did not change. The two draw.io copies were for the owner to try, and the pass does not say how draw.io draws other views.
+
+## Install
+
+- `main` fast-forwarded from `60f4904` to `94b426c`, and actual CI [run 42461308175](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/42461308175) passed there. The tag does not move.
+- The Work plugin built from `main` at `94b426c` is `0.1.0-alpha.1+a0465bcceca9`, with core `0.6.0a1`. Two builds gave the same ZIP, SHA-256 `33597136bffb5f426e8959d31fd23e682c9770961d850f891c93d944ccc39e0f`, the one recorded after the fixes, and the host check passed 35 checks in a throwaway profile on `codex-cli 0.167.0-alpha.3.2`. It is installed with `codex plugin add`, replacing `f6b9f6134e60`.
+- `uv.lock` changed, so the plugin's `runtime.py setup` built the runtime again. It is `ready` on lock `bf76c5683b8799d1`, with Python 3.13.7, and its render probe passes.
+- The Claude plugin moved from `9b77c56ee880` to `94b426c6aed7`.
+- Through the installed Work server, `core-valid.json` drawn as its overview gives a bundle of seven files with `diagram.drawio` among them. `read_artifact` returns that copy as `application/vnd.jgraph.mxfile`, the same bytes as on disk, and the manifest is `1.2.0` with package `0.6.0a1`. The bundle stays in the owner's Work folder as `demo--overview--73956c34167d561c`.
+- The installed Claude plugin's `render` of the Kubernetes example gives the same seven files. The draw.io desktop app exports its `diagram.drawio` with the same boxes, icons, line and labels as its PNG, in draw.io's own font.
+- The ChatGPT app and any open Claude Code session need a restart to load these. No prompt has run in Work on this version.
+
+## The run in Work
+
+The owner ran four prompts in one new Work chat on `0.1.0-alpha.1+a0465bcceca9`. [The record](S09-Work-validation.md#the-drawio-copy-in-work) has the details. Prompts 2 and 4 passed: the chat linked all seven files with `diagram.drawio` among them, said it opens in draw.io, and handed over each file unchanged. Each bundle's `diagram.drawio`, exported by the draw.io desktop app, matches its PNG. In prompt 3, asked to open the draw.io file, add Cloud Monitoring and give back the updated file, the chat drew the change through the model, but then handed over a draw.io file it had written itself, with the earlier layout and the new cells placed by hand. In prompt 1 it chose the S04 plugin, so prompt 2 is what showed this version.
+
+## The draw.io edit rule
+
+On the owner's word on 2026-11-08, "Yes, fix the skill" (D-051), Claude Opus 5.5 added one paragraph to the section on editing in both skills. A request to change a diagram is a request to change its model, even when the user names `diagram.drawio` or asks for an updated draw.io file. The chat changes the model, renders again and hands over the new bundle as step 8 says. It never edits, patches, merges or restyles a `diagram.drawio`, or copies cells from one into another, even to keep the earlier layout, because such a file matches no picture and skips the plugin's checks. It tells the user that boxes can move, and that changes made by hand in draw.io are not in the new copy.
+
+- A test in each plugin's lane requires that paragraph in the section on editing, with each of its clauses. Each of 7 sabotage edits failed it by name: the paragraph removed from either skill, moved out of the section, the ban softened, an exception for the layout, no word on moved boxes, and the updated draw.io file in place of the new bundle.
+- `src` does not change, so the wheel and the core proof stand. The Work plugin builds as `0.1.0-alpha.1+4ce48c4beb7c` twice, with the same ZIP, SHA-256 `8a616d03ffc779f4d53824aba3692c81585639698df3519ebde26920326f24a1`, 99 files and lock `bf76c5683b8799d1`, and the host check passes 35 checks. The local gate passes 17 lanes with 2,087 tests and none skipped.
+- Neither installed plugin has this paragraph. Prompt 3 runs again once the fixed Work plugin is installed.

@@ -18,6 +18,36 @@ The final version is `0.1.0-alpha.1+88ce2c0cd0dc`, which adds [D-030's detail li
 | 4 | `Validate this model and tell me what is wrong, without fixing it: {"schema_version":"1.0.0","metadata":{"id":"x","title":"X","environment":"prod","assumptions":[]},"resources":[{"id":"app","name":"App","provider":"aws","service_type":"aws.compute.ec2","taxonomy":"compute.vm"}],"relationships":[{"id":"r1","source_ref":"app","target_ref":"ghost","kind":"traffic"}],"views":[{"id":"v","title":"V","entity_refs":["app"]}]}` | Invalid input: expects `REFERENCE_MISSING` and no image |
 | 5 | Do not paste this row. Paste a Thai sentence asking for a GKE architecture with a Deployment, Service, Ingress and PVC, with both an overview view and a detail view, and with Thai names on the labels. The session that started this check gives the exact sentence, because repository documents stay English. Pasting this row made a chat draft a sentence and call no tool | Kubernetes overview and detail, Thai labels, same IDs in both views |
 
+## The draw.io copy in Work
+
+Run on 2026-11-08 (Asia/Bangkok) on `0.1.0-alpha.1+a0465bcceca9`, with core `0.6.0a1`, built from `94b426c`, on the first Mac, in one new Work chat outside this repository, after the owner restarted the ChatGPT app. The runtime was `ready`, so `setup_runtime` did not run. The session record, started at 15:34:54, has originator `codex_work_desktop` and GPT-6.1 Sol / High, with approval policy `never` and `danger-full-access`, on `codex-cli 0.167.0-alpha.3.2`. A Claude Opus 5.5 session wrote prompts 2 to 4 for [D-048 and D-049](S15-polyline-and-drawio.md). Prompt 2 names neither draw.io nor the number of files.
+
+| # | Prompt | What it checks |
+|---|---|---|
+| 1 | The table's prompt 1 | Version and runtime |
+| 2 | `Use Cloud Architecture Diagrams to draw a GCP web application: a global external Application Load Balancer in front of two Compute Engine instances in one subnet of a VPC. Both instances read and write a Cloud SQL database and read images from a Cloud Storage bucket. Show me the picture and give me all the files.` | All seven files, `diagram.drawio` among them, said to open in draw.io without being asked |
+| 3 | `Open that draw.io file, add Cloud Monitoring that watches both instances, and give me the updated draw.io file.` | The change goes through the model and a new render, and the new bundle's `diagram.drawio` is handed over unchanged |
+| 4 | A Thai sentence, translated here: "Use Cloud Architecture Diagrams to draw a web architecture on Huawei Cloud: an ELB in front of two ECS in the same subnet of a VPC, and both read and write an RDS database. Thai names on every label. Show the picture, and give me a file I can edit further in draw.io." | Thai labels and Huawei icons in the draw.io copy, handed over unchanged |
+
+The rest was checked from the session record and the files.
+
+| Check | Result |
+|---|---|
+| 1. Install and runtime | Not shown by this prompt. The chat chose the S04 plugin, `0.1.0-alpha.3`: it read that plugin's skill, called its runtime check, rendered its three-node sample and reported that version. It did not run S04's setup, and S04's state file still has its time from 10:05. In prompt 2, `get_capabilities` reported this version and core `0.6.0a1`, with the runtime `ready`, rendering available and no blockers |
+| 2. GCP, all files | Passed. One model, with `environment` `"conceptual"`, passed strict with no diagnostics, and the chat rendered it twice, the second time to retitle the view, turn off the legend and rename four resources. It linked all seven files of the final bundle under "All seven files", `diagram.drawio` as "Editable diagram: Open in draw.io", without being asked. All seven copies match the bundle byte for byte |
+| 3. Editing the draw.io file | Failed. The chat added Cloud Monitoring and two `observability` relationships to the model, which passed strict, and rendered a new bundle. It then wrote a draw.io file of its own: the earlier `diagram.drawio` with the new resource and lines copied in from the new bundle, the resource placed by hand, both lines without their bends, in another colour, dash pattern and width, with set end points. It handed over that file, `gcp-web-application-monitoring.drawio`, saying it had preserved the existing layout, and neither showed the new picture nor linked the new bundle's files. The file matches no PNG or SVG in any bundle, and six of its style keys are ones the plugin's check refuses |
+| 4. Huawei with Thai labels | Passed. One model, with `environment` in Thai, passed strict with the one `ASSET_PRIVATE_USE_ONLY` warning, and the chat rendered it twice, the second time to rename the subnet. It linked the bundle's `diagram.drawio` first, after opening it in draw.io to check, then the other six files. It said in Thai which text stays in English, and that the Huawei icons are for private use only. All seven copies match the bundle byte for byte |
+
+Other things seen in the session record and the files:
+
+- The draw.io desktop app exported each bundle's `diagram.drawio` with the same groups, icons, lines with their bends, and labels as its PNG, in draw.io's own font: the GCP view of prompt 2, the GCP view with Cloud Monitoring of prompt 3, and the Huawei view, whose Thai labels and two notice lines are plain text.
+- Prompts 2 to 4 searched the web for Google Cloud and Huawei Cloud documents. The chat read no memory file.
+- No `busy` answer and no `RUNTIME_INSTALLING` appeared.
+
+Rendering the three final models again from `main` at `94b426c` gives the same `diagram.svg`, `diagram.png`, `diagram.drawio`, `model.json`, `view.json` and `diagnostics.json`, and the manifests differ only in `bundle_id`. Bundles under `~/Documents/CloudArchitectureDiagrams/work/`: GCP `gcp-web-application--overview--3e40a3a50e7b3090`, after `--bcf477505f8217ca`, the GCP view with Cloud Monitoring `--8b38b7b00330c32c`, and Huawei `huawei-web-application--overview--4f6453d93ea06e84`, after `--630ad24a9d8db327`. The bundle `demo--overview--73956c34167d561c` is from the install check.
+
+The owner chose to fix the skill rather than pass the run (D-051). See [the draw.io edit rule](S15-polyline-and-drawio.md#the-drawio-edit-rule). Prompt 3 runs again on the fixed plugin.
+
 ## Naming what a view leaves out in Work
 
 Run on 2026-11-08 (Asia/Bangkok) on `0.1.0-alpha.1+f6b9f6134e60`, with core `0.5.0a3`, built from `9b77c56`, on the first Mac, in one new Work chat outside this repository, after the owner restarted the ChatGPT app. The runtime was `ready`, so `setup_runtime` did not run. The session record, started at 10:03:57, has originator `codex_work_desktop` and GPT-6.1 Sol / High, with approval policy `never` and `danger-full-access`, on `codex-cli 0.167.0-alpha.3.2`. A Claude Opus 5.5 session wrote prompts 2 to 4 for [D-046](S09-exclusion-disclosure.md), and none of them asks the chat what a view leaves out. Prompt 2's model was first validated, and its overview rendered, through both installed plugins, and the installed Work server's `disclose` for it is the expected answer.
