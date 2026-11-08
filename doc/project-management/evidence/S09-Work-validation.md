@@ -18,6 +18,32 @@ The final version is `0.1.0-alpha.1+88ce2c0cd0dc`, which adds [D-030's detail li
 | 4 | `Validate this model and tell me what is wrong, without fixing it: {"schema_version":"1.0.0","metadata":{"id":"x","title":"X","environment":"prod","assumptions":[]},"resources":[{"id":"app","name":"App","provider":"aws","service_type":"aws.compute.ec2","taxonomy":"compute.vm"}],"relationships":[{"id":"r1","source_ref":"app","target_ref":"ghost","kind":"traffic"}],"views":[{"id":"v","title":"V","entity_refs":["app"]}]}` | Invalid input: expects `REFERENCE_MISSING` and no image |
 | 5 | Do not paste this row. Paste a Thai sentence asking for a GKE architecture with a Deployment, Service, Ingress and PVC, with both an overview view and a detail view, and with Thai names on the labels. The session that started this check gives the exact sentence, because repository documents stay English. Pasting this row made a chat draft a sentence and call no tool | Kubernetes overview and detail, Thai labels, same IDs in both views |
 
+## The draw.io edit rule in Work
+
+Run on 2026-11-08 (Asia/Bangkok) on `0.1.0-alpha.1+4ce48c4beb7c`, with core `0.6.0a1`, built from `ef792fc`, on the first Mac, in one new Work chat outside this repository, after the owner restarted the ChatGPT app. The runtime was `ready`, so `setup_runtime` did not run. The session record, started at 16:23:30, has originator `codex_work_desktop` and GPT-6.1 Sol / High, with approval policy `never` and `danger-full-access`, on `codex-cli 0.167.0-alpha.3.2`. It runs prompt 3 of [the run before](#the-drawio-copy-in-work) again on [D-051's rule](S15-polyline-and-drawio.md#the-drawio-edit-rule), after prompt 2 to give it a drawing. Prompt 1 now names the plugin, because the run before reached the S04 plugin.
+
+| # | Prompt | What it checks |
+|---|---|---|
+| 1 | `Use the Cloud Architecture Diagrams Work plugin, cloud-architecture-work. Check that its runtime is ready, set it up if it is not, and tell me the plugin version, the runtime state, whether rendering is available and any blockers.` | Version and runtime |
+| 2 | Prompt 2 of the run before | All seven files, and a drawing for prompt 3 |
+| 3 | Prompt 3 of the run before | The change goes through the model and a new render, and the new bundle's `diagram.drawio` is handed over unchanged |
+
+The owner passed the run (D-052). The rest was checked from the session record and the files.
+
+| Check | Result |
+|---|---|
+| 1. Install and runtime | Passed. The chat used this plugin and did not touch the S04 plugin. It reported this version and core `0.6.0a1`, with the runtime `ready`, rendering available and no blockers, and said the saved render probe had passed on `0.1.0-alpha.1+a0465bcceca9`, which the runtime's `probed_with` shows |
+| 2. GCP, all files | Passed. One model, with `environment` `"design"`, passed strict with no diagnostics, and the chat rendered it three times to settle the title, direction and names. It copied the final bundle's seven files with a checksum check and linked all seven, `diagram.drawio` as "Editable draw.io diagram". All seven copies match the bundle byte for byte |
+| 3. Editing the draw.io file | Passed, with two gaps. The chat read the bundle's `model.json`, added Cloud Monitoring and two `observability` relationships with every earlier ID kept, validated it and rendered a new bundle. It checked that the model changed only by those additions, then copied the new bundle's `diagram.drawio` unchanged as `diagram-with-cloud-monitoring.drawio`, and said that the export recalculated the layout. It wrote no draw.io file of its own. It did not show the new picture or link the new bundle's other six files, and did not say that changes made by hand in draw.io are not carried over, which D-051's paragraph asks for |
+
+Other things seen in the session record and the files:
+
+- The draw.io desktop app exported the new bundle's `diagram.drawio` with the same groups, icons, lines with their bends, and labels as its PNG, in draw.io's own font.
+- The chat made no draw.io export and no other file of its own. Prompt 2 searched the web once for Google Cloud documents. The chat read no memory file.
+- No `busy` answer and no `RUNTIME_INSTALLING` appeared.
+
+Rendering both final models again from `main` at `ef792fc` gives the same `diagram.svg`, `diagram.png`, `diagram.drawio`, `model.json`, `view.json` and `diagnostics.json`, and the manifests differ only in `bundle_id`. Bundles under `~/Documents/CloudArchitectureDiagrams/work/`: GCP `gcp-web-application--overview--619ad9411520f66b`, after `--c35fc31989af8fa9` and `--0be7b0e606e6d381`, and the GCP view with Cloud Monitoring `--1289eb39d24640cf`. This run covers one Mac and one model, under full access, with a runtime that was already set up.
+
 ## The draw.io copy in Work
 
 Run on 2026-11-08 (Asia/Bangkok) on `0.1.0-alpha.1+a0465bcceca9`, with core `0.6.0a1`, built from `94b426c`, on the first Mac, in one new Work chat outside this repository, after the owner restarted the ChatGPT app. The runtime was `ready`, so `setup_runtime` did not run. The session record, started at 15:34:54, has originator `codex_work_desktop` and GPT-6.1 Sol / High, with approval policy `never` and `danger-full-access`, on `codex-cli 0.167.0-alpha.3.2`. A Claude Opus 5.5 session wrote prompts 2 to 4 for [D-048 and D-049](S15-polyline-and-drawio.md). Prompt 2 names neither draw.io nor the number of files.
@@ -46,7 +72,7 @@ Other things seen in the session record and the files:
 
 Rendering the three final models again from `main` at `94b426c` gives the same `diagram.svg`, `diagram.png`, `diagram.drawio`, `model.json`, `view.json` and `diagnostics.json`, and the manifests differ only in `bundle_id`. Bundles under `~/Documents/CloudArchitectureDiagrams/work/`: GCP `gcp-web-application--overview--3e40a3a50e7b3090`, after `--bcf477505f8217ca`, the GCP view with Cloud Monitoring `--8b38b7b00330c32c`, and Huawei `huawei-web-application--overview--4f6453d93ea06e84`, after `--630ad24a9d8db327`. The bundle `demo--overview--73956c34167d561c` is from the install check.
 
-The owner chose to fix the skill rather than pass the run (D-051). See [the draw.io edit rule](S15-polyline-and-drawio.md#the-drawio-edit-rule). Prompt 3 runs again on the fixed plugin.
+The owner chose to fix the skill rather than pass the run (D-051). See [the draw.io edit rule](S15-polyline-and-drawio.md#the-drawio-edit-rule). Prompt 3 ran again on the fixed plugin, in [the next run](#the-drawio-edit-rule-in-work), which the owner passed with this one (D-052).
 
 ## Naming what a view leaves out in Work
 
