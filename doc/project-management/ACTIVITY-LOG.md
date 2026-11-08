@@ -825,3 +825,10 @@ Final closure validation: 24 English Markdown files, 15 JSON files and 138 local
 - In the chat's first Azure render, the peering line between two VNets on a band of their own rose 31 pt, because the text of lines crossing that row sat between its ends. The chat moved the band and drew it level.
 - The owner passed the run and asked for a guide rule, with "Pass, add guide rule" (D-057). The shared guide and the core contract now say to keep other lines' text off a level line's row, and a new render test with three cases holds the bend on the compass fixture. The local gate passes all 17 lanes with 2,386 tests. The Work plugin becomes `0.1.0-alpha.1+f496c83cba88`, two builds gave the same ZIP and the host check passes 35 checks. Neither plugin has the rule installed.
 - On the owner's word, "Commit, merge, install", these changes and records are committed on `codex/level-row-text`, and `main` fast-forwards to them once they pass CI. The tag does not move.
+
+## 2026-11-09 — Both plugins installed from `20dc083`
+
+- CI passed at `20dc083` on `codex/level-row-text`, and `main` fast-forwarded from `946ec7a` to it, where actual CI [run 42506280335](https://github.com/Rabcat-dome/mingrammer-diagram/actions/runs/42506280335) passed too. The tag does not move.
+- Claude Opus 5.5 built the Work plugin from `main` at `20dc083` as `0.1.0-alpha.1+f496c83cba88`, with the same ZIP from two builds, SHA-256 `9b2eab560ac39b1b02829b75db1772b0203d35222ad6e7eadf9e45cfb2006258`, and the host check passed 35 checks. It is installed with `codex plugin add`, replacing `fee9566f6d58`, and the runtime stays `ready`, because `uv.lock` did not change.
+- The Claude plugin moved from `60e72f8e7cf6` to `20dc08316d32`. Both installed guides hold D-057's rule. See [the install](evidence/S17-compass-bands.md#install-of-the-guide-rule). The ChatGPT app and any open Claude Code session need a restart to load these. No prompt has run in Work on this version.
+- These records go on `codex/install-20dc083`, and `main` fast-forwards to them once they pass CI.
