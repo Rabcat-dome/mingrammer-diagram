@@ -29,3 +29,21 @@ FR-025 asks a view that selects part of the model to disclose the IDs it leaves 
 - The local gate passes 17 lanes with 1,962 tests and none skipped, on the uncommitted change over `2938ad2`.
 
 Not done when this was written: an independent review, an install, and a run in Work.
+
+## Review
+
+Date: 2026-11-08 (Asia/Bangkok) | Range: `2938ad2..581cea0` | Reviewer: Claude Fable 5.1 (`claude-fable-5-1`), at Medium for a bounded change under D-021, in a fresh agent working from its own clone | Implementer: Claude Opus 5.5, so reviewer and implementer share a vendor
+
+**Disposition: approved, with one P3 finding in the tests and no P1 or P2.** The reviewer drove the server through the tests' stdio harness on `/usr/bin/python3` 3.9.6. Lenient mode with an unknown type and a partial view gave `disclose` with the item's name. `validate_model` with `view` still listed every partial view in the model's view order. `render_model` with no `view` listed only the first view, and a render from `bundle_id` took the names from the bundle's `model.json`. A relationship with a boundary at one end and no label was named by both ends, with no `label` key. A whole view, a failed call and a call with no partial view answered as before. It found that an entity with no name or a relationship with an unresolved end cannot reach this code, because the core rejects them first. With 400 excluded resources the answer was 46 KB and still `ok`. A model name written as an instruction is carried as data inside `left_out`, next to the same text already in `result`, which it noted without counting as a finding. Both skills' Report steps carry the same four clauses, and only the Work skill names `disclose`. Its own clone passed the full gate, 17 lanes with 1,962 tests and none skipped, and the docs check. Two builds gave `0.1.0-alpha.1+f6b9f6134e60` with the recorded ZIP SHA-256 and lock. Of its six sabotage edits, five failed a named test, and the sixth is F1.
+
+| ID | Severity | Where | Finding | Fix direction |
+|---|---|---|---|---|
+| F1 | P3 | `tests/test_work_plugin.py`, the D-046 tests | No test pins the names of scopes and boundaries. Every D-046 server test uses `kubernetes-valid.json`, which has neither, so cutting the name lookup in `_disclosure` to resources alone passes all of them. That would bring back the case that led here, zones like `az-a` and `az-b`, as bare IDs | Add a check on `core-valid.json` with its overview cut to `app`, expecting the project scope and both boundaries by name |
+
+Not checked by the reviewer: `scripts/work_host_check.py` in the Work host's engine, the implementer's 15 sabotage edits, which the records do not list, the branch for a preview left out of a PNG over 5 MiB, which it read but did not run, and CI run 42435537358, which it took as recorded.
+
+The implementer confirmed F1 by repeating the reviewer's edit in the reviewer's clone: the four D-046 tests in `package-contract` passed with names taken from resources only. It is not fixed when this section was written.
+
+## Fixes after the review
+
+On the owner's word on 2026-11-08, "Fix F1", Claude Opus 5.5 fixed it. `test_a_partial_view_names_what_it_leaves_out` now also cuts the overview of `core-valid.json` to `app` and expects the project scope and both boundaries, each by its name and ID. Each of three sabotage edits fails that test: names taken from resources only, from boundaries and resources, and from scopes and resources. Only a test changed, so the server, the skills and the Work plugin's version `0.1.0-alpha.1+f6b9f6134e60` stay as they were. The local gate passes 17 lanes with 1,962 tests and none skipped, because the check went into an existing test.

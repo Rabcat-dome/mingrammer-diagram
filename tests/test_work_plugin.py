@@ -1416,6 +1416,17 @@ def test_a_partial_view_names_what_it_leaves_out(client: Client) -> None:
     del model["relationships"][0]["label"]
     unlabeled = client.body("validate_model", model=model)["disclose"]["views"][0]["left_out"]
     assert unlabeled == [{"id": "traffic", "relationship": "ingress -> service"}]
+    # Scopes and boundaries are named too: the zones the D-045 chat left unnamed are boundaries,
+    # and the Kubernetes example above has neither.
+    core = fixture("core-valid.json")
+    core["views"][0]["entity_refs"] = ["app"]
+    [overview] = client.body("validate_model", model=core)["disclose"]["views"]
+    assert overview["view"] == "overview"
+    assert sorted(overview["left_out"], key=lambda item: item["id"]) == [
+        {"id": "project", "name": "Application project"},
+        {"id": "subnet", "name": "Application subnet"},
+        {"id": "vpc", "name": "Shared VPC"},
+    ]
 
 
 def test_a_whole_view_or_a_failure_discloses_nothing(client: Client) -> None:
