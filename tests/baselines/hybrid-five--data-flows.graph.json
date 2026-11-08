@@ -1,4 +1,5 @@
 {
+ "bands": [],
  "direction": "LR",
  "draft": false,
  "edges": [
@@ -470,6 +471,7 @@
   "replication",
   "traffic"
  ],
+ "levels": [],
  "nodes": [
   {
    "drawing": "icon",

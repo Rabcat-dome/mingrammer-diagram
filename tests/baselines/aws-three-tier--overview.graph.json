@@ -1,4 +1,5 @@
 {
+ "bands": [],
  "direction": "LR",
  "draft": false,
  "edges": [
@@ -409,6 +410,7 @@
  "legend": [
   "traffic"
  ],
+ "levels": [],
  "nodes": [
   {
    "drawing": "icon",

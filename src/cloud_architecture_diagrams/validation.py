@@ -19,6 +19,7 @@ from .models import (
     Entity,
     Resource,
     Scope,
+    View,
 )
 from .semantics import check
 
@@ -178,6 +179,30 @@ def _error(code: str, field: str, entity_id: str | None = None) -> Diagnostic:
             "A selected relationship has an excluded endpoint.",
             "Select both endpoints or remove the relationship from this view.",
         ),
+        "VIEW_BAND_DIRECTION": (
+            "Bands and east-west lines run north to south, which needs a top-down view.",
+            "Set this view's direction to TB, or remove its bands and east_west_refs.",
+        ),
+        "VIEW_BAND_ID_DUPLICATE": (
+            "A view repeats a band ID.",
+            "Give each band in this view its own ID.",
+        ),
+        "VIEW_BAND_ENTITY_EXCLUDED": (
+            "A band names an entity this view does not select.",
+            "Add the entity to the view's entity_refs or remove it from the band.",
+        ),
+        "VIEW_BAND_CONFLICT": (
+            "An entity is placed in two bands.",
+            "Keep each entity in one band.",
+        ),
+        "VIEW_EAST_WEST_UNSELECTED": (
+            "An east-west line names a relationship this view does not select.",
+            "Add the relationship to the view's relationship_refs or remove it from east_west_refs.",
+        ),
+        "VIEW_EAST_WEST_CONFLICT": (
+            "An east-west line joins two bands, so it cannot be drawn level.",
+            "Put both ends in one band, or remove the relationship from east_west_refs.",
+        ),
     }
     message, remedy = messages[code]
     return Diagnostic(
@@ -206,6 +231,72 @@ def _cycles(graph: dict[str, set[str]]) -> bool:
             if indegree[target] == 0:
                 ready.append(target)
     return visited != len(indegree)
+
+
+class Levels:
+    """D-055: which entities a view draws on one level, as a union of equal-level sets.
+
+    A band fixes its level's place from north to south. An east-west line puts both its ends on one
+    level, which joins a band when either end is in one, and otherwise stands alone.
+    """
+
+    def __init__(self) -> None:
+        self.parent: dict[str, str] = {}
+        self.band: dict[str, int] = {}
+
+    def find(self, identifier: str) -> str:
+        self.parent.setdefault(identifier, identifier)
+        while self.parent[identifier] != identifier:
+            self.parent[identifier] = self.parent[self.parent[identifier]]
+            identifier = self.parent[identifier]
+        return identifier
+
+    def place(self, identifier: str, band: int) -> bool:
+        root = self.find(identifier)
+        if self.band.setdefault(root, band) != band:
+            return False
+        return True
+
+    def join(self, first: str, second: str) -> bool:
+        one, two = self.find(first), self.find(second)
+        if one == two:
+            return True
+        bands = {self.band[root] for root in (one, two) if root in self.band}
+        if len(bands) > 1:
+            return False
+        self.parent[two] = one
+        self.band.pop(two, None)
+        if bands:
+            self.band[one] = bands.pop()
+        return True
+
+    def rows(self, view: View) -> tuple[tuple[tuple[str, ...], ...], tuple[tuple[str, ...], ...]]:
+        """Each band's members north to south, then each other level, in the view's own order."""
+        named = [identifier for band in view.bands for identifier in band.entity_refs]
+        order = list(dict.fromkeys([*named, *view.entity_refs]))
+        bands: list[list[str]] = [[] for _ in view.bands]
+        levels: dict[str, list[str]] = {}
+        for identifier in order:
+            if identifier not in self.parent:
+                continue
+            root = self.find(identifier)
+            if root in self.band:
+                bands[self.band[root]].append(identifier)
+            else:
+                levels.setdefault(root, []).append(identifier)
+        others = tuple(tuple(level) for level in levels.values())
+        return tuple(tuple(band) for band in bands), others
+
+    @classmethod
+    def of(cls, view: View, ends: dict[str, tuple[str, str]]) -> "Levels":
+        """Assumes a valid view, as the renderer gets one: the first band or line wins."""
+        levels = cls()
+        for index, band in enumerate(view.bands):
+            for identifier in band.entity_refs:
+                levels.place(identifier, index)
+        for identifier in view.east_west_refs:
+            levels.join(*ends[identifier])
+        return levels
 
 
 class Checker:
@@ -451,6 +542,44 @@ class Checker:
                     self.error("VIEW_RELATIONSHIP_MISSING", path, view.id)
                 elif not {edge.source_ref, edge.target_ref} <= set(view.entity_refs):
                     self.error("VIEW_ENDPOINT_EXCLUDED", path, view.id)
+            self.bands(i, view)
+
+    def bands(self, i: int, view: View) -> None:
+        """D-055: a band is one level and an east-west line stays level, so none may join two."""
+        path = f"/views/{i}"
+        if (view.bands or view.east_west_refs) and view.direction != "TB":
+            self.error("VIEW_BAND_DIRECTION", path + "/direction", view.id)
+        selected = set(view.entity_refs)
+        levels = Levels()
+        seen: set[str] = set()
+        for b, band in enumerate(view.bands):
+            field = f"{path}/bands/{b}"
+            if band.id in seen:
+                self.error("VIEW_BAND_ID_DUPLICATE", field + "/id", view.id)
+            seen.add(band.id)
+            if len(band.entity_refs) != len(set(band.entity_refs)):
+                self.error("REFERENCE_DUPLICATE", field + "/entity_refs", view.id)
+            for n, identifier in enumerate(band.entity_refs):
+                item = f"{field}/entity_refs/{n}"
+                if identifier not in self.entities:
+                    self.error("REFERENCE_MISSING", item, view.id)
+                elif identifier not in selected:
+                    self.error("VIEW_BAND_ENTITY_EXCLUDED", item, view.id)
+                elif not levels.place(identifier, b):
+                    self.error("VIEW_BAND_CONFLICT", item, view.id)
+        if len(view.east_west_refs) != len(set(view.east_west_refs)):
+            self.error("REFERENCE_DUPLICATE", path + "/east_west_refs", view.id)
+        edges = {edge.id: edge for edge in self.model.relationships}
+        chosen = set(view.relationship_refs)
+        for n, identifier in enumerate(view.east_west_refs):
+            item = f"{path}/east_west_refs/{n}"
+            edge = edges.get(identifier)
+            if edge is None:
+                self.error("VIEW_RELATIONSHIP_MISSING", item, view.id)
+            elif identifier not in chosen:
+                self.error("VIEW_EAST_WEST_UNSELECTED", item, view.id)
+            elif not levels.join(edge.source_ref, edge.target_ref):
+                self.error("VIEW_EAST_WEST_CONFLICT", item, view.id)
 
 
 def validate_json(

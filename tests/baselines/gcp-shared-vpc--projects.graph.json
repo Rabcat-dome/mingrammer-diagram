@@ -1,4 +1,5 @@
 {
+ "bands": [],
  "direction": "TB",
  "draft": false,
  "edges": [
@@ -72,6 +73,7 @@
  "legend": [
   "attachment"
  ],
+ "levels": [],
  "nodes": [
   {
    "drawing": "labeled_box",

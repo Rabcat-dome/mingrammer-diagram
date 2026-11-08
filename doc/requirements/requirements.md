@@ -1,6 +1,6 @@
 # Cloud Architecture Diagram Plugin Requirements
 
-Document: CADP-REQ-001 | Revision: 0.18 | Updated: 2026-11-08
+Document: CADP-REQ-001 | Revision: 0.19 | Updated: 2026-11-08
 
 Status: The baseline of the private personal release `v0.1.0-alpha.1`, accepted under D-033. [The release record](../project-management/evidence/M6-release.md) says what the evidence covers.
 
@@ -138,6 +138,7 @@ The plugin is the installable product; its skill supplies instructions/reference
 | FR-065 | P0 | Keep the core independent of Work-specific APIs so a later Claude Code adapter reuses its model, catalogs, tests, and renderer. |
 | FR-066 | P0 | Distribute an identifiable, versioned plugin through a supported installation/enablement route. Demonstrate its complete local Work diagram workflow from two supported machines with independently installed runtimes; document any per-machine setup/authentication. A standalone skill folder or manual source checkout is not the final user deliverable. |
 | FR-067 | P1 | Selected by D-049. With every rendered view, publish an editable draw.io copy of the same picture: built from the checked layout without a second engine run, groups as containers that hold their contents, each relationship attached to its two ends, the verified icons only, and plain text only. Check the copy like the SVG before the bundle is published. |
+| FR-068 | P1 | Selected by D-055. Let a top-down view draw a north-south and east-west network picture: ordered bands from north to south, each one row of named entities, the first band the top row and the last the bottom one, and selected relationships drawn level, joining their ends to one row. Bands and level lines are layout only, take only IDs, and are refused when they contradict themselves, such as an entity in two bands or a level line joining two bands. A view without them keeps its layout. |
 
 ## 5. Canonical model and taxonomy
 
@@ -152,7 +153,7 @@ The following is the product contract outline. M1 implements the [executable cor
 | Kubernetes context | Cluster identity, namespace only for namespaced kinds, provider-specific node pool/group membership, workload ownership, declared scheduling/selection and typed dependency references |
 | Placement | Separate `scope_refs`, `location`, `network_attachments`, `security_boundaries`, `deployment_context` |
 | Relationships | ID, source/target references, kind, direction, optional protocol/label/security metadata |
-| Views | ID/title, selected entity/relationship IDs, grouping policy, direction, allowed style values |
+| Views | ID/title, selected entity/relationship IDs, grouping policy, direction, allowed style values, optional north-to-south bands and level east-west relationship IDs (FR-068) |
 
 Use one primary taxonomy ID per type. Preserve native provider/service identity; a shared taxonomy category never establishes functional equivalence. Presentation groups cannot override canonical references. Multi-network resources retain every attachment even when a view shows one visual placement.
 

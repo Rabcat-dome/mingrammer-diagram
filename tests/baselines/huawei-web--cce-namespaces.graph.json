@@ -1,4 +1,5 @@
 {
+ "bands": [],
  "direction": "TB",
  "draft": false,
  "edges": [
@@ -185,6 +186,7 @@
   "storage",
   "traffic"
  ],
+ "levels": [],
  "nodes": [
   {
    "drawing": "icon",

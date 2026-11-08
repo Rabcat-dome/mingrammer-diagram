@@ -1,0 +1,459 @@
+{
+ "schema_version": "1.0.0",
+ "metadata": {
+  "id": "compass-two-region",
+  "title": "Two-region web application with an on-premises link",
+  "environment": "test",
+  "assumptions": [
+   "Synthetic model for D-055 bands and east-west lines; nothing here describes deployed infrastructure."
+  ]
+ },
+ "scopes": [
+  {
+   "id": "aws-account",
+   "name": "AWS account",
+   "provider": "aws",
+   "kind": "account"
+  }
+ ],
+ "boundaries": [
+  {
+   "id": "region-a",
+   "name": "ap-southeast-1 (primary)",
+   "provider": "aws",
+   "kind": "region",
+   "scope_refs": [
+    "aws-account"
+   ]
+  },
+  {
+   "id": "az-a1",
+   "name": "ap-southeast-1a",
+   "provider": "aws",
+   "kind": "zone",
+   "parent_ref": "region-a"
+  },
+  {
+   "id": "az-a2",
+   "name": "ap-southeast-1b",
+   "provider": "aws",
+   "kind": "zone",
+   "parent_ref": "region-a"
+  },
+  {
+   "id": "vpc-a",
+   "name": "Primary VPC",
+   "provider": "aws",
+   "kind": "network",
+   "scope_refs": [
+    "aws-account"
+   ],
+   "parent_ref": "region-a"
+  },
+  {
+   "id": "subnet-a1",
+   "name": "Subnet A1",
+   "provider": "aws",
+   "kind": "subnet",
+   "scope_refs": [
+    "aws-account"
+   ],
+   "parent_ref": "vpc-a",
+   "relations": [
+    {
+     "kind": "located_in",
+     "target_ref": "az-a1"
+    }
+   ]
+  },
+  {
+   "id": "subnet-a2",
+   "name": "Subnet A2",
+   "provider": "aws",
+   "kind": "subnet",
+   "scope_refs": [
+    "aws-account"
+   ],
+   "parent_ref": "vpc-a",
+   "relations": [
+    {
+     "kind": "located_in",
+     "target_ref": "az-a2"
+    }
+   ]
+  },
+  {
+   "id": "region-b",
+   "name": "ap-southeast-3 (DR)",
+   "provider": "aws",
+   "kind": "region",
+   "scope_refs": [
+    "aws-account"
+   ]
+  },
+  {
+   "id": "az-b1",
+   "name": "ap-southeast-3a",
+   "provider": "aws",
+   "kind": "zone",
+   "parent_ref": "region-b"
+  },
+  {
+   "id": "vpc-b",
+   "name": "DR VPC",
+   "provider": "aws",
+   "kind": "network",
+   "scope_refs": [
+    "aws-account"
+   ],
+   "parent_ref": "region-b"
+  },
+  {
+   "id": "subnet-b1",
+   "name": "Subnet B1",
+   "provider": "aws",
+   "kind": "subnet",
+   "scope_refs": [
+    "aws-account"
+   ],
+   "parent_ref": "vpc-b",
+   "relations": [
+    {
+     "kind": "located_in",
+     "target_ref": "az-b1"
+    }
+   ]
+  },
+  {
+   "id": "onprem-site",
+   "name": "Head office data center",
+   "provider": "onprem",
+   "kind": "site"
+  }
+ ],
+ "resources": [
+  {
+   "id": "users",
+   "name": "Customers",
+   "provider": "external",
+   "service_type": "external.people.user",
+   "taxonomy": "external.entity"
+  },
+  {
+   "id": "alb-a",
+   "name": "Web load balancer",
+   "provider": "aws",
+   "service_type": "aws.network.application_load_balancer",
+   "taxonomy": "network.load_balancing",
+   "placement": {
+    "scope_refs": [
+     "aws-account"
+    ],
+    "location": {
+     "region_ref": "region-a"
+    },
+    "network_attachments": [
+     {
+      "network_ref": "vpc-a",
+      "subnet_refs": [
+       "subnet-a1",
+       "subnet-a2"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "app-a",
+   "name": "App server A",
+   "provider": "aws",
+   "service_type": "aws.compute.ec2",
+   "taxonomy": "compute.vm",
+   "placement": {
+    "scope_refs": [
+     "aws-account"
+    ],
+    "location": {
+     "region_ref": "region-a",
+     "zone_ref": "az-a1"
+    },
+    "network_attachments": [
+     {
+      "network_ref": "vpc-a",
+      "subnet_refs": [
+       "subnet-a1"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "db-a",
+   "name": "Orders database A",
+   "provider": "aws",
+   "service_type": "aws.database.rds",
+   "taxonomy": "data.relational",
+   "placement": {
+    "scope_refs": [
+     "aws-account"
+    ],
+    "location": {
+     "region_ref": "region-a",
+     "zone_ref": "az-a1"
+    },
+    "network_attachments": [
+     {
+      "network_ref": "vpc-a",
+      "subnet_refs": [
+       "subnet-a1"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "vpn-a",
+   "name": "Site-to-Site VPN",
+   "provider": "aws",
+   "service_type": "aws.network.site_to_site_vpn",
+   "taxonomy": "network.connectivity",
+   "placement": {
+    "scope_refs": [
+     "aws-account"
+    ],
+    "location": {
+     "region_ref": "region-a"
+    },
+    "network_attachments": [
+     {
+      "network_ref": "vpc-a"
+     }
+    ]
+   }
+  },
+  {
+   "id": "app-b",
+   "name": "App server B",
+   "provider": "aws",
+   "service_type": "aws.compute.ec2",
+   "taxonomy": "compute.vm",
+   "placement": {
+    "scope_refs": [
+     "aws-account"
+    ],
+    "location": {
+     "region_ref": "region-b",
+     "zone_ref": "az-b1"
+    },
+    "network_attachments": [
+     {
+      "network_ref": "vpc-b",
+      "subnet_refs": [
+       "subnet-b1"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "db-b",
+   "name": "Orders database B",
+   "provider": "aws",
+   "service_type": "aws.database.rds",
+   "taxonomy": "data.relational",
+   "placement": {
+    "scope_refs": [
+     "aws-account"
+    ],
+    "location": {
+     "region_ref": "region-b",
+     "zone_ref": "az-b1"
+    },
+    "network_attachments": [
+     {
+      "network_ref": "vpc-b",
+      "subnet_refs": [
+       "subnet-b1"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "onprem-router",
+   "name": "Edge router",
+   "provider": "onprem",
+   "service_type": "onprem.network.router",
+   "taxonomy": "network.routing",
+   "placement": {
+    "location": {
+     "site_ref": "onprem-site"
+    }
+   }
+  }
+ ],
+ "relationships": [
+  {
+   "id": "users-alb",
+   "source_ref": "users",
+   "target_ref": "alb-a",
+   "kind": "traffic",
+   "protocol": "HTTPS"
+  },
+  {
+   "id": "alb-app-a",
+   "source_ref": "alb-a",
+   "target_ref": "app-a",
+   "kind": "traffic"
+  },
+  {
+   "id": "app-a-db-a",
+   "source_ref": "app-a",
+   "target_ref": "db-a",
+   "kind": "traffic"
+  },
+  {
+   "id": "app-b-db-b",
+   "source_ref": "app-b",
+   "target_ref": "db-b",
+   "kind": "traffic"
+  },
+  {
+   "id": "peering-ab",
+   "source_ref": "vpc-a",
+   "target_ref": "vpc-b",
+   "kind": "peering",
+   "direction": "undirected",
+   "label": "VPC peering"
+  },
+  {
+   "id": "replication-ab",
+   "source_ref": "db-a",
+   "target_ref": "db-b",
+   "kind": "replication",
+   "label": "Cross-region replica"
+  },
+  {
+   "id": "vpn-onprem",
+   "source_ref": "vpn-a",
+   "target_ref": "onprem-router",
+   "kind": "vpn",
+   "direction": "undirected",
+   "protocol": "IPsec"
+  }
+ ],
+ "views": [
+  {
+   "id": "compass",
+   "title": "North-south and east-west",
+   "grouping": "provider",
+   "direction": "TB",
+   "entity_refs": [
+    "aws-account",
+    "region-a",
+    "vpc-a",
+    "subnet-a1",
+    "subnet-a2",
+    "region-b",
+    "vpc-b",
+    "subnet-b1",
+    "onprem-site",
+    "users",
+    "alb-a",
+    "app-a",
+    "db-a",
+    "vpn-a",
+    "app-b",
+    "db-b",
+    "onprem-router"
+   ],
+   "relationship_refs": [
+    "users-alb",
+    "alb-app-a",
+    "app-a-db-a",
+    "app-b-db-b",
+    "peering-ab",
+    "replication-ab",
+    "vpn-onprem"
+   ],
+   "bands": [
+    {
+     "id": "north",
+     "entity_refs": [
+      "users"
+     ]
+    },
+    {
+     "id": "edge",
+     "entity_refs": [
+      "alb-a"
+     ]
+    },
+    {
+     "id": "app",
+     "entity_refs": [
+      "app-a",
+      "app-b"
+     ]
+    },
+    {
+     "id": "data",
+     "entity_refs": [
+      "db-a",
+      "db-b"
+     ]
+    },
+    {
+     "id": "transit",
+     "entity_refs": [
+      "vpn-a"
+     ]
+    },
+    {
+     "id": "south",
+     "entity_refs": [
+      "onprem-router"
+     ]
+    }
+   ],
+   "east_west_refs": [
+    "peering-ab",
+    "replication-ab"
+   ]
+  },
+  {
+   "id": "plain",
+   "title": "The same view without bands",
+   "grouping": "provider",
+   "direction": "TB",
+   "entity_refs": [
+    "aws-account",
+    "region-a",
+    "vpc-a",
+    "subnet-a1",
+    "subnet-a2",
+    "region-b",
+    "vpc-b",
+    "subnet-b1",
+    "onprem-site",
+    "users",
+    "alb-a",
+    "app-a",
+    "db-a",
+    "vpn-a",
+    "app-b",
+    "db-b",
+    "onprem-router"
+   ],
+   "relationship_refs": [
+    "users-alb",
+    "alb-app-a",
+    "app-a-db-a",
+    "app-b-db-b",
+    "peering-ab",
+    "replication-ab",
+    "vpn-onprem"
+   ]
+  }
+ ]
+}

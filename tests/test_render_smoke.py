@@ -1,6 +1,7 @@
 """M3 render-smoke lane: FR-040..047, T-007 and M3-01..03. Output lands in reports/render-smoke."""
 
 import base64
+import copy
 import hashlib
 import json
 import math
@@ -1758,3 +1759,113 @@ def test_font_license_notices_ship_with_the_fonts() -> None:
     package = ROOT / "src/cloud_architecture_diagrams"
     for font in catalog().manifest.fonts:
         assert (package / font.license_path).read_text().startswith("Copyright")
+
+
+def _icon(groups: dict[str | None, ET.Element], identifier: str) -> tuple[float, float]:
+    """The top and bottom of a node's icon; SVG y grows downward."""
+    image = groups[f"node:{identifier}"].find(f"{{{SVG}}}image")
+    assert image is not None
+    top = float(image.get("y", ""))
+    return top, top + float(image.get("height", "").removesuffix("px"))
+
+
+def _middle(groups: dict[str | None, ET.Element], identifier: str) -> float:
+    top, bottom = _icon(groups, identifier)
+    return (top + bottom) / 2
+
+
+def _path_ys(element: ET.Element) -> list[float]:
+    """The y of every point on a line, or on a box: rounded boxes are paths, square ones polygons."""
+    path = element.find(f"{{{SVG}}}path")
+    shape = path.get("d", "") if path is not None else None
+    if shape is None:
+        polygon = element.find(f"{{{SVG}}}polygon")
+        assert polygon is not None
+        shape = polygon.get("points", "")
+    numbers = [float(item) for item in re.findall(r"-?[0-9]+(?:\.[0-9]+)?", shape)]
+    return numbers[1::2]
+
+
+def test_bands_run_north_to_south_and_east_west_lines_stay_level(
+    rendered: dict[tuple[str, str], RenderResult],
+) -> None:
+    # D-055: the first band is the top row, the last the bottom one, and a band is one row.
+    result = rendered[("compass-valid.json", "compass")]
+    assert result.rendered
+    graph = graph_of(result)
+    assert graph["bands"][2] == ["app-a", "app-b"] and graph["levels"] == [["vpc-a", "vpc-b"]]
+    groups = by_id(svg_root(result))
+    rows = [[_middle(groups, identifier) for identifier in band] for band in graph["bands"]]
+    for row in rows:
+        assert max(row) - min(row) < 1, row
+    middles = [row[0] for row in rows]
+    assert middles == sorted(middles) and len(set(middles)) == len(middles)
+    # North sits above every group's box, and south below, not merely above or below its nodes.
+    north_bottom = _icon(groups, "users")[1]
+    south_top = _icon(groups, "onprem-router")[0]
+    for identifier in ("_provider.aws", "aws-account", "region-a", "region-b", "vpc-a", "vpc-b"):
+        ys = _path_ys(groups[f"group:{identifier}"])
+        assert north_bottom < min(ys) and max(ys) < south_top, identifier
+    for identifier in ("replication-ab", "peering-ab"):
+        ys = _path_ys(groups[f"edge:{identifier}"])
+        assert max(ys) - min(ys) < 1, (identifier, ys)
+
+
+def test_a_view_without_rows_keeps_its_layout_settings() -> None:
+    # Only a view that sets bands or east-west lines changes the ranking, so every other view and
+    # every reviewed baseline keeps the layout it had.
+    for name in ("compass-valid.json", "references/hybrid-five.json", "providers/aws.json"):
+        model = load(name)
+        model["views"] = [view for view in model["views"] if not view.get("bands")]
+        dot = dot_of(model)
+        assert "newrank" not in dot and "rank=same" not in dot and "xlabel" not in dot
+        assert "weight=0" not in dot
+
+
+def test_a_banded_view_holds_rows_without_moving_them_by_their_lines() -> None:
+    model = load("compass-valid.json")
+    dot = dot_of(model)
+    assert "newrank=true" in dot and dot.count("rank=same") == 7
+    lines = {
+        match.group(1): match.group(0)
+        for match in re.finditer(r'\[[^\]]*id="edge:([a-z0-9.-]+)"[^\]]*\]', dot)
+    }
+    # Both ends fixed by bands or on one level: the line must not pull either end. Here that is
+    # every line, since every end is in a band or on the peering's level.
+    assert len(lines) == 7
+    for identifier, line in lines.items():
+        assert "constraint=false" in line, identifier
+    # A label on a level line goes outside it, or dot gives it a rank and bends the line.
+    assert "xlabel" in lines["replication-ab"] and "xlabel" in lines["peering-ab"]
+    assert "xlabel" not in lines["users-alb"] and "label=HTTPS" in lines["users-alb"]
+    # Every node no band names, here the peering's two VPC ends and the empty Subnet A2, is held
+    # between north and south by a line each way, without weight.
+    assert dot.count("weight=0") == 3 * 2
+    # A line with an unbanded end still ranks it: the VPN then sits wherever its line puts it.
+    model["views"][0]["bands"] = [
+        band for band in model["views"][0]["bands"] if band["id"] != "transit"
+    ]
+    dot = dot_of(model)
+    line = next(item for item in dot.splitlines() if 'id="edge:vpn-onprem"' in item)
+    assert "constraint=false" not in line
+
+
+def test_one_band_is_a_row_and_holds_nothing_else() -> None:
+    model = load("compass-valid.json")
+    model["views"][0]["bands"] = [{"id": "app", "entity_refs": ["app-a", "app-b"]}]
+    dot = dot_of(model)
+    assert "rank=same" in dot and "weight=0" not in dot
+
+
+def test_a_band_can_name_a_group_and_its_box_reaches_that_row(smoke_root: Path) -> None:
+    # A group with no line and no marker has no node of its own, so the row needs an anchor.
+    model = load("compass-valid.json")
+    model["views"][0]["bands"][2]["entity_refs"].append("region-b")
+    dot = dot_of(copy.deepcopy(model))
+    row = dot.split('subgraph "_row.2"', 1)[1].split("}", 1)[0]
+    assert '"_anchor.region-b"' in row and "app-a" in row
+    result = render(model, smoke_root, view="compass")
+    assert result.rendered, codes(result)
+    groups = by_id(svg_root(result))
+    ys = _path_ys(groups["group:region-b"])
+    assert min(ys) < _middle(groups, "app-a") < max(ys)

@@ -203,6 +203,13 @@ class Relationship(Contract):
     security: Text | None = None
 
 
+class Band(Contract):
+    """One row of a north-to-south view. Its ID is the view's own, not a model entity."""
+
+    id: Identifier
+    entity_refs: Annotated[list[Identifier], Field(min_length=1, max_length=1000)]
+
+
 class View(Contract):
     id: Identifier
     title: Text
@@ -216,6 +223,11 @@ class View(Contract):
     direction: Literal["TB", "LR"] = "LR"
     style: Literal["provider", "neutral"] = "provider"
     legend: bool = True
+    # D-055: rows from north to south, and the lines drawn level across them. Layout only.
+    bands: list[Band] = Field(default_factory=list, max_length=32)
+    east_west_refs: Annotated[list[Identifier], Field(max_length=4000)] = Field(
+        default_factory=list
+    )
 
 
 class Architecture(Contract):

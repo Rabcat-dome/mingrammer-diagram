@@ -14,7 +14,7 @@ from jsonschema import Draft202012Validator
 
 from cloud_architecture_diagrams import __version__
 from cloud_architecture_diagrams.models import MAX_INPUT_BYTES, Architecture
-from cloud_architecture_diagrams.validation import Mode, validate_json
+from cloud_architecture_diagrams.validation import Levels, Mode, validate_json
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -35,7 +35,7 @@ def codes(
     return {item.code for item in result.diagnostics}
 
 
-@pytest.mark.parametrize("name", ["core-valid", "kubernetes-valid"])
+@pytest.mark.parametrize("name", ["core-valid", "kubernetes-valid", "compass-valid"])
 def test_schema_and_core_agree_on_valid_fixtures(name: str) -> None:
     data = fixture(name)
     schema = Architecture.model_json_schema()
@@ -504,3 +504,124 @@ def test_the_command_line_is_strict_unless_told_otherwise(
     report = json.loads(result.stdout)
     assert result.returncode == 2 and report["mode"] == "strict" and not report["draft"]
     assert "CATALOG_TYPE_UNKNOWN" in {item["code"] for item in report["diagnostics"]}
+
+
+def _compass_errors(model: dict[str, Any], mode: Mode = "strict") -> list[tuple[str, str]]:
+    result = validate_json(json.dumps(model).encode(), mode=mode)
+    return [(item.code, item.field) for item in result.diagnostics if item.severity == "error"]
+
+
+@pytest.mark.parametrize("mode", ["strict", "lenient"])
+@pytest.mark.parametrize(
+    ("case", "expected"),
+    [
+        ("direction", ("VIEW_BAND_DIRECTION", "/views/0/direction")),
+        ("east-west-direction", ("VIEW_BAND_DIRECTION", "/views/0/direction")),
+        ("band-id", ("VIEW_BAND_ID_DUPLICATE", "/views/0/bands/1/id")),
+        ("band-missing", ("REFERENCE_MISSING", "/views/0/bands/0/entity_refs/1")),
+        ("band-unselected", ("VIEW_BAND_ENTITY_EXCLUDED", "/views/0/bands/0/entity_refs/1")),
+        ("band-repeat", ("REFERENCE_DUPLICATE", "/views/0/bands/2/entity_refs")),
+        ("two-bands", ("VIEW_BAND_CONFLICT", "/views/0/bands/3/entity_refs/2")),
+        ("line-missing", ("VIEW_RELATIONSHIP_MISSING", "/views/0/east_west_refs/2")),
+        ("line-unselected", ("VIEW_EAST_WEST_UNSELECTED", "/views/0/east_west_refs/0")),
+        ("line-repeat", ("REFERENCE_DUPLICATE", "/views/0/east_west_refs")),
+        ("line-across", ("VIEW_EAST_WEST_CONFLICT", "/views/0/east_west_refs/2")),
+        ("chain-across", ("VIEW_EAST_WEST_CONFLICT", "/views/0/east_west_refs/3")),
+    ],
+)
+def test_bands_and_east_west_lines_cannot_contradict_themselves(
+    case: str, expected: tuple[str, str], mode: Mode
+) -> None:
+    # D-055: a band is one row and an east-west line stays level, so no mode may draw a row twice.
+    model = fixture("compass-valid")
+    view = model["views"][0]
+    if case == "direction":
+        view["direction"] = "LR"
+    elif case == "east-west-direction":
+        view["bands"] = []
+        view["direction"] = "LR"
+    elif case == "band-id":
+        view["bands"][1]["id"] = view["bands"][0]["id"]
+    elif case == "band-missing":
+        view["bands"][0]["entity_refs"].append("nothing-here")
+    elif case == "band-unselected":
+        view["bands"][0]["entity_refs"].append("az-a1")
+    elif case == "band-repeat":
+        view["bands"][2]["entity_refs"].append("app-a")
+    elif case == "two-bands":
+        view["bands"][3]["entity_refs"].append("app-a")
+    elif case == "line-missing":
+        view["east_west_refs"].append("nothing-here")
+    elif case == "line-unselected":
+        view["relationship_refs"].remove("peering-ab")
+    elif case == "line-repeat":
+        view["east_west_refs"].append("peering-ab")
+    elif case == "line-across":
+        # Traffic from App A to its database runs between two bands, so it cannot run level.
+        view["east_west_refs"].append("app-a-db-a")
+    else:
+        # Each line alone is fine; together they put the app row and the data row on one level.
+        model["relationships"].append(
+            {
+                "id": "app-b-vpc-b",
+                "source_ref": "app-b",
+                "target_ref": "vpc-b",
+                "kind": "dependency",
+            }
+        )
+        model["relationships"].append(
+            {"id": "vpc-a-db-a", "source_ref": "vpc-a", "target_ref": "db-a", "kind": "dependency"}
+        )
+        view["relationship_refs"] += ["app-b-vpc-b", "vpc-a-db-a"]
+        view["east_west_refs"] += ["app-b-vpc-b", "vpc-a-db-a"]
+    assert expected in _compass_errors(model, mode)
+
+
+@pytest.mark.parametrize(
+    "change",
+    [
+        {"bands": [{"id": "north", "entity_refs": []}]},
+        {"bands": [{"id": "north", "entity_refs": ["users"], "rank": "min"}]},
+        {"bands": [{"id": f"band-{n}", "entity_refs": ["users"]} for n in range(33)]},
+        {"bands": [{"id": "North", "entity_refs": ["users"]}]},
+        {"east_west_refs": "peering-ab"},
+    ],
+)
+def test_bands_take_only_bounded_values(change: dict[str, Any]) -> None:
+    # FR-045: a band names rows, never Graphviz rank attributes or unbounded lists.
+    model = fixture("compass-valid")
+    model["views"][0].update(change)
+    assert {code for code, _ in _compass_errors(model)} == {"SCHEMA_FIELD_INVALID"}
+
+
+def test_a_view_without_bands_or_east_west_lines_keeps_its_direction() -> None:
+    model = fixture("compass-valid")
+    view = model["views"][1]
+    assert "bands" not in view and "east_west_refs" not in view
+    view["direction"] = "LR"
+    assert _compass_errors(model) == []
+
+
+def test_levels_join_east_west_lines_to_their_band_or_keep_them_apart() -> None:
+    model = Architecture.model_validate(fixture("compass-valid"))
+    view = model.views[0]
+    ends = {edge.id: (edge.source_ref, edge.target_ref) for edge in model.relationships}
+    bands, levels = Levels.of(view, ends).rows(view)
+    assert bands == (
+        ("users",),
+        ("alb-a",),
+        ("app-a", "app-b"),
+        ("db-a", "db-b"),
+        ("vpn-a",),
+        ("onprem-router",),
+    )
+    # The peering runs between two VPC boxes that no band names, so it is a level of its own.
+    assert levels == (("vpc-a", "vpc-b"),)
+    # An end that joins a band takes that band's row, after the members the band names.
+    joined = view.model_copy(update={"east_west_refs": ["app-b-db-b"]})
+    joined = joined.model_copy(
+        update={
+            "bands": [view.bands[2], view.bands[0].model_copy(update={"entity_refs": ["app-a"]})]
+        }
+    )
+    assert Levels.of(joined, ends).rows(joined)[0][0] == ("app-a", "app-b", "db-b")

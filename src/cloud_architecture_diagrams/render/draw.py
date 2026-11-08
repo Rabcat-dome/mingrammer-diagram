@@ -92,13 +92,20 @@ class _Drawing:
             self.members.setdefault(node.group, []).append(node)
         self.node_ids = {node.id for node in graph.nodes}
         self.groups = {group.id: group for group in graph.groups}
-        # Edges need a node to end on, and a group without its own marker has none.
+        # D-055: the level each banded or east-west entity is drawn on, and whether a band fixes it.
+        self.rows: dict[str, tuple[int, bool]] = {
+            identifier: (index, index < len(graph.bands))
+            for index, row in enumerate([*graph.bands, *graph.levels])
+            for identifier in row
+        }
+        # Edges need a node to end on, and a group without its own marker has none. Nor has a
+        # row anything to hold it on that level.
         self.anchors = {
             endpoint
             for edge in graph.edges
             for endpoint in (edge.source, edge.target)
             if endpoint not in self.node_ids
-        }
+        } | {identifier for identifier in self.rows if identifier not in self.node_ids}
         self.drawn: dict[str, Any] = {}
         # A tinted box tells providers apart, which one alone does not need.
         self.many_providers = sum(group.entity == "provider" for group in graph.groups) > 1
@@ -133,6 +140,9 @@ class _Drawing:
                 # label can pass that width by up to 0.35 inches each side. These leave it room.
                 "nodesep": "0.75",
                 "ranksep": "0.9",
+                # D-055: a level can hold entities in different groups, which needs global ranks.
+                # Only views with rows set it, so every other view keeps its layout.
+                **({"newrank": "true"} if self.rows else {}),
             },
             node_attr={
                 "fontname": FONT,
@@ -150,6 +160,7 @@ class _Drawing:
             self._emit(None, 0)
             self._legend()
             self._arrange()
+            self._rows(diagram.dot)
             self._edges()
         finally:
             setcluster(None)
@@ -315,11 +326,12 @@ class _Drawing:
         return False
 
     def _touched(self) -> set[str]:
-        """Everything an edge reaches, with the groups around it, since those already have a rank."""
+        """Everything an edge or a row reaches, with the groups around it: those have a rank."""
         touched: set[str] = set()
         nodes = {node.id: node for node in self.graph.nodes}
-        for edge in self.graph.edges:
-            for endpoint in (edge.source, edge.target):
+        ends: list[tuple[str, ...]] = [(edge.source, edge.target) for edge in self.graph.edges]
+        for items in [*ends, *self.graph.bands, *self.graph.levels]:
+            for endpoint in items:
                 touched.add(endpoint)
                 parent = nodes[endpoint].group if endpoint in nodes else endpoint
                 while parent is not None:
@@ -353,6 +365,54 @@ class _Drawing:
                         self._representative(second), Edge(style="invis")
                     )
 
+    def _rows(self, dot: Any) -> None:
+        """D-055: each band is one rank, north to south, and each other level one rank of its own."""
+        from diagrams import Edge, Node
+
+        # Each band holds an invisible marker, and the layout lines run between markers only. A
+        # second line between two entities, such as App A under the load balancer, would make dot
+        # spread the pair apart and curve the drawn one.
+        markers = [
+            Node(
+                "",
+                nodeid=f"_band.{index}",
+                id=f"band:{index}",
+                shape="point",
+                width="0.02",
+                height="0.02",
+                style="invis",
+            )
+            for index in range(len(self.graph.bands))
+        ]
+        for index, row in enumerate([*self.graph.bands, *self.graph.levels]):
+            # A cluster name would draw a box; this only holds the rank.
+            with dot.subgraph(name=f"_row.{index}") as level:
+                level.attr(rank="same")
+                if index < len(markers):
+                    level.node(markers[index].nodeid)
+                for identifier in row:
+                    level.node(self.drawn[identifier].nodeid)
+        for upper, lower in pairwise(markers):
+            upper.connect(lower, Edge(style="invis"))
+        if len(markers) < 2:
+            return
+        # The first band is the top row and the last the bottom one. With newrank, Graphviz 16.1
+        # puts a loose node on the first rank even under rank=source, and a group's box then rises
+        # above north. A weightless line from north and one to south holds every other node
+        # between them without pulling it anywhere.
+        banded = {identifier for band in self.graph.bands for identifier in band}
+        for identifier, node in self.drawn.items():
+            if identifier not in banded:
+                markers[0].connect(node, Edge(style="invis", weight="0"))
+                node.connect(markers[-1], Edge(style="invis", weight="0"))
+
+    def _level(self, edge: GraphEdge) -> bool:
+        """A line whose ends both sit in bands, or on one level, must not move either end."""
+        source, target = self.rows.get(edge.source), self.rows.get(edge.target)
+        if source is None or target is None:
+            return False
+        return source[0] == target[0] or (source[1] and target[1])
+
     def _edges(self) -> None:
         for edge in self.graph.edges:
             self._edge(edge)
@@ -368,8 +428,14 @@ class _Drawing:
             "fontname": FONT,
             "fontsize": EDGE_POINTS,
         }
+        level = self._level(edge)
         if edge.lines:
-            attributes["label"] = literal(edge.lines)
+            # D-055: dot gives a label on a line within one rank a rank of its own, which bends the
+            # line up through it. An outside label is placed after layout and keeps the line level.
+            flat = level and self.rows[edge.source][0] == self.rows[edge.target][0]
+            attributes["xlabel" if flat else "label"] = literal(edge.lines)
+        if level:
+            attributes["constraint"] = "false"
         # Clipping at a border needs the far end outside that group, or Graphviz drops the edge end.
         if edge.source in self.anchors and not self._inside(edge.target, edge.source):
             attributes["ltail"] = f"cluster_{edge.source}"

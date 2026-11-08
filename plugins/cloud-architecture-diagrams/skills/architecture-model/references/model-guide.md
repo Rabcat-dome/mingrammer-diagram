@@ -89,10 +89,11 @@ An edge states what was modeled, not proven reachability. Include only connectiv
 
 ## Views
 
-`{id, title, entity_refs, relationship_refs?, grouping?, direction?, style?, legend?}`
+`{id, title, entity_refs, relationship_refs?, grouping?, direction?, style?, legend?, bands?, east_west_refs?}`
 
 - Selection is explicit, and a selected relationship needs both endpoints selected.
 - `grouping`: `none`, `provider` (default), `scope`, `network`, `namespace`, `node`, `physical`. `direction`: `TB` or `LR` (default). `style`: `provider` (default) or `neutral`.
+- `bands` and `east_west_refs` draw rows from north to south and lines level from west to east; see [north-south bands and east-west lines](#north-south-bands-and-east-west-lines).
 - Each view's unselected IDs come back in `view_exclusions`, with a `VIEW_EXCLUSIONS` warning for each partial view; this is disclosure, not a failure. `excluded_ids` repeats the list for the first view or the one named by `--view`.
 
 ### Choosing what a view selects
@@ -129,6 +130,36 @@ A view of one account's web tier, and a second view by zone, as the `views` list
    "entity_refs": ["region", "az-a", "az-b", "alb", "web-a", "web-b", "db"],
    "relationship_refs": ["alb-web-a", "alb-web-b", "web-a-db", "web-b-db"]}
 ]
+```
+
+### North-south bands and east-west lines
+
+Use these when the user asks, in English or Thai, for a north-south and east-west network picture, or for rows such as Internet, edge, application, data and on-premises. They are layout only: they change where the view draws things, never what the model says.
+
+- **`bands`** lists up to 32 rows from north to south, each `{id, entity_refs}`. The `id` is the view's own, such as `north` or `data`, and each entity the band names must be one the view selects. An entity sits in one band only.
+- **The first band is the top row and the last the bottom one.** With two or more bands, nothing else is drawn above the first or below the last, not even a group's box. Anything no band names is drawn between them, where its lines put it.
+- **`east_west_refs`** lists selected relationship IDs to draw level, side by side, such as peering, replication or a link between two regions. When either end is in a band, the other end joins that row. A line that would join two bands is refused.
+- **Both need `"direction": "TB"`.**
+- **Name resources in bands, and let the boxes follow.** A band can name a group, such as a VPC, and its box then reaches that row.
+- **Band whatever would sit between a level line's ends.** A level line goes around anything drawn between its ends on that row, so an unbanded node that lands there bends it. In the example, the VPN has a `transit` row of its own for that reason.
+- Codes: `VIEW_BAND_DIRECTION`, `VIEW_BAND_ID_DUPLICATE`, `VIEW_BAND_ENTITY_EXCLUDED`, `VIEW_BAND_CONFLICT`, `VIEW_EAST_WEST_UNSELECTED` and `VIEW_EAST_WEST_CONFLICT`, each with its remedy.
+
+A view of customers, a primary and a DR region, and an on-premises router, with VPC peering and database replication drawn level:
+
+```text
+{"id": "network", "title": "North-south and east-west", "grouping": "provider", "direction": "TB",
+ "entity_refs": ["aws-account", "region-a", "vpc-a", "region-b", "vpc-b", "onprem-site", "users",
+                 "alb-a", "app-a", "db-a", "vpn-a", "app-b", "db-b", "onprem-router"],
+ "relationship_refs": ["users-alb", "alb-app-a", "app-a-db-a", "app-b-db-b", "peering-ab",
+                       "replication-ab", "vpn-onprem"],
+ "bands": [
+   {"id": "north", "entity_refs": ["users"]},
+   {"id": "edge", "entity_refs": ["alb-a"]},
+   {"id": "app", "entity_refs": ["app-a", "app-b"]},
+   {"id": "data", "entity_refs": ["db-a", "db-b"]},
+   {"id": "transit", "entity_refs": ["vpn-a"]},
+   {"id": "south", "entity_refs": ["onprem-router"]}],
+ "east_west_refs": ["peering-ab", "replication-ab"]}
 ```
 
 ## Kubernetes context

@@ -1,7 +1,7 @@
 {
  "accepted_on": "2026-11-08",
  "engine": "dot - graphviz version 16.1.0 (20260904.0139)",
- "reason": "D-048: lines are drawn as straight segments (splines=polyline) instead of curves, at the owner's request on 2026-11-08. Node and group positions do not change, so only the 15 views with a curved line change. The owner reviews these under T-016.",
+ "reason": "D-055: the normalized graph gains bands and levels, both empty in every reference view, which sets none. No SVG or PNG changes: every image digest is the one D-048 accepted.",
  "views": {
   "aws-three-tier--eks-namespaces": {
    "png": "bb9638120044058b074dec47560bc4a74eb57c9e60dbb355818aa22689d2a10b",

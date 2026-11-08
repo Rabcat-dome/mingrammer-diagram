@@ -1,5 +1,32 @@
 {
   "$defs": {
+    "Band": {
+      "additionalProperties": false,
+      "description": "One row of a north-to-south view. Its ID is the view's own, not a model entity.",
+      "properties": {
+        "entity_refs": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+            "type": "string"
+          },
+          "maxItems": 1000,
+          "minItems": 1,
+          "title": "Entity Refs",
+          "type": "array"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+          "title": "Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "entity_refs"
+      ],
+      "title": "Band",
+      "type": "object"
+    },
     "Boundary": {
       "additionalProperties": false,
       "properties": {
@@ -836,6 +863,14 @@
     "View": {
       "additionalProperties": false,
       "properties": {
+        "bands": {
+          "items": {
+            "$ref": "#/$defs/Band"
+          },
+          "maxItems": 32,
+          "title": "Bands",
+          "type": "array"
+        },
         "direction": {
           "default": "LR",
           "enum": [
@@ -844,6 +879,15 @@
           ],
           "title": "Direction",
           "type": "string"
+        },
+        "east_west_refs": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+            "type": "string"
+          },
+          "maxItems": 4000,
+          "title": "East West Refs",
+          "type": "array"
         },
         "entity_refs": {
           "items": {

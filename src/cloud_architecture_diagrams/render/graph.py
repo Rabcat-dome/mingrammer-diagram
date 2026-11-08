@@ -12,7 +12,7 @@ from pydantic import BaseModel, ConfigDict
 
 from ..catalog import CatalogRecord, catalog
 from ..models import Architecture, Boundary, Entity, Port, Resource, Scope, View
-from ..validation import Mode
+from ..validation import Levels, Mode
 from .errors import RenderFailure
 from .limits import Limits
 
@@ -128,6 +128,9 @@ class RenderGraph(GraphModel):
     nodes: tuple[GraphNode, ...]
     edges: tuple[GraphEdge, ...]
     fallbacks: tuple[Fallback, ...]
+    # D-055: each band's entities north to south, and each other level an east-west line makes.
+    bands: tuple[tuple[str, ...], ...] = ()
+    levels: tuple[tuple[str, ...], ...] = ()
 
     def packs(self) -> list[str]:
         return sorted({node.icon.pack for node in self.nodes if node.icon})
@@ -588,6 +591,12 @@ class Mapper:
                     lines=tuple(lines),
                 )
             )
+        ends = {
+            edge.id: (edge.source_ref, edge.target_ref)
+            for edge in self.model.relationships
+            if edge.id in view.east_west_refs
+        }
+        bands, levels = Levels.of(view, ends).rows(view)
         return RenderGraph(
             view_id=view.id,
             grouping=view.grouping,
@@ -601,6 +610,8 @@ class Mapper:
             nodes=tuple(nodes),
             edges=tuple(edges),
             fallbacks=tuple(fallbacks),
+            bands=bands,
+            levels=levels,
         )
 
     def _title(self, fallbacks: list[Fallback]) -> list[str]:
