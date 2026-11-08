@@ -26,6 +26,8 @@ LOCATION_FIELDS: dict[str, set[str]] = {
 # The location forms whose region other rules compare. An environment, trust zone or cluster may span
 # regions, because nothing reads a region from those.
 REGION_READ = {"regional", "zonal"}
+# AWS allows one web ACL for each resource. No other type that lists targets states such a rule.
+WEB_ACL_TYPES = {"aws.security.waf", "aws.security.waf_cloudfront"}
 LOCATED_IN: dict[str, set[str]] = {
     "none": set(),
     "global": set(),
@@ -113,7 +115,7 @@ class Semantics:
         self.subnet_types: dict[str, set[str]] = defaultdict(set)
         self.attached: dict[str, set[str]] = defaultdict(set)
         self.web_acls: dict[str, set[str]] = defaultdict(set)
-        self.web_acl_regions: dict[str, set[str]] = defaultdict(set)
+        self.target_regions: dict[str, set[str]] = defaultdict(set)
 
     def emit(self, code: str, field: str, entity_id: str | None = None) -> None:
         if sum(item.severity == "error" for item in self.diagnostics) >= 100:
@@ -530,9 +532,12 @@ class Semantics:
                     self.emit("PLACEMENT_SECURITY_GROUP_REGION_MISMATCH", field, resource.id)
 
     def dedicated_subnets(self) -> None:
+        # A subnet delegated to one service holds only that service. Types that share a native
+        # resource type, such as an App Service web app and a function app, share a delegation.
         for index, boundary in enumerate(self.model.boundaries):
             owners = self.dedicated.get(boundary.id)
-            if owners and self.subnet_types[boundary.id] - owners:
+            services = {self.catalog.records[owner].native_id or owner for owner in owners or ()}
+            if owners and (self.subnet_types[boundary.id] - owners or len(services) > 1):
                 self.emit(
                     "PLACEMENT_DEDICATED_SUBNET_CONFLICT", f"/boundaries/{index}", boundary.id
                 )
@@ -734,8 +739,13 @@ class Semantics:
         for index, resource in enumerate(self.model.resources):
             if len(self.web_acls[resource.id]) > 1:
                 self.emit("AWS_WAF_ACL_MULTIPLE", f"/resources/{index}", resource.id)
-            if len(self.web_acl_regions[resource.id]) > 1:
-                self.emit("AWS_WAF_RESOURCE_REGION_MISMATCH", f"/resources/{index}", resource.id)
+            if len(self.target_regions[resource.id]) > 1:
+                code = (
+                    "AWS_WAF_RESOURCE_REGION_MISMATCH"
+                    if resource.service_type in WEB_ACL_TYPES
+                    else "PLACEMENT_ATTACHMENT_REGION_MISMATCH"
+                )
+                self.emit(code, f"/resources/{index}", resource.id)
 
     def provider_edge(
         self,
@@ -747,9 +757,7 @@ class Semantics:
     ) -> None:
         if kind != "attachment" or source is None or target is None:
             return
-        # An edge is refused once, even where both of its ends list targets.
-        if not self.attachment_refused(field, identifier, source, target):
-            self.attachment_refused(field, identifier, target, source)
+        self.attachment(field, identifier, source, target)
         pair = {source.service_type, target.service_type}
         if pair == {"azure.compute.virtual_machine", "azure.network.network_interface"}:
             first = self.scope_ancestor(source.placement.scope_refs, "subscription")
@@ -759,27 +767,31 @@ class Semantics:
         if "huawei.network.eip" in pair and self.regions_differ(source, target):
             self.emit("HUAWEI_EIP_REGION_MISMATCH", field, identifier)
 
-    def attachment_refused(
-        self, field: str, identifier: str, owner: Resource, target: Resource
-    ) -> bool:
+    def attachment(self, field: str, identifier: str, source: Resource, target: Resource) -> None:
         """A type that lists targets attaches only to those. An unknown draft type has no rule yet.
 
-        Only the two WAF web ACL types list targets today, so the region and one-owner rules are
-        AWS's for them. A CloudFront web ACL and its distribution are global, so its region set
-        stays empty and only the one-owner rule bites. Another type that lists targets must say
-        whether these apply to it.
+        Either end may list the other, so an edge drawn either way is read once: as owned by the end
+        whose record lists the other end's type. It is refused only when neither does and at least
+        one end lists targets. The one-owner rule is AWS WAF's alone, and the region rule applies to
+        an owner whose record sets `same_region_as_targets`. A global owner, such as a CloudFront
+        web ACL, has no region of its own, so only its targets' regions are compared.
         """
-        record = self.types.get(owner.id)
-        if record is None or not record.placement.attachment_targets or target.id not in self.types:
-            return False
-        if target.service_type not in record.placement.attachment_targets:
-            self.emit("PLACEMENT_ATTACHMENT_TARGET_INVALID", field, identifier)
-            return True
-        self.web_acls[target.id].add(owner.id)
-        # A web ACL with no region of its own still cannot protect resources in two regions.
-        declared = (self.declared_region(owner), self.declared_region(target))
-        self.web_acl_regions[owner.id] |= {region.id for region in declared if region}
-        return False
+        first, second = self.types.get(source.id), self.types.get(target.id)
+        if first is None or second is None:
+            return
+        if target.service_type in first.placement.attachment_targets:
+            owner, owned, record = source, target, first
+        elif source.service_type in second.placement.attachment_targets:
+            owner, owned, record = target, source, second
+        else:
+            if first.placement.attachment_targets or second.placement.attachment_targets:
+                self.emit("PLACEMENT_ATTACHMENT_TARGET_INVALID", field, identifier)
+            return
+        if record.id in WEB_ACL_TYPES:
+            self.web_acls[owned.id].add(owner.id)
+        if record.placement.same_region_as_targets:
+            declared = (self.declared_region(owner), self.declared_region(owned))
+            self.target_regions[owner.id] |= {region.id for region in declared if region}
 
     def regions_differ(self, first: Resource, second: Resource) -> bool:
         def region(resource: Resource) -> Boundary | None:

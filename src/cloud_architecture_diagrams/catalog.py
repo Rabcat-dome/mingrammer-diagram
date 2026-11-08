@@ -99,6 +99,8 @@ class PlacementRule(CatalogModel):
     same_resource_group_as_network: bool = False
     host_types: tuple[str, ...] = ()
     attachment_targets: tuple[str, ...] = ()
+    # The owner and every target it attaches to share one region, where each declares one.
+    same_region_as_targets: bool = False
     iam_authorization: Literal["project", "global"] | None = None
     enterprise_project_authorization: bool | None = None
 

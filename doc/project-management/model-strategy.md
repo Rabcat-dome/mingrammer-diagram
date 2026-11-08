@@ -54,6 +54,8 @@ D-021 replaces Astra with Fable for every review from 2026-11-03, on the owner's
 
 D-025 adds GPT-6 Astra / High and GPT-6.1 Sol / High reviews of `5569459..aefcdbc`, on top of Fable's, because that work's implementer and reviewer shared a vendor. Claude Opus 5.5 fixed the findings. See [S11](evidence/S11-gpt-reviews.md).
 
+S16 used Claude Opus 5.5 (`claude-opus-5-5`), the model of the session that ran it, with four research agents on the same model. No review has run on it yet.
+
 S13 used Claude Opus 5.5 (`claude-opus-5-5`), the model of the session that ran it, rather than the planned Sol, with no setting changed. Claude Fable 5.1 reviewed it under D-021. See [its record](evidence/S13-fable-review.md).
 
 S12 used Claude Opus 5.5 (`claude-opus-5-5`), the model of the session that ran it, rather than the planned Sol, with no setting changed. Claude Fable 5.1 reviewed it under D-021, in fresh agents started at High, though neither could confirm that effort. See [its record](evidence/S12-fable-review.md).

@@ -76,6 +76,42 @@ MAPPING = {
     "huawei-dc": (NETWORKING, 1, "Direct Connect", "Direct Connect"),
     "huawei-ces": (MANAGEMENT, 2, "Cloud Eye Service (CES)", "Cloud Eye"),
     "huawei-lts": (MANAGEMENT, 8, "Log Tank Servce (LTS)", "Log Tank Service"),
+    # S16 (D-053): selected P1 coverage. Both DMS editions draw the DMS entry, because the
+    # library's "Kafka" and "RabbitMQ" titles do not name Huawei's service.
+    "huawei-dcs": (
+        MIDDLEWARE,
+        7,
+        "Distributed Cache Service (DCS) for Redis",
+        "Distributed Cache Service",
+    ),
+    "huawei-dds": (DATABASES, 4, "Document Database Service (DDS)", "Document Database Service"),
+    "huawei-gaussdb": (DATABASES, 5, "GaussDB", "GaussDB"),
+    "huawei-dms": (
+        MIDDLEWARE,
+        8,
+        "Distributed Message Service (DMS)",
+        "Distributed Message Service",
+    ),
+    "huawei-smn": (
+        MANAGEMENT,
+        15,
+        "Simple Message Notification (SMN)",
+        "Simple Message Notification",
+    ),
+    "huawei-swr": (
+        COMPUTE,
+        15,
+        "SoftWare Repository for Container (SWR)",
+        "SoftWare Repository for Container",
+    ),
+    "huawei-cci": (COMPUTE, 13, "Cloud Container Instance (CCI)", "Cloud Container Instance"),
+    "huawei-sfs": (STORAGE, 9, "Scalable File Service (SFS)", "Scalable File Service"),
+    "huawei-sfs-turbo": (STORAGE, 10, "Scalable File Service (SFS) Turbo", "SFS Turbo"),
+    "huawei-evs": (STORAGE, 6, "Elastic Volume Service (EVS)", "Elastic Volume Service"),
+    "huawei-cbr": (STORAGE, 0, "Cloud Backup and Recovery (CBR)", "Cloud Backup and Recovery"),
+    "huawei-er": (NETWORKING, 5, "Enterprise Router (ER)", "Enterprise Router"),
+    "huawei-vpcep": (NETWORKING, 11, "VPC Endpoint (VPCEP)", "VPC Endpoint"),
+    "huawei-ga": (NETWORKING, 7, "Global Accelerator (GA)", "Global Accelerator"),
 }
 
 

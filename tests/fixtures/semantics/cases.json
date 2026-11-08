@@ -4417,6 +4417,1423 @@
      ]
     }
    ]
+  },
+  {
+   "id": "azure-front-door-in-region",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:fd/placement/location",
+     "value": {
+      "region_ref": "region"
+     }
+    }
+   ]
+  },
+  {
+   "id": "azure-front-door-in-vnet",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:fd/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vnet"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "azure-dns-zone-in-vnet",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:dns/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vnet"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "azure-private-dns-zone-in-region",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:pdns/placement/location",
+     "value": {
+      "region_ref": "region"
+     }
+    }
+   ]
+  },
+  {
+   "id": "azure-private-dns-zone-on-subnet",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_SUBNET_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:pdns/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vnet",
+       "subnet_refs": [
+        "sn-app"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "azure-private-dns-zone-linked-twice",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_NETWORK_COUNT_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:pdns/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vnet"
+      },
+      {
+       "network_ref": "vnet"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "azure-app-service-in-zone",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:web/placement/location",
+     "value": {
+      "zone_ref": "az-1"
+     }
+    }
+   ]
+  },
+  {
+   "id": "azure-app-service-two-subnets",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_SUBNET_COUNT_INVALID",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "sn-web-2",
+      "name": "sn-web-2",
+      "provider": "azure",
+      "kind": "subnet",
+      "scope_refs": [
+       "rg-net"
+      ],
+      "parent_ref": "vnet"
+     }
+    },
+    {
+     "set": "resources/id:web/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vnet",
+       "subnet_refs": [
+        "sn-web-int",
+        "sn-web-2"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "azure-vm-in-web-app-subnet",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_DEDICATED_SUBNET_CONFLICT",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "sn-web-only",
+      "name": "sn-web-only",
+      "provider": "azure",
+      "kind": "subnet",
+      "scope_refs": [
+       "rg-net"
+      ],
+      "parent_ref": "vnet"
+     }
+    },
+    {
+     "set": "resources/id:web/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vnet",
+       "subnet_refs": [
+        "sn-web-only"
+       ]
+      }
+     ]
+    },
+    {
+     "set": "resources/id:vm/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vnet",
+       "subnet_refs": [
+        "sn-web-only"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "azure-postgres-in-mysql-subnet",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_DEDICATED_SUBNET_CONFLICT",
+   "ops": [
+    {
+     "set": "resources/id:pg/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vnet",
+       "subnet_refs": [
+        "sn-mysql"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "azure-function-in-container-apps-subnet",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_DEDICATED_SUBNET_CONFLICT",
+   "ops": [
+    {
+     "set": "resources/id:func/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vnet",
+       "subnet_refs": [
+        "sn-aca"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "azure-container-apps-two-subnets",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_SUBNET_COUNT_INVALID",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "sn-aca-2",
+      "name": "sn-aca-2",
+      "provider": "azure",
+      "kind": "subnet",
+      "scope_refs": [
+       "rg-net"
+      ],
+      "parent_ref": "vnet"
+     }
+    },
+    {
+     "set": "resources/id:aca/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vnet",
+       "subnet_refs": [
+        "sn-aca",
+        "sn-aca-2"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "azure-container-apps-in-zone",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:aca/placement/location",
+     "value": {
+      "zone_ref": "az-1"
+     }
+    }
+   ]
+  },
+  {
+   "id": "azure-registry-in-vnet",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:acr/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vnet"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "azure-cosmos-db-in-subnet",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:cosmos/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vnet",
+       "subnet_refs": [
+        "sn-pe"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "azure-managed-redis-in-subnet",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:redis/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vnet",
+       "subnet_refs": [
+        "sn-pe"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "azure-mysql-two-subnets",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_SUBNET_COUNT_INVALID",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "sn-mysql-2",
+      "name": "sn-mysql-2",
+      "provider": "azure",
+      "kind": "subnet",
+      "scope_refs": [
+       "rg-net"
+      ],
+      "parent_ref": "vnet"
+     }
+    },
+    {
+     "set": "resources/id:mysql/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vnet",
+       "subnet_refs": [
+        "sn-mysql",
+        "sn-mysql-2"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "azure-public-load-balancer-on-subnet",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_SUBNET_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:plb/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vnet",
+       "subnet_refs": [
+        "sn-app"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "azure-internal-load-balancer-two-vnets",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_NETWORK_COUNT_INVALID",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "vnet-2",
+      "name": "Second VNet",
+      "provider": "azure",
+      "kind": "network",
+      "scope_refs": [
+       "rg-net"
+      ],
+      "parent_ref": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "sn-ilb-2",
+      "name": "sn-ilb-2",
+      "provider": "azure",
+      "kind": "subnet",
+      "scope_refs": [
+       "rg-net"
+      ],
+      "parent_ref": "vnet-2"
+     }
+    },
+    {
+     "set": "resources/id:ilb/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vnet",
+       "subnet_refs": [
+        "sn-ilb"
+       ]
+      },
+      {
+       "network_ref": "vnet-2",
+       "subnet_refs": [
+        "sn-ilb-2"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "azure-private-endpoint-two-subnets",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_SUBNET_COUNT_INVALID",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "sn-pe-2",
+      "name": "sn-pe-2",
+      "provider": "azure",
+      "kind": "subnet",
+      "scope_refs": [
+       "rg-net"
+      ],
+      "parent_ref": "vnet"
+     }
+    },
+    {
+     "set": "resources/id:pe-kv/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vnet",
+       "subnet_refs": [
+        "sn-pe",
+        "sn-pe-2"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "azure-private-endpoint-on-dns-zone",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
+   "ops": [
+    {
+     "add": "relationships",
+     "value": {
+      "id": "x-pe-kv-dns",
+      "source_ref": "pe-kv",
+      "target_ref": "dns",
+      "kind": "attachment"
+     }
+    }
+   ]
+  },
+  {
+   "id": "azure-private-endpoint-on-vm",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
+   "ops": [
+    {
+     "add": "relationships",
+     "value": {
+      "id": "x-pe-kv-vm",
+      "source_ref": "pe-kv",
+      "target_ref": "vm",
+      "kind": "attachment"
+     }
+    }
+   ]
+  },
+  {
+   "id": "azure-service-bus-in-vnet",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:sb/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vnet"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "azure-event-hubs-in-zone",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:eh/placement/location",
+     "value": {
+      "zone_ref": "az-1"
+     }
+    }
+   ]
+  },
+  {
+   "id": "azure-api-management-two-subnets",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_SUBNET_COUNT_INVALID",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "sn-apim-2",
+      "name": "sn-apim-2",
+      "provider": "azure",
+      "kind": "subnet",
+      "scope_refs": [
+       "rg-net"
+      ],
+      "parent_ref": "vnet"
+     }
+    },
+    {
+     "set": "resources/id:apim/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vnet",
+       "subnet_refs": [
+        "sn-apim",
+        "sn-apim-2"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "azure-key-vault-in-vnet",
+   "base": "providers/azure-paas",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:kv/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vnet"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "gcp-public-zone-in-vpc",
+   "base": "providers/gcp-edge-security",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:public-dns/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "gcp-public-zone-in-region",
+   "base": "providers/gcp-edge-security",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:public-dns/placement/location",
+     "value": {
+      "region_ref": "region"
+     }
+    }
+   ]
+  },
+  {
+   "id": "gcp-private-zone-on-subnet",
+   "base": "providers/gcp-edge-security",
+   "expect": "PLACEMENT_SUBNET_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:private-dns/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "subnet"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "gcp-armor-in-region",
+   "base": "providers/gcp-edge-security",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:edge-policy/placement/location",
+     "value": {
+      "region_ref": "region"
+     }
+    }
+   ]
+  },
+  {
+   "id": "gcp-armor-on-regional-load-balancer",
+   "base": "providers/gcp-edge-security",
+   "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
+   "ops": [
+    {
+     "add": "relationships",
+     "value": {
+      "id": "x-edge-policy-rlb",
+      "source_ref": "edge-policy",
+      "target_ref": "rlb",
+      "kind": "attachment"
+     }
+    }
+   ]
+  },
+  {
+   "id": "gcp-regional-armor-on-global-load-balancer",
+   "base": "providers/gcp-edge-security",
+   "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
+   "ops": [
+    {
+     "add": "relationships",
+     "value": {
+      "id": "x-api-policy-glb",
+      "source_ref": "api-policy",
+      "target_ref": "glb",
+      "kind": "attachment"
+     }
+    }
+   ]
+  },
+  {
+   "id": "gcp-regional-armor-in-vpc",
+   "base": "providers/gcp-edge-security",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:api-policy/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "gcp-regional-armor-in-another-region",
+   "base": "providers/gcp-edge-security",
+   "expect": "PLACEMENT_ATTACHMENT_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-2",
+      "name": "asia-east1",
+      "provider": "gcp",
+      "kind": "region"
+     }
+    },
+    {
+     "set": "resources/id:api-policy/placement/location",
+     "value": {
+      "region_ref": "region-2"
+     }
+    }
+   ]
+  },
+  {
+   "id": "gcp-cdn-in-region",
+   "base": "providers/gcp-edge-security",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:cdn/placement/location",
+     "value": {
+      "region_ref": "region"
+     }
+    }
+   ]
+  },
+  {
+   "id": "gcp-cdn-on-regional-load-balancer",
+   "base": "providers/gcp-edge-security",
+   "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
+   "ops": [
+    {
+     "add": "relationships",
+     "value": {
+      "id": "x-cdn-rlb",
+      "source_ref": "cdn",
+      "target_ref": "rlb",
+      "kind": "attachment"
+     }
+    }
+   ]
+  },
+  {
+   "id": "gcp-topic-in-region",
+   "base": "providers/gcp-edge-security",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:topic/placement/location",
+     "value": {
+      "region_ref": "region"
+     }
+    }
+   ]
+  },
+  {
+   "id": "gcp-global-secret-in-region",
+   "base": "providers/gcp-edge-security",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:secret/placement/location",
+     "value": {
+      "region_ref": "region"
+     }
+    }
+   ]
+  },
+  {
+   "id": "gcp-regional-secret-in-zone",
+   "base": "providers/gcp-edge-security",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:regional-secret/placement/location",
+     "value": {
+      "zone_ref": "zone"
+     }
+    }
+   ]
+  },
+  {
+   "id": "gcp-global-key-in-region",
+   "base": "providers/gcp-edge-security",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:global-key/placement/location",
+     "value": {
+      "region_ref": "region"
+     }
+    }
+   ]
+  },
+  {
+   "id": "gcp-key-in-vpc",
+   "base": "providers/gcp-edge-security",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:key/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "gcp-api-gateway-in-vpc",
+   "base": "providers/gcp-edge-security",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:gateway/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-transit-gateway-in-vpc",
+   "base": "providers/aws-network-security",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:tgw/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "tgw-a"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-transit-gateway-in-zone",
+   "base": "providers/aws-network-security",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:tgw/placement/location",
+     "value": {
+      "zone_ref": "az-a"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-tgw-attachment-two-subnets-one-zone",
+   "base": "providers/aws-network-security",
+   "expect": "PLACEMENT_SUBNET_ZONES_INVALID",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "tgw-a2",
+      "name": "tgw-a2",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "vpc",
+      "relations": [
+       {
+        "kind": "located_in",
+        "target_ref": "az-a"
+       }
+      ]
+     }
+    },
+    {
+     "set": "resources/id:attach-workload/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "tgw-a",
+        "tgw-a2"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-tgw-attachment-two-vpcs",
+   "base": "providers/aws-network-security",
+   "expect": "PLACEMENT_NETWORK_COUNT_INVALID",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "shared-b",
+      "name": "shared-b",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "shared",
+      "relations": [
+       {
+        "kind": "located_in",
+        "target_ref": "az-b"
+       }
+      ]
+     }
+    },
+    {
+     "set": "resources/id:attach-workload/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "tgw-a"
+       ]
+      },
+      {
+       "network_ref": "shared",
+       "subnet_refs": [
+        "shared-b"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-gateway-endpoint-on-subnets",
+   "base": "providers/aws-network-security",
+   "expect": "PLACEMENT_SUBNET_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:s3-endpoint/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "app-a"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-gateway-endpoint-two-vpcs",
+   "base": "providers/aws-network-security",
+   "expect": "PLACEMENT_NETWORK_COUNT_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:s3-endpoint/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      },
+      {
+       "network_ref": "shared"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-interface-endpoint-two-subnets-one-zone",
+   "base": "providers/aws-network-security",
+   "expect": "PLACEMENT_SUBNET_ZONES_INVALID",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "app-a2",
+      "name": "app-a2",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "vpc",
+      "relations": [
+       {
+        "kind": "located_in",
+        "target_ref": "az-a"
+       }
+      ]
+     }
+    },
+    {
+     "set": "resources/id:sqs-endpoint/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "app-a",
+        "app-a2"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-interface-endpoint-two-vpcs",
+   "base": "providers/aws-network-security",
+   "expect": "PLACEMENT_NETWORK_COUNT_INVALID",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "shared-b",
+      "name": "shared-b",
+      "provider": "aws",
+      "kind": "subnet",
+      "scope_refs": [
+       "acct"
+      ],
+      "parent_ref": "shared",
+      "relations": [
+       {
+        "kind": "located_in",
+        "target_ref": "az-b"
+       }
+      ]
+     }
+    },
+    {
+     "set": "resources/id:sqs-endpoint/placement/security_boundaries",
+     "value": []
+    },
+    {
+     "set": "resources/id:sqs-endpoint/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "app-a"
+       ]
+      },
+      {
+       "network_ref": "shared",
+       "subnet_refs": [
+        "shared-b"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-global-accelerator-in-region",
+   "base": "providers/aws-network-security",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:accelerator/placement/location",
+     "value": {
+      "region_ref": "region"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-global-accelerator-on-cloudfront",
+   "base": "providers/aws-network-security",
+   "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
+   "ops": [
+    {
+     "add": "relationships",
+     "value": {
+      "id": "x-accelerator-cdn",
+      "source_ref": "accelerator",
+      "target_ref": "cdn",
+      "kind": "attachment"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-shield-on-queue",
+   "base": "providers/aws-network-security",
+   "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
+   "ops": [
+    {
+     "add": "relationships",
+     "value": {
+      "id": "x-shield-alb-queue",
+      "source_ref": "shield-alb",
+      "target_ref": "queue",
+      "kind": "attachment"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-shield-in-vpc",
+   "base": "providers/aws-network-security",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:shield-cdn/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-certificate-on-ec2",
+   "base": "providers/aws-network-security",
+   "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
+   "ops": [
+    {
+     "add": "relationships",
+     "value": {
+      "id": "x-cert-web",
+      "source_ref": "cert",
+      "target_ref": "web",
+      "kind": "attachment"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-certificate-in-vpc",
+   "base": "providers/aws-network-security",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:cert/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-guardduty-in-vpc",
+   "base": "providers/aws-network-security",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:detector/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aws-guardduty-in-zone",
+   "base": "providers/aws-network-security",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:detector/placement/location",
+     "value": {
+      "zone_ref": "az-a"
+     }
+    }
+   ]
+  },
+  {
+   "id": "aws-cloudtrail-in-vpc",
+   "base": "providers/aws-network-security",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:trail/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "huawei-evs-in-vpc",
+   "base": "providers/huawei-data-messaging",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:disk/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "app"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "huawei-evs-on-cache",
+   "base": "providers/huawei-data-messaging",
+   "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
+   "ops": [
+    {
+     "add": "relationships",
+     "value": {
+      "id": "x-disk-cache",
+      "source_ref": "disk",
+      "target_ref": "cache",
+      "kind": "attachment"
+     }
+    }
+   ]
+  },
+  {
+   "id": "huawei-evs-in-another-region",
+   "base": "providers/huawei-data-messaging",
+   "expect": "PLACEMENT_ATTACHMENT_REGION_MISMATCH",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "region-2",
+      "name": "CN-Hong Kong",
+      "provider": "huawei",
+      "kind": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "az-2",
+      "name": "AZ1",
+      "provider": "huawei",
+      "kind": "zone",
+      "parent_ref": "region-2"
+     }
+    },
+    {
+     "set": "resources/id:disk/placement",
+     "value": {
+      "scope_refs": [
+       "ep"
+      ],
+      "location": {
+       "zone_ref": "az-2"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "huawei-cbr-on-sfs",
+   "base": "providers/huawei-data-messaging",
+   "expect": "PLACEMENT_ATTACHMENT_TARGET_INVALID",
+   "ops": [
+    {
+     "add": "relationships",
+     "value": {
+      "id": "x-vault-share",
+      "source_ref": "vault",
+      "target_ref": "share",
+      "kind": "attachment"
+     }
+    }
+   ]
+  },
+  {
+   "id": "huawei-cbr-in-zone",
+   "base": "providers/huawei-data-messaging",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:vault/placement/location",
+     "value": {
+      "zone_ref": "az"
+     }
+    }
+   ]
+  },
+  {
+   "id": "huawei-smn-in-vpc",
+   "base": "providers/huawei-data-messaging",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:notify/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "huawei-smn-in-zone",
+   "base": "providers/huawei-data-messaging",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:notify/placement/location",
+     "value": {
+      "zone_ref": "az"
+     }
+    }
+   ]
+  },
+  {
+   "id": "huawei-swr-in-vpc",
+   "base": "providers/huawei-data-messaging",
+   "expect": "PLACEMENT_NETWORK_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:images/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "huawei-cci-two-vpcs",
+   "base": "providers/huawei-data-messaging",
+   "expect": "PLACEMENT_NETWORK_COUNT_INVALID",
+   "ops": [
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "vpc-2",
+      "name": "Second VPC",
+      "provider": "huawei",
+      "kind": "network",
+      "scope_refs": [
+       "proj"
+      ],
+      "parent_ref": "region"
+     }
+    },
+    {
+     "add": "boundaries",
+     "value": {
+      "id": "sub-2",
+      "name": "Second subnet",
+      "provider": "huawei",
+      "kind": "subnet",
+      "scope_refs": [
+       "proj"
+      ],
+      "parent_ref": "vpc-2",
+      "relations": [
+       {
+        "kind": "located_in",
+        "target_ref": "region"
+       }
+      ]
+     }
+    },
+    {
+     "set": "resources/id:jobs/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "app"
+       ]
+      },
+      {
+       "network_ref": "vpc-2",
+       "subnet_refs": [
+        "sub-2"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "huawei-sfs-on-subnet",
+   "base": "providers/huawei-data-messaging",
+   "expect": "PLACEMENT_SUBNET_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:share/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "data"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "huawei-gateway-endpoint-on-subnet",
+   "base": "providers/huawei-data-messaging",
+   "expect": "PLACEMENT_SUBNET_FORBIDDEN",
+   "ops": [
+    {
+     "set": "resources/id:obs-endpoint/placement/network_attachments",
+     "value": [
+      {
+       "network_ref": "vpc",
+       "subnet_refs": [
+        "app"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "huawei-accelerator-in-project",
+   "base": "providers/huawei-data-messaging",
+   "expect": "HUAWEI_GLOBAL_AUTHORIZATION_PROJECT_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:accelerator/placement/scope_refs",
+     "value": [
+      "proj"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "huawei-accelerator-in-region",
+   "base": "providers/huawei-data-messaging",
+   "expect": "PLACEMENT_LOCATION_SCOPE_INVALID",
+   "ops": [
+    {
+     "set": "resources/id:accelerator/placement/location",
+     "value": {
+      "region_ref": "region"
+     }
+    }
+   ]
   }
  ],
  "warnings": [
@@ -4454,6 +5871,20 @@
    "ops": [
     {
      "set": "resources/id:vpn/placement/scope_refs",
+     "value": [
+      "proj",
+      "ep"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "huawei-swr-enterprise-project",
+   "base": "providers/huawei-data-messaging",
+   "expect": "HUAWEI_ENTERPRISE_PROJECT_UNSUPPORTED",
+   "ops": [
+    {
+     "set": "resources/id:images/placement/scope_refs",
      "value": [
       "proj",
       "ep"

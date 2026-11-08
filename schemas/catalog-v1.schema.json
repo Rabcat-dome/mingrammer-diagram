@@ -177,6 +177,7 @@
             "network_member_kinds": [],
             "one_subnet_per_zone": false,
             "parent_kinds": [],
+            "same_region_as_targets": false,
             "same_resource_group_as_network": false,
             "scope_kinds": null,
             "security_group_scope": null,
@@ -413,6 +414,11 @@
           },
           "title": "Parent Kinds",
           "type": "array"
+        },
+        "same_region_as_targets": {
+          "default": false,
+          "title": "Same Region As Targets",
+          "type": "boolean"
         },
         "same_resource_group_as_network": {
           "default": false,

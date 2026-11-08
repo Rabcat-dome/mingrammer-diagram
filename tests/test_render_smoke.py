@@ -251,17 +251,24 @@ def test_every_bundle_holds_an_editable_drawio_copy_of_the_same_picture(
             (float(point.get("x", "0")), float(point.get("y", "0")))
             for point in cell.iter("mxPoint")
         ]
-        assert sorted(bends) == sorted(on_line if nested else on_line[1:-1]), edge["id"]
-        if len(bends) > 1:
-            source = cells[cell.get("source", "")]
-            box = source.find("mxGeometry")
-            assert box is not None
-            left, top = _drawio_origin(cells, cell.get("source", ""))
-            middle = (
-                left + float(box.get("width", "0")) / 2,
-                top + float(box.get("height", "0")) / 2,
-            )
-            assert math.dist(bends[0], middle) <= math.dist(bends[-1], middle), edge["id"]
+        assert bends == (on_line if nested else on_line[1:-1]), edge["id"]
+        if not nested:
+            # Graphviz draws a line from its source, so the copy's bends run from there too: the
+            # line starts on the source's box, nearer it than the target's. A route may leave
+            # its source away from the target, and a group's box is large, so compare the boxes.
+            def gap(identifier: str, point: tuple[float, float]) -> float:
+                box = cells[identifier].find("mxGeometry")
+                assert box is not None
+                left, top = _drawio_origin(cells, identifier)
+                right = left + float(box.get("width", "0"))
+                bottom = top + float(box.get("height", "0"))
+                dx = max(left - point[0], 0.0, point[0] - right)
+                dy = max(top - point[1], 0.0, point[1] - bottom)
+                return math.hypot(dx, dy)
+
+            opening = on_line[0]
+            tail, head = cell.get("source", ""), cell.get("target", "")
+            assert gap(tail, opening) <= gap(head, opening), edge["id"]
         ends = [
             f"node:{end}" if end in nodes else f"group:{end}"
             for end in (edge["source"], edge["target"])
@@ -411,6 +418,68 @@ def test_added_aws_types_render_in_one_picture_with_only_aws_and_generic_rights(
     assert web["memberships"]["deployment"] == ["cluster"]
 
 
+S16_TYPES = {
+    # Azure
+    "azure.compute.app_service",
+    "azure.compute.function_app",
+    "azure.containers.container_apps_environment",
+    "azure.containers.container_registry",
+    "azure.database.cosmos_db",
+    "azure.database.postgresql_flexible_server",
+    "azure.database.mysql_flexible_server",
+    "azure.database.managed_redis",
+    "azure.network.front_door",
+    "azure.network.load_balancer_public",
+    "azure.network.load_balancer_internal",
+    "azure.network.dns_zone",
+    "azure.network.private_dns_zone",
+    "azure.network.private_endpoint",
+    "azure.integration.service_bus",
+    "azure.integration.event_hubs",
+    "azure.integration.api_management",
+    "azure.security.key_vault",
+    # GCP
+    "gcp.network.cloud_dns_public_zone",
+    "gcp.network.cloud_dns_private_zone",
+    "gcp.security.cloud_armor_policy",
+    "gcp.security.cloud_armor_regional_policy",
+    "gcp.network.cloud_cdn",
+    "gcp.integration.pubsub_topic",
+    "gcp.security.secret_manager_secret",
+    "gcp.security.secret_manager_regional_secret",
+    "gcp.security.kms_key",
+    "gcp.security.kms_key_global",
+    "gcp.integration.api_gateway",
+    # AWS
+    "aws.network.transit_gateway",
+    "aws.network.transit_gateway_vpc_attachment",
+    "aws.network.vpc_gateway_endpoint",
+    "aws.network.vpc_interface_endpoint",
+    "aws.network.global_accelerator",
+    "aws.security.shield_protection",
+    "aws.security.guardduty",
+    "aws.observability.cloudtrail",
+    "aws.security.acm_certificate",
+    # Huawei Cloud
+    "huawei.database.dcs_redis",
+    "huawei.database.dds",
+    "huawei.database.gaussdb",
+    "huawei.integration.dms_kafka",
+    "huawei.integration.dms_rabbitmq",
+    "huawei.integration.smn",
+    "huawei.containers.swr",
+    "huawei.containers.cci",
+    "huawei.storage.sfs",
+    "huawei.storage.sfs_turbo",
+    "huawei.storage.evs",
+    "huawei.storage.cbr_vault",
+    "huawei.network.enterprise_router",
+    "huawei.network.vpc_endpoint",
+    "huawei.network.vpc_endpoint_gateway",
+    "huawei.network.global_accelerator",
+}
+
+
 def test_the_next_aws_types_render_in_one_picture_with_only_aws_and_generic_rights(
     rendered: dict[tuple[str, str], RenderResult],
 ) -> None:
@@ -454,6 +523,41 @@ def test_the_next_aws_types_render_in_one_picture_with_only_aws_and_generic_righ
         assert nodes[identifier]["group"] == "acct", identifier
     for identifier in ("api", "table", "pool", "api-acl"):
         assert nodes[identifier]["group"] == "region", identifier
+
+
+S16_PICTURES = {
+    "providers/azure-paas.json": ("azure", "azure-architecture-icons"),
+    "providers/gcp-edge-security.json": ("gcp", "gcp-product-icons"),
+    "providers/aws-network-security.json": ("aws", "aws-architecture-icons"),
+    "providers/huawei-data-messaging.json": ("huawei", "huawei-latam-color"),
+}
+
+
+@pytest.mark.parametrize(("name", "expected"), S16_PICTURES.items())
+def test_s16_types_render_with_their_own_icons(
+    rendered: dict[tuple[str, str], RenderResult], name: str, expected: tuple[str, str]
+) -> None:
+    # S16 (D-053): every added type draws its own icon, strict and never as a fallback.
+    provider, pack = expected
+    result = rendered[(name, "detail")]
+    model = json.loads((FIXTURES / name).read_text())
+    added = {
+        item["service_type"]
+        for item in model["resources"]
+        if item["provider"] == provider and item["service_type"] in S16_TYPES
+    }
+    assert added == {type_id for type_id in S16_TYPES if type_id.startswith(provider + ".")}
+    drawn = {node["type_id"]: node for node in graph_of(result)["nodes"]}
+    for type_id in added:
+        item = catalog().records[type_id].representation
+        assert drawn[type_id]["drawing"] == "icon", type_id
+        assert drawn[type_id]["fallback"] is False, type_id
+        assert drawn[type_id]["icon"]["reference"] == (item.class_path or item.asset), type_id
+        assert drawn[type_id]["icon"]["pack"] == pack, type_id
+    manifest = manifest_of(result)
+    assert manifest["validation"]["draft"] is False
+    # Only the Huawei picture holds icons under D-018's private-use limit.
+    assert manifest["rights"]["private_use_only"] is (provider == "huawei")
 
 
 def test_a_private_hosted_zone_on_vpcs_in_two_regions_renders(smoke_root: Path) -> None:

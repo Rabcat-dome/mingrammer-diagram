@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0.0",
+  "metadata": {
+    "id": "azure-paas",
+    "title": "Azure application platform, data, edge and integration services",
+    "environment": "fixture",
+    "assumptions": [
+      "Synthetic fixture; no deployed infrastructure implied.",
+      "App Service and the function app share one integration subnet delegated to Microsoft.Web/serverFarms."
+    ]
+  },
+  "scopes": [
+    {"id": "tenant", "name": "Contoso tenant", "provider": "azure", "kind": "tenant"},
+    {"id": "sub", "name": "Production", "provider": "azure", "kind": "subscription", "parent_ref": "tenant"},
+    {"id": "rg-net", "name": "Network RG", "provider": "azure", "kind": "resource_group", "parent_ref": "sub"},
+    {"id": "rg-app", "name": "App RG", "provider": "azure", "kind": "resource_group", "parent_ref": "sub"}
+  ],
+  "boundaries": [
+    {"id": "region", "name": "southeastasia", "provider": "azure", "kind": "region"},
+    {"id": "az-1", "name": "Zone 1", "provider": "azure", "kind": "zone", "parent_ref": "region"},
+    {"id": "vnet", "name": "Spoke VNet", "provider": "azure", "kind": "network", "scope_refs": ["rg-net"], "parent_ref": "region"},
+    {"id": "sn-web-int", "name": "App Service integration subnet", "provider": "azure", "kind": "subnet", "scope_refs": ["rg-net"], "parent_ref": "vnet"},
+    {"id": "sn-aca", "name": "Container Apps subnet", "provider": "azure", "kind": "subnet", "scope_refs": ["rg-net"], "parent_ref": "vnet"},
+    {"id": "sn-pg", "name": "PostgreSQL subnet", "provider": "azure", "kind": "subnet", "scope_refs": ["rg-net"], "parent_ref": "vnet"},
+    {"id": "sn-mysql", "name": "MySQL subnet", "provider": "azure", "kind": "subnet", "scope_refs": ["rg-net"], "parent_ref": "vnet"},
+    {"id": "sn-pe", "name": "Private endpoint subnet", "provider": "azure", "kind": "subnet", "scope_refs": ["rg-net"], "parent_ref": "vnet"},
+    {"id": "sn-ilb", "name": "Internal load balancer subnet", "provider": "azure", "kind": "subnet", "scope_refs": ["rg-net"], "parent_ref": "vnet"},
+    {"id": "sn-apim", "name": "API Management subnet", "provider": "azure", "kind": "subnet", "scope_refs": ["rg-net"], "parent_ref": "vnet"},
+    {"id": "sn-app", "name": "App subnet", "provider": "azure", "kind": "subnet", "scope_refs": ["rg-net"], "parent_ref": "vnet"}
+  ],
+  "resources": [
+    {"id": "users", "name": "Users", "provider": "external", "service_type": "external.people.user", "taxonomy": "external.entity"},
+    {"id": "fd", "name": "Front Door", "provider": "azure", "service_type": "azure.network.front_door", "taxonomy": "edge.delivery", "placement": {"scope_refs": ["rg-app"]}},
+    {"id": "dns", "name": "contoso.com", "provider": "azure", "service_type": "azure.network.dns_zone", "taxonomy": "network.routing", "placement": {"scope_refs": ["rg-net"]}},
+    {"id": "pdns", "name": "privatelink.vaultcore.azure.net", "provider": "azure", "service_type": "azure.network.private_dns_zone", "taxonomy": "network.routing", "placement": {"scope_refs": ["rg-net"], "network_attachments": [{"network_ref": "vnet"}]}},
+    {"id": "web", "name": "Storefront web app", "provider": "azure", "service_type": "azure.compute.app_service", "taxonomy": "application.platform", "placement": {"scope_refs": ["rg-app"], "location": {"region_ref": "region"}, "network_attachments": [{"network_ref": "vnet", "subnet_refs": ["sn-web-int"]}]}},
+    {"id": "func", "name": "Order functions", "provider": "azure", "service_type": "azure.compute.function_app", "taxonomy": "compute.serverless", "placement": {"scope_refs": ["rg-app"], "location": {"region_ref": "region"}, "network_attachments": [{"network_ref": "vnet", "subnet_refs": ["sn-web-int"]}]}},
+    {"id": "aca", "name": "Worker environment", "provider": "azure", "service_type": "azure.containers.container_apps_environment", "taxonomy": "compute.containers", "placement": {"scope_refs": ["rg-app"], "location": {"region_ref": "region"}, "network_attachments": [{"network_ref": "vnet", "subnet_refs": ["sn-aca"]}]}},
+    {"id": "acr", "name": "Images", "provider": "azure", "service_type": "azure.containers.container_registry", "taxonomy": "compute.containers", "placement": {"scope_refs": ["rg-app"], "location": {"region_ref": "region"}}},
+    {"id": "cosmos", "name": "Catalog store", "provider": "azure", "service_type": "azure.database.cosmos_db", "taxonomy": "data.nosql_cache", "placement": {"scope_refs": ["rg-app"], "location": {"region_ref": "region"}}},
+    {"id": "pg", "name": "Orders database", "provider": "azure", "service_type": "azure.database.postgresql_flexible_server", "taxonomy": "data.relational", "placement": {"scope_refs": ["rg-app"], "location": {"zone_ref": "az-1"}, "network_attachments": [{"network_ref": "vnet", "subnet_refs": ["sn-pg"]}]}},
+    {"id": "mysql", "name": "Legacy database", "provider": "azure", "service_type": "azure.database.mysql_flexible_server", "taxonomy": "data.relational", "placement": {"scope_refs": ["rg-app"], "location": {"zone_ref": "az-1"}, "network_attachments": [{"network_ref": "vnet", "subnet_refs": ["sn-mysql"]}]}},
+    {"id": "redis", "name": "Session cache", "provider": "azure", "service_type": "azure.database.managed_redis", "taxonomy": "data.nosql_cache", "placement": {"scope_refs": ["rg-app"], "location": {"region_ref": "region"}}},
+    {"id": "plb", "name": "Public load balancer", "provider": "azure", "service_type": "azure.network.load_balancer_public", "taxonomy": "network.load_balancing", "placement": {"scope_refs": ["rg-app"], "location": {"zone_ref": "az-1"}, "network_attachments": [{"network_ref": "vnet"}]}},
+    {"id": "ilb", "name": "Internal load balancer", "provider": "azure", "service_type": "azure.network.load_balancer_internal", "taxonomy": "network.load_balancing", "placement": {"scope_refs": ["rg-app"], "location": {"zone_ref": "az-1"}, "network_attachments": [{"network_ref": "vnet", "subnet_refs": ["sn-ilb"]}]}},
+    {"id": "vm", "name": "Batch VM", "provider": "azure", "service_type": "azure.compute.virtual_machine", "taxonomy": "compute.vm", "placement": {"scope_refs": ["rg-app"], "location": {"zone_ref": "az-1"}, "network_attachments": [{"network_ref": "vnet", "subnet_refs": ["sn-app"]}]}},
+    {"id": "pe-kv", "name": "Key Vault endpoint", "provider": "azure", "service_type": "azure.network.private_endpoint", "taxonomy": "network.connectivity", "placement": {"scope_refs": ["rg-app"], "location": {"region_ref": "region"}, "network_attachments": [{"network_ref": "vnet", "subnet_refs": ["sn-pe"]}]}},
+    {"id": "pe-cosmos", "name": "Cosmos DB endpoint", "provider": "azure", "service_type": "azure.network.private_endpoint", "taxonomy": "network.connectivity", "placement": {"scope_refs": ["rg-app"], "location": {"region_ref": "region"}, "network_attachments": [{"network_ref": "vnet", "subnet_refs": ["sn-pe"]}]}},
+    {"id": "sb", "name": "Order bus", "provider": "azure", "service_type": "azure.integration.service_bus", "taxonomy": "integration.messaging", "placement": {"scope_refs": ["rg-app"], "location": {"region_ref": "region"}}},
+    {"id": "eh", "name": "Telemetry hub", "provider": "azure", "service_type": "azure.integration.event_hubs", "taxonomy": "integration.messaging", "placement": {"scope_refs": ["rg-app"], "location": {"region_ref": "region"}}},
+    {"id": "apim", "name": "Partner APIs", "provider": "azure", "service_type": "azure.integration.api_management", "taxonomy": "integration.messaging", "placement": {"scope_refs": ["rg-app"], "location": {"region_ref": "region"}, "network_attachments": [{"network_ref": "vnet", "subnet_refs": ["sn-apim"]}]}},
+    {"id": "kv", "name": "App secrets", "provider": "azure", "service_type": "azure.security.key_vault", "taxonomy": "security.secrets_keys", "placement": {"scope_refs": ["rg-app"], "location": {"region_ref": "region"}}}
+  ],
+  "relationships": [
+    {"id": "t-users-fd", "source_ref": "users", "target_ref": "fd", "kind": "traffic", "protocol": "HTTPS"},
+    {"id": "t-fd-web", "source_ref": "fd", "target_ref": "web", "kind": "traffic", "label": "Origin"},
+    {"id": "t-users-apim", "source_ref": "users", "target_ref": "apim", "kind": "traffic", "protocol": "HTTPS"},
+    {"id": "t-apim-func", "source_ref": "apim", "target_ref": "func", "kind": "traffic"},
+    {"id": "t-web-cosmos", "source_ref": "web", "target_ref": "cosmos", "kind": "traffic"},
+    {"id": "t-web-redis", "source_ref": "web", "target_ref": "redis", "kind": "traffic"},
+    {"id": "t-func-sb", "source_ref": "func", "target_ref": "sb", "kind": "traffic", "label": "Orders"},
+    {"id": "t-func-pg", "source_ref": "func", "target_ref": "pg", "kind": "traffic", "protocol": "TCP 5432"},
+    {"id": "t-aca-sb", "source_ref": "aca", "target_ref": "sb", "kind": "traffic", "label": "Work items"},
+    {"id": "t-aca-eh", "source_ref": "aca", "target_ref": "eh", "kind": "traffic", "label": "Telemetry"},
+    {"id": "t-aca-mysql", "source_ref": "aca", "target_ref": "mysql", "kind": "traffic", "protocol": "TCP 3306"},
+    {"id": "d-aca-acr", "source_ref": "aca", "target_ref": "acr", "kind": "dependency", "label": "Pulls images"},
+    {"id": "t-plb-vm", "source_ref": "plb", "target_ref": "vm", "kind": "traffic"},
+    {"id": "t-ilb-vm", "source_ref": "ilb", "target_ref": "vm", "kind": "traffic"},
+    {"id": "a-pe-kv", "source_ref": "pe-kv", "target_ref": "kv", "kind": "attachment", "label": "Private link"},
+    {"id": "a-pe-cosmos", "source_ref": "pe-cosmos", "target_ref": "cosmos", "kind": "attachment", "label": "Private link"},
+    {"id": "d-web-kv", "source_ref": "web", "target_ref": "kv", "kind": "dependency", "label": "Reads secrets"}
+  ],
+  "views": [
+    {
+      "id": "detail",
+      "title": "Azure application platform, data, edge and integration services",
+      "entity_refs": ["tenant", "sub", "rg-net", "rg-app", "region", "az-1", "vnet", "sn-web-int", "sn-aca", "sn-pg", "sn-mysql", "sn-pe", "sn-ilb", "sn-apim", "sn-app", "users", "fd", "dns", "pdns", "web", "func", "aca", "acr", "cosmos", "pg", "mysql", "redis", "plb", "ilb", "vm", "pe-kv", "pe-cosmos", "sb", "eh", "apim", "kv"],
+      "relationship_refs": ["t-users-fd", "t-fd-web", "t-users-apim", "t-apim-func", "t-web-cosmos", "t-web-redis", "t-func-sb", "t-func-pg", "t-aca-sb", "t-aca-eh", "t-aca-mysql", "d-aca-acr", "t-plb-vm", "t-ilb-vm", "a-pe-kv", "a-pe-cosmos", "d-web-kv"]
+    }
+  ]
+}

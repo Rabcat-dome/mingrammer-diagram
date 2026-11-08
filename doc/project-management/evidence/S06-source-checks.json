@@ -2356,6 +2356,2245 @@
      "matched": true
     }
    ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-certificatemanager-certificate.html",
+   "http_status": 200,
+   "text_sha256": "351e35a5e2b66cce24bd86f79c58fba3a3349f9b3e8fddcda42236b183a35804",
+   "characters": 8869,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "CloudFormation resource",
+     "pattern": "requests an AWS Certificate Manager (ACM) certificate that you can use to enable secure connections",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-cloudtrail-trail.html",
+   "http_status": 200,
+   "text_sha256": "721111374add2cbb05ae54f3689d4d0b56f044d60daaf0d4d2b7704dd56ad563",
+   "characters": 18138,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "CloudFormation resource",
+     "pattern": "Creates a trail that specifies the settings for delivery of log data",
+     "matched": true
+    },
+    {
+     "claim": "Coverage switch",
+     "pattern": "Specifies whether the trail applies only to the current Region or to all Regions",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-ec2-transitgateway.html",
+   "http_status": 200,
+   "text_sha256": "5a12d6b78711e29ede6e3cb30cf5f107c4f81e4c27f16e7c7238c31fd08e3665",
+   "characters": 8098,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "VPCs attach through a separate resource, not a property of the TGW",
+     "pattern": "you can attach your VPCs and VPN connections to the transit gateway",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-ec2-transitgatewayvpcattachment.html",
+   "http_status": 200,
+   "text_sha256": "4135eed898c41fc17266c6930df4607de1f37a4dba542e7e5b238ab582b244ae",
+   "characters": 2739,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "The CloudFormation docs say the same",
+     "pattern": "You can specify at most one subnet per Availability Zone",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-ec2-vpcendpoint.html",
+   "http_status": 200,
+   "text_sha256": "6367ab66b920b1c29bfbe41e21e5c0b359ff163d156946f28b9061c38093a105",
+   "characters": 17979,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "SubnetIds is not allowed",
+     "pattern": "You can't specify this property for a gateway endpoint",
+     "matched": true
+    },
+    {
+     "claim": "One VPC per endpoint",
+     "pattern": "A VPC endpoint provides a private connection between your VPC and an endpoint service",
+     "matched": true
+    },
+    {
+     "claim": "SubnetIds is required",
+     "pattern": "You must specify this property for an interface endpoint or a Gateway Load Balancer endpoint",
+     "matched": true
+    },
+    {
+     "claim": "Exactly one subnet",
+     "pattern": "For a Gateway Load Balancer endpoint, you can specify only one subnet",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-globalaccelerator-accelerator.html",
+   "http_status": 200,
+   "text_sha256": "ab6e62ee96f321710e16fef47a2a3120e369bc51d28f10c2a48a0e9faf22b34c",
+   "characters": 6508,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Has listeners, no VPC property",
+     "pattern": "An accelerator includes one or more listeners that process inbound connections",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-guardduty-detector.html",
+   "http_status": 200,
+   "text_sha256": "d542846f26750ab12d62acb36bb70af4d9d540514a3b78bbcd0a3024d3f0c1d6",
+   "characters": 3478,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "CloudFormation resource",
+     "pattern": "The AWS::GuardDuty::Detector resource specifies a new GuardDuty detector",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-shield-protection.html",
+   "http_status": 200,
+   "text_sha256": "df32a34b06c0d5c0bbc329c675447a3522bf0e592a31cb28a386b7aef5d853de",
+   "characters": 7588,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Direct targets",
+     "pattern": "The resource can be an Amazon CloudFront distribution, Amazon Route 53 hosted zone",
+     "matched": true
+    },
+    {
+     "claim": "Indirect protection",
+     "pattern": "You can protect Amazon EC2 instances and Network Load Balancers by association",
+     "matched": true
+    },
+    {
+     "claim": "Each protection covers one resource",
+     "pattern": "Use this protection to protect a single resource at a time",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cnames-and-https-requirements.html",
+   "http_status": 200,
+   "text_sha256": "18bb2c363ab2f32b90a0ea1ec28f72e5985b02e3361f9bf2be9d9b2ccc7d7866",
+   "characters": 9030,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Must be N. Virginia",
+     "pattern": "make sure you request (or import) the certificate in the US East (N. Virginia) Region",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html",
+   "http_status": 200,
+   "text_sha256": "9b7e2eac2aaa71be8bbba7ba6d38bc6a10318a8c30043dba1f22514e1ec35745",
+   "characters": 3172,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Regional resource",
+     "pattern": "Certificates in ACM are regional resources. To use a certificate with Elastic Load Balancing",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/acm/latest/userguide/acm-services.html",
+   "http_status": 200,
+   "text_sha256": "fc6fe62f2ccf94f8ae1f4755d2c6311c78b5d11485c585b8f920c24caadc4008",
+   "characters": 11810,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "ELB integration",
+     "pattern": "ACM is integrated with Elastic Load Balancing to deploy ACM certificates on the load balancer",
+     "matched": true
+    },
+    {
+     "claim": "Integration",
+     "pattern": "ACM is integrated with CloudFront to deploy ACM certificates on the CloudFront distribution",
+     "matched": true
+    },
+    {
+     "claim": "Custom domain name",
+     "pattern": "To set up a custom domain name, you must provide an SSL/TLS certificate",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-concepts.html",
+   "http_status": 200,
+   "text_sha256": "48775304cf6726842b0d121bdd69ba7ca5ce0541c3ec623a6280c2d9ade59992",
+   "characters": 61054,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "A multi-Region trail is edited only in its home Region",
+     "pattern": "you can only modify the trail in the home Region where it was created",
+     "matched": true
+    },
+    {
+     "claim": "Quota",
+     "pattern": "CloudTrail supports five trails per Region. A multi-Region trail counts as one trail per Region",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-trails.html",
+   "http_status": 200,
+   "text_sha256": "c53aabe596fcd3892015048dc400a9d38e1dcbf6b6e654d791286c2199d0efc7",
+   "characters": 3678,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Logs all enabled Regions",
+     "pattern": "CloudTrail records events in all AWS Regions that are enabled in your AWS account",
+     "matched": true
+    },
+    {
+     "claim": "Logs its own Region only",
+     "pattern": "When you create a single-Region trail, CloudTrail records the events in that Region only",
+     "matched": true
+    },
+    {
+     "claim": "The bucket can be in any Region",
+     "pattern": "For both types of trails, you can specify an Amazon S3 bucket from any Region",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/global-accelerator/latest/dg/about-endpoints.html",
+   "http_status": 200,
+   "text_sha256": "305b00ec6c31dd679775f84daeb2a7e7b70b4c5b8fd37fb07f7c75eb9987a564",
+   "characters": 2454,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Standard endpoint types",
+     "pattern": "can be Network Load Balancers, Application Load Balancers, Amazon EC2 instances, or Elastic IP addresses",
+     "matched": true
+    },
+    {
+     "claim": "An endpoint can sit in several groups",
+     "pattern": "You can add each endpoint to multiple endpoint groups",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/global-accelerator/latest/dg/what-is-global-accelerator.html",
+   "http_status": 200,
+   "text_sha256": "5375648179f498d66e35450ffe3f940960d3c818cc2e7701fb45a4683a097cea",
+   "characters": 4274,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Global service",
+     "pattern": "Global Accelerator is a global service that supports endpoints in multiple AWS Regions",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_concepts.html",
+   "http_status": 200,
+   "text_sha256": "fcda2bc4f23f1d792a3e7b582e7600a0625865d40d7dd2673c348aa8ed1eb524",
+   "characters": 10419,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Regional service",
+     "pattern": "Amazon GuardDuty is a regional service. When you enable GuardDuty in a specific AWS Region",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html",
+   "http_status": 200,
+   "text_sha256": "e3622abc6484eb8a8585fd7bfe418cfa82f82fae6030ce51f2bd787e3c554f93",
+   "characters": 10844,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Different mechanism from the other types",
+     "pattern": "Gateway endpoints do not use AWS PrivateLink, unlike the other types of VPC endpoints",
+     "matched": true
+    },
+    {
+     "claim": "One network interface per subnet",
+     "pattern": "we create an endpoint network interface in the subnet",
+     "matched": true
+    },
+    {
+     "claim": "Services are offered per Region",
+     "pattern": "A service provider creates an endpoint service to make their service available in a Region",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/vpc/latest/privatelink/create-interface-endpoint.html",
+   "http_status": 200,
+   "text_sha256": "250f2725f2e12ec96e93957ba093e2d389f71e3d1c5fa92e238df3713dc5d286",
+   "characters": 6301,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "No two subnets in the same zone",
+     "pattern": "You can't select multiple subnets from the same Availability Zone",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/vpc/latest/privatelink/gateway-endpoints.html",
+   "http_status": 200,
+   "text_sha256": "cefc955b616c5a6d48bfccf3d28ce22767f2ab66d66b4d2a3c50d79dc24700b5",
+   "characters": 8678,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Associates with route tables",
+     "pattern": "When you create a gateway endpoint, you select the VPC route tables",
+     "matched": true
+    },
+    {
+     "claim": "Serves only these two services",
+     "pattern": "Gateway VPC endpoints provide reliable connectivity to Amazon S3 and DynamoDB",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints-s3.html",
+   "http_status": 200,
+   "text_sha256": "03a78933214f4643ba0e2d318b4f19cc2d0ce20c74257771e01dfd6fcbfe0ffd",
+   "characters": 15584,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Available only in its Region",
+     "pattern": "A gateway endpoint is available only in the Region where you created it",
+     "matched": true
+    },
+    {
+     "claim": "Gateway reachability",
+     "pattern": "gateway endpoints do not allow access from on-premises networks, from peered VPCs",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/vpc/latest/tgw/how-transit-gateways-work.html",
+   "http_status": 200,
+   "text_sha256": "8a7b9cafb4493d3cc511bfd72fe8a2f693f0be84655ee1bcda15811ee80a424e",
+   "characters": 41638,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "A TGW is a Regional router",
+     "pattern": "a transit gateway acts as a Regional virtual router for traffic",
+     "matched": true
+    },
+    {
+     "claim": "The attachment puts network interfaces in subnets",
+     "pattern": "AWS Transit Gateway deploys an elastic network interface within VPC subnets",
+     "matched": true
+    },
+    {
+     "claim": "Exactly one subnet per enabled zone",
+     "pattern": "To enable each Availability Zone, you specify exactly one subnet",
+     "matched": true
+    },
+    {
+     "claim": "At least one zone is required",
+     "pattern": "you must enable one or more Availability Zones to be used by the transit gateway",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/vpc/latest/tgw/tgw-vpc-attachments.html",
+   "http_status": 200,
+   "text_sha256": "35e6c545bf2ef67aca8f7c29e8e8c9fd97c5696b7ed5553fb399f1358d04584a",
+   "characters": 15681,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "One VPC per attachment",
+     "pattern": "When you attach a VPC to a transit gateway, you must specify one subnet",
+     "matched": true
+    },
+    {
+     "claim": "Subnet-kind rule",
+     "pattern": "You can't create an attachment for a VPC subnet that resides in a Local Zone",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.aws.amazon.com/waf/latest/developerguide/ddos-advanced-summary-protected-resources.html",
+   "http_status": 200,
+   "text_sha256": "6c0a31ff7b98665e1f68017d0561d1db182dfbf8e7fe7c52d5b5f1b4249fec95",
+   "characters": 2204,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Standard accelerators",
+     "pattern": "Amazon Route 53 hosted zones. AWS Global Accelerator standard accelerators",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/api-gateway/docs/deployment-model",
+   "http_status": 200,
+   "text_sha256": "392e737e74fbe44145288134b2b9e4d0fdb1f18167729e15215aee46822465bd",
+   "characters": 14034,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Each gateway lives in one region",
+     "pattern": "Each gateway is deployed to a specific geographical region on Google Cloud.",
+     "matched": true
+    },
+    {
+     "claim": "Only some regions are supported",
+     "pattern": "API Gateway supports the following Google Cloud regions for deployment",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/api-gateway/docs/reference/rest/v1/projects.locations.gateways",
+   "http_status": 200,
+   "text_sha256": "93c02af009ce92270d02747a2e6d51c7a57f1040d4d212ad32e8b51f4a833984",
+   "characters": 10042,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "The Gateway schema has no network field (inferred)",
+     "pattern": "A Gateway is an API-aware HTTP proxy.",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/architecture/configure-networks-fedramp-dod-google-cloud",
+   "http_status": 200,
+   "text_sha256": "046f9ae632de4d49f55c8fb2d6b28baded7ed4c47aa217c359ba32912b315931",
+   "characters": 17038,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "A regional policy applies only to regional backend services in its own region",
+     "pattern": "can only be applied to regionally scoped backend services in the same region",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/armor/docs/network-edge-policies",
+   "http_status": 200,
+   "text_sha256": "24d01b5bbf2fa4b87f409224472aed75eaa3bc93664efb8bcfb88626b1d9fcf9",
+   "characters": 12999,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Network edge policies cover external passthrough Network Load Balancers, protocol forwarding and VMs with public IPs",
+     "pattern": "You can configure network edge security policies for the following frontend types",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/armor/docs/security-policy-overview",
+   "http_status": 200,
+   "text_sha256": "7d8101f9ec965e927cc71f720bc7584fa8e03a07b80fc1e902e8f1c71f08d0fb",
+   "characters": 34722,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Backend policies protect the backend services of the listed load balancers",
+     "pattern": "Backend security policies are used with backend services exposed by the following load balancer types",
+     "matched": true
+    },
+    {
+     "claim": "Edge policies: global external and classic Application Load Balancers only",
+     "pattern": "Edge security policies are supported for the following endpoints",
+     "matched": true
+    },
+    {
+     "claim": "Backend buckets take edge policies only",
+     "pattern": "Only edge security policies can be applied to backend buckets.",
+     "matched": true
+    },
+    {
+     "claim": "At most one backend policy and one edge policy per backend service",
+     "pattern": "two backend security policies or two edge security policies at the same time",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/cdn/docs/overview",
+   "http_status": 200,
+   "text_sha256": "2fbe7e77a8678545b4acc30c657c91c02a49f5c348bb6aba351b693da5d6997e",
+   "characters": 16677,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "CDN works only with the global external (and classic) Application Load Balancer",
+     "pattern": "Cloud CDN works with the global external Application Load Balancer",
+     "matched": true
+    },
+    {
+     "claim": "It is configured on the backend, not created on its own",
+     "pattern": "routes traffic to a backend service or backend bucket that has Cloud CDN configured",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/compute/docs/reference/rest/v1/securityPolicies",
+   "http_status": 200,
+   "text_sha256": "a543862856240e083ad9f380453004fb812a9e882bd890f4d08a8ab611a4b592",
+   "characters": 132749,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Both scopes exist",
+     "pattern": "Retrieves the list of all SecurityPolicy resources, regional and global",
+     "matched": true
+    },
+    {
+     "claim": "Only regional policies carry a region",
+     "pattern": "This field is not applicable to global security policies.",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/dns/docs/overview",
+   "http_status": 200,
+   "text_sha256": "08e3e12d5a9f9da38032aa636b9996e1197ba0c95303aa16a0fff27cc8c570c3",
+   "characters": 15971,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Google describes the product as global",
+     "pattern": "Cloud DNS is a high-performance, resilient, global Domain Name System",
+     "matched": true
+    },
+    {
+     "claim": "A public zone serves the internet and binds to no VPC (inferred)",
+     "pattern": "A public zone is visible to the public internet",
+     "matched": true
+    },
+    {
+     "claim": "A private zone is visible only to the VPC networks you list",
+     "pattern": "a private zone is visible only from one or more Virtual Private Cloud",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/dns/docs/reference/rest/v1/managedZones",
+   "http_status": 200,
+   "text_sha256": "4be524542a008c10d7d58bdc790317eb26727b0d9cf4bae2995417ae0c772ffb",
+   "characters": 15511,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "The API binds the zone to VPC network URLs",
+     "pattern": "The list of VPC networks that can see this zone.",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/dns/docs/zones/zones-overview",
+   "http_status": 200,
+   "text_sha256": "e4df452f767501d8be34c5a938bcf87d063d58552234cdd4195b6ce49f3d14e3",
+   "characters": 30865,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "The default service has no region",
+     "pattern": "The default Cloud DNS service is global in nature",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/kms/docs/locations",
+   "http_status": 200,
+   "text_sha256": "3e32bdbf8db70b181290363669e93a4587aff9b3350e7c822514464093f9651c",
+   "characters": 17067,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Regional locations exist",
+     "pattern": "a resource created in the us-central1 region is located in the central United States",
+     "matched": true
+    },
+    {
+     "claim": "Global is its own location",
+     "pattern": "The global location is a special multi-region.",
+     "matched": true
+    },
+    {
+     "claim": "Multi-regional keys live in several regions",
+     "pattern": "multi-regional location keys are physically stored in and served from multiple regional data centers",
+     "matched": true
+    },
+    {
+     "claim": "No network field on CryptoKey (inferred); keys stored outside Google and reached over a VPC (Cloud EKM) use a separate EKM connection resource",
+     "pattern": "Note that EKM via VPC keys are currently only available in regional locations.",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/kms/docs/resource-hierarchy",
+   "http_status": 200,
+   "text_sha256": "0e35c1918ef67fa16f910873ca637452c37af6e849f64bf8c06fdf277efcecb9",
+   "characters": 15230,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "A key belongs to one key ring, which sets its location",
+     "pattern": "A key exists on exactly one key ring tied to a specific location.",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/load-balancing/docs/backend-service",
+   "http_status": 200,
+   "text_sha256": "f015dafcb38d030104b607bb66e02b56627d568872c6b4c1e10b07cad82087c7",
+   "characters": 95084,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Enabled only on that load balancer's backend services",
+     "pattern": "Cloud CDN is enabled on backend services used by global external",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/pubsub/docs/choosing-pubsub-or-lite",
+   "http_status": 200,
+   "text_sha256": "65756c47701e1c49085527bea78d980703f1f9c6a368727959f3b0da1e01bfe6",
+   "characters": 10598,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Topics are global resources",
+     "pattern": "Pub/Sub topics and subscriptions are global resources",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/pubsub/docs/reference/rest/v1/projects.topics",
+   "http_status": 200,
+   "text_sha256": "999cabe8a997721c800271466053eb76b14300300c5f09a10214d0e4cb4e2b65",
+   "characters": 23045,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "The Topic resource is the REST representation of a topic",
+     "pattern": "A topic resource",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/pubsub/docs/reliability-intro",
+   "http_status": 200,
+   "text_sha256": "8294385ffc28ecdaffaa7cfe48d72417280fe1b1fe2db40aa77cd1de9b36e525",
+   "characters": 32285,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "A topic cannot be pinned to a region",
+     "pattern": "you cannot tie topics and subscriptions to a specific region",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/secret-manager/docs/choosing-replication",
+   "http_status": 200,
+   "text_sha256": "d90c0c7747cc7c5dd015cc50ddb88e8bfda1deec082778a65462fd8f54dc5d3b",
+   "characters": 6881,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Automatic replication spreads data across regions",
+     "pattern": "Secret Manager replicates the secret across multiple regions globally",
+     "matched": true
+    },
+    {
+     "claim": "Its location for organization policy is \"global\"",
+     "pattern": "can only be created if resource creation in global is allowed",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/secret-manager/docs/secret-manager-secrets-comparison",
+   "http_status": 200,
+   "text_sha256": "ca71d9b109ea9c7a236d34759f39917a7b34af2a40c12a992f653679a5dce3c1",
+   "characters": 6929,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "The global service is the default",
+     "pattern": "The global service is the default configuration for Secret Manager.",
+     "matched": true
+    },
+    {
+     "claim": "No access from other regions",
+     "pattern": "Secrets can only be accessed from within that specific region.",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://docs.cloud.google.com/secret-manager/regional-secrets/overview-rs",
+   "http_status": 200,
+   "text_sha256": "545697107a196aaad42f72485e7eb684457f5c2910c8dd9f499973509e3a4429",
+   "characters": 10961,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Regional secrets are stored and accessed in one region",
+     "pattern": "your secrets can only be stored or accessed in a particular region",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/api-management/virtual-network-concepts",
+   "http_status": 200,
+   "text_sha256": "ab910dced1c68c84a06903d0919c0dfdda1989fc840e9cf3c41043242d69a81a",
+   "characters": 9817,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Injection tiers",
+     "pattern": "In the API Management classic Developer and Premium tiers",
+     "matched": true
+    },
+    {
+     "claim": "The instance is deployed in the subnet",
+     "pattern": "inbound and outbound traffic into the subnet in which API Management is deployed",
+     "matched": true
+    },
+    {
+     "claim": "Delegated-subnet injection",
+     "pattern": "inject your instance into a delegated subnet of a virtual network",
+     "matched": true
+    },
+    {
+     "claim": "Private endpoint is inbound only",
+     "pattern": "only configure a private endpoint connection for inbound traffic",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/api-management/virtual-network-injection-resources",
+   "http_status": 200,
+   "text_sha256": "5d131e6ef4cb29d0df82278a66b707c23432f3fb6da0d52a103c211749435af3",
+   "characters": 7261,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "The subnet may hold other resources",
+     "pattern": "API Management instance might contain other Azure resource types",
+     "matched": true
+    },
+    {
+     "claim": "No delegation allowed",
+     "pattern": "The subnet used to connect to the API Management instance shouldn't have any delegations enabled",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/app-service/configure-vnet-integration-enable",
+   "http_status": 200,
+   "text_sha256": "bad59722e7522320be85a5c938749b0de946fc8c82b335693d7d7d1ddb0646a9",
+   "characters": 9295,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Required delegation",
+     "pattern": "The subnet must be delegated to Microsoft.Web/serverFarms",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/app-service/overview-vnet-integration",
+   "http_status": 200,
+   "text_sha256": "b1b7a33b8a2c2215d6871bd3a6e738f8d9aeef0c329dc70fb3141be1e64c7da0",
+   "characters": 30031,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "VNet integration carries outbound traffic only",
+     "pattern": "Virtual network integration is used only to make outbound calls from your app",
+     "matched": true
+    },
+    {
+     "claim": "One integration per app",
+     "pattern": "an app can only have a single virtual network integration at a given time",
+     "matched": true
+    },
+    {
+     "claim": "The subnet is dedicated",
+     "pattern": "Virtual network integration depends on a dedicated subnet",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/application-gateway/private-link",
+   "http_status": 200,
+   "text_sha256": "4c3b52be005c121317d990206b354b3172ee7adcc24eaf9afcda176f2ba47fb8",
+   "characters": 8555,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "A private endpoint can connect to an Application Gateway",
+     "pattern": "a private endpoint is placed into a defined virtual network's subnet",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/retirement-faq",
+   "http_status": 200,
+   "text_sha256": "3dd266d6510ddeaf685c86d98425e6f523e0c333ccebc5abd5e5fc280d211c88",
+   "characters": 11869,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Basic, Standard and Premium retire",
+     "pattern": "will be retired on September 30, 2028",
+     "matched": true
+    },
+    {
+     "claim": "Enterprise tiers retire",
+     "pattern": "Enterprise and Enterprise Flash tiers will be retired on March 31, 2027",
+     "matched": true
+    },
+    {
+     "claim": "Microsoft says to move to AMR",
+     "pattern": "upgrade your current Azure Cache for Redis instances to Azure Managed Redis",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/azure-functions/functions-networking-options",
+   "http_status": 200,
+   "text_sha256": "105974bbcf4d7ca3a40f213cd59a0f092867cc3e53485618d729b17942161d9f",
+   "characters": 41003,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Flex Consumption delegates to Microsoft.App/environments",
+     "pattern": "The subnet delegation required when running in a Flex Consumption plan is Microsoft.App/environments",
+     "matched": true
+    },
+    {
+     "claim": "Premium and Dedicated delegate to serverFarms",
+     "pattern": "your integration subnet is delegated to Microsoft.Web/serverFarms",
+     "matched": true
+    },
+    {
+     "claim": "Dedicated subnet",
+     "pattern": "Virtual network integration depends on a dedicated subnet",
+     "matched": true
+    },
+    {
+     "claim": "Not shared with other uses",
+     "pattern": "The subnet can't already be in use for other purposes",
+     "matched": true
+    },
+    {
+     "claim": "Legacy Consumption plan has no outbound integration",
+     "pattern": "The Consumption plan doesn't support outbound virtual network integration",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/container-apps/custom-virtual-networks",
+   "http_status": 200,
+   "text_sha256": "c8cf24187493cf29cd87a28a803d439fc9ad0206f816c4d555c3404d50a273e8",
+   "characters": 10045,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "A single subnet",
+     "pattern": "you provide resource IDs for a single subnet",
+     "matched": true
+    },
+    {
+     "claim": "Workload-profiles environments delegate the subnet",
+     "pattern": "You must delegate your subnet to Microsoft.App/environments",
+     "matched": true
+    },
+    {
+     "claim": "Legacy Consumption-only environments must not delegate",
+     "pattern": "Your subnet must not be delegated to any services",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/container-apps/environment",
+   "http_status": 200,
+   "text_sha256": "6d2c00954776e605bc157f729e9d47755baaeb0785e60751c259d616dd121e16",
+   "characters": 7097,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "The environment is the boundary around the apps",
+     "pattern": "is a secure boundary around one or more container apps and jobs",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/container-apps/networking",
+   "http_status": 200,
+   "text_sha256": "ec8f80a92ce55a1407a0a8168ac8cd6303dc3b54d0e2a7e782f4a6a79eef7dc4",
+   "characters": 10631,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Exclusive to the environment",
+     "pattern": "you need to provide a subnet that's dedicated exclusively to the Container Apps environment",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/container-registry/container-registry-private-link",
+   "http_status": 200,
+   "text_sha256": "97e1355105803d6a4f9a8eba08f53898c94f971e7e0012ff53c626c7a6121fe6",
+   "characters": 28999,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Reached through private endpoints",
+     "pattern": "assigning virtual network private IP addresses to the registry endpoints",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/dns/dns-faq",
+   "http_status": 200,
+   "text_sha256": "ca7806cf709806ba458661193d6d6fdc62744e466aec025a8493943d0b0c8813",
+   "characters": 19233,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Served globally",
+     "pattern": "hosted on the Azure global network of DNS name servers",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/dns/dns-zones-records",
+   "http_status": 200,
+   "text_sha256": "52e9991e1dd045409b659d969a6a52350def4b7ec223a4c382eb91507ba6660e",
+   "characters": 17565,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Global name servers",
+     "pattern": "Azure DNS provides a globally distributed and high-availability name server infrastructure",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/dns/private-dns-overview",
+   "http_status": 200,
+   "text_sha256": "fe3e34098ea9af98576e0fe1a1550cdbb0ac411a9aecac800cb1cb4570e50c8e",
+   "characters": 7464,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Stored as a global resource",
+     "pattern": "Azure stores the zone data as a global resource",
+     "matched": true
+    },
+    {
+     "claim": "Links may span regions",
+     "pattern": "You can link the same private zone to multiple VNets in different regions",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/dns/private-dns-privatednszone",
+   "http_status": 200,
+   "text_sha256": "4941d9a1b64538dfc7d3f71d265144d4f93eb2ca2e0146259bdbdcc1d303dd98",
+   "characters": 4641,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Linked to VNets, no subnet",
+     "pattern": "You can link a private DNS zone to one or more virtual networks",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/dns/private-dns-virtual-network-links",
+   "http_status": 200,
+   "text_sha256": "8838743fd5cde76040d5e51b27f45c039136585dc8a946bfad4c35ce1f18bcc1",
+   "characters": 4432,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "One link per zone and VNet pair",
+     "pattern": "You can create only one link between a private DNS zone and a virtual network",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/event-hubs/private-link-service",
+   "http_status": 200,
+   "text_sha256": "fd6b3e89c95e6ae87d4de39ad63e5a9a6a9d695cbd907bd578ac9555081a49a8",
+   "characters": 19286,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Inferred: private endpoints (not Basic) only",
+     "pattern": "This feature isn't supported in the basic tier",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/frontdoor/front-door-faq",
+   "http_status": 200,
+   "text_sha256": "65a1507b50822f0396c63f2672f388ca67e47169fb8c5d7b9d02ff0cc3e87ead",
+   "characters": 30868,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Not tied to a region",
+     "pattern": "Azure Front Door isn't limited to any Azure region, but operates globally",
+     "matched": true
+    },
+    {
+     "claim": "The profile is a global resource",
+     "pattern": "The Front Door profile is a global resource",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/frontdoor/private-link",
+   "http_status": 200,
+   "text_sha256": "4bc9b90f33f8236f798773f007219839731636bd0f7bf4ae8324625e45f0371b",
+   "characters": 13086,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Its private endpoint is Microsoft-managed, not in your VNet",
+     "pattern": "Front Door creates a private endpoint on your behalf",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/key-vault/general/private-link-service",
+   "http_status": 200,
+   "text_sha256": "a038038e24109dea6bec9cd34a78ba7bdf439e7b55effc5d630e8150e4336efc",
+   "characters": 17746,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Reached through private endpoint",
+     "pattern": "The private endpoint uses a private IP address from your VNet",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/load-balancer/backend-pool-management",
+   "http_status": 200,
+   "text_sha256": "d2fde1d87db7c4826d8839e5a59c45a5e467058111726cd25e226f4b83ff2317",
+   "characters": 8831,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Backends are in the LB's VNet",
+     "pattern": "The backend resources must be in the same virtual network as the load balancer",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/load-balancer/components",
+   "http_status": 200,
+   "text_sha256": "dc95ac76e14b6029422569b9bbf436ad4796df60fb79859d6aa265abacbbc0b7",
+   "characters": 9522,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "A private frontend makes an internal LB",
+     "pattern": "A private IP address creates an internal load balancer",
+     "matched": true
+    },
+    {
+     "claim": "A public frontend makes a public LB",
+     "pattern": "A public IP address creates a public load balancer",
+     "matched": true
+    },
+    {
+     "claim": "Frontends and backends sit in one VNet",
+     "pattern": "All load balancer frontends and their backend instances must be in a single virtual network",
+     "matched": true
+    },
+    {
+     "claim": "Backend pool scope is one VNet",
+     "pattern": "The scope of the backend pool is any virtual machine in a single virtual network",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-standard-availability-zones",
+   "http_status": 200,
+   "text_sha256": "6058023501c26081397375f2ea2565daf34f701345659e1883056d05a78d4edc",
+   "characters": 18458,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Zonal frontends are allowed",
+     "pattern": "You can deploy zonal load balancers, but we recommend that you use zone-redundant load balancers",
+     "matched": true
+    },
+    {
+     "claim": "The zone comes from the public IP",
+     "pattern": "which you configure by creating a zone-redundant public IP address",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/load-balancer/manage",
+   "http_status": 200,
+   "text_sha256": "999b8a16212f1943f25d90825456caf0225063eb2ce606a0866bfcba24f1bac0",
+   "characters": 28663,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Subnet chosen for the frontend IP",
+     "pattern": "The subnets available for the IP address of the frontend IP are displayed here",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-high-availability",
+   "http_status": 200,
+   "text_sha256": "52814cd54012dbdf8b963527f2342d26bc6b2c0321d9d79767d10fcad3f68236",
+   "characters": 21121,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "You can choose the zone",
+     "pattern": "You can choose the availability zone for both the primary server",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-networking-vnet",
+   "http_status": 200,
+   "text_sha256": "5e59652cde3f57c696675275bb6082592e19d571c3496522c0127876fe6afe8a",
+   "characters": 12279,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Only MySQL flexible servers in the subnet",
+     "pattern": "only Azure Database for MySQL Flexible Server instances can use that subnet",
+     "matched": true
+    },
+    {
+     "claim": "Delegation name",
+     "pattern": "You delegate a subnet by assigning its delegation property as Microsoft.DBforMySQL/flexibleServers",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/postgresql/network/concepts-networking-private",
+   "http_status": 200,
+   "text_sha256": "a65c08859b7b733a31a7de72c259f60b42347aa4ad52f89aa066476fa4020a46",
+   "characters": 21594,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Private access (VNet) or public access plus private endpoint",
+     "pattern": "you must choose one of the following networking options",
+     "matched": true
+    },
+    {
+     "claim": "Only flexible servers in the subnet",
+     "pattern": "only Azure Database for PostgreSQL flexible server can use that subnet",
+     "matched": true
+    },
+    {
+     "claim": "Delegation name",
+     "pattern": "You delegate a subnet by assigning its delegation property as Microsoft.DBforPostgreSQL/flexibleServers",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview",
+   "http_status": 200,
+   "text_sha256": "2d83e9d437c3b055939a9bb827499c15a08f562745975387a88d57f1009219ac",
+   "characters": 18464,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Same region as its VNet",
+     "pattern": "must be deployed in the same region and subscription as the virtual network",
+     "matched": true
+    },
+    {
+     "claim": "It is a NIC in your VNet",
+     "pattern": "is a network interface that uses a private IP address from your virtual network",
+     "matched": true
+    },
+    {
+     "claim": "More sub-resources need more endpoints",
+     "pattern": "more private endpoints with corresponding targets are required",
+     "matched": true
+    },
+    {
+     "claim": "The target may be in another region",
+     "pattern": "can be deployed in a different region than the one for the virtual network",
+     "matched": true
+    },
+    {
+     "claim": "Several endpoints may target one resource",
+     "pattern": "Multiple private endpoints can be created with the same private-link resource",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/private-link/private-link-overview",
+   "http_status": 200,
+   "text_sha256": "45b14c649e613ddd81a73836f755c75d39d529ba390df8fbbb1e12cc027f66ea",
+   "characters": 6868,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Maps to one resource instance",
+     "pattern": "A private endpoint is mapped to an instance of a PaaS resource",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/redis/migrate/migrate-basic-standard-premium-understand",
+   "http_status": 200,
+   "text_sha256": "2a2f989d4eaacf481f4a71c8233b2d3f23913313fbf79b32f2529f4ae9183eb3",
+   "characters": 11201,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "No VNet injection",
+     "pattern": "Azure Managed Redis doesn't support virtual network injection",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/redis/overview",
+   "http_status": 200,
+   "text_sha256": "2b292864a7392dd3fd139fca4c9c8a230a793bcab19af25bdbfaedc7fdac7013",
+   "characters": 12710,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Spread across zones by default",
+     "pattern": "Azure Managed Redis distributes the nodes across zones by default",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/reliability/reliability-api-management",
+   "http_status": 200,
+   "text_sha256": "dbd1a34fd475fad9389a0bc4c9114148ff2489978b366dc6ddd5ed2a984a849c",
+   "characters": 38108,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Premium can pin one zone",
+     "pattern": "The API Management service components are deployed in a single zone that you select",
+     "matched": true
+    },
+    {
+     "claim": "Zone redundancy only",
+     "pattern": "In the Premium v2 and Standard v2 tiers, you can enable zone redundancy",
+     "matched": true
+    },
+    {
+     "claim": "You can't choose zones",
+     "pattern": "You can't determine which availability zones your units are placed into",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/reliability/reliability-app-service",
+   "http_status": 200,
+   "text_sha256": "e265a096eca53eee36f760ae0a99afa5ea984223793812b802f1e8ee4cd56a6a",
+   "characters": 19537,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Zone redundancy is set on the App Service plan; you can't pin an app to a zone",
+     "pattern": "When you configure zone redundancy on App Service plans, all apps",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/reliability/reliability-container-apps",
+   "http_status": 200,
+   "text_sha256": "0e198b31448307586b66ef4a7337b1cfe6f271a7bde8c1e6d2f31772869ef991",
+   "characters": 21959,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Zone redundancy spreads infrastructure across zones",
+     "pattern": "enable zone redundancy to distribute the underlying infrastructure across multiple availability zones",
+     "matched": true
+    },
+    {
+     "claim": "No zone pinning",
+     "pattern": "you don't need to specify zone placement for individual replicas",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/reliability/reliability-container-registry",
+   "http_status": 200,
+   "text_sha256": "270bd3d9b4fba1dedb8aef2b82d5e39a875912d01d8876be1526b270124964c8",
+   "characters": 20695,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Zone redundancy is automatic, with no zone choice",
+     "pattern": "Zone redundancy is enabled by default for all registries",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/reliability/reliability-cosmos-db-nosql",
+   "http_status": 200,
+   "text_sha256": "33aa0d17bb4895e360d04c0a06328df70b130cefc47460b21c6a0376e070e34e",
+   "characters": 46231,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "One account can span regions",
+     "pattern": "A single account can span multiple Azure regions",
+     "matched": true
+    },
+    {
+     "claim": "Microsoft picks the zones",
+     "pattern": "Microsoft selects the availability zones to use",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/reliability/reliability-event-hubs",
+   "http_status": 200,
+   "text_sha256": "4ca21bf2c001206b5bb26bd208dda521b8e8de582ef652750ce58bdb5acdbe52",
+   "characters": 35198,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Zone replication is automatic",
+     "pattern": "Event Hubs transparently replicates your configuration, metadata, and event data across three availability zones",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/reliability/reliability-functions",
+   "http_status": 200,
+   "text_sha256": "3c50175ae272100de3c3012d19890993aeed14fd9f7766ccab92a8e767ff3029",
+   "characters": 26354,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Zones are set on the plan",
+     "pattern": "You configure zone redundancy on the plan",
+     "matched": true
+    },
+    {
+     "claim": "The Consumption plan has no zone support",
+     "pattern": "Consumption plans don't support availability zones",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/reliability/reliability-key-vault",
+   "http_status": 200,
+   "text_sha256": "0a48179a885dab2245f6fb92de5c0cac522692fe4c4e87d74ef927d4d77406ba",
+   "characters": 16513,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Zone redundancy is automatic",
+     "pattern": "Key Vault enables zone redundancy by default",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/reliability/reliability-postgresql-flexible-server",
+   "http_status": 200,
+   "text_sha256": "2507bb52a4f8c093483f8e037742bcb98ba9f239c89a54b1445f6121a997064f",
+   "characters": 38241,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "You can choose the zone",
+     "pattern": "select the availability zones for the primary and standby servers",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/reliability/reliability-service-bus",
+   "http_status": 200,
+   "text_sha256": "23480714320d15e5bd65c5a26bfd76fab04c101d502fd087451324723d35820c",
+   "characters": 39609,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Zone replication is automatic",
+     "pattern": "transparently replicates your configuration, metadata, and message data across multiple availability zones",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/service-bus-messaging/private-link-service",
+   "http_status": 200,
+   "text_sha256": "f966b0a95b87a4c6f8120ede5fd78d610935f3cf34371d9364595bd45bea2f9f",
+   "characters": 20624,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Inferred: private endpoint (Premium) and service endpoints only",
+     "pattern": "This feature is supported with the premium tier of Azure Service Bus",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/storage/common/storage-private-endpoints",
+   "http_status": 200,
+   "text_sha256": "eff9c0f3ce630d49036c9c6e610facd7c2d01f0f1af8e508b11dafe8a8ec9be0",
+   "characters": 13393,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "A storage account takes private endpoints",
+     "pattern": "You can use private endpoints for your Azure Storage accounts",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/templates/microsoft.apimanagement/service",
+   "http_status": 200,
+   "text_sha256": "7db096f13dacc3c4f466314b1f812d4de9092089b06e5986b3eeb78089562332",
+   "characters": 59729,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "ARM type",
+     "pattern": "The service resource type can be deployed with operations that target",
+     "matched": true
+    },
+    {
+     "claim": "`virtualNetworkConfiguration.subnetResourceId` (table)",
+     "pattern": "The full resource ID of a subnet in a virtual network to deploy",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/templates/microsoft.app/managedenvironments",
+   "http_status": 200,
+   "text_sha256": "82b537f144f383855f9980d0c81374bf0835f4e52cd23ca82cc6d196d34beefb",
+   "characters": 40531,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "ARM type",
+     "pattern": "The managedEnvironments resource type can be deployed with operations that target",
+     "matched": true
+    },
+    {
+     "claim": "The environment holds the subnet ID (table)",
+     "pattern": "Resource ID of a subnet for infrastructure components",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/templates/microsoft.cache/redisenterprise",
+   "http_status": 200,
+   "text_sha256": "daedcf68424af26479131a1fb6cfd2e1d66bfe5757c8c8fb89ea0e42f6cc8d56",
+   "characters": 26679,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "AMR's ARM type",
+     "pattern": "Redis Enterprise (Microsoft.Cache/redisEnterprise) is also known as Azure Managed Redis",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles",
+   "http_status": 200,
+   "text_sha256": "3c71198176b82f45c76ebf2be0e4367f008d99488294ca964f6f8e18a2fc2fa9",
+   "characters": 30174,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "ARM type",
+     "pattern": "The profiles resource type can be deployed with operations that target",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/templates/microsoft.containerregistry/registries",
+   "http_status": 200,
+   "text_sha256": "c2f27be9f921f9966de4fa1a8909783dc612465dfec56bb6c8e54e3224fd5d9a",
+   "characters": 38566,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "ARM type",
+     "pattern": "The registries resource type can be deployed with operations that target",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/templates/microsoft.dbformysql/flexibleservers",
+   "http_status": 200,
+   "text_sha256": "8169319244c64a817896537cd4b54aae647e23bd64098c5c1f0f0ae6cadca771",
+   "characters": 28694,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "ARM type",
+     "pattern": "The flexibleServers resource type can be deployed with operations that target",
+     "matched": true
+    },
+    {
+     "claim": "Single delegated subnet property (table)",
+     "pattern": "Delegated subnet resource id used to setup vnet for a server",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/templates/microsoft.dbforpostgresql/flexibleservers",
+   "http_status": 200,
+   "text_sha256": "5289eab00b434423460cd7a0eddc5caa850f4a5ef139d4f1b892bd196ffe97bf",
+   "characters": 41575,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "ARM type",
+     "pattern": "The flexibleServers resource type can be deployed with operations that target",
+     "matched": true
+    },
+    {
+     "claim": "The server holds `network.delegatedSubnetResourceId` (single) (table)",
+     "pattern": "Resource identifier of the delegated subnet",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/templates/microsoft.documentdb/databaseaccounts",
+   "http_status": 200,
+   "text_sha256": "c1a6c9aed3b4393ec5c13a80ce1815d5e09ae3f72485dbe38bfa8d982f580e89",
+   "characters": 67314,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "ARM type",
+     "pattern": "The databaseAccounts resource type can be deployed with operations that target",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/templates/microsoft.eventhub/namespaces",
+   "http_status": 200,
+   "text_sha256": "f23b8e34c59a24866e8842d92db234b4de7491ce1cfc42f110e79ae6f3b4ac9b",
+   "characters": 31765,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "ARM type",
+     "pattern": "The namespaces resource type can be deployed with operations that target",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/templates/microsoft.keyvault/vaults",
+   "http_status": 200,
+   "text_sha256": "60d9e5825c8586db5510367a3d82f7f4daa29bab17eb9199b802bada21bc09a9",
+   "characters": 51054,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "ARM type",
+     "pattern": "The vaults resource type can be deployed with operations that target",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/templates/microsoft.network/dnszones",
+   "http_status": 200,
+   "text_sha256": "6a6bd115ea9ad3d5b224220d9af6e68abb64c7f398999d32b88880cc50825501",
+   "characters": 8567,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "ARM type",
+     "pattern": "The dnsZones resource type can be deployed with operations that target",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/templates/microsoft.network/loadbalancers",
+   "http_status": 200,
+   "text_sha256": "c31da193f3f16532002223f0c73a0f920f6f885e83a323f615e64afe41fab635",
+   "characters": 143157,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "ARM type",
+     "pattern": "The loadBalancers resource type can be deployed with operations that target",
+     "matched": true
+    },
+    {
+     "claim": "The frontend IP config references a subnet (table)",
+     "pattern": "The reference to the subnet resource",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/templates/microsoft.network/privateendpoints",
+   "http_status": 200,
+   "text_sha256": "999d52a7f274ac55e8dee24de61faf8be875c9435907ce2670e6660ac30947e8",
+   "characters": 78804,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "ARM type",
+     "pattern": "The privateEndpoints resource type can be deployed with operations that target",
+     "matched": true
+    },
+    {
+     "claim": "Single subnet property (table)",
+     "pattern": "The ID of the subnet from which the private IP will be allocated",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/templates/microsoft.servicebus/namespaces",
+   "http_status": 200,
+   "text_sha256": "685f179108a52c00b6bc276a078f6115af76178af354beea4b2670991dbd2b12",
+   "characters": 26187,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "ARM type",
+     "pattern": "The namespaces resource type can be deployed with operations that target",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://learn.microsoft.com/en-us/azure/templates/microsoft.web/sites",
+   "http_status": 200,
+   "text_sha256": "3b388347e1187ee6cfab2146613a1ccca3e781bb38d62da560a577aaaec78561",
+   "characters": 144940,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "ARM type",
+     "pattern": "The sites resource type can be deployed with operations that target",
+     "matched": true
+    },
+    {
+     "claim": "The site itself holds `virtualNetworkSubnetId` (table)",
+     "pattern": "ID of the Virtual network and subnet to be joined by Regional VNET Integration",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/bulletin-sfs/sfs_bulletin_0001.html",
+   "http_status": 200,
+   "text_sha256": "bedd7933c52e55c59cd7a1604e96637bca47e13488b0cd1af993db52cff784e1",
+   "characters": 3997,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "SFS Turbo is now its own service",
+     "pattern": "SFS Turbo will be an independent cloud service, separate from SFS.",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/productdesc-cbr/cbr_01_0002.html",
+   "http_status": 200,
+   "text_sha256": "42584cd842ee749205c4a92eceff71b39565cc7ac269de2bc9dad2e5eac69c35",
+   "characters": 9043,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "A vault is associated with the resources it backs up",
+     "pattern": "associate it with the resources you want to back up.",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/productdesc-dcs/ProductDescPrivilegeManagement.html",
+   "http_status": 200,
+   "text_sha256": "79fd65628dc7043186944da8d9056c36b8e1c4fc36dba3a2af8c371783001748",
+   "characters": 11108,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Service page says the same",
+     "pattern": "DCS is a project-level service deployed for specific regions.",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/productdesc-er/er_01_0008.html",
+   "http_status": 200,
+   "text_sha256": "3956d1c67b93936d4f7c9b4aa50aa1f91d7205c431766b45f85230f88dd4005e",
+   "characters": 9816,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Not in the IAM table; from the service page",
+     "pattern": "Enterprise Router is a project-level service deployed in a specific region.",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/productdesc-ga/ga_01_0100.html",
+   "http_status": 200,
+   "text_sha256": "325f7b767b95c2bd4efd3314d5d03467482e3b8a565bdb7fa9503349aa30992f",
+   "characters": 9236,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Global service",
+     "pattern": "Global Accelerator is a global service for access from any region.",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/productdesc-gaussdb/gaussdb_01_003.html",
+   "http_status": 200,
+   "text_sha256": "20275a34a257759a22e5400ebf043c8c5d39ef4e3400d936b1322bc5795e4c39",
+   "characters": 4600,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Huawei's own relational DB",
+     "pattern": "GaussDB is an enterprise-grade relational database developed by Huawei.",
+     "matched": true
+    },
+    {
+     "claim": "Has distributed and centralized forms",
+     "pattern": "The overall architecture of a centralized GaussDB instance is as follows.",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/productdesc-gaussdb/gaussdb_01_057.html",
+   "http_status": 200,
+   "text_sha256": "7c4784dd45e6ca2a10c774f683fb073ca41a1f7367d38b08e52139bf7c211786",
+   "characters": 19470,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Not in the IAM table; from the service page",
+     "pattern": "GaussDB is a project-level service deployed for specific regions.",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/productdesc-sfsturbo/sfsturbo_01_0013.html",
+   "http_status": 200,
+   "text_sha256": "dda4e1836617dfb2fbeebb2b1deb10110df2a1dfa8675f6a217d6739c3082b28",
+   "characters": 12227,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Not in the IAM table; from the service page",
+     "pattern": "SFS Turbo is a project-level service deployed for specific regions.",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/productdesc-smn/smn_ug_0034.html",
+   "http_status": 200,
+   "text_sha256": "566d7e34d510631ca66cf5487bc58ec6fd6f21b0c63cf945f82c2895b4456fc9",
+   "characters": 9905,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Project-level, with no AZ field",
+     "pattern": "SMN is a project-level service deployed for specific regions.",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/productdesc-vpcep/en-us_topic_0131645194.html",
+   "http_status": 200,
+   "text_sha256": "f2698bf6eabbd3309f17243113b1b427d90bf7c9b1498e66daa1612938c0b349",
+   "characters": 4969,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "A gateway endpoint works through routes",
+     "pattern": "Gateway VPC endpoints are used to access gateway VPC endpoint services and work as gateways",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/qs-cbr/cbr_02_0028.html",
+   "http_status": 200,
+   "text_sha256": "ec81af89fec9e2c23e226322dc6eb882f6565bc6c866a9cbc9446992ee616294",
+   "characters": 12804,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Region fixed; no AZ choice (single-AZ or multi-AZ is only a redundancy option)",
+     "pattern": "Once the vault is created, its region cannot be changed.",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/usermanual-cci2/cci_01_0001.html",
+   "http_status": 200,
+   "text_sha256": "5ea5370c11efdcc0a95de8e2e88c4c0868a1062e7f04c787bf972c3a141e88ac",
+   "characters": 10784,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Namespaces are counted per region; no AZ field",
+     "pattern": "One account can create a maximum of five namespaces in a region.",
+     "matched": true
+    },
+    {
+     "claim": "Uses subnets of a single VPC",
+     "pattern": "You can configure one or more subnets of a single VPC for these networks.",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/usermanual-dcs/dcs-ug-0713002.html",
+   "http_status": 200,
+   "text_sha256": "a5f4fec6ef2414b0c3673d6be439f1e9afdf61f29c475df8e31f04c8a6709f6a",
+   "characters": 21301,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "You pick the master and standby AZs",
+     "pattern": "select AZs for the master and standby nodes of the instance",
+     "matched": true
+    },
+    {
+     "claim": "Instances sit in a VPC, bound to a subnet",
+     "pattern": "DCS Redis instances are deployed in Virtual Private Clouds (VPCs), and bound to specific subnets.",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/usermanual-dds/dds_03_0302.html",
+   "http_status": 200,
+   "text_sha256": "cd81819e87eb323e785fe4c737ff351dd05b054d77dd97d116d2eabce25c48a2",
+   "characters": 22123,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Deployed in one AZ or three",
+     "pattern": "Instances can be deployed in a single AZ or three AZs.",
+     "matched": true
+    },
+    {
+     "claim": "The subnet assigns the instance's private IP",
+     "pattern": "you can change the private IP address assigned by the subnet",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/usermanual-em/en-us_topic_0108763979.html",
+   "http_status": 200,
+   "text_sha256": "c4490057eda80e251aa1a5a39f789182f4a4d04f5fe7f37fe790815b4e9f0d4b",
+   "characters": 7702,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "In the EPS list",
+     "pattern": "Distributed Cache Service (DCS) Instance Distributed Message Service (DMS) Kafka instance",
+     "matched": true
+    },
+    {
+     "claim": "In the EPS list",
+     "pattern": "Document Database Service (DDS) Instance Distributed Database Middleware (DDM) Instance",
+     "matched": true
+    },
+    {
+     "claim": "In the EPS list",
+     "pattern": "Real-time disaster recovery task GaussDB GaussDB instance Cloud Data Migration (CDM)",
+     "matched": true
+    },
+    {
+     "claim": "In the EPS list",
+     "pattern": "Distributed Message Service (DMS) Kafka instance RabbitMQ instance RocketMQ instance",
+     "matched": true
+    },
+    {
+     "claim": "In the EPS list",
+     "pattern": "Simple Message Notification (SMN) Topic Blockchain Service (BCS)",
+     "matched": true
+    },
+    {
+     "claim": "In the EPS list",
+     "pattern": "Cloud Container Instance (CCI) Namespace Gene Container Service (GCS)",
+     "matched": true
+    },
+    {
+     "claim": "Both are in the EPS list",
+     "pattern": "Scalable File Service (SFS) File system Scalable File Service Turbo (SFS Turbo) SFS Turbo",
+     "matched": true
+    },
+    {
+     "claim": "In the EPS list",
+     "pattern": "Elastic Volume Service (EVS) Disk Cloud Backup and Recovery (CBR) Vault",
+     "matched": true
+    },
+    {
+     "claim": "In the EPS list",
+     "pattern": "Enterprise Router (ER) Enterprise router Change Management Service (CMS)",
+     "matched": true
+    },
+    {
+     "claim": "In the EPS list",
+     "pattern": "Global Accelerator (GA) Accelerator Industrial Simulation Cloud Service",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/usermanual-er/er_01_0069.html",
+   "http_status": 200,
+   "text_sha256": "5614a582af5743e33359695bb15fcdfb1f1912dcb7aeef870befc26b485e754e",
+   "characters": 10235,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "AZ is required; two recommended",
+     "pattern": "We recommend that you select two AZs.",
+     "matched": true
+    },
+    {
+     "claim": "Connects VPCs in its own region",
+     "pattern": "An enterprise router can connect VPCs in the same region",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/usermanual-er/er_01_0070.html",
+   "http_status": 200,
+   "text_sha256": "6c663d25c879119f18064ca2f97535a97f0a0d909c4a3052c4a8a70e4dcaa413",
+   "characters": 7516,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Each VPC attachment picks one subnet",
+     "pattern": "Select a subnet in the selected VPC.",
+     "matched": true
+    },
+    {
+     "claim": "The attachment reaches the whole VPC",
+     "pattern": "the enterprise router can connect to the entire VPC.",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/usermanual-evs/en-us_topic_0021738346.html",
+   "http_status": 200,
+   "text_sha256": "75090a8524a073dce3bdab15498171c2ec87cecdd487c4f73f48b59b42f87fbd",
+   "characters": 15822,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "A disk is created in an AZ",
+     "pattern": "The availability zone (AZ) where you want to create the disk.",
+     "matched": true
+    },
+    {
+     "claim": "Attaches to servers in the same AZ",
+     "pattern": "You can only attach disks to servers in the same region and AZ.",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/usermanual-ga/ga_03_1002.html",
+   "http_status": 200,
+   "text_sha256": "f1159d0370d64aba1968a0614fd5370d7b52cff8be7f2f3157a741afbc17d590",
+   "characters": 7130,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Create form asks only where it is used; no VPC",
+     "pattern": "Where the global accelerator will be used.",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/usermanual-gaussdb/gaussdb_01_080.html",
+   "http_status": 200,
+   "text_sha256": "497fd8fef1853d6bdb1b264e29064298cc7678084a78ce9a6b42f12b7b0092f4",
+   "characters": 41971,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "One or three AZs",
+     "pattern": "Select either one or three AZs. Three AZs are recommended.",
+     "matched": true
+    },
+    {
+     "claim": "Instances are created in subnets",
+     "pattern": "is enabled by default for subnets in which you plan to create GaussDB instances",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/usermanual-kafka/kafka-ug-180604013.html",
+   "http_status": 200,
+   "text_sha256": "419f3072347222a0ae27f99184dfea8c8d35bac62c23ac815edf270e0a3ab3ae",
+   "characters": 31960,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "One AZ or three or more",
+     "pattern": "Select one AZ or at least three AZs.",
+     "matched": true
+    },
+    {
+     "claim": "Subnet chosen at creation and fixed",
+     "pattern": "After the Kafka instance is created, its subnet cannot be changed.",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/usermanual-rabbitmq/rabbitmq-ug-180604004.html",
+   "http_status": 200,
+   "text_sha256": "190bac529cf68e56e15b44738976e078e390d520c2e65ad192cdf8b5c6c364f8",
+   "characters": 27464,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "One AZ or three or more",
+     "pattern": "Select one AZ or at least three AZs.",
+     "matched": true
+    },
+    {
+     "claim": "Subnet chosen at creation and fixed",
+     "pattern": "After the RabbitMQ instance is created, its subnet cannot be changed.",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/usermanual-sfs/en-us_topic_0034428727.html",
+   "http_status": 200,
+   "text_sha256": "40f3fce1a247728d6821ffcf25f72ea2918c36699810b4fc1e860f21abbc4b65",
+   "characters": 9380,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Has an AZ field",
+     "pattern": "You are advised to select the AZ where the cloud servers reside.",
+     "matched": true
+    },
+    {
+     "claim": "Authorized by VPC; more VPCs can be added",
+     "pattern": "You can add VPCs later on the file system details page.",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/usermanual-sfsturbo/sfsturbo_01_0359.html",
+   "http_status": 200,
+   "text_sha256": "ab79051b459c6523c732edcf84bb79819567f2923d769f464285af46fc1b01cf",
+   "characters": 18440,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "AZ chosen at creation, then fixed",
+     "pattern": "Select an AZ where you want to create the SFS Turbo file system.",
+     "matched": true
+    },
+    {
+     "claim": "IP addresses are created in the chosen subnet",
+     "pattern": "the system automatically creates IP addresses in the specified subnet.",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/usermanual-swr/swr_01_0101.html",
+   "http_status": 200,
+   "text_sha256": "13338d2cae471a6b9de143b99324bdfe1ba38bef51b969369bd537e4a695f905",
+   "characters": 7402,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Repositories are per region; images are copied to other regions",
+     "pattern": "you can replicate the latest image tag to image repositories in other regions",
+     "matched": true
+    }
+   ]
+  },
+  {
+   "url": "https://support.huaweicloud.com/intl/en-us/usermanual-vpcep/en-us_topic_0131645189.html",
+   "http_status": 200,
+   "text_sha256": "3737ec753fb473040d0bd1208ad4448805a322b1b9cbe7083a5e8ca1273131d4",
+   "characters": 14992,
+   "checked": "2026-11-08",
+   "claims": [
+    {
+     "claim": "Endpoints are region-level",
+     "pattern": "VPC endpoints are region-level resources. Select a region and project",
+     "matched": true
+    },
+    {
+     "claim": "An interface endpoint is deployed in a subnet",
+     "pattern": "Specify the subnet where the VPC endpoint is to be deployed.",
+     "matched": true
+    },
+    {
+     "claim": "Route tables only, no subnet",
+     "pattern": "available only when you create a VPC endpoint for accessing a gateway VPC endpoint service",
+     "matched": true
+    }
+   ]
   }
  ]
 }

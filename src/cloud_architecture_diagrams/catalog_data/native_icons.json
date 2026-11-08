@@ -1,5 +1,5 @@
 {
-  "catalog_version": "2026.11.2",
+  "catalog_version": "2026.11.3",
   "package": "diagrams",
   "package_version": "0.25.1",
   "icons": {
@@ -63,6 +63,11 @@
       "resource": "resources/aws/integration/simple-queue-service-sqs.png",
       "sha256": "9e9c8b3aa72634b2463eed5ee25aaed1628d49d302777c1d2f1ac0fb66cfc69a"
     },
+    "diagrams.aws.management.Cloudtrail": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/management/cloudtrail.png",
+      "sha256": "4996fd12c95b4f9964741e8358e38ffcd2393b1f9fe06cf55237d4668225a450"
+    },
     "diagrams.aws.management.Cloudwatch": {
       "pack": "aws-architecture-icons",
       "resource": "resources/aws/management/cloudwatch.png",
@@ -93,6 +98,16 @@
       "resource": "resources/aws/network/elb-network-load-balancer.png",
       "sha256": "6aaee63fed863eebe8487d026a82fe59678d3fabaecfb2673f885c14b4a3b133"
     },
+    "diagrams.aws.network.Endpoint": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/network/endpoint.png",
+      "sha256": "c5105a587c21adb283fa2fdf802571d1c8e02ee8a5d76bb1144732dffa659310"
+    },
+    "diagrams.aws.network.GlobalAccelerator": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/network/global-accelerator.png",
+      "sha256": "708c786f0e74ea1e5a203eeb4db7acd885caf74574a790097f1789a9bb0a7a6f"
+    },
     "diagrams.aws.network.InternetGateway": {
       "pack": "aws-architecture-icons",
       "resource": "resources/aws/network/internet-gateway.png",
@@ -113,10 +128,30 @@
       "resource": "resources/aws/network/site-to-site-vpn.png",
       "sha256": "eb865cc644d60d71a6189adbb4f09f4420c510a9de2ec82f13cf53f2933873b0"
     },
+    "diagrams.aws.network.TransitGateway": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/network/transit-gateway.png",
+      "sha256": "633c83469132231868d264fbf03b543816c3d3763ccbbd4ad861fb97b7f4c4e4"
+    },
+    "diagrams.aws.network.TransitGatewayAttachment": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/network/transit-gateway-attachment.png",
+      "sha256": "935ba45dffd376bf9a1220ca66a807b30c498e98c272e97e502d914e92b615c7"
+    },
+    "diagrams.aws.security.CertificateManager": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/security/certificate-manager.png",
+      "sha256": "4b45398a6a6b719edd2e9d08e5b17ac424ae99f5b38fe47df7cbbaae2e0ecdc8"
+    },
     "diagrams.aws.security.Cognito": {
       "pack": "aws-architecture-icons",
       "resource": "resources/aws/security/cognito.png",
       "sha256": "93d787fbeb5a6c3eff3f0307ebd0811edecd2db3d6e43c7a001f98cf02cd375f"
+    },
+    "diagrams.aws.security.Guardduty": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/security/guardduty.png",
+      "sha256": "069d65f46ba5a38548aa668c5268c12b4114057a04d9eb114526e64de63a166b"
     },
     "diagrams.aws.security.IAM": {
       "pack": "aws-architecture-icons",
@@ -133,6 +168,11 @@
       "resource": "resources/aws/security/secrets-manager.png",
       "sha256": "e2d91696e0fc7619bfc114a3e6d102b247a1f345eb004627e9fd03ec48de211c"
     },
+    "diagrams.aws.security.Shield": {
+      "pack": "aws-architecture-icons",
+      "resource": "resources/aws/security/shield.png",
+      "sha256": "8ddfc39c805ec13c8b2c6a2d7dba43905885253b1766ed0d70fade0b0ec3aa3a"
+    },
     "diagrams.aws.security.WAF": {
       "pack": "aws-architecture-icons",
       "resource": "resources/aws/security/waf.png",
@@ -143,15 +183,55 @@
       "resource": "resources/aws/storage/simple-storage-service-s3.png",
       "sha256": "656fdea609bf68df6dd032d56e0beedbf47b26051fb5238aa4d85c9c52d33f62"
     },
+    "diagrams.azure.analytics.EventHubs": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/analytics/event-hubs.png",
+      "sha256": "77c9c82fc9749efb05009b9eb31d20e3882946bae7c06afed783f2576d36dad8"
+    },
+    "diagrams.azure.appservices.AppServices": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/appservices/app-services.png",
+      "sha256": "4699e5b3e8150ee16189f8afcafbaa33eb1ebf4050156cb5dcee9614f041d105"
+    },
+    "diagrams.azure.compute.FunctionApps": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/compute/function-apps.png",
+      "sha256": "2bb03af56a57e85b3562bb855bcbd5c88f261e46c5b33168cafed4d862395130"
+    },
     "diagrams.azure.compute.VM": {
       "pack": "azure-architecture-icons",
       "resource": "resources/azure/compute/vm.png",
       "sha256": "e43f6872fd7e4f1ea28b6a86f5152e491b6c881080d8a2579f136e390a994547"
     },
+    "diagrams.azure.containers.ContainerRegistries": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/containers/container-registries.png",
+      "sha256": "659dcd2804f0ab3ab50c65ab59305c3c9950c93df3d9aa23c0abd6710bc47699"
+    },
     "diagrams.azure.containers.KubernetesServices": {
       "pack": "azure-architecture-icons",
       "resource": "resources/azure/containers/kubernetes-services.png",
       "sha256": "6ffa41da74ea0555af6abca839aefd33f1105748f0fb4e2d54df95c1f471b62f"
+    },
+    "diagrams.azure.databases.AzureCosmosDb": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/databases/azure-cosmos-db.png",
+      "sha256": "e30e81e8f323d387aad1e9b3da2c053b31746717fa597d9a5875e498a62bd4ef"
+    },
+    "diagrams.azure.databases.AzureDatabaseMysqlServer": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/databases/azure-database-mysql-server.png",
+      "sha256": "ee5498981a39e5d84254d8da0fcbd4986d79cbd690192274f5642893c89f2df6"
+    },
+    "diagrams.azure.databases.AzureDatabasePostgresqlServer": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/databases/azure-database-postgresql-server.png",
+      "sha256": "581ca3eb198aa7b28ec919668d22f970d4db4e3d3bcd027d77984ef4677f764f"
+    },
+    "diagrams.azure.databases.CacheRedis": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/databases/cache-redis.png",
+      "sha256": "ab82caf85b1f75478db4896b537ef595fbd9a03f57543ac1526efbe093c767d6"
     },
     "diagrams.azure.databases.SQLDatabase": {
       "pack": "azure-architecture-icons",
@@ -163,15 +243,35 @@
       "resource": "resources/azure/identity/active-directory.png",
       "sha256": "a8b60589d384de595cfa2ec7797991e0a4ed8003039c8fc1d1f83ac3a536fc57"
     },
+    "diagrams.azure.integration.APIManagementServices": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/integration/api-management-services.png",
+      "sha256": "4ccd103a8c2922bc35b01b1b9487af0bea83083e3757ebca841e8f725dc254c8"
+    },
+    "diagrams.azure.integration.AzureServiceBus": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/integration/azure-service-bus.png",
+      "sha256": "1334bbe844be0b5a0022267b8959038cb7521762ea49203caee2307aaac9ad68"
+    },
     "diagrams.azure.monitor.Monitor": {
       "pack": "azure-architecture-icons",
       "resource": "resources/azure/monitor/monitor.png",
       "sha256": "23a2ac851b9a78c290e6df390c3afb32e00a5bb2adc57ed8232b3c96b1ded6ad"
     },
+    "diagrams.azure.network.DNSPrivateZones": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/network/dns-private-zones.png",
+      "sha256": "e34e50224faa61b4aae4ff034b6ca13d0dff7800278f943b54f21ffdab4dff76"
+    },
     "diagrams.azure.networking.ApplicationGateways": {
       "pack": "azure-architecture-icons",
       "resource": "resources/azure/networking/application-gateways.png",
       "sha256": "8eb684218ad635400f3fd7802802a1880f929b0659357d4d37a119799ef03271"
+    },
+    "diagrams.azure.networking.DNSZones": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/networking/dns-zones.png",
+      "sha256": "f97fc696e94a345023470d0bc67d1498ce0b7de23afb73f5044e5ec268285dcd"
     },
     "diagrams.azure.networking.ExpressrouteCircuits": {
       "pack": "azure-architecture-icons",
@@ -182,6 +282,16 @@
       "pack": "azure-architecture-icons",
       "resource": "resources/azure/networking/firewalls.png",
       "sha256": "6e32ea67635e8fc21053c99106cb4ee42647c7daf230deaf7a7e125845db66d0"
+    },
+    "diagrams.azure.networking.FrontDoorAndCDNProfiles": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/networking/front-door-and-cdn-profiles.png",
+      "sha256": "e56a477802571247d4e1236f0947627c8f96a50a539da4f7ef808710de5ed4ea"
+    },
+    "diagrams.azure.networking.LoadBalancers": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/networking/load-balancers.png",
+      "sha256": "e5c8e6aa7a610b952593cc5ad45b3b1b57947ee702c00f94656ae07c9975eb52"
     },
     "diagrams.azure.networking.Nat": {
       "pack": "azure-architecture-icons",
@@ -198,10 +308,35 @@
       "resource": "resources/azure/networking/virtual-network-gateways.png",
       "sha256": "8bd8353aaefdf7aef97d9a9805fee525c633f544f2b8e9f610e89e1afab76791"
     },
+    "diagrams.azure.other.ContainerAppsEnvironments": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/other/container-apps-environments.png",
+      "sha256": "6be008b38bad58a1335f2f2a43e88abdba9017d9b658d94eb7dcf812428552da"
+    },
+    "diagrams.azure.other.PrivateEndpoints": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/other/private-endpoints.png",
+      "sha256": "f497823b12ee7a5637d9202e972f8cd6681f30ffd98847fc12fab7d84d6d7361"
+    },
+    "diagrams.azure.security.KeyVaults": {
+      "pack": "azure-architecture-icons",
+      "resource": "resources/azure/security/key-vaults.png",
+      "sha256": "55d3a5884810ba1c33c66f68ce282f32ee794a329b13d4b9c832c54bdac13269"
+    },
     "diagrams.azure.storage.BlobStorage": {
       "pack": "azure-architecture-icons",
       "resource": "resources/azure/storage/blob-storage.png",
       "sha256": "375264b1418547dc9e454a41c9ea98adea419d63a61a3090b016980d9b310f28"
+    },
+    "diagrams.gcp.analytics.PubSub": {
+      "pack": "gcp-product-icons",
+      "resource": "resources/gcp/analytics/pubsub.png",
+      "sha256": "f6e7cf0f31068e30428d2c626e38ccf241914c3d4f2e9101b37aebb9e62e93dc"
+    },
+    "diagrams.gcp.api.APIGateway": {
+      "pack": "gcp-product-icons",
+      "resource": "resources/gcp/api/api-gateway.png",
+      "sha256": "233764f8eabd301507ad135f44aeb565e1d8aac4de9c16c894d070fc4a7b3382"
     },
     "diagrams.gcp.compute.ComputeEngine": {
       "pack": "gcp-product-icons",
@@ -217,6 +352,21 @@
       "pack": "gcp-product-icons",
       "resource": "resources/gcp/database/sql.png",
       "sha256": "6fa8ba3a56612156f73265182f4c84094cdb1eaaaa79171ecf64af1e821b3dba"
+    },
+    "diagrams.gcp.network.Armor": {
+      "pack": "gcp-product-icons",
+      "resource": "resources/gcp/network/armor.png",
+      "sha256": "123437b4089c1c6ed728516d0676aa509cd8c917cfff361fc8d844681abda497"
+    },
+    "diagrams.gcp.network.CDN": {
+      "pack": "gcp-product-icons",
+      "resource": "resources/gcp/network/cdn.png",
+      "sha256": "7d62549d717e01e6349abed0e867846330537390d4c08515faaae18e4b9bff01"
+    },
+    "diagrams.gcp.network.DNS": {
+      "pack": "gcp-product-icons",
+      "resource": "resources/gcp/network/dns.png",
+      "sha256": "e61867823dba65147417ede21cc70ccabd0488d94f436f1f35329a798d8f678e"
     },
     "diagrams.gcp.network.DedicatedInterconnect": {
       "pack": "gcp-product-icons",
@@ -262,6 +412,16 @@
       "pack": "gcp-product-icons",
       "resource": "resources/gcp/security/iam.png",
       "sha256": "79817719ff17a2f767c575e7d6c792f6b3f69406dfc54d51f2733ced2dcbed0a"
+    },
+    "diagrams.gcp.security.KeyManagementService": {
+      "pack": "gcp-product-icons",
+      "resource": "resources/gcp/security/key-management-service.png",
+      "sha256": "7a31ac20cdc611b5ca751deb48ec6bfaaa573f5c3d880e668b800b9475696c96"
+    },
+    "diagrams.gcp.security.SecretManager": {
+      "pack": "gcp-product-icons",
+      "resource": "resources/gcp/security/secret-manager.png",
+      "sha256": "bb64c64b157c0ba583a49368933e0f60fcd65e80ae3bb6bb6e5a8fbb3600f1d9"
     },
     "diagrams.gcp.storage.Storage": {
       "pack": "gcp-product-icons",

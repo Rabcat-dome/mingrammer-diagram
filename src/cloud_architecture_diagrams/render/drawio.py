@@ -353,7 +353,7 @@ class _Writer:
             if path is None:
                 raise RenderFailure("RENDER_CONTENT_MISSING", "/drawio", edge.id)
             source, target = self._end(edge.source), self._end(edge.target)
-            # Graphviz writes a line from its tail to its head, in all 47 fixture views.
+            # Graphviz writes a line from its tail to its head, in every fixture view.
             points = [self.page.point(x, y) for x, y in _line_points(path)]
             cell = _add(
                 self.cells,

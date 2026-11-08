@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0.0",
+  "metadata": {
+    "id": "gcp-edge-security",
+    "title": "GCP edge, DNS, messaging and security services",
+    "environment": "fixture",
+    "assumptions": [
+      "Synthetic fixture; no deployed infrastructure implied.",
+      "Cloud CDN is a setting on the load balancer's backend, drawn as its own node."
+    ]
+  },
+  "scopes": [
+    {"id": "org", "name": "Example org", "provider": "gcp", "kind": "organization"},
+    {"id": "folder", "name": "Platform", "provider": "gcp", "kind": "folder", "parent_ref": "org"},
+    {"id": "host", "name": "Network host", "provider": "gcp", "kind": "project", "parent_ref": "folder"},
+    {"id": "service", "name": "App service", "provider": "gcp", "kind": "project", "parent_ref": "folder"}
+  ],
+  "boundaries": [
+    {"id": "region", "name": "asia-southeast1", "provider": "gcp", "kind": "region"},
+    {"id": "zone", "name": "asia-southeast1-a", "provider": "gcp", "kind": "zone", "parent_ref": "region"},
+    {"id": "vpc", "name": "Shared VPC", "provider": "gcp", "kind": "network", "scope_refs": ["host"]},
+    {"id": "subnet", "name": "App subnet", "provider": "gcp", "kind": "subnet", "scope_refs": ["host"], "parent_ref": "vpc", "relations": [{"kind": "located_in", "target_ref": "region"}]}
+  ],
+  "resources": [
+    {"id": "users", "name": "Users", "provider": "external", "service_type": "external.people.user", "taxonomy": "external.entity"},
+    {"id": "public-dns", "name": "example.com", "provider": "gcp", "service_type": "gcp.network.cloud_dns_public_zone", "taxonomy": "network.routing", "placement": {"scope_refs": ["service"]}},
+    {"id": "private-dns", "name": "internal.example", "provider": "gcp", "service_type": "gcp.network.cloud_dns_private_zone", "taxonomy": "network.routing", "placement": {"scope_refs": ["host"], "network_attachments": [{"network_ref": "vpc"}]}},
+    {"id": "glb", "name": "Web load balancer", "provider": "gcp", "service_type": "gcp.network.global_external_application_load_balancer", "taxonomy": "network.load_balancing", "placement": {"scope_refs": ["service"]}},
+    {"id": "cdn", "name": "Web cache", "provider": "gcp", "service_type": "gcp.network.cloud_cdn", "taxonomy": "edge.delivery", "placement": {"scope_refs": ["service"]}},
+    {"id": "edge-policy", "name": "Edge policy", "provider": "gcp", "service_type": "gcp.security.cloud_armor_policy", "taxonomy": "security.control", "placement": {"scope_refs": ["service"]}},
+    {"id": "rlb", "name": "Internal API load balancer", "provider": "gcp", "service_type": "gcp.network.regional_application_load_balancer", "taxonomy": "network.load_balancing", "placement": {"scope_refs": ["service"], "location": {"region_ref": "region"}, "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["subnet"]}]}},
+    {"id": "api-policy", "name": "API policy", "provider": "gcp", "service_type": "gcp.security.cloud_armor_regional_policy", "taxonomy": "security.control", "placement": {"scope_refs": ["service"], "location": {"region_ref": "region"}}},
+    {"id": "vm", "name": "App server", "provider": "gcp", "service_type": "gcp.compute.compute_engine", "taxonomy": "compute.vm", "placement": {"scope_refs": ["service"], "location": {"zone_ref": "zone"}, "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["subnet"]}]}},
+    {"id": "gateway", "name": "Partner gateway", "provider": "gcp", "service_type": "gcp.integration.api_gateway", "taxonomy": "integration.messaging", "placement": {"scope_refs": ["service"], "location": {"region_ref": "region"}}},
+    {"id": "topic", "name": "Order events", "provider": "gcp", "service_type": "gcp.integration.pubsub_topic", "taxonomy": "integration.messaging", "placement": {"scope_refs": ["service"]}},
+    {"id": "secret", "name": "Partner token", "provider": "gcp", "service_type": "gcp.security.secret_manager_secret", "taxonomy": "security.secrets_keys", "placement": {"scope_refs": ["service"]}},
+    {"id": "regional-secret", "name": "Database password", "provider": "gcp", "service_type": "gcp.security.secret_manager_regional_secret", "taxonomy": "security.secrets_keys", "placement": {"scope_refs": ["service"], "location": {"region_ref": "region"}}},
+    {"id": "key", "name": "Data key", "provider": "gcp", "service_type": "gcp.security.kms_key", "taxonomy": "security.secrets_keys", "placement": {"scope_refs": ["service"], "location": {"region_ref": "region"}}},
+    {"id": "global-key", "name": "Signing key", "provider": "gcp", "service_type": "gcp.security.kms_key_global", "taxonomy": "security.secrets_keys", "placement": {"scope_refs": ["service"]}}
+  ],
+  "relationships": [
+    {"id": "shared-vpc", "source_ref": "service", "target_ref": "host", "kind": "attachment", "purpose": "Shared VPC service project"},
+    {"id": "t-users-dns", "source_ref": "users", "target_ref": "public-dns", "kind": "traffic", "label": "DNS query"},
+    {"id": "t-users-glb", "source_ref": "users", "target_ref": "glb", "kind": "traffic", "protocol": "HTTPS"},
+    {"id": "a-cdn-glb", "source_ref": "cdn", "target_ref": "glb", "kind": "attachment", "label": "Cache"},
+    {"id": "a-edge-glb", "source_ref": "edge-policy", "target_ref": "glb", "kind": "attachment", "label": "Security policy"},
+    {"id": "t-glb-vm", "source_ref": "glb", "target_ref": "vm", "kind": "traffic"},
+    {"id": "t-users-gateway", "source_ref": "users", "target_ref": "gateway", "kind": "traffic", "protocol": "HTTPS"},
+    {"id": "t-gateway-rlb", "source_ref": "gateway", "target_ref": "rlb", "kind": "traffic"},
+    {"id": "a-api-rlb", "source_ref": "api-policy", "target_ref": "rlb", "kind": "attachment", "label": "Security policy"},
+    {"id": "t-rlb-vm", "source_ref": "rlb", "target_ref": "vm", "kind": "traffic"},
+    {"id": "t-vm-topic", "source_ref": "vm", "target_ref": "topic", "kind": "traffic", "label": "Publishes"},
+    {"id": "d-vm-secret", "source_ref": "vm", "target_ref": "secret", "kind": "dependency"},
+    {"id": "d-vm-regional", "source_ref": "vm", "target_ref": "regional-secret", "kind": "dependency"},
+    {"id": "d-secret-key", "source_ref": "regional-secret", "target_ref": "key", "kind": "dependency", "label": "Encrypted with"},
+    {"id": "d-vm-global-key", "source_ref": "vm", "target_ref": "global-key", "kind": "dependency", "label": "Signs with"},
+    {"id": "d-vm-dns", "source_ref": "vm", "target_ref": "private-dns", "kind": "dependency", "label": "Resolves"}
+  ],
+  "views": [
+    {
+      "id": "detail",
+      "title": "GCP edge, DNS, messaging and security services",
+      "entity_refs": ["org", "folder", "host", "service", "region", "zone", "vpc", "subnet", "users", "public-dns", "private-dns", "glb", "cdn", "edge-policy", "rlb", "api-policy", "vm", "gateway", "topic", "secret", "regional-secret", "key", "global-key"],
+      "relationship_refs": ["shared-vpc", "t-users-dns", "t-users-glb", "a-cdn-glb", "a-edge-glb", "t-glb-vm", "t-users-gateway", "t-gateway-rlb", "a-api-rlb", "t-rlb-vm", "t-vm-topic", "d-vm-secret", "d-vm-regional", "d-secret-key", "d-vm-global-key", "d-vm-dns"]
+    }
+  ]
+}

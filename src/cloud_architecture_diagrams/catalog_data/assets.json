@@ -1,5 +1,5 @@
 {
-  "catalog_version": "2026.11.2",
+  "catalog_version": "2026.11.3",
   "packs": [
     {
       "id": "drawio-network-2018",
@@ -997,6 +997,454 @@
         "png": {
           "path": "assets/huawei/lts.png",
           "sha256": "c1b28d1ce363aecc239dfc344fade46fe0ae8e2f171b6ba6debcc53129c2266f",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
+    },
+    {
+      "id": "huawei-dcs",
+      "pack": "huawei-latam-color",
+      "concept": "Distributed Cache Service",
+      "required_label": "Distributed Cache Service",
+      "composition": "direct",
+      "symbols": [
+        "Distributed Cache Service (DCS) for Redis"
+      ],
+      "original": [
+        {
+          "name": "Distributed Cache Service (DCS) for Redis",
+          "sha256": "0cd7c8e902dc4963da22447570819ae380898268bb19269afa4b0e2df21714a8",
+          "digest_of": "decoded_svg",
+          "entry_index": 7,
+          "source_path": "color/HWC Middleware (color).xml"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/huawei/dcs.svg",
+          "sha256": "0cd7c8e902dc4963da22447570819ae380898268bb19269afa4b0e2df21714a8"
+        },
+        "png": {
+          "path": "assets/huawei/dcs.png",
+          "sha256": "3b5f66fc2bce9aa8438e3286fb9c7328237e3d5b00b645b1f7190c528ebb720b",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
+    },
+    {
+      "id": "huawei-dds",
+      "pack": "huawei-latam-color",
+      "concept": "Document Database Service",
+      "required_label": "Document Database Service",
+      "composition": "direct",
+      "symbols": [
+        "Document Database Service (DDS)"
+      ],
+      "original": [
+        {
+          "name": "Document Database Service (DDS)",
+          "sha256": "bc46ebe4cc5c586925622557462638e5fa0847f61631a110cf24d26a43c0b084",
+          "digest_of": "decoded_svg",
+          "entry_index": 4,
+          "source_path": "color/HWC Databases (color).xml"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/huawei/dds.svg",
+          "sha256": "bc46ebe4cc5c586925622557462638e5fa0847f61631a110cf24d26a43c0b084"
+        },
+        "png": {
+          "path": "assets/huawei/dds.png",
+          "sha256": "2d166be0d4900f5f96774446dbfdd72ba9c2c8e95fd35884cf168f8eebc0e45f",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
+    },
+    {
+      "id": "huawei-gaussdb",
+      "pack": "huawei-latam-color",
+      "concept": "GaussDB",
+      "required_label": "GaussDB",
+      "composition": "direct",
+      "symbols": [
+        "GaussDB"
+      ],
+      "original": [
+        {
+          "name": "GaussDB",
+          "sha256": "9a136efd7f555c2e36ee220b8d9f8810e89627ecdbf80871c1fda26ea4506e1f",
+          "digest_of": "decoded_svg",
+          "entry_index": 5,
+          "source_path": "color/HWC Databases (color).xml"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/huawei/gaussdb.svg",
+          "sha256": "9a136efd7f555c2e36ee220b8d9f8810e89627ecdbf80871c1fda26ea4506e1f"
+        },
+        "png": {
+          "path": "assets/huawei/gaussdb.png",
+          "sha256": "def0d04bd28cc7ffc0f80b97cd0e08d86cb549f0125cb424273da0aaf28d2e11",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
+    },
+    {
+      "id": "huawei-dms",
+      "pack": "huawei-latam-color",
+      "concept": "Distributed Message Service",
+      "required_label": "Distributed Message Service",
+      "composition": "direct",
+      "symbols": [
+        "Distributed Message Service (DMS)"
+      ],
+      "original": [
+        {
+          "name": "Distributed Message Service (DMS)",
+          "sha256": "458b0e6c0ddbc59092e5d85fffb1260963ad022e7c0ccd4334299eca3c7fd6b6",
+          "digest_of": "decoded_svg",
+          "entry_index": 8,
+          "source_path": "color/HWC Middleware (color).xml"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/huawei/dms.svg",
+          "sha256": "458b0e6c0ddbc59092e5d85fffb1260963ad022e7c0ccd4334299eca3c7fd6b6"
+        },
+        "png": {
+          "path": "assets/huawei/dms.png",
+          "sha256": "f86e128a9fcd9dde9c985b66b0309fd107f925ec68f4f9ec50628aa0ad775af1",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
+    },
+    {
+      "id": "huawei-smn",
+      "pack": "huawei-latam-color",
+      "concept": "Simple Message Notification",
+      "required_label": "Simple Message Notification",
+      "composition": "direct",
+      "symbols": [
+        "Simple Message Notification (SMN)"
+      ],
+      "original": [
+        {
+          "name": "Simple Message Notification (SMN)",
+          "sha256": "aa0d2195c6de786ab33ad3530986b33e8dd3ac58096ebc6cb46fe40034c706f0",
+          "digest_of": "decoded_svg",
+          "entry_index": 15,
+          "source_path": "color/HWC Management and Governance (color).xml"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/huawei/smn.svg",
+          "sha256": "aa0d2195c6de786ab33ad3530986b33e8dd3ac58096ebc6cb46fe40034c706f0"
+        },
+        "png": {
+          "path": "assets/huawei/smn.png",
+          "sha256": "4c64054792cb7359c4245e3c71b3813444a8c5c205b6555868d8172082ba857d",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
+    },
+    {
+      "id": "huawei-swr",
+      "pack": "huawei-latam-color",
+      "concept": "SoftWare Repository for Container",
+      "required_label": "SoftWare Repository for Container",
+      "composition": "direct",
+      "symbols": [
+        "SoftWare Repository for Container (SWR)"
+      ],
+      "original": [
+        {
+          "name": "SoftWare Repository for Container (SWR)",
+          "sha256": "b7f59fb2881c27088fa632973743c1321191418f7dd42d7fb06eefc81b9cfd8e",
+          "digest_of": "decoded_svg",
+          "entry_index": 15,
+          "source_path": "color/HWC Compute and Containers (color).xml"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/huawei/swr.svg",
+          "sha256": "b7f59fb2881c27088fa632973743c1321191418f7dd42d7fb06eefc81b9cfd8e"
+        },
+        "png": {
+          "path": "assets/huawei/swr.png",
+          "sha256": "acebcf6cf03f7f45916534b7a0bc043eb4917b6806b34ef4ab317fad73d7906a",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
+    },
+    {
+      "id": "huawei-cci",
+      "pack": "huawei-latam-color",
+      "concept": "Cloud Container Instance",
+      "required_label": "Cloud Container Instance",
+      "composition": "direct",
+      "symbols": [
+        "Cloud Container Instance (CCI)"
+      ],
+      "original": [
+        {
+          "name": "Cloud Container Instance (CCI)",
+          "sha256": "279faa79e8b519a88dc7719c7838c894abce7919261e8fe5098ea1600c0b823b",
+          "digest_of": "decoded_svg",
+          "entry_index": 13,
+          "source_path": "color/HWC Compute and Containers (color).xml"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/huawei/cci.svg",
+          "sha256": "279faa79e8b519a88dc7719c7838c894abce7919261e8fe5098ea1600c0b823b"
+        },
+        "png": {
+          "path": "assets/huawei/cci.png",
+          "sha256": "512efa505c0c3476a7061ab2a0d2707fae80c68822d482bd9a5cab9e14a38cd1",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
+    },
+    {
+      "id": "huawei-sfs",
+      "pack": "huawei-latam-color",
+      "concept": "Scalable File Service",
+      "required_label": "Scalable File Service",
+      "composition": "direct",
+      "symbols": [
+        "Scalable File Service (SFS)"
+      ],
+      "original": [
+        {
+          "name": "Scalable File Service (SFS)",
+          "sha256": "590d0e8fda89da724672bccedf9e7c017d4f1f1745a166df1f2f1ae422067a08",
+          "digest_of": "decoded_svg",
+          "entry_index": 9,
+          "source_path": "color/HWC Storage (color).xml"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/huawei/sfs.svg",
+          "sha256": "590d0e8fda89da724672bccedf9e7c017d4f1f1745a166df1f2f1ae422067a08"
+        },
+        "png": {
+          "path": "assets/huawei/sfs.png",
+          "sha256": "33b743e964199c91524fafcc17876550eaead00a8c047b7db76a615f6891ac60",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
+    },
+    {
+      "id": "huawei-sfs-turbo",
+      "pack": "huawei-latam-color",
+      "concept": "SFS Turbo",
+      "required_label": "SFS Turbo",
+      "composition": "direct",
+      "symbols": [
+        "Scalable File Service (SFS) Turbo"
+      ],
+      "original": [
+        {
+          "name": "Scalable File Service (SFS) Turbo",
+          "sha256": "098233bec83004cb3ba21111f19be6e0ae9aacd1a1dbb893f7ecfd8af0e6d6e4",
+          "digest_of": "decoded_svg",
+          "entry_index": 10,
+          "source_path": "color/HWC Storage (color).xml"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/huawei/sfs-turbo.svg",
+          "sha256": "098233bec83004cb3ba21111f19be6e0ae9aacd1a1dbb893f7ecfd8af0e6d6e4"
+        },
+        "png": {
+          "path": "assets/huawei/sfs-turbo.png",
+          "sha256": "abc4cd7fdfa26915ac94dc9cf88071d3ea764fbd1ff7feb0c63488eef2505717",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
+    },
+    {
+      "id": "huawei-evs",
+      "pack": "huawei-latam-color",
+      "concept": "Elastic Volume Service",
+      "required_label": "Elastic Volume Service",
+      "composition": "direct",
+      "symbols": [
+        "Elastic Volume Service (EVS)"
+      ],
+      "original": [
+        {
+          "name": "Elastic Volume Service (EVS)",
+          "sha256": "6e0e4121d999bad0a05bbe825a7df6994588bfd0ae543c7ccb89fc431821ffa0",
+          "digest_of": "decoded_svg",
+          "entry_index": 6,
+          "source_path": "color/HWC Storage (color).xml"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/huawei/evs.svg",
+          "sha256": "6e0e4121d999bad0a05bbe825a7df6994588bfd0ae543c7ccb89fc431821ffa0"
+        },
+        "png": {
+          "path": "assets/huawei/evs.png",
+          "sha256": "bf67d23773d0fe7ad5659d285038e71ec819d4e7da888ca7713bd2064fca5c29",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
+    },
+    {
+      "id": "huawei-cbr",
+      "pack": "huawei-latam-color",
+      "concept": "Cloud Backup and Recovery",
+      "required_label": "Cloud Backup and Recovery",
+      "composition": "direct",
+      "symbols": [
+        "Cloud Backup and Recovery (CBR)"
+      ],
+      "original": [
+        {
+          "name": "Cloud Backup and Recovery (CBR)",
+          "sha256": "0b4a1e4b8ba02eab497d6f2e8a4d075eac2d0e8bf42198674bbd6ff2753a0f9c",
+          "digest_of": "decoded_svg",
+          "entry_index": 0,
+          "source_path": "color/HWC Storage (color).xml"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/huawei/cbr.svg",
+          "sha256": "0b4a1e4b8ba02eab497d6f2e8a4d075eac2d0e8bf42198674bbd6ff2753a0f9c"
+        },
+        "png": {
+          "path": "assets/huawei/cbr.png",
+          "sha256": "25bf777f67bc3ce2804213444ad98fbcde974a9fc3cc18f3633e0d08279cb305",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
+    },
+    {
+      "id": "huawei-er",
+      "pack": "huawei-latam-color",
+      "concept": "Enterprise Router",
+      "required_label": "Enterprise Router",
+      "composition": "direct",
+      "symbols": [
+        "Enterprise Router (ER)"
+      ],
+      "original": [
+        {
+          "name": "Enterprise Router (ER)",
+          "sha256": "519d07c1ce419502c1c155cc8bb22e2e3aa3843f82cc891ddc71dae222519cd6",
+          "digest_of": "decoded_svg",
+          "entry_index": 5,
+          "source_path": "color/HWC Networking (color).xml"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/huawei/er.svg",
+          "sha256": "519d07c1ce419502c1c155cc8bb22e2e3aa3843f82cc891ddc71dae222519cd6"
+        },
+        "png": {
+          "path": "assets/huawei/er.png",
+          "sha256": "57da8fa2acd484d5b98898d7ff020c11190a51d43f729aca47ef2724f766cc04",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
+    },
+    {
+      "id": "huawei-vpcep",
+      "pack": "huawei-latam-color",
+      "concept": "VPC Endpoint",
+      "required_label": "VPC Endpoint",
+      "composition": "direct",
+      "symbols": [
+        "VPC Endpoint (VPCEP)"
+      ],
+      "original": [
+        {
+          "name": "VPC Endpoint (VPCEP)",
+          "sha256": "bc1aad756c49914daf38205a46c71e67ef7c16c8267bfd44e550324374bce7ab",
+          "digest_of": "decoded_svg",
+          "entry_index": 11,
+          "source_path": "color/HWC Networking (color).xml"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/huawei/vpcep.svg",
+          "sha256": "bc1aad756c49914daf38205a46c71e67ef7c16c8267bfd44e550324374bce7ab"
+        },
+        "png": {
+          "path": "assets/huawei/vpcep.png",
+          "sha256": "78748871bbfc1cd9f0ce8c6b7b40f6354e2aa6951eacc0e114f8e8516ff910a9",
+          "width": 256,
+          "height": 256
+        }
+      },
+      "changes": "The SVG is unchanged from the decoded entry; the PNG is rasterized from it"
+    },
+    {
+      "id": "huawei-ga",
+      "pack": "huawei-latam-color",
+      "concept": "Global Accelerator",
+      "required_label": "Global Accelerator",
+      "composition": "direct",
+      "symbols": [
+        "Global Accelerator (GA)"
+      ],
+      "original": [
+        {
+          "name": "Global Accelerator (GA)",
+          "sha256": "a067c4b3c27d493823e4bab1776d0d47ce835ca74a0f0e3d7577910016fa464b",
+          "digest_of": "decoded_svg",
+          "entry_index": 7,
+          "source_path": "color/HWC Networking (color).xml"
+        }
+      ],
+      "derived": {
+        "svg": {
+          "path": "assets/huawei/ga.svg",
+          "sha256": "a067c4b3c27d493823e4bab1776d0d47ce835ca74a0f0e3d7577910016fa464b"
+        },
+        "png": {
+          "path": "assets/huawei/ga.png",
+          "sha256": "0cfc7e18f519026bdcea0686077c4fcee86ad161d074b1e0c3c8331ea7058251",
           "width": 256,
           "height": 256
         }

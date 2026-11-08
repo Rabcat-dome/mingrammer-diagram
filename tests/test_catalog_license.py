@@ -184,6 +184,24 @@ MAPPED = {
     "huawei.network.direct_connect": "Direct Connect",
     "huawei.observability.cloud_eye": "Cloud Eye Service (CES)",
     "huawei.observability.lts": "Log Tank Servce (LTS)",
+    # S16 (D-053), for the owner's choice of Huawei services. Both DMS editions draw the DMS
+    # entry, because the library's "Kafka" and "RabbitMQ" titles do not name Huawei's service.
+    "huawei.database.dcs_redis": "Distributed Cache Service (DCS) for Redis",
+    "huawei.database.dds": "Document Database Service (DDS)",
+    "huawei.database.gaussdb": "GaussDB",
+    "huawei.integration.dms_kafka": "Distributed Message Service (DMS)",
+    "huawei.integration.dms_rabbitmq": "Distributed Message Service (DMS)",
+    "huawei.integration.smn": "Simple Message Notification (SMN)",
+    "huawei.containers.swr": "SoftWare Repository for Container (SWR)",
+    "huawei.containers.cci": "Cloud Container Instance (CCI)",
+    "huawei.storage.sfs": "Scalable File Service (SFS)",
+    "huawei.storage.sfs_turbo": "Scalable File Service (SFS) Turbo",
+    "huawei.storage.evs": "Elastic Volume Service (EVS)",
+    "huawei.storage.cbr_vault": "Cloud Backup and Recovery (CBR)",
+    "huawei.network.enterprise_router": "Enterprise Router (ER)",
+    "huawei.network.vpc_endpoint": "VPC Endpoint (VPCEP)",
+    "huawei.network.vpc_endpoint_gateway": "VPC Endpoint (VPCEP)",
+    "huawei.network.global_accelerator": "Global Accelerator (GA)",
 }
 
 
@@ -712,6 +730,126 @@ def test_added_aws_types_are_not_required_items() -> None:
     # They are selected P1 work (D-036, D-037), so the P0 inventory and its table stay as they are.
     listed = {type_id for item in catalog().inventory["aws"].values() for type_id in item}
     assert not listed & set(AWS_ADDED)
+
+
+# S16 (D-053): the owner's choice of Azure, GCP and AWS services, each with its own icon from
+# its provider's listed pack, as S13 required of the AWS types.
+S16_NATIVE = {
+    "azure.compute.app_service": "diagrams.azure.appservices.AppServices",
+    "azure.compute.function_app": "diagrams.azure.compute.FunctionApps",
+    "azure.containers.container_apps_environment": "diagrams.azure.other.ContainerAppsEnvironments",
+    "azure.containers.container_registry": "diagrams.azure.containers.ContainerRegistries",
+    "azure.database.cosmos_db": "diagrams.azure.databases.AzureCosmosDb",
+    "azure.database.postgresql_flexible_server": (
+        "diagrams.azure.databases.AzureDatabasePostgresqlServer"
+    ),
+    "azure.database.mysql_flexible_server": "diagrams.azure.databases.AzureDatabaseMysqlServer",
+    "azure.database.managed_redis": "diagrams.azure.databases.CacheRedis",
+    "azure.network.front_door": "diagrams.azure.networking.FrontDoorAndCDNProfiles",
+    "azure.network.load_balancer_public": "diagrams.azure.networking.LoadBalancers",
+    "azure.network.load_balancer_internal": "diagrams.azure.networking.LoadBalancers",
+    "azure.network.dns_zone": "diagrams.azure.networking.DNSZones",
+    "azure.network.private_dns_zone": "diagrams.azure.network.DNSPrivateZones",
+    "azure.network.private_endpoint": "diagrams.azure.other.PrivateEndpoints",
+    "azure.integration.service_bus": "diagrams.azure.integration.AzureServiceBus",
+    "azure.integration.event_hubs": "diagrams.azure.analytics.EventHubs",
+    "azure.integration.api_management": "diagrams.azure.integration.APIManagementServices",
+    "azure.security.key_vault": "diagrams.azure.security.KeyVaults",
+    "gcp.network.cloud_dns_public_zone": "diagrams.gcp.network.DNS",
+    "gcp.network.cloud_dns_private_zone": "diagrams.gcp.network.DNS",
+    "gcp.security.cloud_armor_policy": "diagrams.gcp.network.Armor",
+    "gcp.security.cloud_armor_regional_policy": "diagrams.gcp.network.Armor",
+    "gcp.network.cloud_cdn": "diagrams.gcp.network.CDN",
+    "gcp.integration.pubsub_topic": "diagrams.gcp.analytics.PubSub",
+    "gcp.security.secret_manager_secret": "diagrams.gcp.security.SecretManager",
+    "gcp.security.secret_manager_regional_secret": "diagrams.gcp.security.SecretManager",
+    "gcp.security.kms_key": "diagrams.gcp.security.KeyManagementService",
+    "gcp.security.kms_key_global": "diagrams.gcp.security.KeyManagementService",
+    "gcp.integration.api_gateway": "diagrams.gcp.api.APIGateway",
+    "aws.network.transit_gateway": "diagrams.aws.network.TransitGateway",
+    "aws.network.transit_gateway_vpc_attachment": "diagrams.aws.network.TransitGatewayAttachment",
+    "aws.network.vpc_gateway_endpoint": "diagrams.aws.network.Endpoint",
+    "aws.network.vpc_interface_endpoint": "diagrams.aws.network.Endpoint",
+    "aws.network.global_accelerator": "diagrams.aws.network.GlobalAccelerator",
+    "aws.security.shield_protection": "diagrams.aws.security.Shield",
+    "aws.security.guardduty": "diagrams.aws.security.Guardduty",
+    "aws.observability.cloudtrail": "diagrams.aws.management.Cloudtrail",
+    "aws.security.acm_certificate": "diagrams.aws.security.CertificateManager",
+}
+# Variants of one service draw its one icon.
+S16_VARIANTS = {
+    frozenset({"azure.network.load_balancer_public", "azure.network.load_balancer_internal"}),
+    frozenset({"gcp.network.cloud_dns_public_zone", "gcp.network.cloud_dns_private_zone"}),
+    frozenset({"gcp.security.cloud_armor_policy", "gcp.security.cloud_armor_regional_policy"}),
+    frozenset(
+        {"gcp.security.secret_manager_secret", "gcp.security.secret_manager_regional_secret"}
+    ),
+    frozenset({"gcp.security.kms_key", "gcp.security.kms_key_global"}),
+    frozenset({"aws.network.vpc_gateway_endpoint", "aws.network.vpc_interface_endpoint"}),
+}
+S16_HUAWEI = {
+    "huawei.database.dcs_redis",
+    "huawei.database.dds",
+    "huawei.database.gaussdb",
+    "huawei.integration.dms_kafka",
+    "huawei.integration.dms_rabbitmq",
+    "huawei.integration.smn",
+    "huawei.containers.swr",
+    "huawei.containers.cci",
+    "huawei.storage.sfs",
+    "huawei.storage.sfs_turbo",
+    "huawei.storage.evs",
+    "huawei.storage.cbr_vault",
+    "huawei.network.enterprise_router",
+    "huawei.network.vpc_endpoint",
+    "huawei.network.vpc_endpoint_gateway",
+    "huawei.network.global_accelerator",
+}
+PACKS = {
+    "azure": "azure-architecture-icons",
+    "gcp": "gcp-product-icons",
+    "aws": "aws-architecture-icons",
+}
+
+
+@pytest.mark.parametrize(("type_id", "class_path"), S16_NATIVE.items())
+def test_s16_types_draw_their_own_icon_from_their_providers_pack(
+    type_id: str, class_path: str
+) -> None:
+    record = catalog().records[type_id]
+    provider = type_id.split(".", 1)[0]
+    assert record.representation.kind == "native_class" and record.status == "supported"
+    assert record.representation.class_path == class_path
+    assert record.representation.pack == PACKS[provider]
+    lock = json.loads((PACKAGE / "catalog_data/native_icons.json").read_text())["icons"]
+    assert lock[class_path]["resource"].startswith(f"resources/{provider}/")
+    assert lock[class_path]["pack"] == PACKS[provider]
+
+
+def test_s16_types_share_an_icon_only_with_a_variant_of_their_service() -> None:
+    icons: dict[str, set[str]] = {}
+    for type_id, class_path in S16_NATIVE.items():
+        icons.setdefault(class_path, set()).add(type_id)
+    assert {frozenset(types) for types in icons.values() if len(types) > 1} == S16_VARIANTS
+    # No S16 type borrows the icon of a type that was there before.
+    earlier = {
+        record.representation.class_path
+        for record in catalog().records.values()
+        if record.id not in S16_NATIVE
+    }
+    assert not earlier & set(S16_NATIVE.values())
+
+
+def test_s16_types_are_not_required_items() -> None:
+    # Selected P1 work (D-053), so the P0 inventory and its table stay as they are.
+    listed = {
+        type_id
+        for provider in catalog().inventory.values()
+        for item in provider.values()
+        for type_id in item
+    }
+    assert len(S16_HUAWEI) == 16
+    assert not listed & (set(S16_NATIVE) | set(S16_HUAWEI))
 
 
 @pytest.mark.parametrize("field", ["host_types", "attachment_targets"])

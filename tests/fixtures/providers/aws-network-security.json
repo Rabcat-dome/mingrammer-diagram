@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0.0",
+  "metadata": {
+    "id": "aws-network-security",
+    "title": "AWS transit, private connectivity, edge protection and audit",
+    "environment": "fixture",
+    "assumptions": [
+      "Synthetic fixture; no deployed infrastructure implied.",
+      "Each Shield Advanced protection names one resource, as AWS states.",
+      "The certificate for CloudFront would be issued in us-east-1, which this model does not show."
+    ]
+  },
+  "scopes": [
+    {"id": "acct", "name": "Workload account", "provider": "aws", "kind": "account"}
+  ],
+  "boundaries": [
+    {"id": "region", "name": "ap-southeast-1", "provider": "aws", "kind": "region", "scope_refs": ["acct"]},
+    {"id": "az-a", "name": "ap-southeast-1a", "provider": "aws", "kind": "zone", "parent_ref": "region"},
+    {"id": "az-b", "name": "ap-southeast-1b", "provider": "aws", "kind": "zone", "parent_ref": "region"},
+    {"id": "vpc", "name": "Workload VPC", "provider": "aws", "kind": "network", "scope_refs": ["acct"], "parent_ref": "region"},
+    {"id": "shared", "name": "Shared services VPC", "provider": "aws", "kind": "network", "scope_refs": ["acct"], "parent_ref": "region"},
+    {"id": "app-a", "name": "App A", "provider": "aws", "kind": "subnet", "scope_refs": ["acct"], "parent_ref": "vpc", "relations": [{"kind": "located_in", "target_ref": "az-a"}]},
+    {"id": "app-b", "name": "App B", "provider": "aws", "kind": "subnet", "scope_refs": ["acct"], "parent_ref": "vpc", "relations": [{"kind": "located_in", "target_ref": "az-b"}]},
+    {"id": "tgw-a", "name": "Transit A", "provider": "aws", "kind": "subnet", "scope_refs": ["acct"], "parent_ref": "vpc", "relations": [{"kind": "located_in", "target_ref": "az-a"}]},
+    {"id": "tgw-b", "name": "Transit B", "provider": "aws", "kind": "subnet", "scope_refs": ["acct"], "parent_ref": "vpc", "relations": [{"kind": "located_in", "target_ref": "az-b"}]},
+    {"id": "shared-a", "name": "Shared A", "provider": "aws", "kind": "subnet", "scope_refs": ["acct"], "parent_ref": "shared", "relations": [{"kind": "located_in", "target_ref": "az-a"}]},
+    {"id": "sg-app", "name": "App tier", "provider": "aws", "kind": "security_group", "scope_refs": ["acct"], "parent_ref": "vpc"}
+  ],
+  "resources": [
+    {"id": "users", "name": "Users", "provider": "external", "service_type": "external.people.user", "taxonomy": "external.entity"},
+    {"id": "dns", "name": "example.com", "provider": "aws", "service_type": "aws.network.route53_public_zone", "taxonomy": "network.routing", "placement": {"scope_refs": ["acct"]}},
+    {"id": "cdn", "name": "Web distribution", "provider": "aws", "service_type": "aws.network.cloudfront", "taxonomy": "edge.delivery", "placement": {"scope_refs": ["acct"]}},
+    {"id": "accelerator", "name": "Game accelerator", "provider": "aws", "service_type": "aws.network.global_accelerator", "taxonomy": "network.load_balancing", "placement": {"scope_refs": ["acct"]}},
+    {"id": "alb", "name": "Web load balancer", "provider": "aws", "service_type": "aws.network.application_load_balancer", "taxonomy": "network.load_balancing", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}, "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["app-a", "app-b"]}], "security_boundaries": ["sg-app"]}},
+    {"id": "web", "name": "Web server", "provider": "aws", "service_type": "aws.compute.ec2", "taxonomy": "compute.vm", "placement": {"scope_refs": ["acct"], "location": {"zone_ref": "az-a"}, "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["app-a"]}], "security_boundaries": ["sg-app"]}},
+    {"id": "shield-cdn", "name": "Edge protection", "provider": "aws", "service_type": "aws.security.shield_protection", "taxonomy": "security.control", "placement": {"scope_refs": ["acct"]}},
+    {"id": "shield-alb", "name": "Load balancer protection", "provider": "aws", "service_type": "aws.security.shield_protection", "taxonomy": "security.control", "placement": {"scope_refs": ["acct"]}},
+    {"id": "cert", "name": "Web certificate", "provider": "aws", "service_type": "aws.security.acm_certificate", "taxonomy": "security.secrets_keys", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}}},
+    {"id": "tgw", "name": "Hub router", "provider": "aws", "service_type": "aws.network.transit_gateway", "taxonomy": "network.routing", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}}},
+    {"id": "attach-workload", "name": "Workload attachment", "provider": "aws", "service_type": "aws.network.transit_gateway_vpc_attachment", "taxonomy": "network.connectivity", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}, "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["tgw-a", "tgw-b"]}]}},
+    {"id": "attach-shared", "name": "Shared services attachment", "provider": "aws", "service_type": "aws.network.transit_gateway_vpc_attachment", "taxonomy": "network.connectivity", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}, "network_attachments": [{"network_ref": "shared", "subnet_refs": ["shared-a"]}]}},
+    {"id": "bucket", "name": "Assets", "provider": "aws", "service_type": "aws.storage.s3", "taxonomy": "storage.object", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}}},
+    {"id": "s3-endpoint", "name": "S3 gateway endpoint", "provider": "aws", "service_type": "aws.network.vpc_gateway_endpoint", "taxonomy": "network.connectivity", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}, "network_attachments": [{"network_ref": "vpc"}]}},
+    {"id": "sqs-endpoint", "name": "SQS interface endpoint", "provider": "aws", "service_type": "aws.network.vpc_interface_endpoint", "taxonomy": "network.connectivity", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}, "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["app-a", "app-b"]}], "security_boundaries": ["sg-app"]}},
+    {"id": "queue", "name": "Jobs", "provider": "aws", "service_type": "aws.integration.sqs", "taxonomy": "integration.messaging", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}}},
+    {"id": "detector", "name": "Threat detection", "provider": "aws", "service_type": "aws.security.guardduty", "taxonomy": "security.control", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}}},
+    {"id": "trail", "name": "Account trail", "provider": "aws", "service_type": "aws.observability.cloudtrail", "taxonomy": "operations.observability", "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}}}
+  ],
+  "relationships": [
+    {"id": "t-users-dns", "source_ref": "users", "target_ref": "dns", "kind": "traffic", "label": "DNS query"},
+    {"id": "t-users-cdn", "source_ref": "users", "target_ref": "cdn", "kind": "traffic", "protocol": "HTTPS"},
+    {"id": "t-users-accelerator", "source_ref": "users", "target_ref": "accelerator", "kind": "traffic", "protocol": "UDP"},
+    {"id": "a-accelerator-alb", "source_ref": "accelerator", "target_ref": "alb", "kind": "attachment", "label": "Endpoint"},
+    {"id": "t-cdn-alb", "source_ref": "cdn", "target_ref": "alb", "kind": "traffic", "label": "Origin"},
+    {"id": "t-alb-web", "source_ref": "alb", "target_ref": "web", "kind": "traffic"},
+    {"id": "a-shield-cdn", "source_ref": "shield-cdn", "target_ref": "cdn", "kind": "attachment", "label": "Protects"},
+    {"id": "a-shield-alb", "source_ref": "shield-alb", "target_ref": "alb", "kind": "attachment", "label": "Protects"},
+    {"id": "a-cert-alb", "source_ref": "cert", "target_ref": "alb", "kind": "attachment", "label": "TLS"},
+    {"id": "a-attach-workload", "source_ref": "attach-workload", "target_ref": "tgw", "kind": "attachment"},
+    {"id": "a-attach-shared", "source_ref": "attach-shared", "target_ref": "tgw", "kind": "attachment"},
+    {"id": "t-web-bucket", "source_ref": "web", "target_ref": "bucket", "kind": "traffic", "label": "Through the gateway endpoint"},
+    {"id": "t-web-queue", "source_ref": "web", "target_ref": "queue", "kind": "traffic", "label": "Through the interface endpoint"},
+    {"id": "s-trail-bucket", "source_ref": "trail", "target_ref": "bucket", "kind": "storage", "label": "Log files"}
+  ],
+  "views": [
+    {
+      "id": "detail",
+      "title": "AWS transit, private connectivity, edge protection and audit",
+      "entity_refs": ["acct", "region", "az-a", "az-b", "vpc", "shared", "app-a", "app-b", "tgw-a", "tgw-b", "shared-a", "sg-app", "users", "dns", "cdn", "accelerator", "alb", "web", "shield-cdn", "shield-alb", "cert", "tgw", "attach-workload", "attach-shared", "bucket", "s3-endpoint", "sqs-endpoint", "queue", "detector", "trail"],
+      "relationship_refs": ["t-users-dns", "t-users-cdn", "t-users-accelerator", "a-accelerator-alb", "t-cdn-alb", "t-alb-web", "a-shield-cdn", "a-shield-alb", "a-cert-alb", "a-attach-workload", "a-attach-shared", "t-web-bucket", "t-web-queue", "s-trail-bucket"]
+    }
+  ]
+}

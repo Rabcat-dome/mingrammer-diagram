@@ -22,9 +22,13 @@ PROVIDERS = [
     "aws",
     "aws-ecs-lambda-waf",
     "aws-edge-api-data",
+    "aws-network-security",
     "azure",
+    "azure-paas",
     "gcp",
+    "gcp-edge-security",
     "huawei",
+    "huawei-data-messaging",
     "onprem",
     "hybrid",
 ]
@@ -795,7 +799,16 @@ def test_a_region_comes_from_the_network_when_no_location_is_declared() -> None:
 
 
 EDGE_API_DATA = "providers/aws-edge-api-data"
-ONE_REASON = [case for case in CASES["errors"] if case["base"] in {ECS_LAMBDA_WAF, EDGE_API_DATA}]
+# S16 (D-053): each case on these fixtures must fail for its one reason too.
+S16_BASES = {
+    "providers/azure-paas",
+    "providers/gcp-edge-security",
+    "providers/aws-network-security",
+    "providers/huawei-data-messaging",
+}
+ONE_REASON = [
+    case for case in CASES["errors"] if case["base"] in {ECS_LAMBDA_WAF, EDGE_API_DATA} | S16_BASES
+]
 EDGE_ADDED = [
     "public-dns",
     "private-dns",
@@ -818,7 +831,7 @@ EDGE_ADDED = [
 
 
 @pytest.mark.parametrize("case", ONE_REASON, ids=lambda case: case["id"])
-def test_a_case_on_the_added_aws_fixtures_fails_for_one_reason(case: dict[str, Any]) -> None:
+def test_a_case_on_the_added_fixtures_fails_for_one_reason(case: dict[str, Any]) -> None:
     # The harness above asks only that the code be present, which a second fault could hide.
     assert codes(mutated(case))["error"] == {case["expect"]}
 
@@ -1017,3 +1030,79 @@ def test_a_service_still_missing_stays_a_disclosed_draft() -> None:
     assert codes(document)["error"] == {"CATALOG_TYPE_UNKNOWN"}
     lenient = validate_json(json.dumps(document).encode(), mode="lenient")
     assert lenient.valid and lenient.draft
+
+
+NETWORK_SECURITY = "providers/aws-network-security"
+
+
+def reverse(document: dict[str, Any], identifier: str) -> None:
+    edge = next(item for item in document["relationships"] if item["id"] == identifier)
+    edge["source_ref"], edge["target_ref"] = edge["target_ref"], edge["source_ref"]
+
+
+@pytest.mark.parametrize("identifier", ["a-cert-alb", "a-shield-cdn", "a-accelerator-alb"])
+def test_an_attachment_drawn_either_way_is_read_once(identifier: str) -> None:
+    # S16: the end whose record lists the other owns the edge, whichever way it is drawn.
+    document = load(NETWORK_SECURITY)
+    reverse(document, identifier)
+    assert codes(document)["error"] == set()
+
+
+def test_an_edge_between_two_listing_types_is_owned_by_the_end_that_lists_the_other() -> None:
+    # A CBR vault lists an EVS disk, and the disk lists only ECS. A Shield protection lists a
+    # Global Accelerator, which lists only load balancers and instances. Neither edge is refused.
+    document = load("providers/huawei-data-messaging")
+    reverse(document, "a-vault-disk")
+    assert codes(document)["error"] == set()
+    document = load(NETWORK_SECURITY)
+    edge_attachment(document, "shield-cdn", "accelerator")
+    assert codes(document)["error"] == set()
+
+
+def test_only_web_acls_count_toward_the_one_web_acl_rule() -> None:
+    # An ALB with a web ACL, a certificate and a Shield protection has one web ACL.
+    document = load(NETWORK_SECURITY)
+    document["resources"].append(
+        {
+            "id": "acl",
+            "name": "Web ACL",
+            "provider": "aws",
+            "service_type": "aws.security.waf",
+            "taxonomy": "security.control",
+            "placement": {"scope_refs": ["acct"], "location": {"region_ref": "region"}},
+        }
+    )
+    edge_attachment(document, "acl", "alb")
+    assert codes(document)["error"] == set()
+    document["resources"].append({**document["resources"][-1], "id": "acl-2"})
+    edge_attachment(document, "acl-2", "alb")
+    assert codes(document)["error"] == {"AWS_WAF_ACL_MULTIPLE"}
+
+
+def test_a_certificate_may_serve_an_alb_in_another_region() -> None:
+    # ACM states its regions per integration, and us-east-1 for CloudFront and Cognito, which a
+    # region name cannot express, so the certificate takes no region rule.
+    document = load(NETWORK_SECURITY)
+    document["boundaries"].append(
+        {
+            "id": "east",
+            "name": "us-east-1",
+            "provider": "aws",
+            "kind": "region",
+            "scope_refs": ["acct"],
+        }
+    )
+    cert = next(item for item in document["resources"] if item["id"] == "cert")
+    cert["placement"]["location"] = {"region_ref": "east"}
+    assert codes(document)["error"] == set()
+
+
+def test_types_that_share_a_delegation_may_share_a_subnet_and_others_may_not() -> None:
+    document = load("providers/azure-paas")
+    assert codes(document)["error"] == set()  # a web app and a function app share sn-web-int
+    for resource in document["resources"]:
+        if resource["id"] == "aca":
+            resource["placement"]["network_attachments"] = [
+                {"network_ref": "vnet", "subnet_refs": ["sn-web-int"]}
+            ]
+    assert codes(document)["error"] == {"PLACEMENT_DEDICATED_SUBNET_CONFLICT"}

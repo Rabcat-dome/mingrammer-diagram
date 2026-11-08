@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0.0",
+  "metadata": {
+    "id": "huawei-data-messaging",
+    "title": "Huawei Cloud data, messaging, storage and network services",
+    "environment": "fixture",
+    "assumptions": [
+      "Synthetic fixture; no deployed infrastructure implied.",
+      "The OBS gateway endpoint reaches OBS through routes, which this model does not show."
+    ]
+  },
+  "scopes": [
+    {"id": "acct", "name": "Account", "provider": "huawei", "kind": "account"},
+    {"id": "proj", "name": "ap-southeast-2 project", "provider": "huawei", "kind": "iam_project", "parent_ref": "acct"},
+    {"id": "ep", "name": "Finance", "provider": "huawei", "kind": "enterprise_project", "parent_ref": "acct"}
+  ],
+  "boundaries": [
+    {"id": "region", "name": "AP-Bangkok", "provider": "huawei", "kind": "region", "scope_refs": ["proj"]},
+    {"id": "az", "name": "AZ1", "provider": "huawei", "kind": "zone", "parent_ref": "region"},
+    {"id": "vpc", "name": "App VPC", "provider": "huawei", "kind": "network", "scope_refs": ["proj", "ep"], "parent_ref": "region"},
+    {"id": "app", "name": "App subnet", "provider": "huawei", "kind": "subnet", "scope_refs": ["proj"], "parent_ref": "vpc", "relations": [{"kind": "located_in", "target_ref": "region"}]},
+    {"id": "data", "name": "Data subnet", "provider": "huawei", "kind": "subnet", "scope_refs": ["proj"], "parent_ref": "vpc", "relations": [{"kind": "located_in", "target_ref": "region"}]}
+  ],
+  "resources": [
+    {"id": "ecs", "name": "App server", "provider": "huawei", "service_type": "huawei.compute.ecs", "taxonomy": "compute.vm", "placement": {"scope_refs": ["proj", "ep"], "location": {"zone_ref": "az"}, "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["app"]}]}},
+    {"id": "disk", "name": "Data disk", "provider": "huawei", "service_type": "huawei.storage.evs", "taxonomy": "storage.block_file", "placement": {"scope_refs": ["proj", "ep"], "location": {"zone_ref": "az"}}},
+    {"id": "vault", "name": "Server backups", "provider": "huawei", "service_type": "huawei.storage.cbr_vault", "taxonomy": "operations.backup_dr", "placement": {"scope_refs": ["proj", "ep"], "location": {"region_ref": "region"}}},
+    {"id": "cache", "name": "Session cache", "provider": "huawei", "service_type": "huawei.database.dcs_redis", "taxonomy": "data.nosql_cache", "placement": {"scope_refs": ["proj", "ep"], "location": {"zone_ref": "az"}, "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["data"]}]}},
+    {"id": "docs", "name": "Profile store", "provider": "huawei", "service_type": "huawei.database.dds", "taxonomy": "data.nosql_cache", "placement": {"scope_refs": ["proj", "ep"], "location": {"zone_ref": "az"}, "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["data"]}]}},
+    {"id": "ledger", "name": "Ledger database", "provider": "huawei", "service_type": "huawei.database.gaussdb", "taxonomy": "data.relational", "placement": {"scope_refs": ["proj", "ep"], "location": {"zone_ref": "az"}, "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["data"]}]}},
+    {"id": "kafka", "name": "Event stream", "provider": "huawei", "service_type": "huawei.integration.dms_kafka", "taxonomy": "integration.messaging", "placement": {"scope_refs": ["proj", "ep"], "location": {"zone_ref": "az"}, "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["data"]}]}},
+    {"id": "rabbit", "name": "Task queue", "provider": "huawei", "service_type": "huawei.integration.dms_rabbitmq", "taxonomy": "integration.messaging", "placement": {"scope_refs": ["proj", "ep"], "location": {"zone_ref": "az"}, "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["data"]}]}},
+    {"id": "notify", "name": "Alerts", "provider": "huawei", "service_type": "huawei.integration.smn", "taxonomy": "integration.messaging", "placement": {"scope_refs": ["proj", "ep"], "location": {"region_ref": "region"}}},
+    {"id": "images", "name": "Images", "provider": "huawei", "service_type": "huawei.containers.swr", "taxonomy": "compute.containers", "placement": {"scope_refs": ["proj"], "location": {"region_ref": "region"}}},
+    {"id": "jobs", "name": "Batch namespace", "provider": "huawei", "service_type": "huawei.containers.cci", "taxonomy": "compute.containers", "placement": {"scope_refs": ["proj", "ep"], "location": {"region_ref": "region"}, "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["app"]}]}},
+    {"id": "share", "name": "Shared files", "provider": "huawei", "service_type": "huawei.storage.sfs", "taxonomy": "storage.block_file", "placement": {"scope_refs": ["proj", "ep"], "location": {"zone_ref": "az"}, "network_attachments": [{"network_ref": "vpc"}]}},
+    {"id": "turbo", "name": "Build cache", "provider": "huawei", "service_type": "huawei.storage.sfs_turbo", "taxonomy": "storage.block_file", "placement": {"scope_refs": ["proj", "ep"], "location": {"zone_ref": "az"}, "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["data"]}]}},
+    {"id": "router", "name": "Enterprise router", "provider": "huawei", "service_type": "huawei.network.enterprise_router", "taxonomy": "network.routing", "placement": {"scope_refs": ["proj", "ep"], "location": {"zone_ref": "az"}, "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["app"]}]}},
+    {"id": "endpoint", "name": "Service endpoint", "provider": "huawei", "service_type": "huawei.network.vpc_endpoint", "taxonomy": "network.connectivity", "placement": {"scope_refs": ["proj"], "location": {"region_ref": "region"}, "network_attachments": [{"network_ref": "vpc", "subnet_refs": ["app"]}]}},
+    {"id": "obs-endpoint", "name": "OBS gateway endpoint", "provider": "huawei", "service_type": "huawei.network.vpc_endpoint_gateway", "taxonomy": "network.connectivity", "placement": {"scope_refs": ["proj"], "location": {"region_ref": "region"}, "network_attachments": [{"network_ref": "vpc"}]}},
+    {"id": "accelerator", "name": "Global accelerator", "provider": "huawei", "service_type": "huawei.network.global_accelerator", "taxonomy": "network.connectivity", "placement": {"scope_refs": ["ep"]}}
+  ],
+  "relationships": [
+    {"id": "t-accelerator-ecs", "source_ref": "accelerator", "target_ref": "ecs", "kind": "traffic"},
+    {"id": "a-disk-ecs", "source_ref": "disk", "target_ref": "ecs", "kind": "attachment", "label": "Mounted"},
+    {"id": "a-vault-ecs", "source_ref": "vault", "target_ref": "ecs", "kind": "attachment", "label": "Backs up"},
+    {"id": "a-vault-disk", "source_ref": "vault", "target_ref": "disk", "kind": "attachment", "label": "Backs up"},
+    {"id": "t-ecs-cache", "source_ref": "ecs", "target_ref": "cache", "kind": "traffic"},
+    {"id": "t-ecs-docs", "source_ref": "ecs", "target_ref": "docs", "kind": "traffic"},
+    {"id": "t-ecs-ledger", "source_ref": "ecs", "target_ref": "ledger", "kind": "traffic"},
+    {"id": "t-ecs-kafka", "source_ref": "ecs", "target_ref": "kafka", "kind": "traffic", "label": "Events"},
+    {"id": "t-jobs-rabbit", "source_ref": "jobs", "target_ref": "rabbit", "kind": "traffic", "label": "Tasks"},
+    {"id": "t-kafka-notify", "source_ref": "kafka", "target_ref": "notify", "kind": "traffic", "label": "Alerts"},
+    {"id": "d-jobs-images", "source_ref": "jobs", "target_ref": "images", "kind": "dependency", "label": "Pulls images"},
+    {"id": "t-ecs-share", "source_ref": "ecs", "target_ref": "share", "kind": "traffic", "protocol": "NFS"},
+    {"id": "t-jobs-turbo", "source_ref": "jobs", "target_ref": "turbo", "kind": "traffic", "protocol": "NFS"},
+    {"id": "t-ecs-endpoint", "source_ref": "ecs", "target_ref": "endpoint", "kind": "traffic"},
+    {"id": "t-ecs-router", "source_ref": "ecs", "target_ref": "router", "kind": "traffic"}
+  ],
+  "views": [
+    {
+      "id": "detail",
+      "title": "Huawei Cloud data, messaging, storage and network services",
+      "entity_refs": ["acct", "proj", "ep", "region", "az", "vpc", "app", "data", "ecs", "disk", "vault", "cache", "docs", "ledger", "kafka", "rabbit", "notify", "images", "jobs", "share", "turbo", "router", "endpoint", "obs-endpoint", "accelerator"],
+      "relationship_refs": ["t-accelerator-ecs", "a-disk-ecs", "a-vault-ecs", "a-vault-disk", "t-ecs-cache", "t-ecs-docs", "t-ecs-ledger", "t-ecs-kafka", "t-jobs-rabbit", "t-kafka-notify", "d-jobs-images", "t-ecs-share", "t-jobs-turbo", "t-ecs-endpoint", "t-ecs-router"]
+    }
+  ]
+}
