@@ -161,3 +161,5 @@ The same Fable agent reviewed `bc5f728..f6f4841` on its own clone. It confirmed 
 ## Fix after the third recheck
 
 F11 was a bug in the F10 fix the owner had approved, so Claude Opus 5.5 fixed it as part of finishing F10: each node is looked up as its row in the loop search's result. Fable's three probe scripts, 44 probes in all, now keep every unbanded node and the AWS box between north and south, and the two F11 probes are 1846 pt wide, as Fable measured with the same patch. A new test draws two levelled databases each with a two-way reader, and putting the bug back fails it. The local gate passes 16 of 17 lanes with 2,383 tests, `release-audit` waits for a reproduction proof of this source, and the Work plugin becomes `0.1.0-alpha.1+fee9566f6d58`.
+
+- The core reproduces from a new clone of `1435e98`: the same wheel, SHA-256 `bbdb472318a8e9ae9e05aa1f09e435fb6d793fb6666c71f48aa61bceaec91b9f`, and all 26 reference views match by both routes, with no mismatch. With that [proof](S10-core-reproduction-proof.json), `release-audit` passes its 67 tests.
