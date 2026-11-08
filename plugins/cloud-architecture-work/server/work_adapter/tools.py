@@ -64,6 +64,11 @@ VIEW_SCHEMA = {
     "description": "A view ID from the model. The model's first view by default.",
 }
 BUNDLE_SCHEMA = {"type": "string", "description": "A bundle_id from render_model or list_bundles."}
+DISCLOSE = (
+    "Tell the user every item listed here, view by view, by its name and its ID, relationships "
+    "included. Do not summarize, group or leave out any of them: a view that selects part of the "
+    "model must never drop a component silently."
+)
 
 
 def _closed(properties: dict[str, Any], required: list[str] | None = None) -> dict[str, Any]:
@@ -145,7 +150,8 @@ TOOLS: list[dict[str, Any]] = [
         "description": (
             "Checks structure, IDs, references, cycles, views, Kubernetes context, catalog types "
             "and provider placement rules. Draws nothing. Fix each error by its code and remedy; "
-            "do not delete a requested component to make this pass."
+            "do not delete a requested component to make this pass. When a view leaves part of "
+            "the model out, disclose lists each item by name and ID for the user."
         ),
         "inputSchema": _closed(
             {"model": MODEL_SCHEMA, "mode": MODE_SCHEMA, "view": VIEW_SCHEMA}, ["model"]
@@ -159,7 +165,9 @@ TOOLS: list[dict[str, Any]] = [
             "Validates, then draws one view to SVG and PNG with the controlled Graphviz renderer "
             "and publishes a new bundle on this Mac. Pass model, or bundle_id to draw another view "
             "of a model already rendered without sending it again. Run one render at a time. "
-            "The result lists every file's path and checksum and includes the PNG as a preview."
+            "The result lists every file's path and checksum and includes the PNG as a preview. "
+            "When the drawn view leaves part of the model out, disclose lists each item by name "
+            "and ID for the user."
         ),
         "inputSchema": _closed(
             {
@@ -242,6 +250,63 @@ def _first_error(report: dict[str, Any]) -> dict[str, Any]:
         if item.get("severity") == "error":
             return dict(item)
     return {}
+
+
+def _listed(model: dict[str, Any], key: str) -> list[dict[str, Any]]:
+    items = model.get(key)
+    return [item for item in items if isinstance(item, dict)] if isinstance(items, list) else []
+
+
+def _disclosure(payload: bytes, report: dict[str, Any], views: list[Any]) -> dict[str, Any]:
+    """Name what each view leaves out (FR-025), so a chat tells the user rather than summarizing.
+
+    Work chats on 2026-11-07 and 2026-11-08 explained or skipped excluded IDs in their own words.
+    """
+    exclusions = report.get("view_exclusions")
+    if not isinstance(exclusions, dict):
+        return {}
+    partial = [
+        (view, exclusions[view])
+        for view in views
+        if isinstance(view, str) and isinstance(exclusions.get(view), list) and exclusions[view]
+    ]
+    if not partial:
+        return {}
+    try:
+        model = json.loads(payload)
+    except ValueError:
+        model = None
+    if not isinstance(model, dict):
+        model = {}
+    names = {
+        entity.get("id"): entity.get("name")
+        for key in ("scopes", "boundaries", "resources")
+        for entity in _listed(model, key)
+    }
+    edges = {edge.get("id"): edge for edge in _listed(model, "relationships")}
+
+    def item(identifier: Any) -> dict[str, Any]:
+        if identifier in names:
+            return {"id": identifier, "name": names[identifier]}
+        edge = edges.get(identifier)
+        if edge is None:
+            return {"id": identifier}
+        source = names.get(edge.get("source_ref"), edge.get("source_ref"))
+        target = names.get(edge.get("target_ref"), edge.get("target_ref"))
+        described = {"id": identifier, "relationship": f"{source} -> {target}"}
+        if edge.get("label"):
+            described["label"] = edge["label"]
+        return described
+
+    return {
+        "disclose": {
+            "instruction": DISCLOSE,
+            "views": [
+                {"view": view, "left_out": [item(identifier) for identifier in identifiers]}
+                for view, identifiers in partial
+            ],
+        }
+    }
 
 
 def _encode_model(model: Any) -> bytes | Outcome:
@@ -537,7 +602,11 @@ class Toolbox:
         report = self._report(done)
         if isinstance(report, Outcome):
             return report
-        return success(report) if done.status == 0 else self._failed_core_call(done, report)
+        if done.status != 0:
+            return self._failed_core_call(done, report)
+        exclusions = report.get("view_exclusions")
+        views = list(exclusions) if isinstance(exclusions, dict) else []
+        return success(report, **_disclosure(payload, report, views))
 
     def _render_payload(self, arguments: dict[str, Any]) -> bytes | Outcome:
         if ("model" in arguments) == ("bundle_id" in arguments):
@@ -583,9 +652,10 @@ class Toolbox:
             return report
         if done.status != 0 or report.get("rendered") is not True:
             return self._failed_core_call(done, report)
-        return self._published(report)
+        # Only the drawn view: another view's exclusions belong to its own render.
+        return self._published(report, _disclosure(payload, report, [report.get("selected_view")]))
 
-    def _published(self, report: dict[str, Any]) -> Outcome:
+    def _published(self, report: dict[str, Any], disclosed: dict[str, Any]) -> Outcome:
         bundle_id = str(report.get("bundle_id"))
         try:
             artifacts.verify_published(self.runtime.output, bundle_id, report.get("artifacts", []))
@@ -596,13 +666,13 @@ class Toolbox:
             )
             return self._artifact_failure(code, result=report)
         if len(png) > MAX_PREVIEW_BYTES:
-            return success(report, preview="omitted: open diagram.png by its path")
+            return success(report, preview="omitted: open diagram.png by its path", **disclosed)
         image = {
             "type": "image",
             "data": base64.b64encode(png).decode("ascii"),
             "mimeType": "image/png",
         }
-        return Outcome(success(report, preview="diagram.png follows").body, [image])
+        return Outcome(success(report, preview="diagram.png follows", **disclosed).body, [image])
 
     @staticmethod
     def _artifact_failure(code: str, **extra: Any) -> Outcome:

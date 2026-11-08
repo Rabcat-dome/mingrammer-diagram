@@ -1376,6 +1376,80 @@ def test_a_missing_field_tells_the_chat_to_add_it(client: Client) -> None:
     assert missing["remedy"].startswith("Add the field")
 
 
+def left_out(model: dict[str, Any], identifier: str) -> dict[str, Any]:
+    """What disclose should say about one excluded ID, built from the model here."""
+    names = {
+        entity["id"]: entity["name"]
+        for key in ("scopes", "boundaries", "resources")
+        for entity in model.get(key, [])
+    }
+    if identifier in names:
+        return {"id": identifier, "name": names[identifier]}
+    edge = next(edge for edge in model["relationships"] if edge["id"] == identifier)
+    item = {
+        "id": identifier,
+        "relationship": f"{names[edge['source_ref']]} -> {names[edge['target_ref']]}",
+    }
+    return {**item, "label": edge["label"]} if edge.get("label") else item
+
+
+def test_a_partial_view_names_what_it_leaves_out(client: Client) -> None:
+    # Work chats on 2026-11-07 and 2026-11-08 explained excluded IDs away or left some out
+    # (FR-025), so the result names each one where a chat reads it first.
+    model = fixture("kubernetes-valid.json")
+    detail = next(view for view in model["views"] if view["id"] == "detail")
+    assert "traffic" in detail["relationship_refs"]
+    detail["relationship_refs"].remove("traffic")
+    body = client.body("validate_model", model=model)
+    assert list(body) == ["status", "disclose", "result"], "disclose comes before the result"
+    instruction = body["disclose"]["instruction"]
+    for words in ("by its name and its ID", "relationships included", "Do not summarize"):
+        assert words in instruction, words
+    exclusions = body["result"]["view_exclusions"]
+    assert [entry["view"] for entry in body["disclose"]["views"]] == ["detail", "compact"]
+    for entry in body["disclose"]["views"]:
+        assert [item["id"] for item in entry["left_out"]] == exclusions[entry["view"]]
+        assert entry["left_out"] == [left_out(model, item) for item in exclusions[entry["view"]]]
+    [edge] = body["disclose"]["views"][0]["left_out"]
+    assert edge == {"id": "traffic", "relationship": "ingress -> service", "label": "HTTPS"}
+    # A relationship with no label is still named by its two ends.
+    del model["relationships"][0]["label"]
+    unlabeled = client.body("validate_model", model=model)["disclose"]["views"][0]["left_out"]
+    assert unlabeled == [{"id": "traffic", "relationship": "ingress -> service"}]
+
+
+def test_a_whole_view_or_a_failure_discloses_nothing(client: Client) -> None:
+    whole = client.body("validate_model", model=fixture("core-valid.json"))
+    assert whole["status"] == "ok" and "disclose" not in whole
+    assert whole["result"]["view_exclusions"] == {"overview": []}
+    model = fixture("kubernetes-valid.json")
+    model["views"][0]["entity_refs"].append("does-not-exist")
+    failed = client.body("validate_model", model=model)
+    assert failed["status"] == "validation_failed" and "disclose" not in failed
+    tools = {tool["name"]: tool for tool in client.request("tools/list")["result"]["tools"]}
+    for name in ("validate_model", "render_model"):
+        assert "disclose lists each item by name and ID" in tools[name]["description"], name
+
+
+def test_a_render_discloses_only_the_view_it_drew(client: Client) -> None:
+    model = fixture("kubernetes-valid.json")
+    detail = next(view for view in model["views"] if view["id"] == "detail")
+    detail["relationship_refs"].remove("traffic")
+    first = client.body("render_model", model=model, view="detail")
+    assert list(first) == ["status", "preview", "disclose", "result"]
+    assert first["disclose"]["views"] == [
+        {"view": "detail", "left_out": [left_out(model, "traffic")]}
+    ]
+    # From a bundle, the server reads the names from that bundle's model.json.
+    second = client.body("render_model", bundle_id=first["result"]["bundle_id"], view="compact")
+    [compact] = second["disclose"]["views"]
+    assert compact["view"] == "compact"
+    excluded = second["result"]["view_exclusions"]["compact"]
+    assert compact["left_out"] == [left_out(model, item) for item in excluded]
+    whole = client.body("render_model", model=fixture("kubernetes-valid.json"), view="detail")
+    assert whole["status"] == "ok" and "disclose" not in whole
+
+
 def test_lenient_turns_only_an_unknown_type_into_a_draft(client: Client) -> None:
     model = fixture("core-valid.json")
     model["resources"][0]["service_type"] = "aws.made.up"
@@ -2208,6 +2282,21 @@ def test_skill_keeps_the_images_as_the_plugin_wrote_them(skill: str) -> None:
     for example in ("type: ClusterIP", "ports: 80:8080/TCP", "storage class:"):
         assert f"`{example}`" in detail, example
         assert starts(namespaces, example) and not starts(overview, example), example
+
+
+def test_skill_names_each_item_a_view_leaves_out(skill: str) -> None:
+    # Work chats on 2026-11-07 and 2026-11-08 explained excluded IDs away or left some out.
+    [report] = [line for line in skill.splitlines() if line.startswith("8. **Report.**")]
+    for clause in (
+        "When a result has `disclose`, tell the user every item it lists, view by view, "
+        "by its name and its ID, relationships included",
+        "Do not summarize, group or leave out any of them",
+        "never put a reason, such as being shown another way, in place of naming them",
+        "A partial view must never silently drop a component",
+    ):
+        assert clause in report, clause
+    assert "Disclose the IDs listed" not in skill, "the vaguer rule chats paraphrased is gone"
+    assert "and names them in `disclose`" in skill
 
 
 def test_skill_names_the_required_metadata(skill: str) -> None:

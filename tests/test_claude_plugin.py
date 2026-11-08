@@ -287,6 +287,22 @@ def test_skill_and_guide_name_the_required_metadata() -> None:
     assert "`SCHEMA_FIELD_MISSING`" in guide
 
 
+def test_skill_names_each_id_a_view_leaves_out() -> None:
+    # Work chats on 2026-11-07 and 2026-11-08 explained excluded IDs away or left some out,
+    # and this skill had the same rule, so it says the same as the Work skill.
+    skill = (SKILL / "SKILL.md").read_text()
+    [report] = [line for line in skill.splitlines() if line.startswith("8. **Report.**")]
+    for clause in (
+        "Tell the user every ID that `view_exclusions` lists, view by view, "
+        "by its name from the model and its ID, relationships included",
+        "Do not summarize, group or leave out any of them",
+        "never put a reason, such as being shown another way, in place of naming them",
+        "A partial view must never silently drop a component",
+    ):
+        assert clause in report, clause
+    assert "Disclose the IDs listed" not in skill, "the vaguer rule chats paraphrased is gone"
+
+
 def test_skill_names_the_render_size_outcomes() -> None:
     skill = (SKILL / "SKILL.md").read_text()
     for code in ("RENDER_PIXEL_LIMIT", "RENDER_PNG_SCALE_LIMIT", "RENDER_PNG_SCALED"):
