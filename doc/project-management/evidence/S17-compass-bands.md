@@ -68,3 +68,7 @@ The shared model guide has a section on north-south bands and east-west lines, w
 - `tests/test_render_smoke.py`: from the SVG, each band's icons share a row and the rows run in order, customers are above every AWS box and the router below them, and both east-west lines are level. From the DOT, views without rows get no `newrank`, `rank=same`, `xlabel` or weightless line, every line in the banded view takes `constraint=false`, level labels are `xlabel`, an unbanded end keeps its line's constraint, and one band holds nothing else. A band that names a group with no line of its own holds the group's anchor on that row, and the group's box reaches it. The fixture also runs through every fixture-wide render check, including the straight-line check and the draw.io copy.
 
 Each of 14 sabotage edits, one per rule above, failed a named test: the six validation checks, the joined ends of a level, `newrank` for every view, no `rank=same`, no `constraint=false`, labels instead of `xlabel`, no holding lines, order lines through each band's first entity, and no anchor for a banded group.
+
+## Reproduction
+
+- The core reproduces from a new clone of `3058eb6`: the same wheel, SHA-256 `332afdee0d354356472680cf5f65c968e5dc296a45d7ec6d889f3dc209834d0d`, and all 26 reference views match by both routes, with no mismatch. With that [proof](S10-core-reproduction-proof.json), `release-audit` passes its 67 tests.

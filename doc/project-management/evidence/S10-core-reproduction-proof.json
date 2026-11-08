@@ -1,7 +1,7 @@
 {
  "catalog": "2026.11.3",
- "commit": "7993055f8ed96b0c826d6b9bfcc9de6dfb298427",
- "core": "0.6.0a1",
+ "commit": "3058eb600ce0166cf1577eadb48f0faaed1ea3dd",
+ "core": "0.7.0a1",
  "engine": "dot - graphviz version 16.1.0 (20260904.0139)",
  "installed_packages": 21,
  "locked_route_all_match": true,
@@ -9,12 +9,12 @@
  "python": "<new folder>/python/cpython-3.13.7-macos-aarch64-none/bin/python3.13",
  "python_version": "Python 3.13.7",
  "routes_agree": true,
- "source_digest": "6dfa1797bb25f703459d49ade21ed3f7032c128e442e6a0fd5c4a6c6d623a624",
+ "source_digest": "888af4efe2b588cef3d311d88afd736fadb387889d753550d8d0dd101688b783",
  "system": "Darwin 27.2.0 arm64",
  "uv": "uv 0.13.0 (Homebrew 2026-10-09 aarch64-apple-darwin)",
  "views": 26,
- "wheel": "cloud_architecture_diagrams-0.6.0a1-py3-none-any.whl",
+ "wheel": "cloud_architecture_diagrams-0.7.0a1-py3-none-any.whl",
  "wheel_matches_expected": true,
  "wheel_route_all_match": true,
- "wheel_sha256": "260634f5ef2183a841e6950e4035b1200fb63dc63d3384147ac75bf339bcd735"
+ "wheel_sha256": "332afdee0d354356472680cf5f65c968e5dc296a45d7ec6d889f3dc209834d0d"
 }
