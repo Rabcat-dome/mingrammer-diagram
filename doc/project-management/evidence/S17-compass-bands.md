@@ -72,3 +72,33 @@ Each of 14 sabotage edits, one per rule above, failed a named test: the six vali
 ## Reproduction
 
 - The core reproduces from a new clone of `3058eb6`: the same wheel, SHA-256 `332afdee0d354356472680cf5f65c968e5dc296a45d7ec6d889f3dc209834d0d`, and all 26 reference views match by both routes, with no mismatch. With that [proof](S10-core-reproduction-proof.json), `release-audit` passes its 67 tests.
+
+## Review
+
+On the owner's word, "Start review", Claude Fable 5.1 reviewed `186b26d..000c024` in a fresh agent on its own clone, started at High, though it could not confirm that effort from inside the run. It read the evidence and the diff, ran 22 probe models of its own through every grouping, lenient fallback, groups in bands and lines to their own containers, ran the four changed lanes with 611 tests, and ran the whole gate, which passed every lane at `000c024`.
+
+**It requested changes, with no P0 or P1 finding.** Nothing crashed, nothing invalid reached the renderer, every view without bands kept its DOT, and nothing from the model reaches Graphviz but quoted node IDs.
+
+| ID | Severity | Finding |
+|---|---|---|
+| F1 | P2 | Icons on one band line up only when their nodes hold as many text lines. dot puts the middles of a rank's nodes on one line, and an icon sits at the top of its node, so in a Kubernetes detail view a Pod with nine lines had its icon 50 pt above one with three |
+| F2 | P2 | A level line meets a node at its middle, which in a top-down view is below the icon once the text runs long, so the line's arrow lands on the text |
+| F3 | P2 | The holding lines to and from every unbanded node took a point on every rank they crossed, and a Kubernetes detail view with two one-entity bands grew from 1269 × 1053 pt to 2393 × 1543 pt |
+| F4 | P3 | The guide and the core contract said no group's box is drawn above the first band, but a box that holds a banded entity wraps it, as the fixture's External box does |
+| F5 | P3 | A level line between an entity and its own VPC pulls the VPC's anchor onto the entity's row, and the VPC's peering then went 334 pt around what lay between |
+| F6 | P3 | No test had a row with unequal text or a level line between icon nodes with notes |
+
+This session confirmed F1 and F3 from the reviewer's probe output, and F2 in its own render of the fixture.
+
+## Fixes after the review
+
+On the owner's word, "Yes, fix them", Claude Opus 5.5 fixed F1, F3, F4 and F6, and recorded F2 and F5 as limits.
+
+- **F1:** each icon node on a row is as tall as the row's tallest text, so the icons line up and a shorter text sits lower under its icon. The reviewer's Pods now have their icons at the same height, and so do its PersistentVolumeClaim and PersistentVolume.
+- **F3:** an unbanded node takes a holding line from north only when no other line ranks it below anything, and one to south only when none ranks it above anything. The lines `_arrange` adds count as ranking lines. The reviewer's view is now 1464 pt wide, against 1269 pt without bands and 2393 pt before, and the fixture's picture does not change. Without the line from north, dot happened to keep a node with no lines off the first row in this session's probes, so that line is a safeguard that a DOT-level test guards.
+- **F2, a limit:** no Graphviz setting lets a line end on part of a node. With F1, a level line meets the icons while the row's tallest text runs to three lines, and a test holds that. The guide says to keep names short on such a row. A node built as a table with a port on its icon would fix it, but that changes how the SVG is checked and how the draw.io copy is read, so it is left for later.
+- **F4:** the guide and the core contract now say that no entity outside the bands, and no box that holds none of their entities, is drawn above the first or below the last.
+- **F5, a limit:** the guide says to draw no level line between an entity and a box that holds it.
+- **F6:** four new render tests: icons line up on a row whose texts differ, a level line meets icons whose text runs to three lines, a node already ranked takes no holding line, and two bands keep the Kubernetes detail view within a quarter of its width without them.
+
+Each of five sabotage edits failed a named test: no row height, holding lines to every node from north or to south, no holding line from north, and `_arrange`'s lines left uncounted. The local gate passes 16 of 17 lanes with 2,374 tests, and `release-audit` waits for a reproduction proof of the fixed source. The Work plugin becomes `0.1.0-alpha.1+f6e08e40e0cf`.

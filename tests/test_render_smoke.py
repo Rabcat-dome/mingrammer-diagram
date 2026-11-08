@@ -1869,3 +1869,72 @@ def test_a_band_can_name_a_group_and_its_box_reaches_that_row(smoke_root: Path) 
     groups = by_id(svg_root(result))
     ys = _path_ys(groups["group:region-b"])
     assert min(ys) < _middle(groups, "app-a") < max(ys)
+
+
+def test_icons_on_one_row_line_up_whatever_their_text(smoke_root: Path) -> None:
+    # Review F1: dot puts the middles of a rank's nodes on one line, and an icon sits at the top
+    # of its node, so a longer text would lift its icon above the others on its row.
+    model = load("compass-valid.json")
+    app_b = next(item for item in model["resources"] if item["id"] == "app-b")
+    app_b["name"] = "App server B in the disaster recovery region"
+    result = render(model, smoke_root, view="compass")
+    assert result.rendered, codes(result)
+    lines = {node["id"]: len(node["lines"]) for node in graph_of(result)["nodes"]}
+    assert lines["app-b"] > lines["app-a"]
+    groups = by_id(svg_root(result))
+    assert abs(_icon(groups, "app-a")[0] - _icon(groups, "app-b")[0]) < 1
+
+
+def test_a_level_line_meets_icons_whose_text_runs_to_three_lines(smoke_root: Path) -> None:
+    # Review F2: a line meets a node at its middle. With every node on a row as tall as the row's
+    # tallest text, that middle is on the icon while the text runs to three lines. Longer text
+    # puts it on the text, which S17 records as a limit.
+    model = load("compass-valid.json")
+    for item in model["resources"]:
+        if item["id"] in ("app-a", "app-b"):
+            del item["placement"]["location"]["zone_ref"]
+    model["relationships"].append(
+        {"id": "app-sync", "source_ref": "app-a", "target_ref": "app-b", "kind": "dependency"}
+    )
+    view = model["views"][0]
+    view["relationship_refs"].append("app-sync")
+    view["east_west_refs"].append("app-sync")
+    result = render(model, smoke_root, view="compass")
+    assert result.rendered, codes(result)
+    lines = {node["id"]: len(node["lines"]) for node in graph_of(result)["nodes"]}
+    assert max(lines["app-a"], lines["app-b"]) <= 3
+    groups = by_id(svg_root(result))
+    ys = _path_ys(groups["edge:app-sync"])
+    assert max(ys) - min(ys) < 1
+    for identifier in ("app-a", "app-b"):
+        top, bottom = _icon(groups, identifier)
+        assert top < ys[0] < bottom, identifier
+
+
+def test_holding_lines_go_only_where_no_line_ranks_a_node() -> None:
+    # Review F3: the VPN's own line already ranks it above the router, so it needs no line to
+    # south, and none ranks it below anything, so it needs one from north.
+    model = load("compass-valid.json")
+    view = model["views"][0]
+    view["bands"] = [band for band in view["bands"] if band["id"] != "transit"]
+    dot = dot_of(model)
+    assert '"_band.0" -> "vpn-a"' in dot
+    assert '"vpn-a" -> "_band.4"' not in dot
+
+
+def test_bands_do_not_widen_a_view_with_lines_through_every_rank(smoke_root: Path) -> None:
+    # Review F3: dot gives a long line a point on every rank it crosses, and holding lines from
+    # north and to south for every node nearly doubled this view's width.
+    def width(model: dict[str, Any]) -> float:
+        result = render(model, smoke_root, view="detail")
+        assert result.rendered, codes(result)
+        return float(svg_root(result).get("width", "").removesuffix("pt"))
+
+    model = load("kubernetes-valid.json")
+    model["views"][0]["direction"] = "TB"
+    plain = width(copy.deepcopy(model))
+    model["views"][0]["bands"] = [
+        {"id": "north", "entity_refs": ["ingress"]},
+        {"id": "south", "entity_refs": ["pv"]},
+    ]
+    assert width(model) < plain * 1.25

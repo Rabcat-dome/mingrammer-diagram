@@ -98,6 +98,17 @@ class _Drawing:
             for index, row in enumerate([*graph.bands, *graph.levels])
             for identifier in row
         }
+        # dot puts the middles of a rank's nodes on one line, and an icon sits at the top of its
+        # node, so icons on one row line up only when their nodes are as tall. Each takes the
+        # tallest text on its row, and the shorter text then sits lower under its icon.
+        lines = {node.id: len(node.lines) for node in graph.nodes if node.icon}
+        tallest = [
+            max((lines[identifier] for identifier in row if identifier in lines), default=0)
+            for row in [*graph.bands, *graph.levels]
+        ]
+        self.row_lines = {
+            identifier: tallest[index] for identifier, (index, _) in self.rows.items()
+        }
         # Edges need a node to end on, and a group without its own marker has none. Nor has a
         # row anything to hold it on that level.
         self.anchors = {
@@ -107,6 +118,8 @@ class _Drawing:
             if endpoint not in self.node_ids
         } | {identifier for identifier in self.rows if identifier not in self.node_ids}
         self.drawn: dict[str, Any] = {}
+        # Every invisible line `_arrange` adds, by node ID, since each one ranks its ends too.
+        self.layout_lines: list[tuple[str, str]] = []
         # A tinted box tells providers apart, which one alone does not need.
         self.many_providers = sum(group.entity == "provider" for group in graph.groups) > 1
 
@@ -229,7 +242,9 @@ class _Drawing:
         common: dict[str, str] = {"id": f"node:{node.id}"}
         if node.icon:
             icon = self.icons[node.icon.reference]
-            text = ICON_GAP_INCHES + LINE_INCHES * len(node.lines)
+            text = ICON_GAP_INCHES + LINE_INCHES * max(
+                len(node.lines), self.row_lines.get(node.id, 0)
+            )
             # An edge meets a node at its middle. Left to right that would land on the label, which
             # runs wider than the node, so an equal space above keeps the middle on the icon.
             sideways = self.graph.direction == "LR"
@@ -361,9 +376,9 @@ class _Drawing:
             width = math.ceil(math.sqrt(len(loose)))
             for start in range(0, len(loose), width or 1):
                 for first, second in pairwise(loose[start : start + width]):
-                    self._representative(first).connect(
-                        self._representative(second), Edge(style="invis")
-                    )
+                    upper, lower = self._representative(first), self._representative(second)
+                    self.layout_lines.append((upper.nodeid, lower.nodeid))
+                    upper.connect(lower, Edge(style="invis"))
 
     def _rows(self, dot: Any) -> None:
         """D-055: each band is one rank, north to south, and each other level one rank of its own."""
@@ -398,12 +413,28 @@ class _Drawing:
             return
         # The first band is the top row and the last the bottom one. With newrank, Graphviz 16.1
         # puts a loose node on the first rank even under rank=source, and a group's box then rises
-        # above north. A weightless line from north and one to south holds every other node
-        # between them without pulling it anywhere.
+        # above north. A weightless line from north to each unbanded node that no line ranks below
+        # anything, and one to south from each that no line ranks above anything, holds the rest
+        # between them through the lines they already have. A line to every node would also hold
+        # them, but dot gives a long line a point on every rank it crosses, and those points widen
+        # the picture.
         banded = {identifier for band in self.graph.bands for identifier in band}
+        ranking = [
+            *self.layout_lines,
+            *(
+                (self.drawn[edge.source].nodeid, self.drawn[edge.target].nodeid)
+                for edge in self.graph.edges
+                if not self._level(edge)
+            ),
+        ]
+        below = {lower for _, lower in ranking}
+        above = {upper for upper, _ in ranking}
         for identifier, node in self.drawn.items():
-            if identifier not in banded:
+            if identifier in banded:
+                continue
+            if node.nodeid not in below:
                 markers[0].connect(node, Edge(style="invis", weight="0"))
+            if node.nodeid not in above:
                 node.connect(markers[-1], Edge(style="invis", weight="0"))
 
     def _level(self, edge: GraphEdge) -> bool:

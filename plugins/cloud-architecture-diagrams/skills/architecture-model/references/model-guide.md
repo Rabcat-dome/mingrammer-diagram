@@ -137,10 +137,13 @@ A view of one account's web tier, and a second view by zone, as the `views` list
 Use these when the user asks, in English or Thai, for a north-south and east-west network picture, or for rows such as Internet, edge, application, data and on-premises. They are layout only: they change where the view draws things, never what the model says.
 
 - **`bands`** lists up to 32 rows from north to south, each `{id, entity_refs}`. The `id` is the view's own, such as `north` or `data`, and each entity the band names must be one the view selects. An entity sits in one band only.
-- **The first band is the top row and the last the bottom one.** With two or more bands, nothing else is drawn above the first or below the last, not even a group's box. Anything no band names is drawn between them, where its lines put it.
+- **The first band is the top row and the last the bottom one.** With two or more bands, no entity outside the bands is drawn above the first or below the last, and neither is a box that holds none of their entities. A box that holds a banded entity still wraps it, so its border and title sit above or below that row. Anything no band names is drawn between them, where its lines put it.
+- **Icons on one row line up.** Each node on a row is as tall as the row's tallest text, so an icon with less text has more space between it and its text.
 - **`east_west_refs`** lists selected relationship IDs to draw level, side by side, such as peering, replication or a link between two regions. When either end is in a band, the other end joins that row. A line that would join two bands is refused.
 - **Both need `"direction": "TB"`.**
 - **Name resources in bands, and let the boxes follow.** A band can name a group, such as a VPC, and its box then reaches that row.
+- **A level line meets each end at the middle of its node.** That is on the icon while the row's tallest text runs to three lines, and on the text when it runs longer, as a name, a type and a `location:` note do. Keep names short on a row with a level line, or expect the line to meet the text.
+- **Draw no level line between an entity and a box that holds it.** It pulls the box's invisible anchor onto the entity's row, and the box's other level lines then go around whatever lies between.
 - **Band whatever would sit between a level line's ends.** A level line goes around anything drawn between its ends on that row, so an unbanded node that lands there bends it. In the example, the VPN has a `transit` row of its own for that reason.
 - Codes: `VIEW_BAND_DIRECTION`, `VIEW_BAND_ID_DUPLICATE`, `VIEW_BAND_ENTITY_EXCLUDED`, `VIEW_BAND_CONFLICT`, `VIEW_EAST_WEST_UNSELECTED` and `VIEW_EAST_WEST_CONFLICT`, each with its remedy.
 
